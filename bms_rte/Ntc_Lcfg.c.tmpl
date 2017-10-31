@@ -1,0 +1,46 @@
+#include "ChgSckTmpM.h"
+#include "Ntc_Lcfg.h"
+
+<% for (var index = 0; index < temperatureSensors.length; index++) {
+    sensor = temperatureSensors[index]; %>
+static const uint16 NTC_<%- sensor.id %>_V4096[] = {<%
+    var xindex = 0;
+    for (var vol of sensor.vols) {
+        if (xindex % 10 == 0) {%>
+    <% } %><%- vol %>U, <%
+        xindex++;
+    } %>
+};
+
+const NTC_ConfigDataType NTC_<%- sensor.id %>_ConfigData = {
+    NTC_<%- sensor.id %>,
+    <%- sensor.start %>,
+    (uint8)ARRAY_SIZE(NTC_<%- sensor.id %>_V4096),
+    NTC_<%- sensor.id %>_V4096
+};
+<% } %>
+
+/* <%- JSON.stringify(chgSckTempEnable) %> */
+const ChgSckTmpM_ConfigType ChgSckTmpM_ConfigInfo = {
+    {
+    { <%- chgSckTempEnable.DC_POSITIVE %> },
+    { <%- chgSckTempEnable.DC_POSITIVE %> },
+    { <%- chgSckTempEnable.AC_AL %> },
+    { <%- chgSckTempEnable.AC_BN %> },
+    { <%- chgSckTempEnable.AC_C %> },
+    }
+};
+
+const NTC_ConfigDataType *const NTCConfigData = &NTC_<%- cellTempType %>_ConfigData;
+const NTC_ConfigDataType *const ChgSckNTCConfigData = &NTC_<%- chgSckTempType %>_ConfigData;
+
+/* <%- JSON.stringify(chgSckAdcToTempChannleMap) %> */
+const uint8 ChgSckTmpM_AdcToTempChannelMap[] = { <%
+for (var x of ['FCH_T1', 'FCH_T2', 'SCH_T1', 'SCH_T2', 'SCH_T3']) { %><%
+    if (chgSckAdcToTempChannleMap.hasOwnProperty(x)) { %>
+    CHGSCKTMPM_TEMPERATURE_<%- chgSckAdcToTempChannleMap[x] %>,   /* <%- x %> */ <%
+    } else { %>
+    CHGSCKTMPM_TEMPERATURE_CHANEL_NUM,   /* <%- x %> */<%
+    } %><%
+} %>
+};

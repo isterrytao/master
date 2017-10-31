@@ -1,0 +1,82 @@
+#include <stdlib.h>
+#include "CanIf_Cbk.h"
+
+const Can_HardwareObjectType CanHardwareObject[] = {<%
+for (var hoh of hohs) {%>
+    { /* <%- JSON.stringify(hoh) %> */
+        /* Hoh */ <%- hoh.index %>U,
+        /* controllerRef */ <%- hoh.controllerRef %>U,
+        /* CanObjectType = */ <%- hoh.CanObjectType %>,
+        /* Can_EOL =  */ <%- hoh.Can_EOL %>U,
+    },<%
+}%>
+};
+
+<%var i = 0;
+for (var hwcfg of hwcfgs){%>
+static Can_FilterMaskType Can_FilterMaskConfigData_Mask_<%- i %> = {
+    {<%- (hwcfg.mask >> 24) & 0xFF %>U, <%- (hwcfg.mask >> 16) & 0xFF %>U, <%- (hwcfg.mask >> 8) & 0xFF %>U, <%- (hwcfg.mask >> 0) & 0xFF %>U, 0x00U, 0x00U, 0x00U, 0x00U},
+    {<%- (hwcfg.accept >> 24) & 0xFF %>U, <%- (hwcfg.accept >> 16) & 0xFF %>U, <%- (hwcfg.accept >> 8) & 0xFF %>U, <%- (hwcfg.accept >> 0) & 0xFF %>U, 0x00U, 0x00U, 0x00U, 0x00U},
+    CAN_IDAM_2_32BIT,
+}; <%
+    i++;
+}%>
+
+const Can_HardwareConfigType CanHardwareObjectConfigs[] = {<%
+
+var i = 0;
+for (var hwcfg of hwcfgs){%>
+    {
+        /* CanControllerActivation = */ TRUE,
+        /* CanControllerBaudRate = */ <%- hwcfg.baud / 1000 %>U,
+        /* CanControllerPropSeg = */ 1U,
+        /* CanControllerSeg1 = */ 14U,
+        /* CanControllerSeg2 = */ 7U,
+        /* CanControllerTimeQuanta = */ 0U,
+        /* CanCpuClockRef = */ 0U,
+        /* CanWakeupSourceRef = */ 0U,
+        /* Can_Hoh = */ &CanHardwareObject[<%- hwcfg.hohOffset %>],
+        /* Can_Loopback = */ FALSE,
+        /* Can_Fifo = */ 0U,
+        /* CanFilterMask = */ &Can_FilterMaskConfigData_Mask_<%- i %>,
+    }, <%
+    i++;
+}%>
+};
+
+const Can_ConfigType CanConfig = {
+    /* CanHardwareConfig = */
+    CanHardwareObjectConfigs,
+    /* CanCallbacks = */
+    {
+        NULL, //CanIf_CancelTxConfirmation,
+        CanIf_RxIndication,
+        CanIf_ControllerBusOff,
+        CanIf_TxConfirmation,
+        NULL,
+        CanIf_ControllerModeIndication,
+        NULL,
+    }
+};
+
+const Can_ControllerHwIdType CanControllerRefIdToHwIdMap[] = {<%
+var i = 0;
+for (var x of crefToHw) {%>
+    <%- x %>,<%
+    i++;
+}
+for (; i < 5; i ++) {%>
+    CAN_CTRL_NONE,<%
+}%>
+};
+
+const Can_ControllerRefIdType CanControllerHwIdToRefIdMap[CAN_CTRL_MAX] = {<%
+for (var i = 0; i < 5; i ++) {
+    x = hwToCref[i];
+    if (x==undefined) x = 0xff;%>
+    <%- x %>U,<%
+}%>
+};
+
+const uint8 CanUsedControllerNum = <%- hwcfgs.length %>U;
+const uint8 CanUsedHohNum = <%- hwcfgs.length * 2 %>U;

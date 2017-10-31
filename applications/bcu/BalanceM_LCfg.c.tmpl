@@ -1,0 +1,21 @@
+#include "BalanceM.h"
+
+const BalanceM_ConfigType BalanceM_ConfigInfo = {
+    BALANCEM_BALANCE_PASSTIVE, /**< type */
+    /**< 充电均衡配置参数 */
+    {
+        <%- Charging.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
+        <%- Charging.startVoltage %>U, /**< start_voltage */
+        <%- Charging.minVoltage %>U, /**< voltage_min */
+        <%- Charging.minDiffVoltage %>U, /**< delta_volt_min */
+        <%- Charging.maxDiffVoltage %>U, /**< delta_volt_max */
+    },
+    /**< 静态均衡配置参数 */
+    {
+        <%- Static.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
+        <%- Static.startVoltage %>U, /**< start_voltage */
+        <%- Static.minVoltage %>U, /**< voltage_min */
+        <%- Static.minDiffVoltage %>U, /**< delta_volt_min */
+        <%- Static.maxDiffVoltage %>U, /**< delta_volt_max */
+    }
+};
