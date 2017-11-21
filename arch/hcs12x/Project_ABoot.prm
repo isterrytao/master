@@ -161,8 +161,8 @@ PLACEMENT /* here all predefined and user segments are placed into the SEGMENTS 
 
       XGATE_VECTORS,          /* XGATE vector table is allocated in FLASH */
       XGATE_STRING,           /* XGATE string literals */
-      XGATE_CONST,            /* XGATE constants */
       XGATE_CODE,             /* XGATE functions */
+      XGATE_CONST,            /* XGATE constants */
       XGATE_DATA,             /* data that are accessed by XGATE only */
       XGATE_STACK,
                         INTO  RAM_XGATE_0, RAM_XGATE_1, RAM_XGATE_2, RAM_XGATE_3;

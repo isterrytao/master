@@ -9,5 +9,6 @@ extern const Can_ControllerHwIdType CanControllerRefIdToHwIdMap[CAN_CTRL_MAX];
 extern const Can_ControllerRefIdType CanControllerHwIdToRefIdMap[CAN_CTRL_MAX];
 extern const Can_HardwareObjectType CanHardwareObject[];
 extern const Can_ConfigType CanConfig;
+extern const Can_ConfigType CanConfig_TestMode;
 
 #endif

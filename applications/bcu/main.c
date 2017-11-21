@@ -250,6 +250,15 @@ static void startHvSample(void) {
 extern const Adc_ConfigType AdcConfigTestMode;
 
 static void run_test_mode(void) {
+    Can_DeInit();
+    Can_Init(&CanConfig_TestMode);
+    (void)Can_SetControllerMode(0U, CAN_T_START);
+    if (HardWareIO_GetVersion() != 5U /*0b101*/) {
+        (void)Can_SetControllerMode(1U, CAN_T_START);
+    }
+    (void)Can_SetControllerMode(2U, CAN_T_START);
+    (void)Can_SetControllerMode(3U, CAN_T_START);
+
     HardwareSn_Init();
     Adc_Init(&AdcConfigTestMode);
     HC12XIrq_InstallVector(IRQ_ATD1, ADT1_Isr, 0U);
@@ -353,8 +362,8 @@ static void start_task(void *pdata) {
     Statistic_Init(&extLooper);
     CellDataM_Init();
     if (isNeedStartSampleTask()) {
-        (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, FALSE);
         InternalComm_Init(INTERNALCOMM_TX_TASK_PRI);
+        (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, FALSE);
     }
 
     async_test(&extLooper);

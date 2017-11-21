@@ -176,7 +176,7 @@
 
 #define DCM_SERVICE_31_ENABLED                                      STD_ON
 #define NUM_OF_31_SUB_FUNCTION                                      (2U)
-#define NUMBER_OF_RID                                               (6U)
+#define NUMBER_OF_RID                                               (7U)
 
 #define DCM_SERVICE_34_ENABLED                                      STD_ON
 #define DCM_SERVICE_35_ENABLED                                      STD_ON
@@ -789,6 +789,7 @@ extern void App_StartRoutine0xF002(Dcm_MsgContextType *pMsgContext);
 extern void App_StartRoutine0xF003(Dcm_MsgContextType *pMsgContext);
 extern void App_StartRoutine0xF004(Dcm_MsgContextType *pMsgContext);
 extern void App_StartRoutine0xF006(Dcm_MsgContextType *pMsgContext);
+extern void App_StartRoutine0xF007(Dcm_MsgContextType *pMsgContext);
 
 extern void APP_RequestResultsRoutine0xF006(Dcm_MsgContextType *pMsgContext);
 /* 34 */

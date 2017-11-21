@@ -19,7 +19,7 @@
  *
  * \remarks 此参数最大值不能超过16
  */
-#define BCU_SLAVE_NUM_MAX                   (15U)
+#define BCU_SLAVE_NUM_MAX                   (16U)
 
 /**
  * \brief 单个从机支持的LTC6804个数

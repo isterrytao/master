@@ -26,7 +26,7 @@ Std_ReturnType RA8900_ConfigInterrupt(const RA8900_RtcChipType *chip, Rtc_Interr
 Std_ReturnType RA8900_ClearInterrupt(const RA8900_RtcChipType *chip);
 Std_ReturnType RA8900_SetAlarmTime(const RA8900_RtcChipType *chip, Datetime_SecondType seconds);
 Std_ReturnType RA8900_GetAlarmTime(const RA8900_RtcChipType *chip, Datetime_SecondType *seconds);
-Std_ReturnType Ra8900_ReadTemperature(const RA8900_RtcChipType *chip, uint8 *pTemp);
+Std_ReturnType Ra8900_ReadTemperature(const RA8900_RtcChipType *chip, sint16 *pTemp);
 
 extern const Rtc_OpsType RA8900RtcOps;
 

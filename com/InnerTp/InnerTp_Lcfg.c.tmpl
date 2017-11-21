@@ -74,15 +74,24 @@ const InnerTp_ConfigDataType InnerTpConfigData = {
 <% } %>
 
 
+extern Async_LooperType InternalComm_TxLooper;
 Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode) {
 <% if (UseIslAllInOne) {%>
-    Async_LooperType *looper = NULL;
+    Std_ReturnType ret = E_NOT_OK;
+    Async_LooperType *looper;
     looper = Isl78600Comm_Init(pri, istestmode);
-    return InnerTp_Init(looper, &InnerTpConfigData);
+    if (looper != NULL) {
+        ret = InnerTp_Init(&InternalComm_TxLooper, &InnerTpConfigData);
+    }
+    return ret;
 <% } else if (UseLtcAllInOne) {%>
+    Std_ReturnType ret = E_NOT_OK;
     Async_LooperType *looper = NULL;
     looper = Ltc6804Comm_Init(pri, istestmode);
-    return InnerTp_Init(looper, &InnerTpConfigData);
+    if (looper != NULL) {
+        ret = InnerTp_Init(&InternalComm_TxLooper, &InnerTpConfigData);
+    }
+    return ret;
 <% } else {%>
     (void)pri;
     (void)istestmode;

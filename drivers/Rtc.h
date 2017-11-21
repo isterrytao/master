@@ -26,7 +26,7 @@ typedef Std_ReturnType (*Rtc_ConfigInterruptFuncType)(void *chip, Rtc_InterruptT
 typedef Std_ReturnType (*Rtc_ClearInterruptFuncType)(void *chip);
 typedef Std_ReturnType (*Rtc_SetAlarmTimeFuncType)(void *chip, Datetime_SecondType seconds);
 typedef Std_ReturnType (*Rtc_GetAlarmTimeFuncType)(void *chip, Datetime_SecondType *seconds);
-typedef Std_ReturnType (*Rtc_ReadTemperatureFuncType)(void *chip, uint8 *temp);
+typedef Std_ReturnType (*Rtc_ReadTemperatureFuncType)(void *chip, sint16 *temp);
 
 typedef struct {
     Rtc_InitFuncType Init;

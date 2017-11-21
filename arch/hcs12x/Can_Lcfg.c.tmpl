@@ -12,11 +12,18 @@ for (var hoh of hohs) {%>
 }%>
 };
 
+
 <%var i = 0;
 for (var hwcfg of hwcfgs){%>
+/*
+hwcfg.filter.mask0 = <%- hwcfg.filter.mask0.toString(16) %>
+hwcfg.filter.mask1 = <%- hwcfg.filter.mask1.toString(16) %>
+hwcfg.filter.accept0 = <%- hwcfg.filter.accept0.toString(16) %>
+hwcfg.filter.accept1 = <%- hwcfg.filter.accept1.toString(16) %>
+*/
 static Can_FilterMaskType Can_FilterMaskConfigData_Mask_<%- i %> = {
-    {<%- (hwcfg.mask >> 24) & 0xFF %>U, <%- (hwcfg.mask >> 16) & 0xFF %>U, <%- (hwcfg.mask >> 8) & 0xFF %>U, <%- (hwcfg.mask >> 0) & 0xFF %>U, 0x00U, 0x00U, 0x00U, 0x00U},
-    {<%- (hwcfg.accept >> 24) & 0xFF %>U, <%- (hwcfg.accept >> 16) & 0xFF %>U, <%- (hwcfg.accept >> 8) & 0xFF %>U, <%- (hwcfg.accept >> 0) & 0xFF %>U, 0x00U, 0x00U, 0x00U, 0x00U},
+    {<%- (hwcfg.filter.mask0 >> 24) & 0xFF %>U, <%- (hwcfg.filter.mask0 >> 16) & 0xFF %>U, <%- (hwcfg.filter.mask0 >> 8) & 0xFF %>U, <%- (hwcfg.filter.mask0 >> 0) & 0xFF %>U, <%- (hwcfg.filter.mask1 >> 24) & 0xFF %>U, <%- (hwcfg.filter.mask1 >> 16) & 0xFF %>U, <%- (hwcfg.filter.mask1 >> 8) & 0xFF %>U, <%- (hwcfg.filter.mask1 >> 0) & 0xFF %>U},
+    {<%- (hwcfg.filter.accept0 >> 24) & 0xFF %>U, <%- (hwcfg.filter.accept0 >> 16) & 0xFF %>U, <%- (hwcfg.filter.accept0 >> 8) & 0xFF %>U, <%- (hwcfg.filter.accept0 >> 0) & 0xFF %>U, <%- (hwcfg.filter.accept1 >> 24) & 0xFF %>U, <%- (hwcfg.filter.accept1 >> 16) & 0xFF %>U, <%- (hwcfg.filter.accept1 >> 8) & 0xFF %>U, <%- (hwcfg.filter.accept1 >> 0) & 0xFF %>U},
     CAN_IDAM_2_32BIT,
 }; <%
     i++;
@@ -25,6 +32,7 @@ static Can_FilterMaskType Can_FilterMaskConfigData_Mask_<%- i %> = {
 const Can_HardwareConfigType CanHardwareObjectConfigs[] = {<%
 
 var i = 0;
+var hasOtherBaud = false;
 for (var hwcfg of hwcfgs){%>
     {
         /* CanControllerActivation = */ TRUE,
@@ -40,13 +48,57 @@ for (var hwcfg of hwcfgs){%>
         /* Can_Fifo = */ 0U,
         /* CanFilterMask = */ &Can_FilterMaskConfigData_Mask_<%- i %>,
     }, <%
+    if (hwcfg.baud != 250000) {
+        hasOtherBaud = true;
+    }
     i++;
 }%>
 };
 
+<% if (hasOtherBaud) {%>
+const Can_HardwareConfigType CanHardwareObjectConfigs_TestMode[] = {<%
+
+var i = 0;
+for (var hwcfg of hwcfgs){%>
+    {
+        /* CanControllerActivation = */ TRUE,
+        /* CanControllerBaudRate = */ 250U,
+        /* CanControllerPropSeg = */ 1U,
+        /* CanControllerSeg1 = */ 14U,
+        /* CanControllerSeg2 = */ 7U,
+        /* CanControllerTimeQuanta = */ 0U,
+        /* CanCpuClockRef = */ 0U,
+        /* CanWakeupSourceRef = */ 0U,
+        /* Can_Hoh = */ &CanHardwareObject[<%- hwcfg.hohOffset %>],
+        /* Can_Loopback = */ FALSE,
+        /* Can_Fifo = */ 0U,
+        /* CanFilterMask = */ &Can_FilterMaskConfigData_Mask_<%- i %>,
+    }, <%
+    i++;
+}%>
+};
+<%} else { %>
+#define CanHardwareObjectConfigs_TestMode CanHardwareObjectConfigs
+<%}%>
+
 const Can_ConfigType CanConfig = {
     /* CanHardwareConfig = */
     CanHardwareObjectConfigs,
+    /* CanCallbacks = */
+    {
+        NULL, //CanIf_CancelTxConfirmation,
+        CanIf_RxIndication,
+        CanIf_ControllerBusOff,
+        CanIf_TxConfirmation,
+        NULL,
+        CanIf_ControllerModeIndication,
+        NULL,
+    }
+};
+
+const Can_ConfigType CanConfig_TestMode = {
+    /* CanHardwareConfig = */
+    CanHardwareObjectConfigs_TestMode,
     /* CanCallbacks = */
     {
         NULL, //CanIf_CancelTxConfirmation,

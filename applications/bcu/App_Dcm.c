@@ -40,6 +40,7 @@
 #include "DischargeM.h"
 #include "ChargeM.h"
 #include "GBRtMsg.h"
+#include "SocOcvCalib.h"
 
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "Logger.h"
@@ -5336,6 +5337,14 @@ void APP_RequestResultsRoutine0xF006(Dcm_MsgContextType *pMsgContext) {
     }
     DsdInternal_ProcessingDone(pMsgContext);
 }
+void App_StartRoutine0xF007(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    DsdInternal_RoutineStarted();
+    SocOcvCalib_AutoCalibStart();
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+
 #endif
 
 #include "DcmProgram.h"

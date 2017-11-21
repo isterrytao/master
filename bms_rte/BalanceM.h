@@ -24,7 +24,7 @@
 #include "App_Types.h"
 #include "CellDataM.h"
 #include "Async_Event.h"
-
+#include "Diagnosis.h"
 
 /**
  * \从机均衡状态控制DID
@@ -72,6 +72,8 @@ typedef struct{
     BalanceM_BalanceCategoryType type; /**< 均衡类别 */
     BalanceM_BalanceConfigType chg_bal_config; /**< 充电均衡参数配置 */
     BalanceM_BalanceConfigType stc_bal_config; /**< 静态均衡参数配置 */
+    Diagnosis_LevelType disable_bal_ht_level; /**< 禁止均衡高温等级 */
+    Diagnosis_LevelType disable_bal_lv_level; /**< 禁止均衡低压等级 */
 }BalanceM_ConfigType;
 
 /**
@@ -176,6 +178,11 @@ uint8 BalanceM_IsForceBalance(App_SlaveIdType SlaveNum);
  * \return FALSE-未均衡 TRUE-正在均衡
  */
 boolean BalanceM_IsBalance(void);
+
+/**
+ * \brief 获取当前均衡配置指针
+ */
+const BalanceM_ConfigType* BalanceM_GetConfigPtr(void);
 
 #endif
 

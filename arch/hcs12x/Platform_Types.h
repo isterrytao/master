@@ -13,8 +13,11 @@
 #include <stddef.h>
 #endif
 
+#define DIVISION_DIVIDEND_P(DIVIDEND, DIVISOR)   (((signed long)(DIVIDEND) + ((DIVISOR) / 2L)) / (DIVISOR))
+#define DIVISION_DIVIDEND_N(DIVIDEND, DIVISOR)   (((signed long)(DIVIDEND) - (labs(DIVISOR) / 2L)) / (DIVISOR))
+
 #define DIVISION(DIVIDEND, DIVISOR)     (((unsigned long)(DIVIDEND) + ((DIVISOR) / 2UL)) / (DIVISOR))
-#define DIVISION_S(DIVIDEND, DIVISOR)   (((signed long)(DIVIDEND) + ((DIVISOR) / 2L)) / (DIVISOR))
+#define DIVISION_S(DIVIDEND, DIVISOR)   ((signed long)(DIVIDEND) >= 0 ? DIVISION_DIVIDEND_P(DIVIDEND, DIVISOR) : DIVISION_DIVIDEND_N(DIVIDEND, DIVISOR))
 #define DIVISION_F(DIVIDEND, DIVISOR)   (((double)(DIVIDEND) + ((double)(DIVISOR) / (double)2)) / (double)(DIVISOR))
 #define GAIN(MULTIPLICAND, MULTIPLIER)  ((unsigned long)(MULTIPLICAND) * (unsigned long)(MULTIPLIER))
 

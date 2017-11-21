@@ -105,6 +105,7 @@ void ChargerCommUser_CommStop(void)
         ChargerComm_ClrChargeStatus();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_IDLE);
         Irq_Restore(mask);
+        ChargerCommUser_SetCurrentChargeType(CHARGE_TYPE_NONE);
     }
 }
 

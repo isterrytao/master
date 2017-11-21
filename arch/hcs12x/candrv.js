@@ -14,33 +14,33 @@ module.exports = {
                 ret = (id<<3) & 0xFFE00000;
                 ret |= 0x00180000;
                 ret |= (id<<1) & 0x7FFFE;
-                return [ret, ret];
+                return [ret, ret, 0xFFFFFFFF, 0x00000000];
 
             }
             ret = (id & 0x7FF)<<21;
-            return [ret | 0x0007FFFF, ret];
+            return [0xFFFFFFFF, 0x00000000, ret, ret];
         };
 
         var idFilterReduce = (result, id) => {
             if (!result) {
-                result = {allOne: 0xFFFFFFFF, allZero: 0x00000000};
+                result = [0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000];
             }
 
-
             reg = idToRegisterValue(id);
-            result.allOne = result.allOne & reg[0];
-            result.allZero = result.allZero | reg[1];
+            result[0] = result[0] & reg[0];
+            result[1] = result[1] | reg[1];
+            result[2] = result[2] & reg[2];
+            result[3] = result[3] | reg[3];
             return result;
         };
 
 
         var oneZeroToAcceptMask = (oneZero)=> {
-            var mask = oneZero.allOne ^ oneZero.allZero;
-            var accept = oneZero.allOne & oneZero.allZero;
-
             return {
-                mask: mask,
-                accept: accept,
+                mask0: oneZero[0] ^ oneZero[1],
+                accept0: oneZero[0] & oneZero[1],
+                mask1: (oneZero[2] ^ oneZero[3]) | (0x07 << 16),
+                accept1: oneZero[2] & oneZero[3],
             }
         }
 
@@ -69,8 +69,7 @@ module.exports = {
                 var acceptMask = oneZeroToAcceptMask(oneZero);
                 //console.log("oneZero:" + uint32.toHex(oneZero.allOne)+","+uint32.toHex(oneZero.allZero));
                 //console.log("acceptMask:" + uint32.toHex(acceptMask.accept)+","+uint32.toHex(acceptMask.mask));
-                cfg.accept = acceptMask.accept;
-                cfg.mask = acceptMask.mask;
+                cfg.filter = oneZeroToAcceptMask(oneZero);
             }
 
             if (eol) {

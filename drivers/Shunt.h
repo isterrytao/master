@@ -20,6 +20,7 @@ typedef struct {
     CS5490_DeviceType *cs5490;
     Dio_ChannelType interruptPin;
     void (*newChipTemperatureIndication)(uint8 temp);
+    uint16 averageCurrentSampleTimes; // 采集多少次读取一次平均电流
 } Shunt_ConfigType;
 
 #define SHUNT_DIAGNOSIS_OK                0x00U

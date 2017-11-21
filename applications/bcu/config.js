@@ -41,17 +41,17 @@ module.exports = {
                 {section:"dcchargecurrent", chs:"额定快充电流, 单位A"},
                 {section:"acchargecurrent", chs:"额定慢充电流, 单位A"},
             ],
-            cap: 15.0,
+            cap: 400.0,
             dischargecurrent: 100.0,
             totalvoltage: 115.2,
             dcchargecurrent: 80.0,
             acchargecurrent: 30.0,
         },
-        serialnum: 36,
+        serialnum: 12,
         parallelnum: 5,
-        celltempnum: 16,
-        heattempnum: 1,
-        poletempnum: 1,
+        celltempnum: 8,
+        heattempnum: 0,
+        poletempnum: 0,
         initsoc: 80,
         initsoh: 100,
     },
@@ -67,13 +67,13 @@ module.exports = {
                 {section:"battconn", chs:"电池连接", comments:"电池连接, 只有型号为A60X的时候有效, 长度与型号相关."},
                 {section:"tempconn", chs:"温感连接", comments:"只有型号为A60X的时候有效, 长度与型号相关; C标识电池单体温感,P表示电池极柱温感,H表示加热片温感,0表示没有链接温感."},
             ],
-            type:"C601",
+            type:"A651",
             battconn:"111000111000_111000111000",
             tempconn:"CCCC_CCCC",
         },
 
         bmus:[
-            {
+            /*{
                 notes:[
                     {section:"type", chs:"BMU类型", comments:'可选:"M600", "M601", "M602", "M603".'},
                     {section:"battconn", chs:"电池连接", comments:"电池连接, 长度与型号相关."},
@@ -82,7 +82,7 @@ module.exports = {
                 type:"M601",
                 battconn:"111111111111_111111111111_111111111111",
                 tempconn:"HCCCCP_CCCC_CCCC_CCCC"
-            }/*,{
+            },{
                 type:"M601",
                 battconn:"110000110000_110000110000_110000110000",
                 tempconn:"00C000_CC00_CC00_C0CC"
@@ -207,7 +207,7 @@ module.exports = {
         // 主回路电流采集
         main: {
             // 可选 "hall1", "hall2", "shunt",
-            channel: "hall1", //注：若使用分流器，需要关闭电流的所有上电自检。
+            channel: "shunt", //注：若使用分流器，需要关闭电流的所有上电自检。
             // 可选 "hall1", "hall2", "shunt", "none", 但是不能与channel相同,
             redundant: "none"
 
@@ -225,8 +225,8 @@ module.exports = {
         {name: "预充", def: "PRECHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 2000,  auxContactDio: "", ioLevelOfAuxContactWhenOn: "HIGH"},
         {name: "快充正", def: "POSITIVE_DC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV3", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000},
         {name: "慢充正", def: "POSITIVE_AC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS4", isSafeToOff: "NULL", hv: "HVE1", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000},
-        {name: "主负", def: "NEGTIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5", isSafeToOff: "NULL", hv: "HVE2", isPositive:false, totalDecPercent: 20, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
-        {name: "加热", def: "HEATER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
+        // {name: "主负", def: "NEGTIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5", isSafeToOff: "NULL", hv: "HVE2", isPositive:false, totalDecPercent: 20, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
+        // {name: "加热", def: "HEATER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
         // {name: "预留", def: "RESERVE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS7"},
         //{name: "放电正", def: "POSITIVE_DISCHRGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS1", hv: "BPOS"},
         //{name: "放电负", def: "NEGTIVE_DISCHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5"},
@@ -279,7 +279,7 @@ module.exports = {
     },
 
     Ntc: {
-        //可选 "Shiheng_CWF4B_103F_3435B":时恒10K; "Soarwhale_10K3435B":由甲申田10K; "Kemit_CWF110KF3435":科敏10K; "Yonggui_YG691_51_00_50":永贵10K; "Shiheng_CWF4B_104F_3950":时恒100K;
+        //可选 "Shiheng_CWF4B_103F_3435B":时恒10K; "Soarwhale_10K3435B":由甲申田10K; "Kemit_CWF110KF3435":科敏10K; "Kemit_CWF110KF4150":科敏10K; Yonggui_YG691_51_00_50":永贵10K; "Shiheng_CWF4B_104F_3950":时恒100K; "MTG2_420F103H":MTG2_10K
         cellTempType: "Shiheng_CWF4B_103F_3435B", // 电池温感型号
         chgSckTempType:'Shiheng_CWF4B_103F_3435B', // 充电插座温感信号
         chgSckTempMap: {

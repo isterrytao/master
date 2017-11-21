@@ -384,10 +384,19 @@ void VcuComm_GetMsgData0x1804FFF4Cbk(uint8 *Buffer, uint16 *Length)
         temp |= ((uint16)1U << 1);
     }
 #endif
+#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+    if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_ACTUAL_ON)
+    {
+        temp |= ((uint16)1U << 1);
+    }
+#endif
     /**< 预充继电器状态 */
-    /*if (RelayM_GetActualStatus(RELAYM_FN_PRECHARGE) == RELAYM_ACTUAL_ON)
-        temp |= (1 << 2);
-    */
+#ifdef RELAYM_FN_PRECHARGE
+    if (RelayM_GetActualStatus(RELAYM_FN_PRECHARGE) == RELAYM_ACTUAL_ON)
+    {
+        temp |= ((uint16)1U << 2);
+    }
+#endif
     /**< 充电连接状态 */
     if (CHARGECONNECTM_IS_CONNECT())
     {
@@ -395,9 +404,10 @@ void VcuComm_GetMsgData0x1804FFF4Cbk(uint8 *Buffer, uint16 *Length)
         /**< 充电状态 */
         if (ChargerComm_GetChargingStatus() == TRUE)
         {
-#ifdef RELAYM_FN_POSITIVE_MAIN
-            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_MAIN) == RELAYM_ACTUAL_ON)
-#endif
+            /**< 总电流 */
+            uint16 current = CurrentM_GetMainDiagChgCurrent();
+            if (CurrentM_DiagIsValidCurrent(current) &&
+                current >= CURRENT_100MA_FROM_A(2U))
             {
                 temp |= ((uint16)1U << 4);
             }

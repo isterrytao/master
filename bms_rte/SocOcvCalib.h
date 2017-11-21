@@ -49,6 +49,7 @@ typedef struct{
     uint8 powerOnFlag; /**< 上电标志 */
     uint8 currentLargeFlag; /**< 大电流标志 */
     uint8 dateTime; /**< 时间 */
+    boolean isAutoCalib; /**< 是否自动校正 */
 }SocOcvCalib_InnerDataType;
 
 extern const SocOcvCalib_ConfigType SocOcvCalib_ConfigInfo;
@@ -60,6 +61,11 @@ extern const App_VoltageType SocOcvCalib_VoltageBuffer[];
  * \brief 模块初始化
  */
 void SocOcvCalib_Init(void);
+
+/**
+ * \brief 启动自动OCV校正
+ */
+void SocOcvCalib_AutoCalibStart(void);
 
 /**
  * \brief OCV-SOC校准检查函数
