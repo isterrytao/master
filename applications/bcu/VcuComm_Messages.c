@@ -12,6 +12,7 @@
 #include "App_Types.h"
 #include "Cpu.h"
 #include "Det.h"
+#include "VcuComm_Types.h"
 #include "VcuComm_Messages.h"
 #include "CurrentM.h"
 #include "Statistic.h"
@@ -762,7 +763,7 @@ void VcuComm_ReceiveCbk(uint8 *Buffer, uint16 Length)
     VALIDATE_PTR(Buffer, VCUCOMM_MESSAGES_API_ID_ReceiveCbk);
 
     VcuComm_SetCommunicationStatus(TRUE);
-    VcuComm_ClrCommAbortMessageFlag(VCUCOMM_RX_IPDU_MSG_0x12345678);
+    VcuComm_ClrCommAbortMessageFlag((uint16)VCUCOMM_RX_IPDU_MSG_0x12345678);
     (void)Buffer;
     (void)Length;
 
@@ -776,7 +777,7 @@ void VcuComm_RecTimeoutCbk(void)
 {
     VcuComm_MsgData.PowerCommand = VCUCOMM_POWER_OFF;
     VcuComm_SetCommunicationStatus(FALSE);
-    VcuComm_SetCommAbortMessageFlag(VCUCOMM_RX_IPDU_MSG_0x12345678);
+    VcuComm_SetCommAbortMessageFlag((uint16)VCUCOMM_RX_IPDU_MSG_0x12345678);
 }
 
 
@@ -786,7 +787,7 @@ Std_ReturnType VcuComm_SendConditionCheck(void)
 {
     Std_ReturnType res = E_NOT_OK;
 
-    if (VcuComm_GetCurrentRecStage() == VCUCOMM_STAGE_STAGE1)
+    if (VcuComm_GetCurrentRecStage() == (uint16)VCUCOMM_STAGE_STAGE1)
     {
         res = E_OK;
     }
@@ -796,10 +797,10 @@ Std_ReturnType VcuComm_SendConditionCheck(void)
 Std_ReturnType VcuComm_RecConditionCheck(void)
 {
     Std_ReturnType res = E_NOT_OK;
-    VcuComm_StageType stage;
+    uint16 stage;
 
     stage = VcuComm_GetCurrentRecStage();
-    if (stage == VCUCOMM_STAGE_STAGE1)
+    if (stage == (uint16)VCUCOMM_STAGE_STAGE1)
     {
         res = E_OK;
     }

@@ -24,6 +24,7 @@ typedef uint8 Isl_ReturnType;
 #define ISL_E_REG                 4U
 #define ISL_E_BUSY                5U
 #define ISL_E_UNREADY             6U
+#define ISL_E_COMM                7U
 #else
 typedef enum {
     kIslScanIndex_Voltage,

@@ -19,7 +19,6 @@
 #ifndef VCUCOMM_H_
 #define VCUCOMM_H_
 
-#include "VcuComm_Types.h"
 #include "ComStack_Types.h"
 #include "Async_Looper.h"
 #include "Async_Event.h"
@@ -95,7 +94,7 @@ typedef void (*VcuCommRecTimeoutCbk)(void);
  * \brief 整车通信发送Ipdu配置类型定义
  */
 typedef struct{
-    VcuComm_IPduType IPdu; /**< 发送IPdu */
+    uint16 IPdu; /**< 发送IPdu */
     uint16 Length; /**< 发送数据长度 */
     uint16 Cycle; /**< 数据发送周期 */
     CharerCommSendCondCheckFunc CondFunc; /**< 发送条件检查函数 */
@@ -106,7 +105,7 @@ typedef struct{
  * \brief 整车通信接收Ipdu信息类型定义
  */
 typedef struct{
-    VcuComm_IPduType IPdu; /**< 接收IPdu */
+    uint16 IPdu; /**< 接收IPdu */
     uint16 Length; /**< 数据长度 */
     uint16 Timeout; /**< 超时时间 */
     VcuCommGetRecIPduTimeout TimeoutFunc; /**< 获取IPdu超时时间回调函数，当此函数有效时，Timeout配置参数无效 */
@@ -147,7 +146,7 @@ typedef struct{
  * \brief 整车通信发送数据信息类型定义
  */
 typedef struct{
-    VcuComm_IPduType IPdu; /**< 当前IPdu */
+    uint16 IPdu; /**< 当前IPdu */
     const VcuComm_SendIPduCfgType *Cfg; /**< IPdu配置 */
     uint8 *Buffer; /**< 数据缓存 */
     uint16 Length; /**< 数据发送长度 */
@@ -162,7 +161,7 @@ typedef struct{
  * \brief 整车通信接收数据信息类型定义
  */
 typedef struct{
-    VcuComm_IPduType IPdu; /**< 当前IPdu */
+    uint16 IPdu; /**< 当前IPdu */
     uint8 *Buffer; /**< 数据缓存 */
     uint16 Length; /**< 接收数据长度 */
     uint16 AvailableSize; /**< 可用数据长度 */
@@ -195,8 +194,8 @@ typedef struct{
 
 typedef struct{
     boolean StartFlag; /**< 启动标志 */
-    VcuComm_StageType CurrentRecStage; /**< 接收阶段 */
-    VcuComm_StageType NewRecStage; /**< 用于等待阶段切换完成 */
+    uint16 CurrentRecStage; /**< 接收阶段 */
+    uint16 NewRecStage; /**< 用于等待阶段切换完成 */
     VcuComm_SendHandleType SendCmdtHandle; /**< Cmdt发送句柄 */
     VcuComm_SendHandleType SendDirectHandle; /**< Direct发送句柄 */
     VcuComm_RecHandleType RecCmdtHandle; /**< Cmdt接收句柄 */
@@ -214,6 +213,12 @@ typedef struct{
 extern const uint8 VcuComm_SendIPduNum;
 extern const VcuComm_SendIPduCfgType VcuComm_IPduSendConfigInfo[];
 extern const VcuComm_RecIPduCfgType VcuComm_IPduRecConfigInfo[];
+extern const uint16 VcuComm_RxIPduStart;
+extern const uint16 VcuComm_RxIPduStop;
+extern const uint16 VcuComm_StageIdle;
+extern const uint16 VcuComm_StageStart;
+extern const uint16 VcuComm_StageStop;
+extern const uint16 VcuComm_StageMax;
 
 /**
  * \brief 整车通信初始化
@@ -262,14 +267,14 @@ uint8 VcuComm_GetCommunicationStatus(void);
  *
  * \param IPdu 接收报文IPdu值
  */
-void VcuComm_SetCommAbortMessageFlag(VcuComm_IPduType IPdu);
+void VcuComm_SetCommAbortMessageFlag(uint16 IPdu);
 
 /**
  * \brief 清除IPdu接收报文通信超时标志
  *
  * \param IPdu 接收报文IPdu值
  */
-void VcuComm_ClrCommAbortMessageFlag(VcuComm_IPduType IPdu);
+void VcuComm_ClrCommAbortMessageFlag(uint16 IPdu);
 
 /**
  * \brief 清除整车状态信息
@@ -321,7 +326,7 @@ VcuComm_SendHandleType* VcuComm_GetSendHandle(uint16 Length);
  * \param Length 待接收数据长度
  * \return 接收句柄
  */
-VcuComm_RecHandleType* VcuComm_GetFreeRecHandle(VcuComm_IPduType IPdu, uint16 Length);
+VcuComm_RecHandleType* VcuComm_GetFreeRecHandle(uint16 IPdu, uint16 Length);
 
 /**
  * \brief 整车通信初始化发送句柄
@@ -340,7 +345,7 @@ void VcuComm_InitSendHandle(VcuComm_SendHandleType *handle, const VcuComm_SendIP
  * \param IPdu 整车通信IPdu编号
  * \return 发送句柄
  */
-VcuComm_SendHandleType* VcuComm_GetIPduSendHandle(VcuComm_IPduType IPdu);
+VcuComm_SendHandleType* VcuComm_GetIPduSendHandle(uint16 IPdu);
 
 /**
  * \brief 获取与接收IPdu相同的接收句柄
@@ -349,7 +354,7 @@ VcuComm_SendHandleType* VcuComm_GetIPduSendHandle(VcuComm_IPduType IPdu);
  * \param IPdu 整车通信IPdu编号
  * \return 接收句柄
  */
-VcuComm_RecHandleType* VcuComm_GetIPduRecHandle(VcuComm_IPduType IPdu);
+VcuComm_RecHandleType* VcuComm_GetIPduRecHandle(uint16 IPdu);
 
 /**
  * \brief 根据IPdu编号发送对应的IPdu数据
@@ -358,7 +363,7 @@ VcuComm_RecHandleType* VcuComm_GetIPduRecHandle(VcuComm_IPduType IPdu);
  * \param send_type 0-新IPdu 1-缓存IPdu
  * \return E_OK: 发送成功 E_NOT_OK: 发送失败
  */
-Std_ReturnType VcuComm_SendIPduData(VcuComm_IPduType IPdu, uint8 send_type);
+Std_ReturnType VcuComm_SendIPduData(uint16 IPdu, uint8 send_type);
 
 /**
  * \brief 重新发送IPdu对应的数据
@@ -422,7 +427,7 @@ void VcuComm_ResetRecBuffer(VcuComm_RecHandleType *handle);
  * \param stage 接收阶段
  * \return 配置信息 返回NULL表示无可用配置
  */
-const VcuComm_RecIPduCfgType* VcuComm_GetRecStageCfg(VcuComm_StageType stage);
+const VcuComm_RecIPduCfgType* VcuComm_GetRecStageCfg(uint16 stage);
 
 /**
  * \brief 从当前接收阶段查找IPdu的配置信息
@@ -430,7 +435,7 @@ const VcuComm_RecIPduCfgType* VcuComm_GetRecStageCfg(VcuComm_StageType stage);
  * \param IPdu 整车通信IPdu编号
  * \return IPdu相关信息 返回NULL表示无可用信息
  */
-const VcuComm_RecIPduInfoType* VcuComm_GetRecIPduInfo(VcuComm_IPduType IPdu);
+const VcuComm_RecIPduInfoType* VcuComm_GetRecIPduInfo(uint16 IPdu);
 
 /**
  * \brief 整车通信设置接收状态为空闲阶段
@@ -444,14 +449,14 @@ void VcuComm_SetRecIdleStage(uint8 channel);
  * \param channel 通道号
  * \param currentStage 接收阶段
  */
-void VcuComm_StartRecStageTimeout(uint8 channel, VcuComm_StageType currentStage);
+void VcuComm_StartRecStageTimeout(uint8 channel, uint16 currentStage);
 
 /**
  * \brief 整车通信触发接收阶段切换事件
  *
  * \param stage 新接收阶段
  */
-void VcuComm_TriggerNewRecStage(VcuComm_StageType stage);
+void VcuComm_TriggerNewRecStage(uint16 stage);
 
 
 /**
@@ -473,21 +478,21 @@ VcuComm_SendHandleType* VcuComm_GetSendDirectHandle(void);
  *
  * \param stage 接收阶段
  */
-void VcuComm_SetCurrentRecStage(VcuComm_StageType stage);
+void VcuComm_SetCurrentRecStage(uint16 stage);
 
 /**
  * \brief 获取整车通信正在进入的接收阶段
  *
  * \return 接收阶段
  */
-VcuComm_StageType VcuComm_GetTriggerNewRecStage(void);
+uint16 VcuComm_GetTriggerNewRecStage(void);
 
 /**
  * \brief 设置当前整车需要进入的接收阶段
  *
  * \param stage 接收阶段
  */
-void VcuComm_SetTriggerNewRecStage(VcuComm_StageType stage);
+void VcuComm_SetTriggerNewRecStage(uint16 stage);
 
 /**
  * \brief 根据IPdu编号获取对应的异步接收超时事件
@@ -495,14 +500,14 @@ void VcuComm_SetTriggerNewRecStage(VcuComm_StageType stage);
  * \param IPdu IPdu编号
  * \return 异步超时事件指针 NULL表示为空
  */
-VcuComm_RecAsyncEventType* VcuComm_GetRecAsyncEvent(VcuComm_IPduType IPdu);
+VcuComm_RecAsyncEventType* VcuComm_GetRecAsyncEvent(uint16 IPdu);
 
 /**
  * \brief 获取当前整车通信接收阶段
  *
  * \return 接收阶段
  */
-VcuComm_StageType VcuComm_GetCurrentRecStage(void);
+uint16 VcuComm_GetCurrentRecStage(void);
 
 /**
  * \brief 获取接收异步事件指针

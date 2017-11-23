@@ -23,7 +23,7 @@
  * \brief 整车通信IPdu类型定义
  * \notes 发送报文优先
  */
-typedef enum{
+typedef enum _VcuComm_IPduType{
     //TX IPDU
     VCUCOMM_TX_IPDU_START = 0,
     VCUCOMM_TX_IPDU_MSG_0x1801FFF4 = VCUCOMM_TX_IPDU_START, /**< 整车通信发送0x1801FFF4报文IPdu */
@@ -53,7 +53,7 @@ typedef enum{
 }VcuComm_IPduType;
 
 
-typedef enum{
+typedef enum _VcuComm_StageType{
     VCUCOMM_STAGE_IDLE = 0, /**< 空闲状态 */
 
     VCUCOMM_STAGE_START = 1,
@@ -62,7 +62,6 @@ typedef enum{
 
     VCUCOMM_STAGE_MAX = 2
 }VcuComm_StageType;
-
 
 
 #endif
