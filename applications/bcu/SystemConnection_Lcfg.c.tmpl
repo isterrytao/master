@@ -2,6 +2,9 @@
 #include "SystemConnection_Lcfg.h"
 #include "CellDataM.h"
 
+/*lint -save*/
+/*lint -e793*/
+
 #pragma push
 #pragma DATA_SEG __GPAGE_SEG XGATE_DATA
 #pragma CONST_SEG __GPAGE_SEG XGATE_CONST
@@ -95,6 +98,8 @@ const uint8 CellDataM_PoleTemperatureLogicIdToPhysicalIdMap[SYSTEM_POLE_TEMP_NUM
 #else
 const uint8 CellDataM_PoleTemperatureLogicIdToPhysicalIdMap[1];
 #endif
+
+/*lint -restore*/
 
 /**
  * \brief 电池数据管理逻辑单体电压缓存定义

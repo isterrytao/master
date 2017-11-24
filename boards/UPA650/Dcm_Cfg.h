@@ -197,7 +197,7 @@
 /* Related to diagnostic buffer */
 #define DCM_PAGEDBUFFER_ENABLED                                     STD_OFF
 #define UDS_FUNC_BUFFER_SIZE                                        (8U)
-#define UDS_PHYS_BUFFER_SIZE                                        (600U)
+#define UDS_PHYS_BUFFER_SIZE                                        (820U)
 #define NEG_RESP_BUFFER_SIZE                                        (3U)
 #if(DCM_SERVICE_2A_ENABLED == STD_ON)
 #define PERODIC_RESP_BUFFER_SIZE                                    (8U)

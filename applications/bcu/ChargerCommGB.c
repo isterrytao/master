@@ -872,6 +872,8 @@ Std_ReturnType ChargerCommGB_BMVSendConditionCheck(void)
 
 void ChargerCommGB_GetBMVDataCbk(uint8 *Buffer, uint16 *Length)
 {
+    imask_t mask;
+    uint16 GroupNum, GroupMax;
     uint16 index = 0U;
     uint16 i, Num;
     App_VoltageType Volt;
@@ -879,14 +881,44 @@ void ChargerCommGB_GetBMVDataCbk(uint8 *Buffer, uint16 *Length)
     VALIDATE_PTR(Buffer, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
     VALIDATE_PTR(Length, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
 
+    Irq_Save(mask);
+    GroupNum = ChargerCommGB_innerData.cellVoltGroupNum;
+    Irq_Restore(mask);
+    GroupMax = (SystemConnection_ConfigInfo.voltageNum + 255U) / 256U;
+    if (GroupMax > 0x0FU)
+    {
+        GroupMax = 0x0FU;
+    }
+    if (GroupNum >= GroupMax)
+    {
+        GroupNum = 0U;
+    }
     Num = CellDataM_BmuVoltageLogicIdMax[SystemConnection_ConfigInfo.SlaveNum - 1U];
-    for (i = 0U; i < Num; i++)
+    if (Num >= (GroupNum + 1U) * 256U)
+    {
+        Num = (GroupNum + 1U) * 256U;
+    }
+
+    for (i = GroupNum * 256U; i < Num; i++)
     {
         Volt = CellDataM_GetVoltage(i);
         Volt = VOLT_4_DISPLAY(Volt);
         Volt = (uint16)MV_TO_10MV(Volt);
+        if (Volt > CHARGERCOMMGB_CELL_VOLT_MAX)
+        {
+            Volt = CHARGERCOMMGB_CELL_VOLT_MAX;
+        }
+        Volt |= (uint16)((uint16)GroupNum << 12);
         WRITE_LT_UINT16(Buffer, index, Volt);
     }
+    GroupNum++;
+    if (GroupNum >= GroupMax)
+    {
+        GroupNum = 0U;
+    }
+    Irq_Save(mask);
+    ChargerCommGB_innerData.cellVoltGroupNum = (uint8)GroupNum;
+    Irq_Restore(mask);
 
     *Length = index;
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
@@ -1103,6 +1135,7 @@ static void ChargerCommGB_ClearChargerStatusCarefully(void)
     ChargerCommGB_innerData.bcsChargeStopSendFlag = FALSE;
     ChargerCommGB_innerData.bstSendCnt = 0U;
     ChargerCommGB_innerData.bemCurDecreaseLastTick = 0U;
+    ChargerCommGB_innerData.cellVoltGroupNum = 0U;
     (void)memset(ChargerCommGB_innerData.chargerTimeoutReason, 0, CHARGERCOMMGB_CHG_TIMEOUT_BYTE_NUM);
     ChargerComm_SetChargingStatus(FALSE);
     ChargerComm_SetChargerOutputHV(0U);

@@ -195,7 +195,7 @@ static void fillCellVoltage(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.cellVoltages.current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     msgHeader->dataHeader.cellVoltages.totalCellNum = SYSTEM_BATTERY_CELL_NUM;
     msgHeader->dataHeader.cellVoltages.startCellOfThisFrame = 1U;
-    msgHeader->dataHeader.cellVoltages.cellNumOfThisFrame = SYSTEM_BATTERY_CELL_NUM;
+    msgHeader->dataHeader.cellVoltages.cellNumOfThisFrame = (uint8)(SYSTEM_BATTERY_CELL_NUM & 0xFFU);
 }
 
 static const GB32960_CopySegmentType copySegmentsCellVoltage[] = {

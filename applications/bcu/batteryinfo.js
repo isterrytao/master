@@ -25,10 +25,13 @@ module.exports = {
             }
         }
 
-        if (cfg.serialnum > 250) {
-            throw "Dose not support serialnum > 250";
+        if (cfg.serialnum > 400) {
+            throw "Dose not support serialnum > 400";
         }
 
+        if (cfg.celltempnum + cfg.heattempnum + cfg.poletempnum > 200) {
+            throw "Dose not support celltempnum + heattempnum + poletempnum > 200";
+        }
 
         var mdata = {
             batttype: type,

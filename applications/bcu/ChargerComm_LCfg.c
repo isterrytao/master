@@ -16,6 +16,7 @@
 #include "ChargerCommUser_Messages.h"
 #include "PduR_Types.h"
 #include "ChargerComm_LCfg.h"
+#include "SystemConnection_Lcfg.h"
 
 const uint8 ChargerComm_SendIPduNum = 14U; //todo
 const uint8 ChargerComm_RecIPduNum = 10U; //todo
@@ -72,7 +73,11 @@ const ChargerComm_SendIPduCfgType ChargerComm_IPduSendConfigInfo[] = {
     {
         PDUR_CHARGERCOMM_TX_PDUID_GB_BMV, /**< IPdu */
         CHARGERCOMM_DATA_LENGTH_NOT_FIX, /**< Length */
+#if SYSTEM_BATTERY_CELL_NUM < 256U
         10000U, /**< Cycle */
+#else
+        10000U / ((SYSTEM_BATTERY_CELL_NUM + 255U) / 256U), /**< Cycle */
+#endif
         ChargerCommGB_BMVSendConditionCheck, /**< CondFunc */
         ChargerCommGB_GetBMVDataCbk, /**< Func */
     },

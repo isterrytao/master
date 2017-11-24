@@ -75,6 +75,7 @@
 #define CHARGERCOMMGB_RELAY_ADHESION_CHECK_TIMEOUT  3000U //ms/bit 充电继电器粘连检测超时时间
 
 #define CHARGERCOMMGB_CURRENT_OFFSET                CURRENT_100MA_FROM_A(400U) // 0.1A/bit国标电流偏移量
+#define CHARGERCOMMGB_CELL_VOLT_MAX                 2400U //0.01V/bit 单体电压最大值
 
 #define CHARGERCOMMGB_CHG_TIMEOUT_BYTE_NUM      4U
 #define CHARGERCOMMGB_BMS_TIMEOUT_BYTE_NUM      4U
@@ -168,6 +169,7 @@ typedef struct{
     uint32 bemCurDecreaseLastTick; /**< 通信超时阶段电流下降计时 */
     uint8 chargerTimeoutReason[CHARGERCOMMGB_CHG_TIMEOUT_BYTE_NUM]; /**< 充电机通信中断原因 */
     Async_EventType recTimeoutEvent[CHARGERCOMMGB_RECEIVE_TIMEOUT_EVENT_NUM]; /**< 接收超时事件个数 */
+    uint8 cellVoltGroupNum; /**< 单体电压组号 */
 }ChargerCommGB_InnerDataType;
 
 /**
