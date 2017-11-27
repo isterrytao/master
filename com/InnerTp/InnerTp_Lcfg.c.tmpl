@@ -86,7 +86,7 @@ Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode) {
     return ret;
 <% } else if (UseLtcAllInOne) {%>
     Std_ReturnType ret = E_NOT_OK;
-    Async_LooperType *looper = NULL;
+    Async_LooperType *looper;
     looper = Ltc6804Comm_Init(pri, istestmode);
     if (looper != NULL) {
         ret = InnerTp_Init(&InternalComm_TxLooper, &InnerTpConfigData);
