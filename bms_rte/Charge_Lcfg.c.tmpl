@@ -69,6 +69,13 @@ const ChargeConnectM_ConfigType ChargeConnectM_ConfigInfo = {
         900U, /**< FreqMin: 频率最小值 */
         1100U, /**< FreqMax: 频率最大值 */
     },
+    // CurConnectPara 充电电流连接参数
+    {
+        CURRENT_S_100MA_FROM_A(2), /**< cur_min：最小充电连接电流 */
+        CURRENT_S_100MA_FROM_A(-2), /**< rel_cur_min：最小充电连接释放电流 */
+        5000UL, /**< connect_delay：连接延时 */
+        3000UL, /**< unconnect_delay：连接释放延时 */
+    },
 };
 
 

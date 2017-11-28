@@ -145,6 +145,13 @@ typedef struct{
     ChargeConnectM_DinParaType DinPara;
 }ChargeConnectM_CommonConfigType;
 
+typedef struct{
+    Current_CurrentType cur_min; /**< 最小充电连接电流 */
+    Current_CurrentType rel_cur_min; /**< 最小充电连接释放电流 */
+    uint32 connect_delay; /**< 连接延时 */
+    uint32 unconnect_delay; /**< 连接释放延时 */
+}ChargeConnectM_CurrentConnectParaType;
+
 /**
  * \brief 充电连接配置类型定义
  */
@@ -154,6 +161,7 @@ typedef struct{
     ChargeConnectM_ValueAdcToPhyCalculateParamType AdcPara[CHARGECONNECTM_ADC_CHANNEL_MAX];
     ChargeConnectM_GBResParaType ResistancePara; /**< 国标电阻参数 */
     ChargeConnectM_GBCpParaType CpPara; /**< 国标CP参数 */
+    ChargeConnectM_CurrentConnectParaType CurConnectPara; /**< 充电电流连接参数 */
 }ChargeConnectM_ConfigType;
 
 

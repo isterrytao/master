@@ -26,6 +26,10 @@ extern Diagnosis_LevelsStatusType Diagnosis_LevelsStatus[];
 /*lint -save*/
 /*lint -e778*/
 
+Diagnosis_CommonConfigType Diagnosis_CommonConfig = {
+    FALSE, /**< AlarmIsRelForModeChg: 连接模式变化是否允许报警释放 */
+};
+
 <%for (var cfg of infoconfig) {%>
 /* <%- cfg.name %> */<%
     if (!cfg.events || cfg.events.length == 0) {%>
