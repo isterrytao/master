@@ -10,10 +10,12 @@ typedef struct {
     const uint16 *tabV4096;
 } NTC_ConfigDataType;
 
-extern const NTC_ConfigDataType *const NTCConfigData;
+extern const NTC_ConfigDataType *const CellNTCConfigData;
 extern const NTC_ConfigDataType *const ChgSckNTCConfigData;
+extern const NTC_ConfigDataType *const OnboardNTCConfigData;
 
-uint8 NTC_FromRef4096(uint16 vol);
+uint8 NTC_CellFromRef4096(uint16 vol);
 uint8 NTC_ChgSckTemperatureFromTAB(uint16 vol);
+uint8 NTC_OnboardFromRef4096(uint16 vol);
 
 #endif

@@ -54,6 +54,7 @@ function checkBmuConnection(bmu) {
 
 function processConn(dat, conn, tstr) {
     var sum = dat.LogicIdMax.length == 0 ? 0: dat.LogicIdMax.slice(-1)[0];
+    dat.CellsSetup = conn.split('_').map(x=>x.split('').reverse().join(''))
     dat.LogicIdMax.push(conn.countOfChar(tstr) + sum);
     dat.BoardLogicIdMax = dat.BoardLogicIdMax.concat(conn.split('_').map(x=>x.countOfChar(tstr).toString() + 'U'));
     dat.LogicToPhyIdMap = dat.LogicToPhyIdMap.concat(conn.replace(/_/g, '').match(/./g).map((x, i)=> x==tstr ? ""+i+"U," : "/*"+i+"U,*/"));

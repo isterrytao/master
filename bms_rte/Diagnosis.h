@@ -279,7 +279,7 @@ typedef struct{
 }Diagnosis_CondAsyncEventType;
 
 typedef struct{
-    boolean AlarmIsRelForModeChg; /**< 连接模式变化是否允许报警释放 */
+    boolean IsAutoRelForModeChg; /**< 连接模式变化是否允许报警释放 */
 }Diagnosis_CommonConfigType;
 
 extern const Diagnosis_DiagInfoType Diagnosis_DiagInfoItem[DIAGNOSIS_ITEM_DEFAULT_NUM+1U];
