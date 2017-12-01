@@ -278,15 +278,10 @@ typedef struct{
     Diagnosis_Action actionFunc; /**< 动作函数 */
 }Diagnosis_CondAsyncEventType;
 
-typedef struct{
-    boolean IsAutoRelForModeChg; /**< 连接模式变化是否允许报警释放 */
-}Diagnosis_CommonConfigType;
-
 extern const Diagnosis_DiagInfoType Diagnosis_DiagInfoItem[DIAGNOSIS_ITEM_DEFAULT_NUM+1U];
 extern const Diagnosis_DiagInfoType Diagnosis_DiagInfoConfig[];
 extern const Diagnosis_StartDiagInfoType Diagnosis_StartDiagInfo[];
 extern const Diagnosis_ParaType Diagnosis_ChgSckTmpHTDiagConfig[];
-extern const Diagnosis_CommonConfigType Diagnosis_CommonConfig;
 
 /**
  * \brief 诊断模块初始化

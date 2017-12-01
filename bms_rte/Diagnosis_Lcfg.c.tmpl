@@ -26,10 +26,6 @@ extern Diagnosis_LevelsStatusType Diagnosis_LevelsStatus[];
 /*lint -save*/
 /*lint -e778*/
 
-const Diagnosis_CommonConfigType Diagnosis_CommonConfig = {
-    FALSE, /**< IsAutoRelForModeChg: 充放电模式变化: TRUE-报警自动释放 FALSE-通过配置参数有效性确定是否释放 */
-};
-
 <%for (var cfg of infoconfig) {%>
 /* <%- cfg.name %> */<%
     if (!cfg.events || cfg.events.length == 0) {%>

@@ -30,7 +30,7 @@
  * \brief 充电是否已连接
  * \details 交流或直流连接成功均返回已连接
  */
-#define CHARGECONNECTM_IS_CONNECT()     (ChargeConnectM_GetConnectType() != CHARGE_TYPE_NONE)
+#define CHARGECONNECTM_IS_CONNECT()     (ChargeConnectM_GetConnectType() != CHARGE_TYPE_NONE && ChargeConnectM_GetConnectType() != CHARGE_TYPE_INVALID)
 
 #define CHARGECONNECTM_GB_CC100_IS_CONNECT(RES)     ((RES) >= ChargeConnectM_ConfigInfo.ResistancePara.CCRes100Min && (RES) <= ChargeConnectM_ConfigInfo.ResistancePara.CCRes100Max)
 #define CHARGECONNECTM_GB_CC220_IS_CONNECT(RES)     ((RES) >= ChargeConnectM_ConfigInfo.ResistancePara.CCRes220Min && (RES) <= ChargeConnectM_ConfigInfo.ResistancePara.CCRes220Max)
