@@ -19,7 +19,7 @@ modules = [
     {name: "ParameterM", dir: "bms_rte", js: "parameterm.js"},
     {name: "CurrentM", dir: "bms_rte", js: "currentm.js"},
     {name: "RelayM", dir: "bms_rte", js: "relaym.js"},
-    {name: "Charge", dir: "bms_rte", js: "charge.js"},
+    {name: "Charge", dir: "applications/bcu", js: "charge.js"},
     {name: "RuntimeM", dir: "bms_rte", js: "runtimem.js"},
     {name: "Ntc", dir: "bms_rte", js: "ntc.js"},
 ];

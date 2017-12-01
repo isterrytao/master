@@ -73,8 +73,9 @@ const InnerTp_ConfigDataType InnerTpConfigData = {
 
 <% } %>
 
-
+<% if (UseIslAllInOne || UseLtcAllInOne) {%>
 extern Async_LooperType InternalComm_TxLooper;
+<% } %>
 Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode) {
 <% if (UseIslAllInOne) {%>
     Std_ReturnType ret = E_NOT_OK;

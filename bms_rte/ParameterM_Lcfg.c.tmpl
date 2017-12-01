@@ -13,8 +13,8 @@
 #include "AppParameterM.h"
 
 const ParameterM_DataType ParameterM_EeepParaDefault[PARAMETERM_EEEP_PARA_MAX] = {
-    <%- EeepParaDefault.totalCap * 10 %>U, /**< PARAMETERM_EEEP_TOTAL_CAP_INDEX: 总容量 */
-    <%- EeepParaDefault.leftCap * 10 %>U, /**< PARAMETERM_EEEP_LEFT_CAP_INDEX: 剩余容量 */
+    <%- Math.round(EeepParaDefault.totalCap * 10) %>U, /**< PARAMETERM_EEEP_TOTAL_CAP_INDEX: 总容量 */
+    <%- Math.round(EeepParaDefault.leftCap * 10) %>U, /**< PARAMETERM_EEEP_LEFT_CAP_INDEX: 剩余容量 */
     0U, /**< PARAMETERM_EEEP_DISCHARGE_CNT_INDEX: 充放电次数 */
     0U, /**< PARAMETERM_EEEP_DISCHARGE_CNT_STATE_INDEX: 充放电次数状态 */
     0U, /**< PARAMETERM_EEEP_HALL1_ZEROOFFSET_INDEX: HALL1零点电流校准值 */

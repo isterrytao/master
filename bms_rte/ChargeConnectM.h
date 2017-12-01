@@ -152,16 +152,22 @@ typedef struct{
     uint32 unconnect_delay; /**< 连接释放延时 */
 }ChargeConnectM_CurrentConnectParaType;
 
+typedef struct{
+    uint32 timeout; /**< 上电充电连接超时时间 */
+}ChargeConnectM_StartConnectParaType;
+
 /**
  * \brief 充电连接配置类型定义
  */
 typedef struct{
+    boolean ConnectionIsDynamic; /**< 充电连接是否动态更新 */
     ChargeConnectM_CommonConfigType AC_Para;
     ChargeConnectM_CommonConfigType DC_Para;
     ChargeConnectM_ValueAdcToPhyCalculateParamType AdcPara[CHARGECONNECTM_ADC_CHANNEL_MAX];
     ChargeConnectM_GBResParaType ResistancePara; /**< 国标电阻参数 */
     ChargeConnectM_GBCpParaType CpPara; /**< 国标CP参数 */
     ChargeConnectM_CurrentConnectParaType CurConnectPara; /**< 充电电流连接参数 */
+    ChargeConnectM_StartConnectParaType StartConnectPara; /**< 上电充电连接参数 */
 }ChargeConnectM_ConfigType;
 
 
@@ -199,7 +205,9 @@ typedef struct{
 
 typedef struct{
     Async_EventType event; /**< 异步事件 */
+    Charge_ChargeType start_type; /**< 上电连接类型 */
     Charge_ChargeType current_type; /**< 当前充电连接类型 */
+    Charge_ChargeType last_type; /**< 上一次充电连接类型 */
     uint8 double_connect; /**< 双重连接标志 */
     uint8 CpConnectFlag; /**< CP连接标志 */
     uint32 CpConnectLastTick; /**< CP连接计时 */
@@ -254,12 +262,28 @@ ChargeConnectM_CCxResistanceType ChargerConnectM_GetCCxResistanceStatus(ChargeCo
 Std_ReturnType ChargeConnectM_GetConnectStatus(Charge_ChargeType ChargeType);
 
 /**
- * \brief 获取当前连接充电类型
- * \note 根据充电类型返回对应连接的充电类型
+ * \brief 获取实际连接充电类型
+ * \note 根据充电类型返回当前实际连接的充电类型
  *
- * \return 充电连接类型 0-无 1-AC 2-DC
+ * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
+ */
+Charge_ChargeType ChargeConnectM_GetActualConnectType(void);
+
+/**
+ * \brief 获取当前连接充电类型
+ * \note 根据充电类型返回当前连接的充电类型，此接口受ConnectionIsDynamic配置参数的影响，当连接为静态时，获取到的仅为上电时的连接状态
+ *
+ * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
  */
 Charge_ChargeType ChargeConnectM_GetConnectType(void);
+
+/**
+ * \brief 获取上电后初次连接类型
+ * \note 此值会在充电连接配置中上电连接超时配置参数内确定是否有充电连接，超时后则认为无充电连接，且后续不再更新
+ *
+ * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
+ */
+Charge_ChargeType ChargeConnectM_GetStartConnectType(void);
 
 /**
  * \brief 获取充电类型对应的连接模式

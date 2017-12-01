@@ -127,8 +127,8 @@ module.exports = {
 
         var mdata = {
             EeepParaDefault: {
-                totalCap: Math.round(info.BatteryInfo.totalCap),
-                leftCap: Math.round(info.BatteryInfo.initCap),
+                totalCap: info.BatteryInfo.totalCap,
+                leftCap: info.BatteryInfo.initCap,
             },
             diagparams: diagparams,
             SocEfficiency: calibrateparam.SocEfficiency,

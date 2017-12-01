@@ -22,6 +22,8 @@ typedef struct {
     boolean isDoHighTurnOnSwitch;
     uint16 totalResistor;
     float (*PGAControl)(uint8 *withMos);
+    uint16 diffAbs;
+    uint16 diffPercentFactorToTotal;
 } BridgeInsu_ConfigType;
 
 void BridgeInsu_Init(Async_LooperType *looper);

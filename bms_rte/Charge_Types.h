@@ -22,6 +22,8 @@
 #define CHARGE_TYPE_DC       1U
 #define CHARGE_TYPE_AC       2U
 
+#define CHARGE_TYPE_INVALID  0xFFU
+
 /**
  * \brief 充电类型定义
  */

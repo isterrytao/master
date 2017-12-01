@@ -83,6 +83,14 @@ App_Tv100mvType PowerM_GetTotalVoltage(void);
  */
 boolean PowerM_IsChargeEndFinished(PowerM_CurrentTypeType Type);
 
+/**
+ * \brief 判断末端降流是否正在降流中
+
+ * \retval TRUE 降流中
+ * \retval FALSE 未进入降流阶段或降流未完成
+ */
+boolean PowerM_IsChargeEndDecreasing(PowerM_CurrentTypeType Type);
+
 
 void PowerM_DumpDestWithoutDiagResult(void);
 void PowerM_DumpDestWithDiagResult(void);
@@ -147,6 +155,7 @@ typedef struct {
     uint8 ht;
     uint8 lt;
     boolean chargeEndFinished;
+    boolean chargeEndDecreasing;
     const PowerM_ChargeEndConfigType *curEndCfg;
     uint32 chargeEndTick;
 } PowerM_InnerChannelDataType;
