@@ -24,6 +24,7 @@ const RuntimeM_ConfigType RuntimeM_ConfigData = {
     <%- dat.timeOrDelayToWakeupForOTA %>, /**< 唤醒进行OTA的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX */
     <%- dat.wakeupTimeForData %>UL, /**< 下电多少秒之后(或什么时刻)唤醒进行数据传输 */
     <%- dat.wakeupTimeForOTA %>UL, /**< 有OTA请求时, 下电多少秒之后(或什么时刻)唤醒进行程序OTA */
+    <%- dat.cpInvalidTimeFilter * 1000 %>UL, /**< CP无效的过滤时间， 单位ms */
     <%- dat.maxOnTimeForData %>U, /**< DTU模式下, 数据传输最长的工作时间, 单位: 秒 */
     <%- dat.maxOnTimeForOTA %>U, /**< DTU模式下, OTA最长的工作时间, 单位: 秒 */
     <%- Math.round(dat.minBatteryVolForWakeup * 1000) %>U, /**< 运行唤醒进入DTU模块的最低低压供电电压, 单位:毫伏 */

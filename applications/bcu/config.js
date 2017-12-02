@@ -154,6 +154,7 @@ module.exports = {
         maxOnTimeForData: 60*5,
         minBatteryVolForWakeup: 10,
         chargeEndOTA: false,
+        cpInvalidTimeFilter: 5,
         powerOffNotifiers: [
             {func:"Soc_PowerDownSaveCbk", inc: "Soc.h"},
             {func:"SaveM_PowerDownSaveCbk", inc: "SaveM.h"}
@@ -166,6 +167,7 @@ module.exports = {
         maxOnTimeForData_comments: "唤醒升级据最长的工作时间, 单位秒",
         minBatteryVolForWakeup_comments: "唤醒要求的最低供电电压, 单位v",
         chargeEndOTA_comments: "是否支持充电完成之后进行OTA, 针对没有常电的情况, 配置成true之后, 不会唤醒进行数据传输与OTA",
+        cpInvalidTimeFilter_comments: "CP唤醒信号无效的过滤时间，单位秒",
         powerOffNotifiers_comments: "下电时需要调用的函数",
     },
 

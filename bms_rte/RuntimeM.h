@@ -98,6 +98,7 @@ typedef struct {
     uint8 TimeOrDelayToWakeupForOTA; /**< 唤醒进行OTA的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX */
     uint32 wakeupTimeForData; /**< 下电多少秒之后(或什么时刻)唤醒进行数据传输 */
     uint32 wakeupTimeForOTA; /**< 有OTA请求时, 下电多少秒之后(或什么时刻)唤醒进行程序OTA */
+    uint32 cpInvalidTimeFilter; /**< CP无效的过滤时间， 单位ms */
     uint16 maxOnTimeForData; /**< DTU模式下, 数据传输最长的工作时间, 单位: 秒 */
     uint16 maxOnTimeForOTA;  /**< DTU模式下, OTA最长的工作时间, 单位: 秒 */
     uint16 minBatteryVolForWakeup; /**< 运行唤醒进入DTU模块的最低低压供电电压, 单位:毫伏 */
