@@ -31,6 +31,10 @@ module.exports = {
             cfg['timeOrDelayToWakeupForData'] = 'RUNTIMEM_WAKEUP_OFF';
         }
 
+        if (! cfg.cpInvalidTimeFilter) {
+            cfg.cpInvalidTimeFilter = 0;
+        }
+
         if (typeof(cfg.wakeupTimeForData) == 'number') {
             if (cfg.wakeupTimeForData == 0) {
                 cfg['timeOrDelayToWakeupForData'] = 'RUNTIMEM_WAKEUP_OFF';
