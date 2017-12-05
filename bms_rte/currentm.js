@@ -21,6 +21,7 @@ module.exports = {
             FL2300A50mV: {name:"福来2型,300A,50mV", maxVol: 60000, resistor: 166.7, tempDrift: 0},
             FL2400A50mV: {name:"福来2型,400A,50mV", maxVol: 60000, resistor: 125, tempDrift: 0},
             FL2500A50mV: {name:"福来2型,500A,50mV", maxVol: 60000, resistor: 100, tempDrift: 0},
+            FL230A75mV: {name:"福来2型,30A,75mV", maxVol: 100000, resistor: 2500, tempDrift: 0},
             FL2200A75mV: {name:"福来2型,200A,75mV", maxVol: 100000, resistor: 375, tempDrift: 0},
             FL2300A75mV: {name:"福来2型,300A,75mV", maxVol: 100000, resistor: 250, tempDrift: 0},
             FL2400A75mV: {name:"福来2型,400A,75mV", maxVol: 100000, resistor: 187.5, tempDrift: 0},

@@ -199,7 +199,7 @@ module.exports = {
         // 分流器配置
         shunt: {
             notes:[
-                {section:"model", chs:"传感器型号", comments:'可选:"WSBM8518L1000", "FL2300A50mV", "FL2400A50mV", "FL2500A50mV", "FL2200A75mV", "FL2300A75mV", "FL2400A75mV", "FL2500A75mV"'},
+                {section:"model", chs:"传感器型号", comments:'可选:"WSBM8518L1000", "FL2300A50mV", "FL2400A50mV", "FL2500A50mV", "FL230A75mV", "FL2200A75mV", "FL2300A75mV", "FL2400A75mV", "FL2500A75mV"'},
             ],
             model: "FL2200A75mV",
             zeroFilterValue: 0.2,
