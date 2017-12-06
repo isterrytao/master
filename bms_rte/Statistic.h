@@ -117,6 +117,20 @@ typedef struct{
 	uint32 EclipseDischargeTime; /**< 已放电时间 S/bit */
 	uint32 RequireDischargeTime; /**< 剩余放电时间 S/bit */
 }Statistic_BcuInfoType;
+
+/**
+ * \brief 总压类型类型定义
+ * \note 定义有累加总压和高压采样总压
+ */
+typedef enum{
+	STATISTIC_TV_TYPE_CUMULATE, /**< 累加总压类型 */
+	STATISTIC_TV_TYPE_SAMPLE, /**< 采样总压类型 */
+}Statistic_TvTypeType;
+
+typedef struct{
+	Statistic_TvTypeType prior_tv_type; /**< 优先使用总压类型 */
+}Statistic_ConfigInfoType;
+
 #pragma pop
 
 
@@ -156,6 +170,15 @@ extern uint8 Statistic_SampleBoardLowVoltage[BCU_SLAVE_NUM_MAX][BMU_LTC6804_NUM_
 
 #pragma pop
 
+/**
+ * \brief 统计配置信息声明
+ * \details 包含与统计相关的配置项
+ */
+extern const Statistic_ConfigInfoType Statistic_ConfigInfo;
+
+/**
+ * \brief 统计模块初始化函数
+ */
 void Statistic_Init(Async_LooperType *looper);
 
 /**

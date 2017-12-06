@@ -30,7 +30,7 @@
  * \brief 充电是否已连接
  * \details 交流或直流连接成功均返回已连接
  */
-#define CHARGECONNECTM_IS_CONNECT()     (ChargeConnectM_GetConnectType() != CHARGE_TYPE_NONE && ChargeConnectM_GetConnectType() != CHARGE_TYPE_INVALID)
+#define CHARGECONNECTM_IS_CONNECT()                 (ChargeConnectM_IsConnection())
 
 #define CHARGECONNECTM_GB_CC100_IS_CONNECT(RES)     ((RES) >= ChargeConnectM_ConfigInfo.ResistancePara.CCRes100Min && (RES) <= ChargeConnectM_ConfigInfo.ResistancePara.CCRes100Max)
 #define CHARGECONNECTM_GB_CC220_IS_CONNECT(RES)     ((RES) >= ChargeConnectM_ConfigInfo.ResistancePara.CCRes220Min && (RES) <= ChargeConnectM_ConfigInfo.ResistancePara.CCRes220Max)
@@ -284,6 +284,12 @@ Charge_ChargeType ChargeConnectM_GetConnectType(void);
  * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
  */
 Charge_ChargeType ChargeConnectM_GetStartConnectType(void);
+
+/**
+ * \brief 充电是否连接
+ * \return FALSE-未连接 TRUE-已连接
+ */
+boolean ChargeConnectM_IsConnection(void);
 
 /**
  * \brief 获取充电类型对应的连接模式

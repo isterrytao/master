@@ -72,18 +72,18 @@ module.exports = {
     process: function(cfgData, info) {
         var util = require("util");
         const bcus = {
-            C600: {PCBA:'UPC6000', DtuSupport:0, AllInOne:0, MaxBmu:16, M630Support:0},
-            C601: {PCBA:'UPC6000', DtuSupport:1, AllInOne:0, MaxBmu:16, M630Support:0},
-            C602: {PCBA:'UPC6000', DtuSupport:0, AllInOne:0, MaxBmu:10, M630Support:1},
-            C603: {PCBA:'UPC6000', DtuSupport:1, AllInOne:0, MaxBmu:10, M630Support:1},
-            A600: {PCBA:'UPC6000', DtuSupport:0, AllInOne:1, MaxBmu:15, M630Support:0},
-            A601: {PCBA:'UPC6000', DtuSupport:1, AllInOne:1, MaxBmu:15, M630Support:0},
-            A602: {PCBA:'UPC6000', DtuSupport:0, AllInOne:1, MaxBmu:15, M630Support:0},
-            A603: {PCBA:'UPC6000', DtuSupport:1, AllInOne:1, MaxBmu:15, M630Support:0},
-            A650: {PCBA:'UPA650', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0},
-            A651: {PCBA:'UPA650', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0},
-            A652: {PCBA:'UPA650', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0},
-            A653: {PCBA:'UPA650', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0},
+            C600: {PCBA:'UPC6000', DtuSupport:0, AllInOne:0, MaxBmu:16, M630Support:0, NeedDaisyChainBatConnInfo:false},
+            C601: {PCBA:'UPC6000', DtuSupport:1, AllInOne:0, MaxBmu:16, M630Support:0, NeedDaisyChainBatConnInfo:false},
+            C602: {PCBA:'UPC6000', DtuSupport:0, AllInOne:0, MaxBmu:10, M630Support:1, NeedDaisyChainBatConnInfo:false},
+            C603: {PCBA:'UPC6000', DtuSupport:1, AllInOne:0, MaxBmu:10, M630Support:1, NeedDaisyChainBatConnInfo:false},
+            A600: {PCBA:'UPC6000', DtuSupport:0, AllInOne:1, MaxBmu:15, M630Support:0, NeedDaisyChainBatConnInfo:false},
+            A601: {PCBA:'UPC6000', DtuSupport:1, AllInOne:1, MaxBmu:15, M630Support:0, NeedDaisyChainBatConnInfo:false},
+            A602: {PCBA:'UPC6000', DtuSupport:0, AllInOne:1, MaxBmu:15, M630Support:0, NeedDaisyChainBatConnInfo:false},
+            A603: {PCBA:'UPC6000', DtuSupport:1, AllInOne:1, MaxBmu:15, M630Support:0, NeedDaisyChainBatConnInfo:false},
+            A650: {PCBA:'UPA650', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+            A651: {PCBA:'UPA650', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+            A652: {PCBA:'UPA650', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+            A653: {PCBA:'UPA650', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
         };
 
         const typeToNumTable = {
@@ -111,6 +111,7 @@ module.exports = {
 
         var BcuSupportDtu = bcus[cfgData.bcu.type].DtuSupport;
         var BcuIsAllInOne = bcus[cfgData.bcu.type].AllInOne;
+        var NeedDaisyChainBatConnInfo = bcus[cfgData.bcu.type].NeedDaisyChainBatConnInfo;
         var BcuAllInOneModuleNum = BcuIsAllInOne ? typeToNumTable[cfgData.bcu.type].SlaveSampleBoardNum : 0;
 
         var m630Num = cfgData.bmus.reduce((sum, val) => val.type == 'M630' ? sum + 1 : sum, 0);
@@ -133,6 +134,7 @@ module.exports = {
             BcuIsAllInOne: BcuIsAllInOne,
             M630Num: m630Num,
             SampleBoardNumOnDaisyChain: BcuIsAllInOne ? BcuAllInOneModuleNum : m630Num,
+            NeedDaisyChainBatConnInfo: NeedDaisyChainBatConnInfo,
             Bmus: [],
             SlaveSampleBoardNum: [],
             SlaveCellNum: [],

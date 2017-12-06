@@ -40,11 +40,11 @@ const uint16 CellDataM_BmuVoltageLogicIdMax[SYSTEM_BMU_NUM] = {
     a%>
 };
 
-#if SYSTEM_SAMPLE_BOARD_NUM_ON_DAISY_CHAIN != 0U
+<% if (NeedDaisyChainBatConnInfo) {%>
 const uint16 CellDataM_CellsSetup[SYSTEM_SAMPLE_BOARD_NUM_ON_DAISY_CHAIN]={
-    <%for (var v of BmuBatt.CellsSetup){%>0b<%-v%>,<%}%>
+    <%for (var v of BmuBatt.CellsSetup){%><%- Number('0b' + v) %>U,<%}%>
 };
-#endif
+<% } %>
 
 const uint8 CellDataM_BmuBoardVoltageLogicIdMax[SYSTEM_BATTERY_SAMPLE_BOARD_NUM] ={
     <%-BmuBatt.BoardLogicIdMax%>
