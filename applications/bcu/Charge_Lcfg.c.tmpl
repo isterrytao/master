@@ -25,6 +25,7 @@ const ChargerComm_ConfigType ChargerComm_ConfigInfo = {
     <%- protocol.dc %>, /**< DC_Protocol：直流充电协议 */
     <%- ac.relay %>, /**< AC_RelayType: 交流充电继电器 */
     <%- dc.relay %>, /**< DC_RelayType: 直流充电继电器 */
+    2U, /**< SendRetryNum: 发送重试次数 */
 };
 
 const ChargeConnectM_ConfigType ChargeConnectM_ConfigInfo = {
