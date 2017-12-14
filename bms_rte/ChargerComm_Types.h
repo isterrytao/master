@@ -108,6 +108,7 @@ typedef struct{
     ChargerComm_ProtocolType DC_Protocol; /**< 直流充电协议 */
     uint8 AC_RelayType; /**< 交流充电继电器 */
     uint8 DC_RelayType; /**< 直流充电继电器 */
+    uint8 SendRetryNum; /**< 发送重试次数 */
 }ChargerComm_ConfigType;
 
 
