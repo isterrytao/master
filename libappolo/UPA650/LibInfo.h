@@ -34,15 +34,15 @@
  */
 #define LIB_INFO_SOURCE_COMMIT_ID        "3b753b3be14910fa15de"
 #define LIB_INFO_CONFIG_COMMIT_ID        "3b753b3be14910fa15de"
-#define LIB_INFO_BUILD_TIME              "20171223172158"
+#define LIB_INFO_BUILD_TIME              "20171223175123"
 
 #define LIB_INFO_BUILD_DATE_Y            2017
 #define LIB_INFO_BUILD_DATE_M            12
 #define LIB_INFO_BUILD_DATE_D            23
 
 #define LIB_INFO_BUILD_TIME_H            17
-#define LIB_INFO_BUILD_TIME_M            21
-#define LIB_INFO_BUILD_TIME_S            58
+#define LIB_INFO_BUILD_TIME_M            51
+#define LIB_INFO_BUILD_TIME_S            23
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO
