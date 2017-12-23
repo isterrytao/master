@@ -40,6 +40,7 @@ typedef struct{
     App_SocType calibStep; /**< SOC校准步长 */
     boolean linear_calib; /**< 线性校准使能 */
     isAllowCalibFuncPtr isAllowFuncPtr; /**< 是否允许校正函数指针 */
+    boolean temperature_linear; /**< 温度是否线性查表 */
 }SocOcvCalib_ConfigType;
 
 /**
@@ -50,6 +51,7 @@ typedef struct{
     uint8 currentLargeFlag; /**< 大电流标志 */
     uint8 dateTime; /**< 时间 */
     boolean isAutoCalib; /**< 是否自动校正 */
+    App_VoltageType voltBuffer[30U]; /**< 温度线性插值后电压缓存 */
 }SocOcvCalib_InnerDataType;
 
 extern const SocOcvCalib_ConfigType SocOcvCalib_ConfigInfo;
