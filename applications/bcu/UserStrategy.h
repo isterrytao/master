@@ -18,6 +18,7 @@
 #include "RelayM_Cfg.h"
 #include "Async_Looper.h"
 #include "Async_Event.h"
+#include "RuntimeM.h"
 
 /**
  * \brief Error detect define
@@ -31,6 +32,7 @@
  */
 typedef struct{
     Async_EventType event; /**< 异步事件 */
+    uint32 powerOffTick; /**< 下电计时 */
 }UserStrategy_InnerDataType;
 
 /**
@@ -75,6 +77,12 @@ boolean UserStartegy_GBChargeRelayIsReady(RelayM_FunctionType relayType);
  * \brief 获取MCU端总压值
  */
 App_Tv100mvType UserStrategy_GetMcuVoltage(void);
+
+/**
+ * 是否可以安全下电
+ * @return 返回TRUE时, 表示该任务已经关闭, 可以下电.
+ */
+boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal);
 
 /**
  * \brief 高压互锁故障

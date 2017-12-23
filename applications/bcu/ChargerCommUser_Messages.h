@@ -15,6 +15,10 @@
 #include "ChargerCommUser.h"
 
 
+typedef struct{
+    boolean isNeedToSendStop; /**< 充电连接断开后，是否需要发送停止充电报文 */
+}ChargerCommUser_MessageInnerDataType;
+
 /**
  * \brief 用户自定义充电通信初始化
  */

@@ -157,7 +157,8 @@ module.exports = {
         cpInvalidTimeFilter: 5,
         powerOffNotifiers: [
             {func:"Soc_PowerDownSaveCbk", inc: "Soc.h"},
-            {func:"SaveM_PowerDownSaveCbk", inc: "SaveM.h"}
+            {func:"SaveM_PowerDownSaveCbk", inc: "SaveM.h"},
+            {func:"UserStrategy_SaftyOff", inc: "UserStrategy.h"},
         ],
 
         maxTimeForWaitTaskPowerdown_comments: "下电等待的最大时间, 单位秒",

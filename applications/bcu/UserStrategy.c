@@ -56,16 +56,34 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 }
 
 boolean UserStrategy_IsSafeToOff(void) {
-    boolean res = FALSE;
+    boolean flag = FALSE, res = FALSE;
+    uint32 nowTick;
     Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+
     if (!CURRENT_IS_VALID(current)) {
-        res = TRUE;
+        flag = TRUE;
     }
     else if ((uint16)abs(current) < CURRENT_100MA_FROM_A(3U)) {
-        res = TRUE;
+        flag = TRUE;
     }
     else {
     }
+
+    nowTick = OSTimeGet();
+    if (flag) {
+        if (UserStrategy_innerData.powerOffTick == 0UL) {
+            UserStrategy_innerData.powerOffTick = nowTick;
+        }
+        else {
+            if (MS_GET_INTERNAL(UserStrategy_innerData.powerOffTick, nowTick) >= 1000UL) {
+                res = TRUE;
+            }
+        }
+    }
+    else {
+        UserStrategy_innerData.powerOffTick = 0UL;
+    }
+
     return res;
 }
 
@@ -148,4 +166,9 @@ void UserStrategy_CheckSRS(const PwmCapture_DataType *dat)
     //         RelayM_ForceControl(i, RELAYM_FORCE_OFF);
     //     }
     // }
+}
+
+boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
+    (void) signal;
+    return UserStrategy_IsSafeToOff();
 }

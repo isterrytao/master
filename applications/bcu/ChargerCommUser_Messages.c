@@ -37,10 +37,11 @@
 #define VALIDATE_PTR(_ptr, _api)
 #endif
 
-
+static void getTCChgCtlData(uint8 *Buffer, uint16 *Length);
+static void getTCChgStopData(uint8 *Buffer, uint16 *Length);
 
 extern ChargerCommUser_InnerDataType ChargerCommUser_innerData;
-
+ChargerCommUser_MessageInnerDataType ChargerCommUser_MsgInnerData;
 
 void ChargerCommUser_MessageInit(void)
 {
@@ -69,6 +70,13 @@ Std_ReturnType ChargerCommUser_TCSendConditionCheck(void)
                     res = E_OK;
                 }
             }
+        }
+    }
+    else
+    {
+        if (ChargerCommUser_MsgInnerData.isNeedToSendStop)
+        {
+            res = E_OK;
         }
     }
     return res;
@@ -112,69 +120,18 @@ static Std_ReturnType ChargerCommUser_TCRecConditionCheck(void)
 
 void ChargerCommUser_GetTCDataCbk(uint8 *Buffer, uint16 *Length)
 {
-    Std_ReturnType flag;
-    uint16 index = 0U;
-    App_Tv100mvType Volt;
-    Current_CurrentType current, current_max;
-
     VALIDATE_PTR(Buffer, CHARGERCOMMUSER_MESSAGES_API_ID_GetTCDataCbk);
     VALIDATE_PTR(Length, CHARGERCOMMUSER_MESSAGES_API_ID_GetTCDataCbk);
 
-    // 充电需求总压
-    Volt = UserStrategy_GetChargeVoltMax();
-    ChargerComm_SetChargeVoltMax(Volt);
-    WRITE_BT_UINT16(Buffer, index, Volt);
-
-    flag = ChargerCommUser_ChargeIsAllowed();
-    if (flag == E_OK)
+    if (ChargerCommUser_innerData.startFlag == TRUE)
     {
-        if (ChargeConnectM_ELIsNeeding())
-        {
-            if (EL_GetDriveState(0U) != EL_LOCK)
-            {
-                flag = E_NOT_OK;
-            }
-            else if (EL_GetActualState(0U) != EL_LOCK)
-            {
-                flag = E_NOT_OK;
-            }
-            else
-            {
-            }
-        }
-    }
-    // 充电需求电流
-    if (flag == E_NOT_OK)
-    {
-        current = 0;
+        getTCChgCtlData(Buffer, Length);
     }
     else
     {
-        current = UserStrategy_GetChargeCurrentMax();
+        getTCChgStopData(Buffer, Length);
     }
-    if (current < 0)
-    {
-        current = 0;
-    }
-    current_max = (Current_CurrentType)ChargerCommUser_GetGBSignalCurrentMax();
-    if(current > current_max)
-    {
-        current = current_max;
-    }
-    ChargerComm_SetChargeCurrentMax(current);
-    WRITE_BT_UINT16(Buffer, index, current);
-    // 充电允许
-    WRITE_BT_UINT8(Buffer, index,  flag == E_NOT_OK ? 1U : 0U);
-    // 保留
-    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
-    WRITE_BT_UINT8(Buffer, index,  0xFFU);
-    *Length = index;
-#if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
-cleanup:
-#endif
-    return;
 }
-
 
 void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
 {
@@ -260,6 +217,102 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
 cleanup:
     return;
 #endif
+}
+
+static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
+{
+    Std_ReturnType flag;
+    uint16 index = 0U;
+    App_Tv100mvType Volt;
+    Current_CurrentType current, current_max;
+
+    // 充电需求总压
+    Volt = UserStrategy_GetChargeVoltMax();
+    ChargerComm_SetChargeVoltMax(Volt);
+    WRITE_BT_UINT16(Buffer, index, Volt);
+
+    flag = ChargerCommUser_ChargeIsAllowed();
+    if (flag == E_OK)
+    {
+        if (ChargeConnectM_ELIsNeeding())
+        {
+            if (EL_GetDriveState(0U) != EL_LOCK)
+            {
+                flag = E_NOT_OK;
+            }
+            else if (EL_GetActualState(0U) != EL_LOCK)
+            {
+                flag = E_NOT_OK;
+            }
+            else
+            {
+            }
+        }
+    }
+    // 充电需求电流
+    if (flag == E_NOT_OK)
+    {
+        current = 0;
+    }
+    else
+    {
+        current = UserStrategy_GetChargeCurrentMax();
+    }
+    if (current < 0)
+    {
+        current = 0;
+    }
+    current_max = (Current_CurrentType)ChargerCommUser_GetGBSignalCurrentMax();
+    if(current > current_max)
+    {
+        current = current_max;
+    }
+    ChargerComm_SetChargeCurrentMax(current);
+    WRITE_BT_UINT16(Buffer, index, current);
+    // 充电允许
+    if (flag == E_NOT_OK)
+    {
+        flag = 1U;
+        ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
+    }
+    else
+    {
+        flag = 0U;
+        ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
+    }
+    WRITE_BT_UINT8(Buffer, index,  flag);
+    // 保留
+    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    WRITE_BT_UINT8(Buffer, index,  0xFFU);
+    *Length = index;
+#if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
+cleanup:
+#endif
+    return;
+}
+
+static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
+{
+    uint16 index = 0U;
+
+    ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
+
+    // 充电需求总压
+    ChargerComm_SetChargeVoltMax(0U);
+    WRITE_BT_UINT16(Buffer, index, 0U);
+    // 充电需求电流
+    ChargerComm_SetChargeCurrentMax(0);
+    WRITE_BT_UINT16(Buffer, index, 0U);
+    // 充电允许
+    WRITE_BT_UINT8(Buffer, index,  1U);
+    // 保留
+    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    WRITE_BT_UINT8(Buffer, index,  0xFFU);
+    *Length = index;
+#if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
+cleanup:
+#endif
+    return;
 }
 
 void ChargerCommUser_RecTCTimeoutCbk(void)
