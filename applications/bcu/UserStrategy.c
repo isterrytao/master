@@ -75,7 +75,7 @@ boolean UserStrategy_IsSafeToOff(void) {
             UserStrategy_innerData.powerOffTick = nowTick;
         }
         else {
-            if (MS_GET_INTERNAL(UserStrategy_innerData.powerOffTick, nowTick) >= 1000UL) {
+            if (MS_GET_INTERNAL(UserStrategy_innerData.powerOffTick, nowTick) >= 200UL) {
                 res = TRUE;
             }
         }
