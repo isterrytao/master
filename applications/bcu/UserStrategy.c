@@ -34,10 +34,11 @@ UserStrategy_InnerDataType UserStrategy_innerData;
 
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat);
-
+static void safeCurrentCheck(void);
 
 void UserStrategy_Init(Async_LooperType *looper)
 {
+    UserStrategy_innerData.currentIsAllowToPowerOff = FALSE;
     if (looper != NULL)
     {
         if (E_OK == Async_EventInit(&UserStrategy_innerData.event, looper, UserStrategy_Poll, 100UL))
@@ -52,11 +53,14 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
     (void)event;
     (void)byWhat;
 
+    safeCurrentCheck();
+
     return ASYNC_EVENT_CBK_RETURN_OK;
 }
 
-boolean UserStrategy_IsSafeToOff(void) {
-    boolean flag = FALSE, res = FALSE;
+static void safeCurrentCheck(void)
+{
+    boolean flag = FALSE;
     uint32 nowTick;
     Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
@@ -75,15 +79,23 @@ boolean UserStrategy_IsSafeToOff(void) {
             UserStrategy_innerData.powerOffTick = nowTick;
         }
         else {
-            if (MS_GET_INTERNAL(UserStrategy_innerData.powerOffTick, nowTick) >= 200UL) {
-                res = TRUE;
+            if (MS_GET_INTERNAL(UserStrategy_innerData.powerOffTick, nowTick) >= 1000UL) {
+                UserStrategy_innerData.currentIsAllowToPowerOff = TRUE;
             }
         }
     }
     else {
         UserStrategy_innerData.powerOffTick = 0UL;
+        UserStrategy_innerData.currentIsAllowToPowerOff = FALSE;
     }
+}
 
+boolean UserStrategy_IsSafeToOff(void) {
+    boolean res = FALSE;
+
+    if (UserStrategy_innerData.currentIsAllowToPowerOff) {
+        res = TRUE;
+    }
     return res;
 }
 
