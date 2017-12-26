@@ -38,7 +38,7 @@ static void safeCurrentCheck(void);
 
 void UserStrategy_Init(Async_LooperType *looper)
 {
-    UserStrategy_innerData.currentIsAllowToPowerOff = FALSE;
+    UserStrategy_innerData.currentIsAllowToPowerOff = TRUE;
     if (looper != NULL)
     {
         if (E_OK == Async_EventInit(&UserStrategy_innerData.event, looper, UserStrategy_Poll, 100UL))
