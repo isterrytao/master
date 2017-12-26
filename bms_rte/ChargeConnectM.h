@@ -265,7 +265,7 @@ Std_ReturnType ChargeConnectM_GetConnectStatus(Charge_ChargeType ChargeType);
  * \brief 获取实际连接充电类型
  * \note 根据充电类型返回当前实际连接的充电类型
  *
- * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
+ * \return 充电连接类型 0-无 1-DC 2-AC 0xFF-无效值
  */
 Charge_ChargeType ChargeConnectM_GetActualConnectType(void);
 
@@ -273,7 +273,7 @@ Charge_ChargeType ChargeConnectM_GetActualConnectType(void);
  * \brief 获取当前连接充电类型
  * \note 根据充电类型返回当前连接的充电类型，此接口受ConnectionIsDynamic配置参数的影响，当连接为静态时，获取到的仅为上电时的连接状态
  *
- * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
+ * \return 充电连接类型 0-无 1-DC 2-AC 0xFF-无效值
  */
 Charge_ChargeType ChargeConnectM_GetConnectType(void);
 
@@ -281,7 +281,7 @@ Charge_ChargeType ChargeConnectM_GetConnectType(void);
  * \brief 获取上电后初次连接类型
  * \note 此值会在充电连接配置中上电连接超时配置参数内确定是否有充电连接，超时后则认为无充电连接，且后续不再更新
  *
- * \return 充电连接类型 0-无 1-AC 2-DC 0xFF-无效值
+ * \return 充电连接类型 0-无 1-DC 2-AC 0xFF-无效值
  */
 Charge_ChargeType ChargeConnectM_GetStartConnectType(void);
 

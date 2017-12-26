@@ -152,3 +152,8 @@ const uint8 InternalComm_ReqChannelToXgate[] = {
 const uint8 InternalComm_XgateSoftwareIsrChlToReq[] = {
     0U, 1U, 2U, 3U
 };
+
+const InternalComm_ConfigInfoType InternalComm_ConfigInfo = {
+    NULL, /**< recVoltHook: 接收到电压数据钩子函数 */
+    NULL, /**< recTempHook: 接收到温度数据钩子函数 */
+};

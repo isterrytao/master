@@ -658,6 +658,12 @@ uint8 ChargerComm_GetChargerFaultBuffNum(void);
 uint8 ChargerComm_GetChargerFaultWithBuffNum(uint8 num);
 
 /**
+ * \brief 充电机是否故障（不包含充电机输入交流电压故障）
+ * \return 故障返回TRUE,否则返回FALSE
+ */
+uint8 ChargerComm_ChargerIsFaultWithNoInputVolt(void);
+
+/**
  * \brief 充电机是否故障
  * \return 故障返回TRUE,否则返回FALSE
  */

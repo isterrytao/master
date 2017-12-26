@@ -250,6 +250,16 @@ typedef struct{
     uint16 SameFlag; /**< 从机温感类型相同标志 从机位域 */
 }InternalComm_TempTypeCfgCxtType;
 
+typedef void (*InternalComm_RecSlaveDataHook)(App_SlaveIdType SlaveId, uint8* const DataPtr, uint16 Length);
+
+/**
+ * \brief 内网通信基本配置类型定义
+ */
+typedef struct{
+    InternalComm_RecSlaveDataHook recVoltHook; /**< 接收到电压数据钩子函数 */
+    InternalComm_RecSlaveDataHook recTempHook; /**< 接收到温度数据钩子函数 */
+}InternalComm_ConfigInfoType;
+
 /**
  * \brief 内网通信发送Looper
  */
@@ -319,6 +329,8 @@ extern const uint8 InternalComm_XgateSoftwareIsrChlToReq[];
 extern Async_EventType InternalComm_ScheduleItemEvent[INTERNALCOMM_SLAVE_DID_NUM];
 
 extern InternalComm_DidTypes InternalComm_SlaveFirstDID;
+
+extern const InternalComm_ConfigInfoType InternalComm_ConfigInfo;
 
 /**
  * \brief 内网通信初始化
