@@ -174,6 +174,7 @@ void UserStrategy_CheckSRS(const PwmCapture_DataType *dat)
     // if (lowtime >= 1800 && lowtime <= 2200) {
     //     ChargeM_SetOthersFaultDchargeCtl(, DIS);
     //     DischargeM_SetOthersFaultDchargeCtl();
+    //     RelayM_ForceControl(RELAYM_FN_NEGTIVE_MAIN, RELAYM_FORCE_OFF); //优化断开主负
     //     for (i = 0; i < RELAYM_FN_NUM; ++i) {
     //         RelayM_ForceControl(i, RELAYM_FORCE_OFF);
     //     }

@@ -4,6 +4,7 @@ const Shunt_SensorConfigType ShuntSensorConfig = {
     <%- Math.round(shuntsensor.resistor * 10) %>U, /**< uint16 resistor; 0.1微欧姆 */
     <%- shuntsensor.tempDrift %>U, /**< uint16 tempDrift; */
     <%- shuntsensor.maxVol %>UL, /**< uint32 maxVol; */
+    <%- shuntsensor.isReverse ? "TRUE" : "FALSE" %>, /**< boolean isReverse */
 };
 
 
@@ -28,6 +29,7 @@ const Hall_ConfigType HallConfigData[HALL_CHANNEL_NUM] = {
         <%- hall1sensor.voltMax %>U, //uint16 voltMax;
         <%- hall1sensor.supplyVolGainAdj ? "getHallSupplyVoltage" : "NULL" %>,
         <%- hall1sensor.supplyVolAdj ? "TRUE" : "FALSE" %>, // boolean supplyVolAjd;
+        <%- hall1sensor.isReverse ? "TRUE" : "FALSE" %>, // boolean isReverse;
     },
     {
         <%- hall2sensor.offset %>, // sint16 offset;
@@ -38,7 +40,8 @@ const Hall_ConfigType HallConfigData[HALL_CHANNEL_NUM] = {
         <%- hall2sensor.voltMin %>U, // uint16 voltMin;
         <%- hall2sensor.voltMax %>U, //uint16 voltMax;
         <%- hall2sensor.supplyVolGainAdj ? "getHallSupplyVoltage" : "NULL" %>,
-        <%- hall1sensor.supplyVolAdj ? "TRUE" : "FALSE" %>, // boolean supplyVolAjd;
+        <%- hall2sensor.supplyVolAdj ? "TRUE" : "FALSE" %>, // boolean supplyVolAjd;
+        <%- hall2sensor.isReverse ? "TRUE" : "FALSE" %>, // boolean isReverse;
     },
 };
 

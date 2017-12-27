@@ -14,6 +14,7 @@ typedef struct {
     uint16 resistor; // 0.1微欧姆
     uint16 tempDrift;
     uint32 maxVol; // 最大电压
+    boolean isReverse; // 是否反向
 } Shunt_SensorConfigType;
 
 typedef struct {

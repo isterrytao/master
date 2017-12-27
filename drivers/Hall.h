@@ -21,6 +21,7 @@ typedef struct {
     uint16 voltMax; /**< 电流电压最大值 */
     uint16 (*getSupplyVol)(void); /**< 获取霍尔供电电压的函数, 用于增益校准 */
     boolean supplyVolAjd; /**< 是否需要去除供电影响 */
+    boolean isReverse; /**< 是否反向 */
 } Hall_ConfigType;
 
 typedef enum {

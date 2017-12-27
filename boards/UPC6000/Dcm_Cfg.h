@@ -148,7 +148,7 @@
 #define DCM_SERVICE_22_ENABLED                                      STD_ON
 #define DCM_SERVICE_22_COMBINED_DID                                 STD_OFF
 #define MAX_NUM_OF_DID_TO_READ                                      (1U)
-#define NUMBER_OF_READ_DID                                          (197U)
+#define NUMBER_OF_READ_DID                                          (198U)
 
 #define DCM_SERVICE_23_ENABLED                                      STD_OFF
 
@@ -570,6 +570,7 @@ extern void App_Read0x0EB0(Dcm_MsgContextType *pMsgContext);
 extern void App_Read0x0ED0(Dcm_MsgContextType *pMsgContext);
 extern void App_Read0x0ED1(Dcm_MsgContextType *pMsgContext);
 extern void App_Read0x0ED2(Dcm_MsgContextType *pMsgContext);
+extern void App_Read0x0ED5(Dcm_MsgContextType *pMsgContext);
 extern void App_Read0x0EF0(Dcm_MsgContextType *pMsgContext);
 extern void App_Read0x0F10(Dcm_MsgContextType *pMsgContext);
 extern void App_Read0x0F11(Dcm_MsgContextType *pMsgContext);

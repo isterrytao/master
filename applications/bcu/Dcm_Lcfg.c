@@ -490,6 +490,15 @@ const Dcm_22_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_22[NUMBER_OF_
         PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
     },
     {
+        (uint32)0x0ED5U, /* DID */
+        STD_ON, /* Switch */
+        DCM_DID_SIZE_UNUSED, /* Data Size */
+        App_Read0x0ED5, /* App Callback Funtion */
+        (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1), /* Supported Security Level */
+        (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
+        PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
+    },
+    {
         (uint32)0x0EF0U, /* DID */
         STD_ON, /* Switch */
         DCM_DID_SIZE_UNUSED, /* Data Size */

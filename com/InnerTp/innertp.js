@@ -18,7 +18,7 @@ module.exports = {
         }
 
         var mdata = {
-            UseLtcAllInOne: (info.SystemConnection.BcuIsAllInOne && info.SystemConnection.PCBA == 'UPC6000'),
+            UseLtcAllInOne: ((info.SystemConnection.BcuIsAllInOne || info.SystemConnection.M36Num) && info.SystemConnection.PCBA == 'UPC6000'),
             UseIslAllInOne: (info.SystemConnection.BcuIsAllInOne && info.SystemConnection.PCBA == 'UPA650'),
             M36Num: info.SystemConnection.M36Num,
         };

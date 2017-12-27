@@ -186,6 +186,7 @@ module.exports = {
             dropNum: 2,
             zeroFilterValue: 1,
             autoCalibLimit:10,
+            isReverse: false,
         },
 
         hall2: {
@@ -195,6 +196,7 @@ module.exports = {
             dropNum: 2,
             zeroFilterValue: 1,
             autoCalibLimit:10,
+            isReverse: false,
         },
 
         // 分流器配置
@@ -205,6 +207,7 @@ module.exports = {
             model: "FL2200A75mV",
             zeroFilterValue: 0.2,
             autoCalibLimit:10,
+            isReverse: false,
         },
 
         // 主回路电流采集
@@ -1018,14 +1021,14 @@ module.exports = {
                 cycle:100,
                 events:[
                     {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+                    // {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 2000,
                     level: 1,
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+                        // {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
