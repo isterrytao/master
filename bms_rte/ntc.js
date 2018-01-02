@@ -67,8 +67,16 @@ module.exports = {
         }
 
 
-        var chgSckAdcChannel = ['FCH_T1', 'FCH_T2', 'SCH_T1', 'SCH_T2', 'SCH_T3'];
+        var chgSckAdcChannelForC60X = ['FCH_T1', 'FCH_T2', 'SCH_T1', 'SCH_T2', 'SCH_T3'];
+        var chgSckAdcChannelForA65X = ['FCH_T1', 'FCH_T2'];
         var chgSckTempChannel = ['DC_POSITIVE', 'DC_NEGATIVE', 'AC_AL', 'AC_BN', 'AC_C'];
+
+        var chgSckAdcChannel;
+        if (info.SystemConnection.BcuType.startsWith('A65')) {
+            chgSckAdcChannel = chgSckAdcChannelForA65X;
+        } else {
+            chgSckAdcChannel = chgSckAdcChannelForC60X;
+        }
 
         var chgSckTempEnable = {};
         var chgSckAdcToTempChannleMap = {};
