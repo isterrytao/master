@@ -2,7 +2,6 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
 SET (BUILD_APP "$ENV{APP}")
 SET (BUILD_FROM_SRC  "0")
-SET (TARGET_BOARD $ENV{TARGET_BOARD})
 SET (TOPDIR ${CMAKE_CURRENT_LIST_DIR})
 SET (ENV{TOPDIR} ${TOPDIR})
 
@@ -16,7 +15,7 @@ EXECUTE_PROCESS(
 # BUILD LIBRARY
 IF ("1" STREQUAL "$ENV{MAKELIB}")
 ##############################################################
-
+    SET (TARGET_BOARD $ENV{TARGET_BOARD})
     EXECUTE_PROCESS(
         COMMAND rm -rf ${TOPDIR}/config/*.c ${TOPDIR}/config/*.h
         COMMAND node.exe ${TOPDIR}/appoloconfig.js --config ${TOPDIR}/libconfig.js --outdir ${TOPDIR}/libappolo/${TARGET_BOARD}
@@ -29,6 +28,10 @@ IF ("1" STREQUAL "$ENV{MAKELIB}")
 
     PROJECT (appolo C ASM)
     ENABLE_LANGUAGE(CXGATE)
+
+
+    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D${TARGET_BOARD}")
+    SET (CMAKE_CXGATE_FLAGS "${CMAKE_CXGATE_FLAGS} -D${TARGET_BOARD}")
 
     ADD_SUBDIRECTORY(arch)
     ADD_SUBDIRECTORY(bms_rte)
@@ -71,7 +74,7 @@ ELSE ("1" STREQUAL "$ENV{MAKELIB}")
         COMMAND rm -rf ${TOPDIR}/config/*.c ${TOPDIR}/config/*.h
         COMMAND node.exe ${TOPDIR}/appoloconfig.js --calibrate=${CALIBRATE_FILE} --config ${TOPDIR}/applications/${BUILD_APP}/config.js --outdir ${TOPDIR}/config
         RESULT_VARIABLE CONFIG_RESULT
-        OUTPUT_VARIABLE CONIFG_OUTPUT
+        OUTPUT_VARIABLE CONFIG_OUTPUT
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
@@ -79,9 +82,9 @@ ELSE ("1" STREQUAL "$ENV{MAKELIB}")
     MESSAGE(FATAL_ERROR "Config error")
     ENDIF ()
 
-    list(GET CONIFG_OUTPUT 0 RELASE_FILE_NAME)
-    list(GET CONIFG_OUTPUT 1 TARGET_BOARD)
-
+    list(GET CONFIG_OUTPUT 0 RELASE_FILE_NAME)
+    list(GET CONFIG_OUTPUT 1 TARGET_BOARD)
+    list(GET CONFIG_OUTPUT 2 BCU_TYPE)
 
     INCLUDE (${TOPDIR}/boards/${TARGET_BOARD}/board.cmake)
     INCLUDE (${TOPDIR}/toolchain/Toolchain-pclint.cmake)
@@ -89,7 +92,8 @@ ELSE ("1" STREQUAL "$ENV{MAKELIB}")
     PROJECT (appolo C ASM)
     ENABLE_LANGUAGE(CXGATE)
 
-
+    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D${TARGET_BOARD} -D${BCU_TYPE}")
+    SET (CMAKE_CXGATE_FLAGS "${CMAKE_CXGATE_FLAGS} -D${BCU_TYPE}")
     SET (CMAKE_PC_LINT_FLAGS ${TARGET_LINT_FLAGS})
 
     INCLUDE (${TOPDIR}/applications/${BUILD_APP}/app.cmake)

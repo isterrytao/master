@@ -125,9 +125,12 @@ modules.forEach(m => {
 
 try {
     var pcba = 'UPC600'
+    var bcutype = 'C600'
     if (info.hasOwnProperty('SystemConnection') && info.SystemConnection.hasOwnProperty('PCBA')) {
         pcba = info.SystemConnection.PCBA;
+        bcutype = info.SystemConnection.BcuType;
+
     }
-    console.log(info.AppInfo.releaseFileName + ';' + pcba);
+    console.log(info.AppInfo.releaseFileName + ';' + pcba + ';' + bcutype);
 } catch (err) {
 }
