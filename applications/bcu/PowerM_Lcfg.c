@@ -7,10 +7,10 @@ static Std_ReturnType thisSocGet(uint16 *v) {
     return Soc_SocIsValid(*v) ? E_OK : E_NOT_OK;
 }
 
-// 快充充电电流表
+// 快充充电电流表（无特殊说明，所有温度点必须有回滚）
 static uint16 const dcchgsocxvalue[] = {PERCENT_TO_SOC(50), PERCENT_TO_SOC(80), PERCENT_TO_SOC(90), PERCENT_TO_SOC(104)};
 static sint16 const dcchgtempyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(15), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45), TEMPERATURE_FROM_C(50)};
-static sint16 const dcchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(15), TEMPERATURE_FROM_C(35), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45)};
+static sint16 const dcchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-12), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(14), TEMPERATURE_FROM_C(35), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45)};
 static uint16 const dcchgtableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -11
     CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // <= 0
@@ -63,10 +63,10 @@ static const PowerM_ConfigParamType PowerMCurChgDcConfigTable = {
     NULL /* thisHvGet */,  /**< 获取降流末端比较值函数 */
 };
 
-// 慢充充电电流表
+// 慢充充电电流表（无特殊说明，所有温度点必须有回滚）
 static uint16 const acchgsocxvalue[] = {PERCENT_TO_SOC(50), PERCENT_TO_SOC(80), PERCENT_TO_SOC(90), PERCENT_TO_SOC(104)};
 static sint16 const acchgtempyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(15), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45), TEMPERATURE_FROM_C(50)};
-static sint16 const acchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(15), TEMPERATURE_FROM_C(35), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45)};
+static sint16 const acchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-12), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(14), TEMPERATURE_FROM_C(35), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45)};
 static uint16 const acchgtableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -11
     CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // <= 0
@@ -140,10 +140,10 @@ static const PowerM_ConfigParamType PowerMCurChgHeaterConfigTable = {
 
 
 
-// 最大允许放电功率表
+// 最大允许放电功率表（无特殊说明，所有温度点必须有回滚）
 static uint16 const dchgsocxvalue[] = {PERCENT_TO_SOC(9.9), PERCENT_TO_SOC(29.9), PERCENT_TO_SOC(59.9), PERCENT_TO_SOC(104)};
 static sint16 const dchgtempyvalue[] = {TEMPERATURE_FROM_C(-21), TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(60)};
-static sint16 const dchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-21), TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(55)};
+static sint16 const dchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-22), TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(9), TEMPERATURE_FROM_C(55)};
 static uint16 const dchgtableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -21
     CURRENT_100MA_FROM_A(20U), CURRENT_100MA_FROM_A(50U), CURRENT_100MA_FROM_A(80U), CURRENT_100MA_FROM_A(80U), // <= -10
@@ -181,10 +181,10 @@ static const PowerM_ConfigParamType PowerMCurDchgContinueConfigTable = {
 
 
 
-// 最大允许充电电功率表
+// 最大允许充电电功率表（无特殊说明，所有温度点必须有回滚）
 static uint16 const chgcontinuesocxvalue[] = {PERCENT_TO_SOC(9.9), PERCENT_TO_SOC(29.9), PERCENT_TO_SOC(59.9), PERCENT_TO_SOC(104)};
 static sint16 const chgcontinuetempyvalue[] = {TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(20), TEMPERATURE_FROM_C(50)};
-static sint16 const chgcontinuetempaltyvalue[] = {TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(20), TEMPERATURE_FROM_C(45)};
+static sint16 const chgcontinuetempaltyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(9), TEMPERATURE_FROM_C(19), TEMPERATURE_FROM_C(45)};
 static uint16 const chgcontinuetableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // < -10
     CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // < 0
@@ -220,10 +220,10 @@ static const PowerM_ConfigParamType PowerMCurChgContinueConfigTable = {
     NULL,  /**< 获取降流末端比较值函数 */
 };
 
-// 最大运行瞬时回馈功率表
+// 最大运行瞬时回馈功率表（无特殊说明，所有温度点必须有回滚）
 static uint16 const dchgfbsocxvalue[] = {PERCENT_TO_SOC(9.9), PERCENT_TO_SOC(29.9), PERCENT_TO_SOC(59.9), PERCENT_TO_SOC(104)};
 static sint16 const dchgfbtempyvalue[] = {TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(20), TEMPERATURE_FROM_C(30), TEMPERATURE_FROM_C(50)};
-static sint16 const dchgfbtempaltyvalue[] = {TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(20), TEMPERATURE_FROM_C(30), TEMPERATURE_FROM_C(45)};
+static sint16 const dchgfbtempaltyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(9), TEMPERATURE_FROM_C(19), TEMPERATURE_FROM_C(29), TEMPERATURE_FROM_C(45)};
 static uint16 const dchgfbtableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -10
     CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // <= 0
@@ -260,10 +260,10 @@ static const PowerM_ConfigParamType PowerMCurDchgFeedbackConfigTable = {
     NULL,  /**< 获取降流末端比较值函数 */
 };
 
-// 最大允许瞬时放电功率表
+// 最大允许瞬时放电功率表（无特殊说明，所有温度点必须有回滚）
 static uint16 const dchgpeaksocxvalue[] = {PERCENT_TO_SOC(9.9), PERCENT_TO_SOC(29.9), PERCENT_TO_SOC(59.9), PERCENT_TO_SOC(104)};
 static sint16 const dchgpeaktempyvalue[] = {TEMPERATURE_FROM_C(-21), TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(60)};
-static sint16 const dchgpeaktempaltyvalue[] = {TEMPERATURE_FROM_C(-21), TEMPERATURE_FROM_C(-10), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(10), TEMPERATURE_FROM_C(55)};
+static sint16 const dchgpeaktempaltyvalue[] = {TEMPERATURE_FROM_C(-22), TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(9), TEMPERATURE_FROM_C(55)};
 static uint16 const dchgpeaktableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -21
     CURRENT_100MA_FROM_A(30U), CURRENT_100MA_FROM_A(60U), CURRENT_100MA_FROM_A(90U), CURRENT_100MA_FROM_A(100U), // <= -10
@@ -306,10 +306,10 @@ static Std_ReturnType thisExtCurXGet(uint16 *v) {
     return E_NOT_OK;
 }
 
-// 扩展电流最大允许功率表
+// 扩展电流最大允许功率表（无特殊说明，所有温度点必须有回滚）
 static uint16 const extcursocxvalue[] = {PERCENT_TO_SOC(104)};
 static sint16 const extcurtempyvalue[] = {TEMPERATURE_FROM_C(-20), TEMPERATURE_FROM_C(60)};
-static sint16 const extcurtempaltyvalue[] = {TEMPERATURE_FROM_C(-20), TEMPERATURE_FROM_C(55)};
+static sint16 const extcurtempaltyvalue[] = {TEMPERATURE_FROM_C(-21), TEMPERATURE_FROM_C(55)};
 static uint16 const extcurtableValue[] = {
     CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -20
     CURRENT_100MA_FROM_A(300U), CURRENT_100MA_FROM_A(300U), // <= 60
