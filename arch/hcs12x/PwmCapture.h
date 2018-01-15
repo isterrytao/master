@@ -27,14 +27,68 @@ typedef struct {
 
 #pragma pop
 
-
+/**
+ * \brief PWM捕获模块的初始化
+ */
 void PwmCapture_Init(void);
+
+/**
+ * \brief 获取PWM波形占空比
+ *
+ * \param pwm_data 对应通道的PWM数据
+ * \return PWM波形占空比（单位：0.1%）
+ */
 uint16 PwmCapture_GetDuty(const PwmCapture_DataType *pwm_data);
+
+/**
+ * \brief 获取PWM波形周期
+ * \detail 与底层PWM捕获模块的时钟相关，不建议使用，建议使用\ref PwmCapture_GetCycleTime。
+ *
+ * \param pwm_data 对应通道的PWM数据
+ * \return 获取PWM波形周期（底层PWM捕获模块的时钟的周期）
+ */
 uint32 PwmCapture_GetCycle(const PwmCapture_DataType *pwm_data);
+
+/**
+ * \brief 获取PWM波形频率
+ *
+ * \param pwm_data 对应通道的PWM数据
+ * \return PWM波形频率（单位：Hz）；
+ */
 uint32 PwmCapture_GetFrequence(const PwmCapture_DataType *pwm_data);
+
+/**
+ * \brief 判断最近一次的沿跳变是否为上升沿跳变
+ *
+ * \param pwm_data pwm_data 对应通道的PWM数据
+ * \retval TRUE 最近一次的沿跳变为上升沿跳变
+ * \retval FALSE 最近一次的沿跳变为下降沿跳变
+ */
 boolean PwmCapture_IsTriggerRising(const PwmCapture_DataType *pwm_data);
+
+/**
+ * \brief 获取PWM波形的低电平时间
+ *
+ * \param pwm_data 对应通道的PWM数据
+ * \return 低电平的时间（单位：100uS），比如返回10表示1mS；
+ */
 uint32 PwmCapture_GetLowTime(const PwmCapture_DataType *pwm_data);
+
+/**
+ * \brief 获取PWM波形的高电平时间
+ *
+ * \param pwm_data 对应通道的PWM数据
+ * \return 高电平的时间（单位：100uS），比如返回10表示1mS；
+ */
 uint32 PwmCapture_GetHighTime(const PwmCapture_DataType *pwm_data);
+
+/**
+ * \brief 获取PWM波形周期
+ *
+ * \param pwm_data 对应通道的PWM数据
+ * \return PWM波形周期（单位：100uS），比如返回10表示1mS；
+ */
+uint32 PwmCapture_GetCycleTime(const PwmCapture_DataType *pwm_data);
 
 #include "PwmCapture_Cfg.h"
 
