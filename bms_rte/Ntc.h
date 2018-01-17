@@ -14,8 +14,41 @@ extern const NTC_ConfigDataType *const CellNTCConfigData;
 extern const NTC_ConfigDataType *const ChgSckNTCConfigData;
 extern const NTC_ConfigDataType *const OnboardNTCConfigData;
 
+/**
+ * \brief 把温感电压根据温感表转换成温度值.
+ *
+ * \param cfgData 温感表
+ * \param vol 电压
+ *
+ * \return 温度值
+ */
+uint8 NTC_FromRef4096(const NTC_ConfigDataType *cfgData, uint16 vol);
+
+/**
+ * \brief 把单体温感的电压转换成温度值.
+ *
+ * \param vol 电压
+ *
+ * \return 温度值
+ */
 uint8 NTC_CellFromRef4096(uint16 vol);
+
+/**
+ * \brief 把充电插座温感的电压转换成温度值.
+ *
+ * \param vol 电压
+ *
+ * \return 温度值
+ */
 uint8 NTC_ChgSckTemperatureFromTAB(uint16 vol);
+
+/**
+ * \brief 把板载温感的电压转换成温度值.
+ *
+ * \param vol 电压
+ *
+ * \return 温度值
+ */
 uint8 NTC_OnboardFromRef4096(uint16 vol);
 
 #endif
