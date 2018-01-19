@@ -88,8 +88,8 @@ static const Dcm_ConfigType DcmConfigDtuTp = {
 };
 
 
-static OS_STK start_task_stack[400];
-static OS_STK hvadc_task_stack[400];
+static OS_STK start_task_stack[500];
+static OS_STK hvadc_task_stack[300];
 // static OS_STK shunt_task_stack[400];
 
 static void start_dtu_task(void) {
