@@ -295,9 +295,13 @@ static void start_task(void *pdata) {
     CanTp_Init(&CanTp_Cfg);
     J1939Tp_Init(&J1939Tp_Config);
     (void)Can_SetControllerMode(0U, CAN_T_START);
+#ifdef UPC6000
     if (HardWareIO_GetVersion() != 5U /*0b101*/) {
+#endif
         (void)Can_SetControllerMode(1U, CAN_T_START);
+#ifdef UPC6000
     }
+#endif
     (void)Can_SetControllerMode(2U, CAN_T_START);
     (void)Can_SetControllerMode(3U, CAN_T_START);
 
@@ -335,15 +339,19 @@ static void start_task(void *pdata) {
 
     ParameterM_Init();
     if (isNeedStartSampleTask()) {
+        uint16 gainErr;
         PwmCapture_Init();
         PwmCapture_Start();
+#ifdef UPC6000
         if (HardWareIO_GetVersion() != 5U /*0b101*/) {
-            uint16 gainErr;
+#endif
             if (ParameterM_EeepRead(PARAMETERM_EEEP_SHUNT_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
                 gainErr = 1000U;
             }
             Shunt_Init(&shuntLooper, gainErr);
+#ifdef UPC6000
         }
+#endif
         CurrentM_Init(&CurrentM_ConfigInfo, CURRENTM_TASK_PRI);
         PowerM_Init(&extLooper);
     }

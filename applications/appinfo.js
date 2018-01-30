@@ -29,13 +29,6 @@ module.exports = {
             fwAddrSpace = "Boot_FWCopyAAddrSpace"
         }
 
-        compatibleHWList = ["P2", "P3"];
-
-        const compaiableMap = {
-            "P1": 0x01,
-            "P2": 0x02,
-            "P3": 0x04,
-        };
 
         const isValidOid = (oid) => {
             var ymd = oid.match(/^U[DO](\d{4})(\d{2})(\d{2})\d{3}$/)
@@ -45,12 +38,6 @@ module.exports = {
             if (!((d = new Date(isoString)) | 0)) return false;
             return d.toISOString().slice(0, 10) == isoString;
         }
-
-        // const splitMasterVersion = (ver) => {
-        //     var v = ver.match(/(\d+)\.(\d+)\.(\d+)\.(\d)+/)
-        //     if (!v) null
-        //     return v.slice(1);
-        // }
 
         if (cfg.releaseType != "T" && cfg.releaseType != "R") throw "AppInfo.releaseType has wrong format";
 
@@ -81,10 +68,25 @@ module.exports = {
             releaseName += info.LibInfo.masterVersion;
         }
 
-        var compatibleHW = compatibleHWList.reduce((sum, x)=>sum | compaiableMap[x], 0x00);
-        //var masterVersion = cfg.masterVersion;
-        //var splitedMasterVersion = splitMasterVersion(masterVersion);
-        //if (!splitedMasterVersion) throw "AppInfo.masterVersion  has wrong format"
+        const compatibleHWList = {
+            'UPA650': ['V1.03'],
+            'UPC6000': ['V1.02', 'V1.02_FOR_CHUHAN'],
+        }
+
+        const compatibleHwMap = {
+            'UPA650': {
+                "V1.00": 1<<2,
+                "V1.01": 1<<7,
+                "V1.02": 1<<7,
+                "V1.03": 1<<7,
+            },
+            'UPC6000': {
+                "V1.02": 1<<1,
+                "V1.02_FOR_CHUHAN": 1<<2,
+            }
+        }
+        var pcba = info.SystemConnection.PCBA;
+        var compatibleHW = compatibleHWList[pcba].reduce((sum, x) => sum | compatibleHwMap[pcba][x], 0x00);
 
         var buildTime = new Date();
         var buildTimeStr =
@@ -107,11 +109,6 @@ module.exports = {
             compatibleHW: compatibleHW,
             releaseName: releaseName,
             srcCommitID: srcCommitID,
-            // masterVersion: masterVersion,
-            // masterMajor: splitedMasterVersion[0],
-            // masterMinor: splitedMasterVersion[1],
-            // masterRevision: splitedMasterVersion[2],
-            // masterBuild: splitedMasterVersion[3],
             releaseFileName: releaseFileName,
             appVersion: appVersion,
         }

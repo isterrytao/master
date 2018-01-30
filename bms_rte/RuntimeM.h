@@ -146,6 +146,14 @@ RuntimeM_ResetSourceType RuntimeM_GetResetSouce(void);
 void RuntimeM_RequestOta(void);
 
 /**
+ * \brief 判断是否有OTA请求.
+ *
+ * \retval TRUE 有OTA请求
+ * \retval FALSE 无OTA请求
+ */
+boolean RuntimeM_HasOtaRequest(void);
+
+/**
  * \brief 获取当前时刻的唤醒信号源.
  * \return 当前唤醒信号的位标识.
  */
@@ -155,6 +163,12 @@ uint8 RuntimeM_GetWakeSignal(void);
  * \brief 请求下电, 只能在DTU模式下使用.
  */
 void RuntimeM_RequestPowerDown(void);
+
+
+/**
+ * \brief 通知运行管理模块, 直接进入DTU模式，可用于手动升级.
+ */
+Std_ReturnType RuntimeM_RequestToDtuMode(void);
 
 /**
  * \brief 通知运行管理模块, 进入编程模式(复位到Bootloader或,延长DTU的运行时限).
