@@ -771,6 +771,14 @@ module.exports = {
                     {levels:[4,], event: "assert", action: "RuntimeM_LowPowerSupply"},
                 ],
             }, {
+                name: "供电电压过高",
+                levels: [],
+                cycle:500,
+            }, {
+                name: "供电电压异常",
+                levels: [],
+                cycle:500,
+            }, {
                 name: "充电极柱高温",
                 levels: [1,2,3,4],
                 cycle:100,
@@ -1252,7 +1260,13 @@ module.exports = {
                 levels:[
                     [1, 1, 5, 5]
                 ]
-            },
+            }, {
+                name: "供电电压异常",
+                levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
+                levels:[
+                    [1, 1, 5, 5]
+                ]
+            }
         ]
     },
 

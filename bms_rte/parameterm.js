@@ -59,6 +59,7 @@ module.exports = {
             {name:"充电极柱温差", mapper: tempmapper, default:tempDefault, calibrate: true},
             {name:"放电极柱温差", mapper: tempmapper, default:tempDefault, calibrate: true},
             {name:"充电电流异常", mapper: currentmapper, default:curDefault, calibrate: true},
+            {name:"供电电压过高", mapper: mvMapper, default:defaultDefault, calibrate: true},
             {name:"电压排线脱落", mapper: nomapper, default:defaultDefault, calibrate: false},
             {name:"温感排线脱落", mapper: nomapper, default:defaultDefault, calibrate: false},
             {name:"内网通信", mapper: nomapper, default:defaultDefault, calibrate: false},
@@ -86,6 +87,7 @@ module.exports = {
             {name:"多充电连接故障", mapper: nomapper, default:defaultDefault, calibrate: false},
             {name:"电池数不匹配", mapper: nomapper, default:defaultDefault, calibrate: false},
             {name:"温感数不匹配", mapper: nomapper, default:defaultDefault, calibrate: false},
+            {name:"供电电压异常", mapper: nomapper, default:defaultDefault, calibrate: false},
         ]
 
         // var calibrateparam = require(cfgData.calibrateparam);

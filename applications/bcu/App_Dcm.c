@@ -1994,7 +1994,7 @@ void App_Read0x2850(Dcm_MsgContextType *pMsgContext) {
     uint8 i;
     uint16 length = DCM_INDEX_4, count = 0U, pos;
     Diagnosis_ItemType item;
-    for (i = 0U; i <= DIAGNOSIS_ITEM_DEFAULT_NUM; ) {
+    for (i = 0U; i < DIAGNOSIS_ITEM_DEFAULT_NUM; ) {
         item = Diagnosis_IndexToItem(i);
         item = Diagnosis_GetNextAlarmingItem(item);
         if (item != DIAGNOSIS_ITEM_INVALID_INDEX) {

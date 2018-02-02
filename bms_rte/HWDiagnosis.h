@@ -194,6 +194,13 @@ void HWDiagnosis_GetDiagnosisStatusAll(Diagnosis_LevelType *DiagnosisBuffPtr);
  */
 uint8 HWDiagnosis_IsHwFault(void);
 
+/**
+ * \brief 供电电压是否采集异常
+ * \details 采集供电电压无效
+ * \return 0-正常 1-异常
+ */
+uint16 HWDiagnosis_SupplyVoltageIsAbnomal(void);
+
 #endif
 
 /**

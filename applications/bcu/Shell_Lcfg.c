@@ -17,10 +17,10 @@ SHELL_PROTYPE(analogi);
 SHELL_PROTYPE(flag);
 SHELL_PROTYPE(reset);
 SHELL_PROTYPE(dtu);
-#if defined(A600) || defined(A601) || defined(A602) || defined(A603)
+#if defined(UPC6000)
 SHELL_PROTYPE(chtemp);
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#if defined(UPA650)
 SHELL_PROTYPE(chgtemp);
 #endif
 SHELL_PROTYPE(shunt);
@@ -50,10 +50,10 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("rtc", rtc),
     SHELL_COMMAND("reset", reset),
     SHELL_COMMAND("dtu", dtu),
-#if defined(A600) || defined(A601) || defined(A602) || defined(A603)
+#if defined(UPC6000)
     SHELL_COMMAND("chtemp", chtemp),
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#if defined(UPA650)
     SHELL_COMMAND("chgtemp", chgtemp),
 #endif
     SHELL_COMMAND("shunt", shunt),

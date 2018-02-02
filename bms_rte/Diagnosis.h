@@ -278,7 +278,7 @@ typedef struct{
     Diagnosis_Action actionFunc; /**< 动作函数 */
 }Diagnosis_CondAsyncEventType;
 
-extern const Diagnosis_DiagInfoType Diagnosis_DiagInfoItem[DIAGNOSIS_ITEM_DEFAULT_NUM+1U];
+extern const Diagnosis_DiagInfoType Diagnosis_DiagInfoItem[DIAGNOSIS_ITEM_DEFAULT_NUM];
 extern const Diagnosis_DiagInfoType Diagnosis_DiagInfoConfig[];
 extern const Diagnosis_StartDiagInfoType Diagnosis_StartDiagInfo[];
 extern const Diagnosis_ParaType Diagnosis_ChgSckTmpHTDiagConfig[];

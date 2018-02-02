@@ -75,7 +75,8 @@ module.exports = {
             {name:"放电极柱高温", diagnosisType:"HIGH", condition:"DCHG", def:"DCHG_POLE_HT", getval:"Statistic_GetBcuPoleHtMax", validate:"CellDataM_TemperatureIsValid", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
             {name:"充电极柱温差", diagnosisType:"HIGH", condition:"CHG", def:"CHG_POLE_DT", getval:"Statistic_GetBcuPoleDtMax", validate:"CellDataM_TemperatureIsValid", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
             {name:"放电极柱温差", diagnosisType:"HIGH", condition:"DCHG", def:"DCHG_POLE_DT", getval:"Statistic_GetBcuPoleDtMax", validate:"CellDataM_TemperatureIsValid", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
-            {name:"充电电流异常", diagnosisType:"HIGH", condition:"CHG", def:"CHG_CUR_FAULT",altdef:["CALIBRATE_STOP"], getval:"ChargerComm_DiagGetDeltaCurWithChr", validate:"CurrentM_DiagIsValidCurrent"},
+            {name:"充电电流异常", diagnosisType:"HIGH", condition:"CHG", def:"CHG_CUR_FAULT", getval:"ChargerComm_DiagGetDeltaCurWithChr", validate:"CurrentM_DiagIsValidCurrent"},
+            {name:"供电电压过高", diagnosisType:"HIGH", condition:"ALL", def:"SUPPLY_VOL_HIGH", altdef:["CALIBRATE_STOP"], getval:"HWDiagnosis_GetSupplyVoltage", validate:"CellDataM_VoltageIsValid"},
             {name:"电压排线脱落", diagnosisType:"HIGH", condition:"ALL", def:"VOLT_LINE", altdef:["NONE_CALIBRATE_START","LINE_START"], getval:"Statistic_GetBcuInvalidVoltageNum", valueReady:"CellDataM_AllSlaveVoltageIsReceive"},
             {name:"温感排线脱落", diagnosisType:"HIGH", condition:"ALL", def:"TEMP_LINE",altdef:["LINE_STOP"], getval:"Statistic_GetBcuInvalidTemperatureNum", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
             {name:"内网通信", diagnosisType:"HIGH", condition:"ALL", def:"INTER_COMM", getval:"InternalComm_SlaveIsNoComm", valueReady:"CellDataM_AllSlaveVoltageIsReceive"},
@@ -102,7 +103,8 @@ module.exports = {
             {name:"电子锁故障", diagnosisType:"HIGH", condition:"ALL", def:"EL_FAULT", getval:"EL_DiagnosisIsError", valueReady:"EL_DiagsisIsFinishedForDiag"},
             {name:"多充电连接故障", diagnosisType:"HIGH", condition:"ALL", def:"DOUBLE_CHG_CONNECT_FAULT", getval:"ChargeConnectM_IsDoubleConnectFault"},
             {name:"电池数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_BAT_NUM",getval:"Statistic_ActureBatNumIsNotMatch", valueReady:"CellDataM_AllSlaveVoltageIsReceive"},
-            {name:"温感数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_TMP_NUM",altdef:["NONE_CALIBRATE_STOP"], getval:"Statistic_ActureTemperatureNumIsNotMatch", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
+            {name:"温感数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_TMP_NUM", getval:"Statistic_ActureTemperatureNumIsNotMatch", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
+            {name:"供电电压异常", diagnosisType:"HIGH", condition:"ALL", def:"SUPPLY_VOL_ABNOMAL",altdef:["NONE_CALIBRATE_STOP"], getval:"HWDiagnosis_SupplyVoltageIsAbnomal"},
         ];
 
         var noneCalibrateStart = '电压排线脱落';

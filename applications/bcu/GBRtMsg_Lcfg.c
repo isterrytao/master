@@ -328,7 +328,7 @@ static const GB32960_CopySegmentType copySegmentsBalanceStatus[] = {
 };
 
 
-static Diagnosis_LevelType alarms[DIAGNOSIS_ITEM_DEFAULT_NUM + 1U];
+static Diagnosis_LevelType alarms[DIAGNOSIS_ITEM_DEFAULT_NUM];
 static uint8 alaramLengthCaculated = 0U;
 static uint8 alaramNum = 0U;
 static uint8 alarmCopyOffset = 0U;
