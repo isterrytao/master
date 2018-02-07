@@ -65,14 +65,20 @@ typedef enum {
 typedef struct {
     Soc_CumuLativeTypeType type; /**< 累计类型 */
     uint16 resoltion; /**< 存储分辨率(仅用于能量累计类型) */
-}Soc_CumuInfoType;
+}Soc_DchgCumuInfoType;
+
+typedef struct {
+    Soc_CumuLativeTypeType type; /**< 累计类型 */
+    uint16 resoltion; /**< 存储分辨率(仅用于能量累计类型) */
+    boolean isContainFeedback; /**< 是否包含回馈电流 */
+}Soc_ChgCumuInfoType;
 
 /**
  * \brief SOC配置参数类型定义
  */
 typedef struct{
-    Soc_CumuInfoType ChgCumuInfo; /**< 充电累计配置信息 */
-    Soc_CumuInfoType DchgCumuInfo; /**< 放电累计配置信息 */
+    Soc_ChgCumuInfoType ChgCumuInfo; /**< 充电累计配置信息 */
+    Soc_DchgCumuInfoType DchgCumuInfo; /**< 放电累计配置信息 */
     Soc_JumpConfigType jumpPara; /**< SOC跳变参数 */
 }Soc_ConfigInfoType;
 
