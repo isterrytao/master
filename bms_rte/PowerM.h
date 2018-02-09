@@ -100,6 +100,13 @@ boolean PowerM_IsChargeEndFinished(PowerM_CurrentTypeType Type);
  */
 boolean PowerM_IsChargeEndDecreasing(PowerM_CurrentTypeType Type);
 
+/**
+ * \brief 复位功率管理的状态
+
+ * \param Type 需要的复位的类型
+ */
+void PowerM_Reset(PowerM_CurrentTypeType Type);
+
 
 void PowerM_DumpDestWithoutDiagResult(void);
 void PowerM_DumpDestWithDiagResult(void);

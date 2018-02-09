@@ -28,7 +28,7 @@ typedef uint8 Uart_ChannelType;
  * \return 拷贝数据的大小.
  * \note 如果返回值<传入的size, 那么数据发送完成, 则不会进一步发送数据.
  */
-typedef uint8 (*Uart_CopyTxData)(uint8 *buf, uint8 size);
+typedef uint8 (*Uart_CopyTxData)(void *UserData, uint8 *buf, uint8 size);
 
 /**
  * \brief 初始化Uart
