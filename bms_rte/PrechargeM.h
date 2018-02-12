@@ -109,6 +109,8 @@ uint8 PrechargeM_IsStart(void);
 
 /**
  * \brief 预充是否完成
+ * \details 包含预充条件成立后，等待主回路继电器闭合而后断开预充
+ *
  * \return TRUE-完成 FALSE-未完成
  */
 uint8 PrechargeM_IsFinish(void);

@@ -185,3 +185,8 @@ boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
     (void) signal;
     return UserStrategy_IsSafeToOff();
 }
+
+uint16 UserStrategy_GetCrashFault(void)
+{
+    return 0U;
+}

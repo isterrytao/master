@@ -97,4 +97,10 @@ uint16 UserStrategy_IsDiagHvilAbnormal(void);
  */
 void UserStrategy_CheckSRS(const PwmCapture_DataType *dat);
 
+/**
+ * \brief 获取碰撞故障状态
+ */
+uint16 UserStrategy_GetCrashFault(void);
+
+
 #endif

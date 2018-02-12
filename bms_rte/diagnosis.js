@@ -104,7 +104,8 @@ module.exports = {
             {name:"多充电连接故障", diagnosisType:"HIGH", condition:"ALL", def:"DOUBLE_CHG_CONNECT_FAULT", getval:"ChargeConnectM_IsDoubleConnectFault"},
             {name:"电池数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_BAT_NUM",getval:"Statistic_ActureBatNumIsNotMatch", valueReady:"CellDataM_AllSlaveVoltageIsReceive"},
             {name:"温感数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_TMP_NUM", getval:"Statistic_ActureTemperatureNumIsNotMatch", valueReady:"CellDataM_AllSlaveTemperatureIsReceive"},
-            {name:"供电电压异常", diagnosisType:"HIGH", condition:"ALL", def:"SUPPLY_VOL_ABNOMAL",altdef:["NONE_CALIBRATE_STOP"], getval:"HWDiagnosis_SupplyVoltageIsAbnomal"},
+            {name:"供电电压异常", diagnosisType:"HIGH", condition:"ALL", def:"SUPPLY_VOL_ABNOMAL", getval:"HWDiagnosis_SupplyVoltageIsAbnomal"},
+            {name:"碰撞故障", diagnosisType:"HIGH", condition:"ALL", def:"CRASH_FAULT",altdef:["NONE_CALIBRATE_STOP"], getval:"UserStrategy_GetCrashFault"},
         ];
 
         var noneCalibrateStart = '电压排线脱落';

@@ -107,8 +107,14 @@ boolean PowerM_IsChargeEndDecreasing(PowerM_CurrentTypeType Type);
  */
 void PowerM_Reset(PowerM_CurrentTypeType Type);
 
-
+/**
+ * \brief 此函数仅用于测试
+ */
 void PowerM_DumpDestWithoutDiagResult(void);
+
+/**
+ * \brief 此函数仅用于测试
+ */
 void PowerM_DumpDestWithDiagResult(void);
 
 typedef struct {
@@ -116,9 +122,9 @@ typedef struct {
     uint8 percent[DIAGNOSIS_SUPPORT_LEVEL];
 } PowerM_DiagnosisPercentMapType;
 
-#define POWERM_CHARGE_END_DEC_TO_PERCENT  0x00U
-#define POWERM_CHARGE_END_DEC_CONSTVAL    0x01U
-#define POWERM_CHARGE_END_DEC_TO_CONSTVAL 0x02U
+#define POWERM_CHARGE_END_DEC_TO_PERCENT  0x00U //下降到指定百分比
+#define POWERM_CHARGE_END_DEC_CONSTVAL    0x01U //下降指定值
+#define POWERM_CHARGE_END_DEC_TO_CONSTVAL 0x02U //下降到指定值
 
 typedef struct PowerM_ChargeEndConfig {
     const struct PowerM_ChargeEndConfig *next; /**/
@@ -129,13 +135,13 @@ typedef struct PowerM_ChargeEndConfig {
     uint16 minVal; /**< 该阶段最小值 */
 } PowerM_ChargeEndConfigType;
 
-#define POWERM_XAXIS_SUPPORT_L2R   0x01U
-#define POWERM_XAXIS_SUPPORT_R2L   0x02U
-#define POWERM_XAXIS_SUPPORT_BDIR  0x03U
-#define POWERM_YAXIS_USE_LT        0x00U
-#define POWERM_YAXIS_USE_HT        0x01U
-#define POWERM_YAXIS_USE_MAX       0x02U
-#define POWERM_YAXIS_USE_MIN       0x03U
+#define POWERM_XAXIS_SUPPORT_L2R   0x01U //X轴支持变动方向：从左到右
+#define POWERM_XAXIS_SUPPORT_R2L   0x02U //X轴支持变动方向：从右到左
+#define POWERM_XAXIS_SUPPORT_BDIR  0x03U //X轴支持变动方向：双向
+#define POWERM_YAXIS_USE_LT        0x00U //Y轴使用最低温度
+#define POWERM_YAXIS_USE_HT        0x01U //Y轴使用最高温度
+#define POWERM_YAXIS_USE_MAX       0x02U //Y轴最高与最高温度取大
+#define POWERM_YAXIS_USE_MIN       0x03U //Y轴最高与最高温度取小
 
 typedef struct {
     uint16 xAxisNum; /**< 功率控制表X轴分隔数量 */

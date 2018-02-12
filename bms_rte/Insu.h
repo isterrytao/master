@@ -57,13 +57,14 @@ Insu_ResistorType Insu_GetNegative(void);
 
 /**
  * \brief 读取系统绝缘电阻.
+ * \details 分别读取正极绝缘阻值和负极绝缘阻值，两者取小作为系统绝缘阻值
  *
  * \return 绝缘电阻值.
  */
 Insu_ResistorType Insu_GetSystem(void);
 
 /**
- * \brief 读取绝缘模块的工作状态.
+ * \brief 读取绝缘模块的工作状态.（此函数未实现）
  *
  * \return 绝缘模块的工作状态.
  */
@@ -77,6 +78,7 @@ void Insu_Deinit(void);
 
 /**
  * \brief 获取漏电率 单位ohm/v
+ * \details 根据当前B+总压和系统绝缘阻值计算漏电率
  */
 uint16 Insu_GetLeak(void);
 
@@ -88,10 +90,16 @@ uint16 Insu_GetLeak(void);
  */
 uint8 Insu_ResIsValid(Insu_ResistorType resistor);
 
+/**
+ * \brief 绝缘阻值是否已经完成计算
+ * \details 系统上电后完成一次绝缘阻值计算即返回TRUE
+ * \return FALSE:未计算 TRUE:已计算
+ */
 boolean Insu_IsCalculated(void);
 
 /**
  * \brief 绝缘漏电值是否有效
+ * \details 0xFFFFU代表无效值
  *
  * \param leak 漏电值 单位ohm/V
  * \return 0-无效 1-有效

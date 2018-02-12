@@ -202,7 +202,7 @@ RelayM_DiagnosisStatusType RelayM_GetDiagnosisStatus(RelayM_FunctionType fn);
 Std_ReturnType RelayM_StartAdhesiveDetect(RelayM_FunctionType fn, RelayM_DetectCbk cbk);
 
 /**
- * \brief 启动继电器的开路检测.
+ * \brief 启动继电器的开路检测（此功能暂未实现）.
  * \note 该调用为异步调用, 请参考\link RelayM_DetectCbk \endlink.
  *
  * \param fn 要检测的继电器.
@@ -252,6 +252,8 @@ boolean RelayM_IsInOpProcess(void);
  * \return 0-正常 非0-异常
  */
 uint16 RelayM_IsDiagAbnormal(void);
+
+
 
 #endif
 

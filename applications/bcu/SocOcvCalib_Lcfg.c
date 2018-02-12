@@ -47,7 +47,7 @@ const SocOcvCalib_ConfigType SocOcvCalib_ConfigInfo = {
     (uint8)ARRAY_SIZE(SocOcvCalib_SocBuffer), /**< socBuffSize: SOC缓存大小 */
     (uint8)ARRAY_SIZE(SocOcvCalib_TemperatureBuffer), /**< temperatureBuffSize: 温度缓存大小 */
     CURRENT_100MA_FROM_A(3U), /**< allowedCurrent：校准允许最大电流 */
-    S_TO_MS(2U), /**< powerOnDelay：上电检查延时时间 1S/bit */
+    S_TO_MS(2U), /**< powerOnDelay：上电检查延时时间 1mS/bit */
     HOUR_TO_MIN(12U), /**< calibCycle:OCV-SOC校准周期 1min/bit */
     HOUR_TO_MIN(5U*24U), /**< longCycle:OCV-SOC校准周期 1min/bit */
     1800U, /**< checkCycle:OCV-SOC查询周期 1s/bit */

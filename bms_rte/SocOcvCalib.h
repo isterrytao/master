@@ -32,7 +32,7 @@ typedef struct{
     uint8 socBuffSize; /**< SOC缓存大小 */
     uint8 temperatureBuffSize; /**< 温度缓存大小 */
     uint16 allowedCurrent; /**< 允许校准最大电流 */
-    uint16 powerOnDelay; /**< 上电检查延时时间 1S/bit */
+    uint16 powerOnDelay; /**< 上电检查延时时间 1mS/bit */
     uint16 calibCycle; /**< OCV-SOC校准周期 1min/bit */
     uint16 longCycle; /**< OCV-SOC长时间周期 1min/bit */
     uint16 checkCycle; /**< OCV-SOC查询周期 1s/bit */

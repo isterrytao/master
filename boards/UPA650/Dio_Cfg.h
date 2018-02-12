@@ -53,7 +53,7 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_CHANNEL_FB_MUX_B              DIO_CHANNEL(K, 2U)
 #define DIO_CHANNEL_FB_MUX_C              DIO_CHANNEL(K, 1U)
 
-#define DIO_CHANNEL_DTU_ID                DIO_CHANNEL(C, 0U) /**< DTU子板是否安装识别 */
+#define DIO_CHANNEL_DTU_ID                DIO_CHANNEL(AN_16_23, 5U) /**< DTU子板是否安装识别 */
 #define DIO_CHANNEL_DTU_POWER_EN          DIO_CHANNEL(C, 1U) /**< DTU子板电源控制 */
 #define DIO_CHANNEL_DTU_POWER_KEY         DIO_CHANNEL(C, 2U) /**< DTU子板电源按键控制 */
 #define DIO_CHANNEL_DTU_STATUS            DIO_CHANNEL(C, 3U) /**< DTU子板状态反馈 */
@@ -66,7 +66,7 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_CHANNEL_SHUNT_INT             DIO_CHANNEL(J, 7U) /**< 分流器中断输入 */
 #define DIO_CHANNEL_SHUNT_RESET           DIO_CHANNEL(J, 6U) /**< 分流器复位 */
 
-#define DIO_CHANNEL_CAN2_STB              DIO_CHANNEL(AN_16_23, 5U) /**< CAN2低功耗控制 */
+#define DIO_CHANNEL_CAN2_STB              DIO_CHANNEL_NONE /**< CAN2低功耗控制 */
 #define DIO_CHANNEL_CAN2_EN               DIO_CHANNEL(AN_16_23, 6U) /**< CAN2使能控制 */
 #define DIO_CHANNEL_CAN2_ERR              DIO_CHANNEL(AN_16_23, 7U) /**< CAN2错误输入 */
 #define DIO_CHANNEL_CAN2_INH              DIO_CHANNEL(E, 0U) /**< CAN2使能控制 */

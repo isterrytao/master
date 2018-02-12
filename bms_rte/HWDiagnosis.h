@@ -170,7 +170,7 @@ uint8 HWDiagnosis_GetBoardTemperatureAll(App_TemperatureType *TemperatureBuffPtr
 
 
 /**
- * \brief 获取诊断状态
+ * \brief 获取诊断状态（此函数未实现）
  * \note 根据ECU ID确定是获取主机还是从机的诊断，然后根据诊断项获取诊断状态
  *
  * \param EcuId 设备编号 0:BCU 1~16:BMU1~16
@@ -181,7 +181,7 @@ uint8 HWDiagnosis_GetBoardTemperatureAll(App_TemperatureType *TemperatureBuffPtr
 Diagnosis_LevelType HWDiagnosis_GetDiagnosisStatus(App_SlaveIdType SlaveId, HWDiagnosis_DiagnosisItemType Diag_Item);
 
 /**
- * \brief 获取全部诊断状态信息
+ * \brief 获取全部诊断状态信息（此函数未实现）
  * \note 板载状态的顺序与HWDiagnosis_DiagnosisItemType顺序相同
  *
  * \param DiagnosisBuffPtr 全部诊断状态
@@ -189,7 +189,7 @@ Diagnosis_LevelType HWDiagnosis_GetDiagnosisStatus(App_SlaveIdType SlaveId, HWDi
 void HWDiagnosis_GetDiagnosisStatusAll(Diagnosis_LevelType *DiagnosisBuffPtr);
 
 /**
- * \brief BMS硬件是否存在硬件故障
+ * \brief BMS硬件是否存在硬件故障（此函数未实现）
  * \return TRUE: 有故障 FALSE: 无故障
  */
 uint8 HWDiagnosis_IsHwFault(void);

@@ -141,42 +141,55 @@ boolean TemperatureM_IsRefrigeration(void);
 
 /**
  * \brief 获取充电加热时长
+ * \note  此接口暂未实现
+ *
  * \return 已加热时长
  */
 uint16 TemperatureM_GetChgHeatTime(void);
 
 /**
  * \brief 获取放电加热时长
+ * \note  此接口暂未实现
+ *
  * \return 已加热时长
  */
 uint16 TemperatureM_GetDchgHeatTime(void);
 
 /**
  * \brief 获取充电加热电流值
+ * \note  此接口暂未实现
+ *
  * \return 充电加热电流
  */
 uint16 TemperatureM_GetChgHeatCurrent(void);
 
 /**
  * \brief 获取放电加热电流值
+ * \note  此接口暂未实现
+ *
  * \return 放电加热电流
  */
 uint16 TemperatureM_GetDchgHeatCurrent(void);
 
 /**
  * \brief 是否加热故障
+ * \note  当加热状态设置为TEMPERATUREM_HEAT_STATE_FAULT时,返回1
+ *
  * \return 0-正常 非0-故障
  */
 uint16 TemperatureM_IsHeatingFault(void);
 
 /**
  * \brief 是否制冷故障
+ * \note  当加热状态设置为TEMPERATUREM_REFRI_STATE_FAULT时,返回1
+ *
  * \return 0-正常 非0-故障
  */
 uint16 TemperatureM_IsRefrigerationFault(void);
 
 /**
  * \brief 温度管理获取最大充电加热温度
+ * \note  仅在充电连接且加热状态下,返回加热温度最大值,否则返回无效值,若无加热温感,返回无效值
  *
  * \return 当前最大加热温度
  */
@@ -184,6 +197,7 @@ uint16 TemperatureM_GetChgHeatTemperatureMax(void);
 
 /**
  * \brief 温度管理获取最大充电加热温差
+ * \note  仅在充电连接且加热状态下,返回加热最大温差值,否则返回无效值,若无加热温感,返回无效值
  *
  * \return 当前最大加热温差
  */
@@ -191,6 +205,7 @@ uint16 TemperatureM_GetChgHeatDeltaTemperatureMax(void);
 
 /**
  * \brief 温度管理获取最大放电加热温度
+ * \note  仅在放电连接且加热状态下,返回加热温度最大值,否则返回无效值,若无加热温感,返回无效值
  *
  * \return 当前最大加热温度
  */
@@ -198,6 +213,7 @@ uint16 TemperatureM_GetDchgHeatTemperatureMax(void);
 
 /**
  * \brief 温度管理获取最大放电加热温差
+ * \note  仅在充电连接且加热状态下,返回加热最大温差值,否则返回无效值,若无加热温感,返回无效值
  *
  * \return 当前最大加热温差
  */

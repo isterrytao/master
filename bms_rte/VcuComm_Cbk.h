@@ -15,6 +15,7 @@
  * \{
  */
 
+//注：此文件接口声明均为内部接口。
 
 #ifndef VCUCOMM_CBK_H_
 #define VCUCOMM_CBK_H_

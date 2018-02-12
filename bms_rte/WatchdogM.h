@@ -48,11 +48,11 @@ void WatchdogM_Disable(void);
 WatchdogM_IdType WatchdogM_Register(uint16 ms);
 
 /**
- * \brief 看门狗监控任务反注册
+ * \brief 看门狗监控任务注销
  *
  * \param Id 监控任务ID
  *
- * \return E_OK:反注册成功 E_NOT_OK:反注册失败
+ * \return E_OK:注销成功 E_NOT_OK:注销失败
  */
 Std_ReturnType WatchdogM_Unregister(WatchdogM_IdType Id);
 

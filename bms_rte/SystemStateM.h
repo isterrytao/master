@@ -20,6 +20,8 @@
 
 #include "Std_Types.h"
 
+#if 0
+
 /**
  * \brief 系统状态类型定义
  */
@@ -47,10 +49,12 @@ void SystemStateM_Deinit(void);
 
 /**
  * \brief 获取系统状态
+ *
  * \return 当前系统状态
  */
 SystemStateM_StateType SystemStateM_GetState(void);
 
+#endif
 
 
 #endif

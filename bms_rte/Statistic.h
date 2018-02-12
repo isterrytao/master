@@ -182,34 +182,26 @@ extern const Statistic_ConfigInfoType Statistic_ConfigInfo;
 void Statistic_Init(Async_LooperType *looper);
 
 /**
- * \brief 获取从机LTC6804采集板最高电压统计信息
- * \note LTC6804单采集板统计出的最高电压以从机内逻辑电压编号的形式表示，分辨率为单字节
- *
- * \param Slave 从机号
- * \param Buffer 统计信息写入缓存
- * \param Length 输入缓存长度，返回实际写入字节长度
- *
- * \remarks	可用于LTC6804均衡时获取最高均衡单体
- */
-void Statistic_SampleBoardHvItemGet(App_SlaveIdType Slave, uint8 *Buffer, uint8 *Length);
-
-/**
  * \brief 获取已充电时间
+ * \note  单位：S
  */
 uint32 Statistic_GetEclipseChargeTime(void);
 
 /**
  * \brief 获取剩余充电时间
+ * \note  单位：S
  */
 uint32 Statistic_GetRequireChargeTime(void);
 
 /**
  * \brief 获取已放电时间
+ * \note  单位：S
  */
 uint32 Statistic_GetEclipseDischargeTime(void);
 
 /**
  * \brief 获取剩余放电时间
+ * \note  单位：S
  */
 uint32 Statistic_GetRequireDischargeTime(void);
 
@@ -259,106 +251,175 @@ App_TemperatureType Statistic_GetBcuAverageTemperature(void);
 
 /**
  * \brief 获取最大温差值
+ * \note  与温度偏移量一致，返回值有TEMPERATURE_OFFSET偏移量
  */
 App_TemperatureType Statistic_GetBcuDeltaTemperature(void);
 
 /**
  * \brief 获取单体高压个数
+ * \note  返回值不超过STATISTIC_VOLTAGE_NUM
  */
 uint8 Statistic_GetBcuHvNum(void);
 
 /**
  * \brief 获取单体低压个数
+ * \note  返回值不超过STATISTIC_VOLTAGE_NUM
  */
 uint8 Statistic_GetBcuLvNum(void);
 
 /**
  * \brief 获取单体高温个数
+ * \note  返回值不超过STATISTIC_TEMPERATURE_NUM
  */
 uint8 Statistic_GetBcuHtNum(void);
 
 /**
  * \brief 获取单体低温个数
+ * \note  返回值不超过STATISTIC_TEMPERATURE_NUM
  */
 uint8 Statistic_GetBcuLtNum(void);
 
 /**
  * \brief 获取最高单体电压
+ * \note  输入编号0对应电压最高，其次是编号1，以此类推
+ *
+ * \param index 最高电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 返回对应编号的电压值，可能返回无效值
  */
 App_VoltageType Statistic_GetBcuHv(uint8 index);
 
 /**
- * \brief 获取最高单体电压从机号 编号从0开始
+ * \brief 获取最高单体电压从机号
+ * \note  输入编号0对应电压最高，其次是编号1，以此类推
+ *
+ * \param index 最高电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 从机ID，从0开始
  */
 App_SlaveIdType Statistic_GetBcuHvSlaveNum(uint8 index);
 
 /**
- * \brief 获取最高单体电压从机内索引号 编号从0开始
+ * \brief 获取最高单体电压从机内串号
+ * \note  输入编号0对应电压最高，其次是编号1，以此类推
+ *
+ * \param index 最高电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 从机内串号，从0开始
  */
 uint8 Statistic_GetBcuHvIndex(uint8 index);
 
 /**
- * \brief 获取最高单体电压逻辑引号 编号从0开始
+ * \brief 获取最高单体电压逻辑编号
+ * \note  输入编号0对应电压最高，其次是编号1，以此类推
+ *
+ * \param index 最高电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 电池全局逻辑串号，从0开始
  */
 CellDataM_CellLogicIndexType Statistic_GetBcuHvLogicIndex(uint8 index);
 
 /**
  * \brief 获取最低单体电压
+ * \note  输入编号0对应电压最低，其次是编号1，以此类推
+ *
+ * \param index 最低电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 返回对应编号的电压值，可能返回无效值
  */
 App_VoltageType Statistic_GetBcuLv(uint8 index);
 
 /**
- * \brief 获取最低单体电压从机号 编号从0开始
+ * \brief 获取最低单体电压从机号
+ * \note  输入编号0对应电压最低，其次是编号1，以此类推
+ *
+ * \param index 最低电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 从机ID，从0开始
  */
 App_SlaveIdType Statistic_GetBcuLvSlaveNum(uint8 index);
 
 /**
- * \brief 获取最低单体电压从机内索引号 编号从0开始
+ * \brief 获取最低单体电压从机内索引号
+ * \note  输入编号0对应电压最低，其次是编号1，以此类推
+ *
+ * \param index 最低电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 从机内串号，从0开始
  */
 uint8 Statistic_GetBcuLvIndex(uint8 index);
 
 /**
- * \brief 获取最低单体电压逻辑引号 编号从0开始
+ * \brief 获取最低单体电压逻辑编号
+ * \note  输入编号0对应电压最低，其次是编号1，以此类推
+ *
+ * \param index 最低电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 电池全局逻辑串号，从0开始
  */
 CellDataM_CellLogicIndexType Statistic_GetBcuLvLogicIndex(uint8 index);
 
 /**
  * \brief 获取最高温度
+ * \note  输入编号0对应温度最高，其次是编号1，以此类推
+ *
+ * \param index 最高温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 返回对应编号的温度值，可能返回无效值
  */
 App_TemperatureType Statistic_GetBcuHt(uint8 index);
 
 /**
- * \brief 获取最高温度从机号 编号从0开始
+ * \brief 获取最高温度从机号
+ * \note  输入编号0对应温度最高，其次是编号1，以此类推
+ *
+ * \param index 最高温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 从机ID，从0开始
  */
 App_SlaveIdType Statistic_GetBcuHtSlaveNum(uint8 index);
 
 /**
- * \brief 获取最高温度从机内索引号 编号从0开始
+ * \brief 获取最高温度从机内索引号
+ * \note  输入编号0对应温度最高，其次是编号1，以此类推
+ *
+ * \param index 最高温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 从机内温度编号，从0开始
  */
 uint8 Statistic_GetBcuHtIndex(uint8 index);
 
 /**
- * \brief 获取最高温度逻辑引号 编号从0开始
+ * \brief 获取最高温度逻辑引号
+ * \note  输入编号0对应温度最高，其次是编号1，以此类推
+ *
+ * \param index 最高温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 温度全局逻辑编号，从0开始
  */
 CellDataM_CellLogicIndexType Statistic_GetBcuHtLogicIndex(uint8 index);
 
 /**
  * \brief 获取最低温度
+ * \note  输入编号0对应温度最低，其次是编号1，以此类推
+ *
+ * \param index 最低温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 返回对应编号的温度值，可能返回无效值
  */
 App_TemperatureType Statistic_GetBcuLt(uint8 index);
 
 /**
- * \brief 获取最低温度从机号 编号从0开始
+ * \brief 获取最低温度从机号
+ * \note  输入编号0对应温度最低，其次是编号1，以此类推
+ *
+ * \param index 最低温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 从机ID，从0开始
  */
 App_SlaveIdType Statistic_GetBcuLtSlaveNum(uint8 index);
 
 /**
- * \brief 获取最低温度从机内索引号 编号从0开始
+ * \brief 获取最低温度从机内索引号
+ * \note  输入编号0对应温度最低，其次是编号1，以此类推
+ *
+ * \param index 最低温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 从机内温度编号，从0开始
  */
 uint8 Statistic_GetBcuLtIndex(uint8 index);
 
 /**
- * \brief 获取最低温度逻辑引号 编号从0开始
+ * \brief 获取最低温度逻辑引号
+ * \note  输入编号0对应温度最低，其次是编号1，以此类推
+ *
+ * \param index 最低温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 温度全局逻辑编号，从0开始
  */
 CellDataM_CellLogicIndexType Statistic_GetBcuLtLogicIndex(uint8 index);
 
@@ -369,14 +430,16 @@ uint16 Statistic_GetBcuBatteryDischargeCount(void);
 
 /**
  * \brief 获取单体最高电压
+ * \note  此函数用于故障诊断，功能同Statistic_GetBcuHv(0U)
  *
- * \return 最高电压
+ * \return 最高电压，分辨率：1mv/bit
  */
 uint16 Statistic_GetBcuHvMax(void);
 /**
  * \brief 获取单体最低电压
+ * \note  此函数用于故障诊断，功能同Statistic_GetBcuLv(0U)
  *
- * \return 最低电压
+ * \return 最低电压，分辨率：1mv/bit
  */
 uint16 Statistic_GetBcuLvMax(void);
 
@@ -395,31 +458,39 @@ App_Tv100mvType Statistic_GetBcu100mvTotalVoltage(void);
 uint8 Statistic_Bcu100MvTotalVoltageIsReady(void);
 
 /**
- * \brief 获取总压差值(100mv分辨率)
+ * \brief 获取总压差值
+ * \note  此函数返回总压为通过特定总压计算策略获取，计算策略包含累加总压和采样总压的比较
  *
- * \return 总压值
+ * \return 总压值，分辨率：100mv/bit
  */
 App_Tv100mvType Statistic_GetBcuDeltaTotalVoltage(void);
 
 /**
- * \brief 判断累加总压值是否有效定义 总压精度：1mv/bit
+ * \brief 判断累加总压值是否有效定义
+ *
+ * \param voltage  累加总压，精度：1mv/bit
+ * \return 0:无效 1：有效
  */
 uint8 Statistic_AccTotalVoltageIsValid(uint32 voltage);
 
 /**
- * \brief 判断总压值是否有效定义 总压精度：0.1v/bit
+ * \brief 判断总压值是否有效定义
+ *
+ * \param voltage  总压值，精度：0.1v/bit
+ * \return 0:无效 1：有效
  */
 uint8 Statistic_TotalVoltageIsValid(uint16 voltage);
 
 /**
  * \brief 获取单体最大压差值
  *
- * \return 最大压差值
+ * \return 最大压差值，分辨率：1mv/bit
  */
 uint16 Statistic_GetBcuDvMax(void);
 
 /**
  * \brief 获取最高温度
+ * \note  此函数用于故障诊断，功能同Statistic_GetBcuHt(0U)
  *
  * \return 最高温度值
  */
@@ -427,6 +498,7 @@ uint16 Statistic_GetBcuHtMax(void);
 
 /**
  * \brief 获取最低温度
+ * \note  此函数用于故障诊断，功能同Statistic_GetBcuLt(0U)
  *
  * \return 最低温度值
  */
@@ -441,26 +513,35 @@ uint16 Statistic_GetBcuDtMax(void);
 
 /**
  * \brief 获取有效加热温感个数
+ *
+ * \return 有效加热温感个数，若配置为无加热温感，则返回0
  */
 uint16 Statistic_GetBcuValidHeatTemperatureNum(void);
 
 /**
  * \brief 获取异常加热温感个数
+ *
+ * \return 无效加热温感个数，若配置为无加热温感，则返回0
  */
 uint16 Statistic_GetBcuInvalidHeatTemperatureNum(void);
 
 /**
  * \brief 获取有效极柱温感个数
+ *
+ * \return 有效极柱温感个数，若配置为无极柱温感，则返回0
  */
 uint16 Statistic_GetBcuValidPoleTemperatureNum(void);
 
 /**
  * \brief 获取异常极柱温感个数
+ *
+ * \return 有效极柱温感个数，若配置为无极柱温感，则返回0
  */
 uint16 Statistic_GetBcuInvalidPoleTemperatureNum(void);
 
 /**
  * \brief 获取最高加热温度
+ * \note  此函数用于故障诊断
  *
  * \return 最高加热温度值
  */
@@ -468,6 +549,7 @@ uint16 Statistic_GetBcuHeatHtMax(void);
 
 /**
  * \brief 获取最低加热温度
+ * \note  此函数用于故障诊断
  *
  * \return 最低加热温度值
  */
@@ -475,6 +557,7 @@ uint16 Statistic_GetBcuHeatLtMax(void);
 
 /**
  * \brief 获取最大加热温差
+ * \note  此函数用于故障诊断
  *
  * \return 最大加热温差值
  */
@@ -482,6 +565,7 @@ uint16 Statistic_GetBcuHeatDtMax(void);
 
 /**
  * \brief 获取最高极柱温度
+ * \note  此函数用于故障诊断
  *
  * \return 最高极柱温度值
  */
@@ -489,6 +573,7 @@ uint16 Statistic_GetBcuPoleHtMax(void);
 
 /**
  * \brief 获取最低极柱温度
+ * \note  此函数用于故障诊断
  *
  * \return 最低极柱温度值
  */
@@ -496,6 +581,7 @@ uint16 Statistic_GetBcuPoleLtMax(void);
 
 /**
  * \brief 获取最大极柱温差
+ * \note  此函数用于故障诊断
  *
  * \return 最大极柱温差值
  */
@@ -507,94 +593,153 @@ uint16 Statistic_GetBcuPoleDtMax(void);
 /**
  * \brief 获取从机有效电压个数
  *
+ * \param SlaveId 从机ID，从0开始
  * \return 有效电压个数
  */
 uint16 Statistic_GetSlaveValidVoltageNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机异常电压个数
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 异常电压个数
  */
 uint16 Statistic_GetSlaveInvalidVoltageNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机有效温感个数
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 有效温感个数
  */
 uint16 Statistic_GetSlaveValidTemperatureNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机异常温感个数
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 异常温感个数
  */
 uint16 Statistic_GetSlaveInvalidTemperatureNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机统计累加总压值
  *
- * \return 累加总压值 1mv/bit
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机内累加总压值，分辨率：1mv/bit
  */
 App_Tv1mvType Statistic_GetSlaveTotalVoltage(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机平均电压值
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机内平均电压值
  */
 App_VoltageType Statistic_GetSlaveAverageVoltage(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机最大压差值
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机内最大压差值
  */
 App_VoltageType Statistic_GetSlaveDeltaVoltage(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机平均温度值
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机内平均温度值
  */
 App_TemperatureType Statistic_GetSlaveAverageTemperature(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机最大温差值
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机内最大温差值
  */
 App_TemperatureType Statistic_GetSlaveDeltaTemperature(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机单体高压个数
+ * \note  返回值不超过STATISTIC_VOLTAGE_NUM
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机单体高压个数
  */
 uint8 Statistic_GetSlaveHvNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机单体低压个数
+ * \note  返回值不超过STATISTIC_VOLTAGE_NUM
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机单体低压个数
  */
 uint8 Statistic_GetSlaveLvNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机单体高温个数
+ * \note  返回值不超过STATISTIC_TEMPERATURE_NUM
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机单体高温个数
  */
 uint8 Statistic_GetSlaveHtNum(App_SlaveIdType SlaveId);
 
 /**
  * \brief 获取从机单体低温个数
+ * \note  返回值不超过STATISTIC_TEMPERATURE_NUM
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \return 从机单体低温个数
  */
 uint8 Statistic_GetSlaveLtNum(App_SlaveIdType SlaveId);
 
 /**
- * \brief 获取从机最高单体电压
+ * \brief 获取指定从机指定编号的最高单体电压
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最高单体电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 最高单体电压值
  */
 App_VoltageType Statistic_GetSlaveHv(App_SlaveIdType SlaveId, uint8 index);
 
 /**
- * \brief 获取从机最高单体电压从机内索引号 编号从0开始
+ * \brief 获取从机最高单体电压从机内索引号
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最高单体电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 最高单体电压串号
  */
 uint8 Statistic_GetSlaveHvIndex(App_SlaveIdType SlaveId, uint8 index);
 
 /**
- * \brief 获取从机最低单体电压
+ * \brief 获取指定从机指定编号的最低单体电压
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最低单体电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 最低单体电压值
  */
 App_VoltageType Statistic_GetSlaveLv(App_SlaveIdType SlaveId, uint8 index);
 
 /**
- * \brief 获取从机最低单体电压从机内索引号 编号从0开始
+ * \brief 获取从机最低单体电压从机内索引号
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最低单体电压编号，范围：[0, STATISTIC_VOLTAGE_NUM)
+ * \return 最低单体电压串号
  */
 uint8 Statistic_GetSlaveLvIndex(App_SlaveIdType SlaveId, uint8 index);
 
 /**
- * \brief 获取从机最高温度
+ * \brief 获取指定从机指定编号的最高温度
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最高温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 最高温度值
  */
 App_TemperatureType Statistic_GetSlaveHt(App_SlaveIdType SlaveId, uint8 index);
 
@@ -604,12 +749,20 @@ App_TemperatureType Statistic_GetSlaveHt(App_SlaveIdType SlaveId, uint8 index);
 uint8 Statistic_GetSlaveHtIndex(App_SlaveIdType SlaveId, uint8 index);
 
 /**
- * \brief 获取从机最低温度
+ * \brief 获取指定从机指定位置的最低温度
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最低温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 最低温度值
  */
 App_TemperatureType Statistic_GetSlaveLt(App_SlaveIdType SlaveId, uint8 index);
 
 /**
- * \brief 获取从机最低温度从机内索引号 编号从0开始
+ * \brief 获取从机最低温度从机内索引号
+ *
+ * \param SlaveId 从机ID，从0开始
+ * \param index 最低温度编号，范围：[0, STATISTIC_TEMPERATURE_NUM)
+ * \return 最低温度串号
  */
 uint8 Statistic_GetSlaveLtIndex(App_SlaveIdType SlaveId, uint8 index);
 
@@ -628,6 +781,9 @@ uint16 Statistic_ActureBatNumIsNotMatch(void);
  * \return 0-匹配 1-不匹配
  */
 uint16 Statistic_ActureTemperatureNumIsNotMatch(void);
+
+
+
 
 #endif
 

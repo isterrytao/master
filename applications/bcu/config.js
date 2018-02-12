@@ -1068,6 +1068,10 @@ module.exports = {
                 name: "温感数不匹配",
                 levels: [],
                 cycle:100,
+            }, {
+                name: "碰撞故障",
+                levels: [],
+                cycle:50,
             },
         ],
     },
@@ -1265,6 +1269,15 @@ module.exports = {
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
                     [1, 1, 5, 5]
+                ]
+            }, {
+                name: "碰撞故障",
+                levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
+                levels:[
+                    [1, 0, 0, 5],
+                    [1, 0, 0, 5],
+                    [1, 0, 0, 5],
+                    [1, 0, 0, 5],
                 ]
             }
         ]

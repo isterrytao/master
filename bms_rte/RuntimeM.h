@@ -175,8 +175,21 @@ Std_ReturnType RuntimeM_RequestToDtuMode(void);
  */
 Std_ReturnType RuntimeM_RequestToProgram(void);
 
+/**
+ * \brief 运行管理模块是否已经进入下电休眠流程
+ *
+ * \return FALSE:未进入 TRUE:已进入
+ */
 boolean RuntimeM_IsInPowerDownFlow(void);
 
+/**
+ * \brief 供电电压低事件
+ * \details 通知运行管理模块供电电压低，请求休眠
+ *
+ * \param item 故障诊断项
+ * \param level 故障等级
+ * \param event 事件类型
+ */
 void RuntimeM_LowPowerSupply(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event);
 
 #endif

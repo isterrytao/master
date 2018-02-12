@@ -88,6 +88,7 @@ module.exports = {
             {name:"电池数不匹配", mapper: nomapper, default:defaultDefault, calibrate: false},
             {name:"温感数不匹配", mapper: nomapper, default:defaultDefault, calibrate: false},
             {name:"供电电压异常", mapper: nomapper, default:defaultDefault, calibrate: false},
+            {name:"碰撞故障", mapper: nomapper, default:defaultDefault, calibrate: false},
         ]
 
         // var calibrateparam = require(cfgData.calibrateparam);
