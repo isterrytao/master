@@ -99,7 +99,9 @@ void ChargeM_InitChargeVoltAndCurrent(void);
 
 /**
  * \brief 当前是否允许充电
- * \details 除充电机未进行通信外是否有其他故障不允许充电，不区分充电类型
+ * \details 除充电机未进行通信外是否有其他故障不允许充电，不区分充电类型;
+ *          因国标快充要求进入充电就绪阶段后才闭合充电继电器（若为快充连接状态），结束充电时，
+ *          断开充电继电器，所以此接口仅检查存在充电相关故障，不检查国标快充是否进入充电就绪阶段
  *
  * \return E_OK: 允许 E_NOT_OK:不允许
  */
@@ -107,6 +109,8 @@ Std_ReturnType ChargeM_ChargeIsAllowed(void);
 
 /**
  * \brief 当前充电是否就绪
+ * \details 检查是否有充电故障且国标快充是否进入就绪阶段（若为快充连接状态），
+ *          与ChargeM_ChargeIsAllowed仅增加对国标快充就绪阶段的检查
  *
  * \return E_OK: 允许 E_NOT_OK:不允许
  */
@@ -114,7 +118,7 @@ Std_ReturnType ChargeM_ChargeIsReady(void);
 
 /**
  * \brief 当前充电故障动作是否已经成立
- * \details 例：当某一故障延时断继电器等成立后，此函数返回E_OK，此时需断充电继电器,此函数用于确认是否需要断充电高压
+ * \details 检查包含禁止充电的故障，也包含国标快充定义的结束充电时（若为快充连接状态），进入国标快充未就绪状态
  *
  * \return E_OK: 故障动作已成立 E_NOT_OK: 未成立
  */
@@ -124,7 +128,7 @@ Std_ReturnType ChargeM_ChargeIsFault(void);
  * \brief 获取充电控制上电自检故障码
  * \details 未自检完成前返回无故障
  *
- * \return 上电自检诊断故障码 返回-1为无故障
+ * \return 上电自检诊断故障码 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType ChargeM_GetStartDiagFault(void);
 
@@ -138,13 +142,17 @@ Std_ReturnType ChargeM_StartDiagIsNormal(void);
 
 /**
  * \brief 获取充电控制诊断标志故障码
- * \return 诊断故障 返回-1为无故障
+ * \details 此标志故障码是引起停止充电机充电的故障，不一定是断开继电器的故障
+ *
+ * \return 诊断故障 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType ChargeM_GetDiagFaultFlag(void);
 
 /**
  * \brief 获取充电控制诊断动作故障码
- * \return 诊断故障 返回-1为无故障
+ * \details 此故障码是引起停止充电且充电继电器断开的故障
+ *
+ * \return 诊断故障 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType ChargeM_GetDiagFaultAction(void);
 
@@ -194,7 +202,8 @@ ChargeM_CtlTypeType ChargeM_GetChargerGBReadyStatus(ChargeM_ChargerGBReadyIndexT
 
 /**
  * \brief 同时设置故障诊断充电控制标志及动作
- * \details 通过此函数可设置发生诊断故障时进行充电启停的控制标志及动作
+ * \details 通过此函数可设置发生诊断故障时进行充电启停的控制标志及动作，同时会影响由ChargeM_ChargeIsFault为E_OK，
+ *          且ChargeM_ChargeIsAllowed为E_NOT_OK
  *
  * \param item 诊断项
  * \param ctl 控制方式 CHARGEM_CHARGE_ENABLE：允许充电 CHARGEM_CHARGE_DISABLE：不允许充电
@@ -203,7 +212,8 @@ void ChargeM_SetDiagnosisChargeCtl(Diagnosis_ItemType item, ChargeM_CtlTypeType 
 
 /**
  * \brief 设置故障诊断充电控制状态
- * \details 通过此函数可设置发生诊断故障时进行充电启停的控制状态
+ * \details 通过此函数可设置发生诊断故障时进行充电启停的控制状态，会影响ChargeM_ChargeIsAllowed为E_NOT_OK，
+ *          但不会影响由ChargeM_ChargeIsFault为E_OK
  *
  * \param item 诊断项
  * \param ctl 控制方式 CHARGEM_CHARGE_ENABLE：允许充电 CHARGEM_CHARGE_DISABLE：不允许充电
@@ -220,7 +230,8 @@ ChargeM_CtlTypeType ChargeM_GetDiagnosisChargeCtlFlag(Diagnosis_ItemType item);
 
 /**
  * \brief 设置故障诊断充电动作控制动作
- * \details 通过此函数可设置发生诊断故障时进行充电启停的控制动作
+ * \details 通过此函数可设置发生诊断故障时进行充电启停的控制动作，同时会影响由ChargeM_ChargeIsFault为E_OK和
+ *          ChargeM_ChargeIsAllowed为E_NOT_OK
  *
  * \param item 诊断项
  * \param ctl 控制方式 CHARGEM_CHARGE_ENABLE：允许充电 CHARGEM_CHARGE_DISABLE：不允许充电

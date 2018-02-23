@@ -94,7 +94,7 @@ Std_ReturnType DischargeM_StartDiagIsNormal(void);
  * \brief 获取放电控制上电自检故障码
  * \details 未自检完成前返回无故障
  *
- * \return 上电自检诊断故障码 返回-1为无故障
+ * \return 上电自检诊断故障码 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType DischargeM_GetStartDiagFault(void);
 
@@ -114,13 +114,13 @@ Std_ReturnType DischargeM_DiagnosisIsFaultAction(void);
 
 /**
  * \brief 获取放电控制诊断标志故障码
- * \return 诊断故障 返回-1为无故障
+ * \return 诊断故障 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType DischargeM_GetDiagFaultFlag(void);
 
 /**
  * \brief 获取放电控制诊断动作故障码
- * \return 诊断故障 返回-1为无故障
+ * \return 诊断故障 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType DischargeM_GetDiagFaultAction(void);
 
