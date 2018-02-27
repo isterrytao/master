@@ -315,6 +315,18 @@ uint8 CellDataM_AllSlaveVoltageIsReceive(void);
 uint8 CellDataM_AllSlaveTemperatureIsReceive(void);
 
 /**
+ * \brief 所有从机单体电压已获取且有效
+ * \return TRUE-全部有效 FALSE-非全部有效
+ */
+uint8 CellDataM_AllSlaveVoltageIsValid(void);
+
+/**
+ * \brief 所有从机温度已获取且有效
+ * \return TRUE-全部有效 FALSE-非全部有效
+ */
+uint8 CellDataM_AllSlaveTemperatureIsValid(void);
+
+/**
  * \brief 获取从机逻辑加热温度最大编号值
  * \details 逻辑加热温度最大编号为全局逻辑编号，值为从机最后一个加热温度逻辑编号+1
  *

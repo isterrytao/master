@@ -317,6 +317,27 @@ module.exports = {
         }
     },
 
+    PwmCapture: {
+        funcIncude: ['UserStrategy.h'],
+        CP: {
+            enable: true,
+            risingFunc: '',
+            fallingFunc: '',
+        },
+
+        SIGIN1: {
+            enable: false, // 是否开启SIGIN1的占空比检测
+            risingFunc: 'UserStrategy_CheckSRS', // 检测到上升沿调用的函数
+            fallingFunc: '',  // 检测到下降沿调用的函数，如果与上升沿同一个函数，在函数里面可以判断沿
+        },
+
+        SIGIN2: {
+            enable: false,
+            risingFunc: '',
+            fallingFunc: '',
+        } // 请参考SIGIN2的注释
+    },
+
     Diagnosis: {
         levelsupport: 4,
         configs: [
@@ -601,6 +622,8 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
@@ -617,6 +640,8 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
@@ -633,6 +658,8 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {

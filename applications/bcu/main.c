@@ -23,7 +23,7 @@
 #include "Shunt.h"
 #include "Hv.h"
 #include "InnerTp_Lcfg.h"
-#include "BridgeInsu.h"
+#include "BridgeInsu_Lcfg.h"
 #include "DatetimeM.h"
 #include "DtuComm_M35.h"
 #include "GB32960.h"
@@ -37,7 +37,6 @@
 #include "HWDiagnosis.h"
 #include "AllInOneComm.h"
 #include "RuntimeM.h"
-#include "PwmCapture.h"
 #include "PwmCapture_Lcfg.h"
 #include "CurrentM.h"
 #include "Eeeprom.h"
@@ -67,6 +66,7 @@
 #include "HardwareIO.h"
 #include "Hmi.h"
 #include "App_Cfg.h"
+#include "BridgeInsu.h"
 
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 #include "logger.h"
@@ -88,8 +88,8 @@ static const Dcm_ConfigType DcmConfigDtuTp = {
 };
 
 
-static OS_STK start_task_stack[500];
-static OS_STK hvadc_task_stack[300];
+static OS_STK start_task_stack[600];
+static OS_STK hvadc_task_stack[200];
 // static OS_STK shunt_task_stack[400];
 
 static void start_dtu_task(void) {
@@ -276,6 +276,7 @@ static void run_test_mode(void) {
     PwmCapture_Start();
     Shunt_Init(&shuntLooper, 1000U);
     (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, TRUE);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
     for (;;) {
         Shell_Loop();
     }
@@ -381,7 +382,14 @@ static void start_task(void *pdata) {
     }
     Soc_Init(&extLooper);
     Soh_Init();
-    BridgeInsu_Init(&driverLooper);
+#if defined(A650) || defined(A651)
+    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A650);
+#elif defined(A652) || defined(A653)
+    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
+#else
+    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData); /*lint !e40 */
+#endif
+
     if (isNeedStartSampleTask()) {
         BridgeInsu_Start();
     }

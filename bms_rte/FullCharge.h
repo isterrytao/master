@@ -19,7 +19,7 @@
 /**
  * \brief 满充成立延时
  */
-#define FULLCHARGE_FULL_CHARGE_DELAY            5000U
+#define FULLCHARGE_FULL_CHARGE_DELAY            3000U
 
 /**
  * \brief 最小有效充电电流值
