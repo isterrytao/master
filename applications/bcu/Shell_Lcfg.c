@@ -5,18 +5,8 @@ const char *const shell_prompt = "Shell> ";
 
 SHELL_PROTYPE(appinfo);
 SHELL_PROTYPE(cd4051);
-#if defined(UPC6000)
 SHELL_PROTYPE(hef4052);
-#endif
-
-#if defined(A650) || defined(A651)
-SHELL_PROTYPE(ldmhv_A650);
-#elif defined(A652) || defined(A653)
-SHELL_PROTYPE(ldmhv_A652);
-#else
 SHELL_PROTYPE(ldmhv);
-#endif
-
 SHELL_PROTYPE(nand);
 SHELL_PROTYPE(at24);
 SHELL_PROTYPE(rtc);
@@ -51,17 +41,8 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("volmux", cd4051),
     SHELL_COMMAND("adc", adc),
     SHELL_COMMAND("port", port),
-#if defined(UPC6000)
     SHELL_COMMAND("ldmgmux", hef4052),
-#endif
-
-#if defined(A650) || defined(A651)
-    SHELL_COMMAND("ldmhv", ldmhv_A650),
-#elif defined(A652) || defined(A653)
-    SHELL_COMMAND("ldmhv", ldmhv_A652),
-#else
     SHELL_COMMAND("ldmhv", ldmhv),
-#endif
     SHELL_COMMAND("appinfo", appinfo),
     SHELL_COMMAND("nand", nand),
     SHELL_COMMAND("at24", at24),

@@ -14,8 +14,6 @@
 #define BRIDGEINSU_MODE_WITH_MOS            1U
 #define BRIDGEINSU_MODE_WITHOUT_MOS         2U
 
-
-
 typedef struct {
     uint32 detectInterval;
     uint8 maxWaitSampleTimes;
@@ -28,7 +26,7 @@ typedef struct {
     uint16 diffPercentFactorToTotal;
 } BridgeInsu_ConfigType;
 
-void BridgeInsu_Init(Async_LooperType *looper, const BridgeInsu_ConfigType *cfgData);
+void BridgeInsu_Init(Async_LooperType *looper);
 void BridgeInsu_Start(void);
 void BridgeInsu_Stop(void);
 uint16 BridgeInsu_GetPositive(void);
