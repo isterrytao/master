@@ -13,6 +13,7 @@ modules = [
     {name: "J1939Tp", dir: "com/J1939Tp", js: "j1939tp.js"},
     {name: "CanIf", dir: "com/CanIf", js: "canif.js"},
     {name: "CanDrv", dir: "arch/hcs12x", js:"candrv.js"},
+    {name: "PwmCapture", dir: "arch/hcs12x", js: "pwmcapture.js"},
     {name: "PduR", dir: "com/PduR", js: "pdur.js"},
     {name: "GB32960", dir: "com/DtuTp", js: "gb32960.js"},
     {name: "Diagnosis", dir: "bms_rte", js: "diagnosis.js"},

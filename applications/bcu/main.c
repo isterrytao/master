@@ -37,7 +37,6 @@
 #include "HWDiagnosis.h"
 #include "AllInOneComm.h"
 #include "RuntimeM.h"
-#include "PwmCapture.h"
 #include "PwmCapture_Lcfg.h"
 #include "CurrentM.h"
 #include "Eeeprom.h"
