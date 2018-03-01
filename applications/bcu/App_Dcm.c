@@ -41,6 +41,7 @@
 #include "ChargeM.h"
 #include "GBRtMsg.h"
 #include "SocOcvCalib.h"
+#include "BridgeInsu.h"
 
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "Logger.h"
@@ -348,6 +349,10 @@ uint8 gDTCSwitch;
 #define RoutineHandle_0xF002    (2u)
 #define RoutineHandle_0xF003    (3u)
 #define RoutineHandle_0xF004    (4u)
+#define RoutineHandle_0xF005    (5u)
+#define RoutineHandle_0xF006    (6u)
+#define RoutineHandle_0xF007    (7u)
+#define RoutineHandle_0xF008    (8u)
 
 /*******************************************************************************
 * Global variables(Scope:local)
@@ -5357,6 +5362,28 @@ void App_StartRoutine0xF007(Dcm_MsgContextType *pMsgContext) {
     DsdInternal_RoutineStarted();
     SocOcvCalib_AutoCalibStart();
     pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void App_StartRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    DsdInternal_RoutineStarted();
+    BridgeInsu_Start();
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void App_StopRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    DsdInternal_RoutineStopped();
+    BridgeInsu_Stop();
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void APP_RequestResultsRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    uint16 res = Insu_GetSystem();
+    WRITE_BT_UINT16(pMsgContext->resData, length, res);
+    pMsgContext->resDataLen = length;
+    DsdInternal_RequestRoutineResults();
     DsdInternal_ProcessingDone(pMsgContext);
 }
 

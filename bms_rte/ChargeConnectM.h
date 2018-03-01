@@ -161,6 +161,7 @@ typedef struct{
  */
 typedef struct{
     boolean ConnectionIsDynamic; /**< 充电连接是否动态更新 */
+    boolean DoS2MonitorsEL; /**< S2监控电子锁状态开关 */
     ChargeConnectM_CommonConfigType AC_Para;
     ChargeConnectM_CommonConfigType DC_Para;
     ChargeConnectM_ValueAdcToPhyCalculateParamType AdcPara[CHARGECONNECTM_ADC_CHANNEL_MAX];

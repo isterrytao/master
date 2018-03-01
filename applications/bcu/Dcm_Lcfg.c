@@ -2766,6 +2766,38 @@ const DcmDspRoutine/*DCM_CONFIG_CONST*/  DcmDspRoutineIdentifierTable_31[NUMBER_
             }
         },
     },
+    {
+        0xF008U, /* SID */
+        STD_ON, /* Switch */
+        0U, /* RoutineUsePort, Reserved */
+        STD_OFF, /* Fixed Length Check Flag */
+        App_StartRoutine0xF008, /* StartRoutineFnc */
+        App_StopRoutine0xF008, /* StopRoutineFnc */
+        APP_RequestResultsRoutine0xF008, /* RequestResultsRoutineFnc */
+        {
+            {
+                /* Supported Security Level */
+     (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1),
+                        (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
+                     PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
+            },
+            {
+                0UL    /* Optional Data Length of RequestRoutineResults Response */
+            },
+            {
+                0UL    /* Optional Data Length of StopRoutine Request */
+            },
+            {
+                0UL    /* Optional Data Length of StopRoutine Response */
+            },
+            {
+                2UL     /* Optional Data Length of StartRoutine Request */
+            },
+            {
+                2UL     /* Optional Data Length of StartRoutine Response */
+            }
+        },
+    },
 };
 #endif
 
