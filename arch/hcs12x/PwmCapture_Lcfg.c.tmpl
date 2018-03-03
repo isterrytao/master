@@ -90,7 +90,7 @@ XGATE_ISR_PROTYPE(PwmXgate_EdgeIsr);
 
 <% for(var x of [{ch:'SIGIN1', irq:'IRQ_STANDARD_TIM_2'}, {ch:'SIGIN2', irq:'IRQ_STANDARD_TIM_3'}]) {
     var handle = getFunctionHandleType(x.ch);  %>
-<% if (channelEnabled(ch)) {%>
+<% if (channelEnabled(x.ch)) {%>
 static void on<%- x.ch %>Edge(void) {
     <% if (handle == handleRising) { %>
     <%- mdata[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
@@ -160,7 +160,7 @@ uint16 CP_GetFrequence(void) {
 }
 
 uint16 CP_GetDuty(void) {
-    return 1000U - PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
+    return PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
 }
 
 <% } %>
