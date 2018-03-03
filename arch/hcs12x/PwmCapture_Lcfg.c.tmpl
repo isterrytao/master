@@ -21,13 +21,15 @@ if (mdata.hasOwnProperty('funcIncude')) {
 // 上述定义中PwmCapture_Cfg.h中定义的都是板级的信号。
 // PwmCapture.c PwmCapture.h中的定义的都是MCU管脚信号的方向，
 
-
-
-
 <%
-for(var ch of ['SIGIN1', 'SIGIN2']) {
+
+function channelEnabled(ch) {
+    return mdata.hasOwnProperty(ch) && mdata[ch].enable
+}
+
+function getTriggerEdge(ch) {
     var edge = 'PWM_TRIGGER_HCS12_NONE';
-    if (mdata.hasOwnProperty(ch) && mdata[ch].enable) {
+    if (channelEnabled(ch)) {
         if (mdata[ch].risingFunc) {
             edge = edge + ' | PWM_TRIGGER_HCS12_RAISING';
         }
@@ -36,11 +38,31 @@ for(var ch of ['SIGIN1', 'SIGIN2']) {
             edge = edge + ' | PWM_TRIGGER_HCS12_FALLING';
         }
     }
-%>
-#define PWM_CAPTURE_<%- ch %>_TRIGGER_EDGE ( <%- edge %> )
-<%
+    return edge;
 }
+
+const handleNone = 0;
+const handleRising = 1;
+const handleFalling = 2;
+const handleAll = handleRising + handleFalling;
+
+function getFunctionHandleType(ch) {
+    var handle = handleNone;
+    if (channelEnabled(ch)) {
+        if (mdata[ch].risingFunc) {
+            handle += handleRising;
+        }
+
+        if (mdata[ch].fallingFunc && mdata[ch].fallingFunc != mdata[ch].risingFunc) {
+            handle += handleFalling;
+        }
+    }
+
+    return handle;
+}
+
 %>
+
 
 
 
@@ -51,70 +73,49 @@ for(var ch of ['SIGIN1', 'SIGIN2']) {
 const uint8 PwmCapture_ChannelNum = PWM_CAPTURE_CHANNEL_NUM;
 
 PwmCapture_DataType PwmCapture_DataList[PWM_CAPTURE_CHANNEL_NUM] = {
-#ifdef PWM_CAPTURE_CP_CHANNEL
-    {(uint16 * near) &ECT_TC1, (uint8)((uint8)1U << 1), 1U, PWM_TRIGGER_HCS12_NONE, 0U, 0UL, 0UL, 0UL, 0U}, /**< CP PWM channel */
-#endif
-#ifdef PWM_CAPTURE_SIGIN1_CHANNEL
-    {(uint16 * near) &ECT_TC2, (uint8)((uint8)1U << 2), 1U, PWM_CAPTURE_SIGIN1_TRIGGER_EDGE, 0U, 0UL, 0UL, 0UL, 0U}, /**< SIGIN1 */
-#endif
-#ifdef PWM_CAPTURE_SIGIN2_CHANNEL
-    {(uint16 * near) &ECT_TC3, (uint8)((uint8)1U << 3), 1U, PWM_CAPTURE_SIGIN2_TRIGGER_EDGE, 0U, 0UL, 0UL, 0UL, 0U}, /**< SIGIN2 */
-#endif
+<% if (channelEnabled('CP')) { %>
+    {(uint16 * near) &ECT_TC1, (uint8)((uint8)1U << 1), 1U, <%- getTriggerEdge('CP') %>, 0U, 0UL, 0UL, 0UL, 0U}, /**< CP PWM channel */
+<% } %>
+<% if (channelEnabled('SIGIN1')) { %>
+    {(uint16 * near) &ECT_TC2, (uint8)((uint8)1U << 2), 1U, <%- getTriggerEdge('SIGIN1') %>, 0U, 0UL, 0UL, 0UL, 0U}, /**< SIGIN1 */
+<% } %>
+<% if (channelEnabled('SIGIN2')) { %>
+    {(uint16 * near) &ECT_TC3, (uint8)((uint8)1U << 3), 1U, <%- getTriggerEdge('SIGIN2') %>, 0U, 0UL, 0UL, 0UL, 0U}, /**< SIGIN2 */
+<% } %>
 };
 
 #pragma pop
 
 XGATE_ISR_PROTYPE(PwmXgate_EdgeIsr);
 
-#ifdef PWM_CAPTURE_SIGIN1_CHANNEL
-static void onSIGIN1Edge(void) {
-<% if (mdata.hasOwnProperty('SIGIN1') && mdata['SIGIN1'].enable && (mdata['SIGIN1'].risingFunc || mdata['SIGIN1'].fallingFunc)) {
-    if (mdata['SIGIN1'].risingFunc == mdata['SIGIN1'].fallingFunc) { %>
-    <%- mdata['SIGIN1'].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_SIGIN1_CHANNEL]);
-<%  } else { %>
-    if (PwmCapture_IsTriggerRising(&PwmCapture_DataList[PWM_CAPTURE_SIGIN1_CHANNEL])) {
-        <% if (mdata['SIGIN1'].risingFunc) { %>
-        <%- mdata['SIGIN1'].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_SIGIN1_CHANNEL]);
-        <% } %>
-
+<% for(var x of [{ch:'SIGIN1', irq:'IRQ_STANDARD_TIM_2'}, {ch:'SIGIN2', irq:'IRQ_STANDARD_TIM_3'}]) {
+    var handle = getFunctionHandleType(x.ch);  %>
+<% if (channelEnabled(ch)) {%>
+static void on<%- x.ch %>Edge(void) {
+    <% if (handle == handleRising) { %>
+    <%- mdata[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
+    <% } %>
+    <% if (handle == handleFalling) { %>
+    <%- mdata[x.ch].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
+    <% } %>
+    <% if (handle == handleAll) { %>
+    if (PwmCapture_IsTriggerRising(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL])) {
+        <%- mdata[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
     } else {
-        <% if (mdata['SIGIN1'].fallingFunc) { %>
-        <%- mdata['SIGIN1'].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_SIGIN1_CHANNEL]);
-        <% } %>
+        <%- mdata[x.ch].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
     }
-<% }
-}%>
-    HCS12_ClearGIF(IRQ_LOGIC_NUM_TO_PYH(IRQ_STANDARD_TIM_2));
+    <% } %>
+    HCS12_ClearGIF(IRQ_LOGIC_NUM_TO_PYH(<%- x.irq %>));
 }
-#endif
+<% } %>
+<% } %>
 
-#ifdef PWM_CAPTURE_SIGIN2_CHANNEL
-static void onSIGIN2Edge(void) {
-<% if (mdata.hasOwnProperty('SIGIN2') && mdata['SIGIN2'].enable && (mdata['SIGIN2'].risingFunc || mdata['SIGIN2'].fallingFunc)) {
-    if (mdata['SIGIN2'].risingFunc == mdata['SIGIN2'].fallingFunc) { %>
-    <%- mdata['SIGIN2'].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_SIGIN2_CHANNEL]);
-<%  } else { %>
-    if (PwmCapture_IsTriggerRising(&PwmCapture_DataList[PWM_CAPTURE_SIGIN2_CHANNEL])) {
-        <% if (mdata['SIGIN2'].risingFunc) { %>
-        <%- mdata['SIGIN2'].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_SIGIN2_CHANNEL]);
-        <% } %>
-
-    } else {
-        <% if (mdata['SIGIN2'].fallingFunc) { %>
-        <%- mdata['SIGIN2'].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_SIGIN2_CHANNEL]);
-        <% } %>
-    }
-<% }
-}%>
-    HCS12_ClearGIF(IRQ_LOGIC_NUM_TO_PYH(IRQ_STANDARD_TIM_3));
-}
-#endif
 
 void PwmCapture_Start(void) {
     uint16 func;
     uint16 dat;
 
-#ifdef PWM_CAPTURE_CP_CHANNEL
+<% if (channelEnabled('CP')) {%>
     (void)XGate_AddrGlobalToXGate(&func, HCS12_GetXGateIsrFunc(PwmXgate_EdgeIsr));
     (void)XGate_AddrGlobalToXGate(&dat, &PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
     XGateIrq_InstallVector(IRQ_STANDARD_TIM_1, func, dat);
@@ -123,9 +124,9 @@ void PwmCapture_Start(void) {
     ECT_TCTL4_EDG1A = 1U; // capture on both edge
     ECT_TCTL4_EDG1B = 1U;
     ECT_TIE_C1I = 1U; // enable interrupt;
-#endif
+<% } %>
 
-#ifdef PWM_CAPTURE_SIGIN1_CHANNEL
+<% if (channelEnabled('SIGIN1')) {%>
     (void)XGate_AddrGlobalToXGate(&dat, &PwmCapture_DataList[PWM_CAPTURE_SIGIN1_CHANNEL]);
     XGateIrq_InstallVector(IRQ_STANDARD_TIM_2, func, dat);
     HC12XIrq_InstallVector(IRQ_STANDARD_TIM_2, onSIGIN1Edge, 0U);
@@ -134,9 +135,9 @@ void PwmCapture_Start(void) {
     ECT_TCTL4_EDG2A = 1U; // capture on both edge
     ECT_TCTL4_EDG2B = 1U;
     ECT_TIE_C2I = 1U; // enable interrupt;
-#endif
+<% } %>
 
-#ifdef PWM_CAPTURE_SIGIN2_CHANNEL
+<% if (channelEnabled('SIGIN2')) {%>
     (void)XGate_AddrGlobalToXGate(&dat, &PwmCapture_DataList[PWM_CAPTURE_SIGIN2_CHANNEL]);
     XGateIrq_InstallVector(IRQ_STANDARD_TIM_3, func, dat);
     HC12XIrq_InstallVector(IRQ_STANDARD_TIM_3, onSIGIN2Edge, 0U);
@@ -145,11 +146,11 @@ void PwmCapture_Start(void) {
     ECT_TCTL4_EDG3A = 1U; // capture on both edge
     ECT_TCTL4_EDG3B = 1U;
     ECT_TIE_C3I = 1U; // enable interrupt;
-#endif
+<% } %>
 }
 
 
-#ifdef PWM_CAPTURE_CP_CHANNEL
+<% if (channelEnabled('CP')) {%>
 uint16 CP_GetFrequence(void) {
     uint32 f = PwmCapture_GetFrequence(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
     if (f > 65535UL) {
@@ -159,10 +160,10 @@ uint16 CP_GetFrequence(void) {
 }
 
 uint16 CP_GetDuty(void) {
-    return PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
+    return 1000U - PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
 }
 
-#endif
+<% } %>
 
 
 #include <stdio.h>

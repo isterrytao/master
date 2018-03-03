@@ -112,6 +112,17 @@ typedef struct {
             uint16 alarmNum;
         } alarmStatus;
 
+        struct {
+            uint8 chgType;
+            uint16 chgResoltion;
+            uint32 chgCumu;
+            uint32 totalChgCumu;
+            uint8 dchgType;
+            uint16 dchgResoltion;
+            uint32 dchgCumu;
+            uint32 totalDchgCumu;
+        } powerInfo;
+
     } dataHeader;
 } GB32960_PACKED GBRt_MsgBuffer;
 
@@ -129,6 +140,7 @@ typedef struct {
 #define MSG_LENGTH_BALANCE_STATUS      (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U)
 #define MSG_LENGTH_ALARM_STATUS        (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(alarmStatus))
 #define MSG_LENGTH_CHARGER_STATUS      (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(chargerStatus))
+#define MSG_LENGTH_CUMU_INFO           (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(powerInfo))
 
 
 static GBRt_MsgBuffer headerBuffer;
@@ -469,6 +481,20 @@ static const GB32960_CopySegmentType copyRecordSegmentsBalanceStatus[] = {
     {MEMBER_SIZEOF_MSG_HEADER(balanceStatus), MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U, PTR_TYPE_GET_DATA, {BalanceM_GetBalanceStatusPtr}},
 };
 
+static void fillPowerInfoRecord(GBRt_MsgBuffer *msgHeader) {
+    msgHeader->dataHeader.powerInfo.chgType = (uint8)Soc_ConfigInfo.ChgCumuInfo.type;
+    msgHeader->dataHeader.powerInfo.chgResoltion = Soc_ConfigInfo.ChgCumuInfo.resoltion;
+    msgHeader->dataHeader.powerInfo.chgCumu = Soc_GetChgPower();
+    msgHeader->dataHeader.powerInfo.totalChgCumu = Soc_GetCumuChgPower();
+    msgHeader->dataHeader.powerInfo.dchgType = (uint8)Soc_ConfigInfo.DchgCumuInfo.type;
+    msgHeader->dataHeader.powerInfo.dchgResoltion = Soc_ConfigInfo.DchgCumuInfo.resoltion;
+    msgHeader->dataHeader.powerInfo.dchgCumu = Soc_GetDchgPower();
+    msgHeader->dataHeader.powerInfo.totalDchgCumu = Soc_GetCumuDchgPower();
+}
+
+static const GB32960_CopySegmentType copyRecordSegmentsPowerInfo[] = {
+    {0U, MEMBER_SIZEOF_MSG_HEADER(powerInfo), PTR_TYPE_DATA, {&record_header.dataHeader}},
+};
 
 static Diagnosis_LevelType alarmsRecord[DIAGNOSIS_ITEM_MAX_NUM];
 static uint8 alaramNumRecord = 0U;
@@ -547,6 +573,7 @@ static const GB32960_RecordItemType unfixedCycleDataList[] = {
     {GB_TYPE_TO_RECORD_TYPE(0x86U), MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copyRecordSegmentsBalanceStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsBalanceStatus), BalanceM_IsBalance},
     {GB_TYPE_TO_RECORD_TYPE(0x85U), MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copyRecordSegmentsChargerStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsChargerStatus), is_valid_in_charging_mode},
     {GB_TYPE_TO_RECORD_TYPE(0x87U), 0U, getAlarmLengthRecord, (GB32960_FillMessageFuncType)fillAlarmStatusRecord, copyRecordSegmentsAlarmStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsAlarmStatus), NULL},
+    {GB_TYPE_TO_RECORD_TYPE(0x89U), MSG_LENGTH_CUMU_INFO, NULL, (GB32960_FillMessageFuncType)fillPowerInfoRecord, copyRecordSegmentsPowerInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsPowerInfo), NULL},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
 };
 
