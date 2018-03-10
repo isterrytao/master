@@ -24,6 +24,7 @@
 #include "UserStrategy.h"
 #include "ChargerComm_LCfg.h"
 #include "TemperatureM.h"
+#include "BridgeInsu.h"
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
 #include "Modules.h"
 #endif
@@ -253,6 +254,7 @@ void ChargerCommGB_CommStart(void)
         ChargerCommGB_innerData.startFlag == TRUE &&
         stage == CHARGERCOMM_STAGE_IDLE)
     {
+        BridgeInsu_Stop();
         ChargeM_SetChargerGBReadyStatus(CHARGEM_CHARGERGB_READY_RELAY_INDEX, CHARGEM_CHARGE_DISABLE);
         ChargerComm_SetChargeType(currentType);
         ChargerComm_InitChargeVoltAndCurrent();
@@ -266,6 +268,7 @@ void ChargerCommGB_CommStop(void)
     ChargerComm_StageType stage = ChargerComm_GetCurrentRecStage();
 
     Irq_Save(mask);
+    BridgeInsu_Start();
     ChargerCommGB_innerData.communication = FALSE;
     ChargerComm_ResetCommunicationStatus();
     ChargerCommGB_RestChargerStatus();
@@ -297,6 +300,7 @@ static void ChargerCommGB_CommStopForRestart(void)
     }
     else
     {
+        BridgeInsu_Stop();
         ChargerCommGB_ClearChargerStatusCarefully();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_RECOMM_CRM);
         ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CONNECT_WAITING;
@@ -527,6 +531,7 @@ void ChargerCommGB_GetBRODataCbk(uint8 *Buffer, uint16 *Length)
         ChargerCommGB_innerData.bmsChargeReadySendFlag = TRUE;
         if (ChargerComm_GetCurrentRecStage() < CHARGERCOMM_STAGE_GB_CRO)
         {
+            BridgeInsu_Start();
             ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CRO);
         }
     }
