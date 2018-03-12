@@ -18,8 +18,8 @@
 #include "ChargerComm_LCfg.h"
 #include "SystemConnection_Lcfg.h"
 
-const uint8 ChargerComm_SendIPduNum = 14U; //todo
-const uint8 ChargerComm_RecIPduNum = 10U; //todo
+const uint8 ChargerComm_SendIPduNum = PDUR_CHARGERCOMM_TX_PDUID_NUM; //todo
+const uint8 ChargerComm_RecIPduNum = PDUR_CHARGERCOMM_RX_PDUID_NUM; //todo
 const ChargerComm_SendIPduCfgType ChargerComm_IPduSendConfigInfo[] = {
     {
         PDUR_CHARGERCOMM_TX_PDUID_GB_BHM, /**< IPdu */

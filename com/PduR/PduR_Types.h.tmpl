@@ -1,6 +1,12 @@
 #ifndef PDUR_TYPES_H__
 #define PDUR_TYPES_H__
 
+
+/*
+<%- JSON.stringify(data, null, '    ') %>
+
+*/
+
 <%
 var index = 0;
 for (var v of data.uppers) {%>
@@ -16,6 +22,18 @@ for (var v of data.middles) {%>
     index++;
 }%>
 
+<%
+for (var v of data.uppers) {
+    var num = 0;
+    for (var rx of data.rxs) {
+        if (rx.upper[0] ==  v) {
+            num = num + 1;
+        }
+    }
+%>
+#define PDUR_<%-v.toUpperCase()%>_RX_PDUID_NUM  <%- num %>U<%
+}
+%>
 
 <%for (var v of data.txs) {%>
 // <%- JSON.stringify(v) %>
