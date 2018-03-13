@@ -254,7 +254,6 @@ void ChargerCommGB_CommStart(void)
         ChargerCommGB_innerData.startFlag == TRUE &&
         stage == CHARGERCOMM_STAGE_IDLE)
     {
-        BridgeInsu_Stop();
         ChargeM_SetChargerGBReadyStatus(CHARGEM_CHARGERGB_READY_RELAY_INDEX, CHARGEM_CHARGE_DISABLE);
         ChargerComm_SetChargeType(currentType);
         ChargerComm_InitChargeVoltAndCurrent();
@@ -268,7 +267,6 @@ void ChargerCommGB_CommStop(void)
     ChargerComm_StageType stage = ChargerComm_GetCurrentRecStage();
 
     Irq_Save(mask);
-    BridgeInsu_Start();
     ChargerCommGB_innerData.communication = FALSE;
     ChargerComm_ResetCommunicationStatus();
     ChargerCommGB_RestChargerStatus();
@@ -300,7 +298,6 @@ static void ChargerCommGB_CommStopForRestart(void)
     }
     else
     {
-        BridgeInsu_Stop();
         ChargerCommGB_ClearChargerStatusCarefully();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_RECOMM_CRM);
         ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CONNECT_WAITING;
@@ -531,7 +528,11 @@ void ChargerCommGB_GetBRODataCbk(uint8 *Buffer, uint16 *Length)
         ChargerCommGB_innerData.bmsChargeReadySendFlag = TRUE;
         if (ChargerComm_GetCurrentRecStage() < CHARGERCOMM_STAGE_GB_CRO)
         {
-            BridgeInsu_Start();
+            if (ChargerCommGB_innerData.insuIsStop)
+            {
+                BridgeInsu_Start();
+                ChargerCommGB_innerData.insuIsStop = FALSE;
+            }
             ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CRO);
         }
     }
@@ -1149,6 +1150,11 @@ static void ChargerCommGB_ClearChargerStatusCarefully(void)
     ChargerComm_SetChargerOutputCurrent(0);
     ChargerComm_SetChargerOutputCurrentMax(0);
     ChargerComm_SetChargerOutputCurrentMin(0);
+    if (ChargerCommGB_innerData.insuIsStop)
+    {
+        BridgeInsu_Start();
+        ChargerCommGB_innerData.insuIsStop = FALSE;
+    }
 }
 
 // 用于重新启动充电
@@ -1221,6 +1227,8 @@ void ChargerCommGB_ReceiveCHMCbk(const uint8 *Buffer, uint16 Length)
             }
             if (version == (uint32)CHARGERCOMMGB_PROTOCOL_VERSION_2015)
             {
+                BridgeInsu_Stop();
+                ChargerCommGB_innerData.insuIsStop = TRUE;
                 (void)memset(ChargerCommGB_innerData.bmsTimeoutReason, 0, CHARGERCOMMGB_BMS_TIMEOUT_BYTE_NUM);
                 ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CHM_TO_CRM);
                 ChargerComm_SetProtocol(CHARGERCOMM_PROTOCOL_GB2015);

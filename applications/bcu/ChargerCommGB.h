@@ -139,6 +139,7 @@ typedef struct{
 typedef struct{
     uint8 startFlag; /**< 启动标志 */
     uint8 stopFlag; /**< 启动是否需要停止标志 */
+    boolean insuIsStop; /**< 绝缘检测是否控制关闭 */
     uint8 communication; /**< 通信状态 */
     uint16 chargeTypeMask; /**< 充电类型位掩码 */
     Charge_ChargeType currentChargeType; /**< 当前连接的充电类型 */
