@@ -12,7 +12,7 @@
 
 #include "AppParameterM.h"
 
-const ParameterM_DataType ParameterM_EeepParaDefault[PARAMETERM_EEEP_PARA_MAX] = {
+const ParameterM_DataType ParameterM_EeepParaDefault[] = {
     <%- Math.round(EeepParaDefault.totalCap * 10) %>U, /**< PARAMETERM_EEEP_TOTAL_CAP_INDEX: 总容量 */
     <%- Math.round(EeepParaDefault.leftCap * 10) %>U, /**< PARAMETERM_EEEP_LEFT_CAP_INDEX: 剩余容量 */
     0U, /**< PARAMETERM_EEEP_DISCHARGE_CNT_INDEX: 充放电次数 */
@@ -50,6 +50,7 @@ const ParameterM_DataType ParameterM_EeepParaDefault[PARAMETERM_EEEP_PARA_MAX] =
     0U, /**< PARAMETERM_EEEP_DCHG_OLV_CNT_INDEX: 电池过放电计数 */
 };
 
+const ParameterM_EeepParaIndexType ParameterM_EeepParaNum = (ParameterM_EeepParaIndexType)(ARRAY_SIZE(ParameterM_EeepParaDefault));
 //const ParameterM_InnerStructType ParameterM_InnerStructData = {
 //    &App_BatteryBaseConfigInfo,
 //};

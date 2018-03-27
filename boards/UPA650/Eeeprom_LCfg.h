@@ -40,7 +40,6 @@
  */
 typedef struct{
     uint8 FclkDiv; /**< 时钟分频 */
-    uint16 ParaNum; /**< 需要保存的参数个数(word) */
     uint8 DfpartMax; /**< Eeeprom DFLASH使用最大扇区个数 */
     uint8 ErpartMax; /**< EEEPROM使用Buffer RAM最大扇区个数 */
     uint8 DeadSectorProportion; /**< 死扇区最大占比 % */

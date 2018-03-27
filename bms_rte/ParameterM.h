@@ -118,9 +118,7 @@ typedef enum{
     PARAMETERM_EEEP_HV5_GAIN_ERROR_INDEX = 32, /**< HV_CHANNEL_HV5增益误差 */
     PARAMETERM_EEEP_DCHG_OLV_CNT_STATE_INDEX = 33, /**< 电池过放电计数状态变化，用于记录需掉电保存的状态 */
     PARAMETERM_EEEP_DCHG_OLV_CNT_INDEX = 34, /**< 电池过放电计数 */
-    PARAMETERM_EEEP_PARA_STOP = PARAMETERM_EEEP_DCHG_OLV_CNT_INDEX,
 
-    PARAMETERM_EEEP_PARA_MAX = 35
 }ParameterM_EeepParaIndexType;
 
 /**
@@ -135,7 +133,8 @@ typedef struct{
 }ParameterM_CalibParaType;
 
 extern const Diagnosis_ParaType ParameterM_NoneCalibrateDiagConfig[];
-extern const ParameterM_DataType ParameterM_EeepParaDefault[PARAMETERM_EEEP_PARA_MAX];
+extern const ParameterM_DataType ParameterM_EeepParaDefault[];
+extern const ParameterM_EeepParaIndexType ParameterM_EeepParaNum;
 extern const ParameterM_CalibParaType *const ParameterM_PFlashCalibParaPtr;
 extern const ParameterM_CalibParaType *ParameterM_CurrentCalibParaPtr;
 extern const ParameterM_CalibParaType *const ParameterM_DFlashCalibParaPtr;
