@@ -15,6 +15,7 @@ module.exports = {
             WHK30_350DHAB5S2L_1: {name:"启东双赢30/350A大量程", offset: -2500,  mul: 7, div: 4, voltMin: 50, voltMax: 5200, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-350A, 350A]" },
             WHK30_350DHAB5S2L_2: {name:"启东双赢30/350A小量程", offset: -2500,  mul: 3, div: 20, voltMin: 50, voltMax: 5200, supplyVolAdj: true, lowerHallMaxValue: 30, comments: "[0.5V, 4.5V] <=> [-30A, 30A]" },
             EHMWX911C500: {name:"松下EHMWX911C500,500A量程", offset: -2500,  mul: 5, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-500A, 500A]" },
+            HAH1BVW_S03: {name:"LEM 300A单量程", offset: -2500,  mul: 3, div: 2, voltMin: 260, voltMax: 4740, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-300A, 300A]" },
         };
 
         var shuntparams = {
