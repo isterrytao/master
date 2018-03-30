@@ -123,8 +123,10 @@ typedef struct{
  * \note 定义有累加总压和高压采样总压
  */
 typedef enum{
-	STATISTIC_TV_TYPE_CUMULATE, /**< 累加总压类型 */
-	STATISTIC_TV_TYPE_SAMPLE, /**< 采样总压类型 */
+	STATISTIC_TV_TYPE_CUMULATE_PRIO, /**< 累加总压优先类型 */
+	STATISTIC_TV_TYPE_SAMPLE_PRIO, /**< 采样总压优先类型 */
+	STATISTIC_TV_TYPE_CUMULATE_ONLY, /**< 仅使用累加总压类型 */
+	STATISTIC_TV_TYPE_SAMPLE_ONLY, /**< 仅使用采样总压类型 */
 }Statistic_TvTypeType;
 
 typedef struct{
