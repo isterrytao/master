@@ -174,7 +174,7 @@ typedef uint8 (*Diagnosis_DataIsValid)(uint16 data);
  * \brief 获取单等级报警故障参数函数类型定义
  * \details 获取触发值、释放值、触发延时、释放延时
  *
- * \param level 报警等级
+ * \param level 报警等级, 0-一级报警 1-二级报警...
  * \param para 参数缓存指针
  */
 typedef void (*Diagnosis_LevelParaGetFuncType)(uint8 level, Diagnosis_LevelParaType *para);
@@ -481,6 +481,19 @@ uint8 Diagnosis_ItemToIndex(Diagnosis_ItemType item);
  * \return 诊断项编号
  */
 Diagnosis_ItemType Diagnosis_IndexToItem(uint8 index);
+
+/**
+ * \brief 获取诊断项配置参数值
+ * \details 根据实际诊断配置，从系统参数、标定参数或者用户自定义参数函数中获取禁止充电诊断项配置参数值
+ *
+ * \param diagnosis 诊断项
+ * \param level 报警等级 0-一级 1-二级 2-三级 3-四级
+ * \param offset 0-触发阈值 1-释放阈值 2-触发延时 3-释放延时
+ * \return 指定配置参数值
+ */
+uint16 Diagnosis_GetDiagnosisPara(Diagnosis_ItemType diagnosis, uint8 level, uint8 offset);
+
+
 
 #endif
 

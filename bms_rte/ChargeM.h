@@ -414,6 +414,26 @@ void ChargeM_StartDiagCtlDisableEventCbk(Diagnosis_ItemType item, Diagnosis_Leve
  */
 boolean ChargeM_ELIsChargeReady(void);
 
+/**
+ * \brief 获取禁止充电故障等级
+ * \details 获取对应诊断项禁止充电的故障等级
+ *
+ * \param item 诊断项
+ * \return 禁止充电故障等级 返回DIAGNOSIS_LEVEL_NONE表示无禁止充电故障
+ */
+Diagnosis_LevelType ChargeM_GetChargeDisableLevel(Diagnosis_ItemType item);
+
+/**
+ * \brief 获取禁止充电故障触发配置参数值
+ *
+ * \param item 诊断项
+ * \param offset 0-触发阈值 1-释放阈值 2-触发延时 3-释放延时
+ * \return 禁止充电故障触发配置参数值 0xFFFF表示无效值
+ */
+uint16 ChargeM_GetChargeDisableTriggerPara(Diagnosis_ItemType item, uint8 offset);
+
+
+
 #endif
 
 
