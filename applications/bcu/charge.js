@@ -8,6 +8,7 @@ module.exports = {
 
         var acmodemap = [
             {mode:"NONE", def: "CONNECT_NONE"},
+            {mode:"USER", def: "CONNECT_SELF_DEFINE"},
             {mode:"COMM", def: "CONNECT_COMMUNICATION"},
             {mode:"DIN", def: "CONNECT_DIN"},
             {mode:"CURRENT", def: "CONNECT_CURRENT"},
@@ -20,6 +21,7 @@ module.exports = {
 
         var dcmodemap = [
             {mode:"NONE", def: "CONNECT_NONE"},
+            {mode:"USER", def: "CONNECT_SELF_DEFINE"},
             {mode:"COMM", def: "CONNECT_COMMUNICATION"},
             {mode:"DIN", def: "CONNECT_DIN"},
             {mode:"CURRENT", def: "CONNECT_CURRENT"},
@@ -72,6 +74,9 @@ module.exports = {
         var ac = {
             type: "CHARGECONNECTM_" + m.def,
             relay: acrelay,
+            dinChannel: "DIGITALINPUT_CHANNEL_NONE",
+            dinType: "DIGITALINPUT_TYPE_LEVEL",
+            userModeFunction: ["", "NULL"],
         };
         if (ac.type == "CHARGECONNECTM_CONNECT_DIN") {
             if (cfg.ac.dintype == "LEVEL") {
@@ -94,9 +99,10 @@ module.exports = {
             } else {
                 throw "Unsupport dinType: " + cfg.ac.dintype;
             }
-        } else {
-            ac.dinChannel = "DIGITALINPUT_CHANNEL_NONE";
-            ac.dinType = "DIGITALINPUT_TYPE_LEVEL";
+        }
+
+        if (ac.type == 'CHARGECONNECTM_CONNECT_SELF_DEFINE') {
+            ac.userModeFunction = cfg.ac.userModeFunction;
         }
 
 
@@ -119,6 +125,9 @@ module.exports = {
         var dc = {
             type: "CHARGECONNECTM_" + m.def,
             relay: dcrelay,
+            dinChannel: "DIGITALINPUT_CHANNEL_NONE",
+            dinType: "DIGITALINPUT_TYPE_LEVEL",
+            userModeFunction: ["", "NULL"],
         };
 
         if (dc.type == "CHARGECONNECTM_CONNECT_DIN") {
@@ -142,10 +151,13 @@ module.exports = {
             } else {
                 throw "Unsupport dinType: " + cfg.dc.dintype;
             }
-        } else {
-            dc.dinChannel = "DIGITALINPUT_CHANNEL_NONE";
-            dc.dinType = "DIGITALINPUT_TYPE_LEVEL";
         }
+
+
+        if (dc.type == 'CHARGECONNECTM_CONNECT_SELF_DEFINE') {
+            dc.userModeFunction = cfg.dc.userModeFunction;
+        }
+
 
         var mdata = {
             protocol: {

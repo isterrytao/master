@@ -93,8 +93,9 @@ typedef enum{
     CHARGECONNECTM_GB_AC_MODE3_CONNECT_B = 9, /**< 国标交流模式3连接B CC+CP */
     CHARGECONNECTM_GB_AC_MODE3_CONNECT_C = 10, /**< 国标交流模式3连接C CC+CP */
     CHARGECONNECTM_GB_STOP = CHARGECONNECTM_GB_AC_MODE3_CONNECT_C,
+    CHARGECONNECTM_CONNECT_SELF_DEFINE = 11, /**< 自定义充电连接 */
 
-    CHARGECONNECTM_GB_CONNECT_MAX = 11
+    CHARGECONNECTM_GB_CONNECT_MAX = 12
 }ChargeConnectM_ConnectType;
 
 /**
@@ -137,12 +138,15 @@ typedef struct{
     uint8 channel; /**< 数字输入通道 */
 }ChargeConnectM_DinParaType;
 
+typedef Std_ReturnType (*ChargeConnectM_ConnectFunPtr)(void);
+
 /**
  * \brief 充电连接通用配置类型
  */
 typedef struct{
     ChargeConnectM_ConnectType type;
     ChargeConnectM_DinParaType DinPara;
+    ChargeConnectM_ConnectFunPtr FuncPtr;
 }ChargeConnectM_CommonConfigType;
 
 typedef struct{

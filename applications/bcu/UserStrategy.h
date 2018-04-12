@@ -102,5 +102,21 @@ void UserStrategy_CheckSRS(const PwmCapture_DataType *dat);
  */
 uint16 UserStrategy_GetCrashFault(void);
 
+/**
+ * \brief 用户自定义交流充电连接接口函数
+ * \note 建议由连接到未连接变化时增加适当延时，保证连接状态不会突变而导致异常
+ *
+ * \return E_OK:已连接 E_NOT_OK:未连接
+ */
+Std_ReturnType UserStrategy_ACConnected(void);
+
+/**
+ * \brief 用户自定义直流充电连接接口函数
+ * \note 建议由连接到未连接变化时增加适当延时，保证连接状态不会突变而导致异常
+ *
+ * \return E_OK:已连接 E_NOT_OK:未连接
+ */
+Std_ReturnType UserStrategy_DCConnected(void);
+
 
 #endif

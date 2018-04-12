@@ -245,29 +245,33 @@ module.exports = {
         dc: {
             notes:[
                 {section:"protocol", chs:"协议", comments:'可选:"NONE", "USER", "GB2015"'},
-                {section:"mode", chs:"连接模式", comments:'可选:"NONE", "COMM", "DIN", "CURRENT", "GB_DC"'},
+                {section:"mode", chs:"连接模式", comments:'可选:"NONE", "USER", "COMM", "DIN", "CURRENT", "GB_DC"'},
                 {section:"dintype", chs:"数字输入类型", comments:'只有mode为"DIN"时可用, 可选:"LEVEL", "SW", "WAKEUP_SIGNAL"'},
                 {section:"dinChannel", chs:"数字输入通道", comments:'可选:"BCU_DIN1", "BCU_DIN2", "BCU_SW1", "BCU_SW2", "OBC", "DCC"'},
+                {section:"userModeFunction", chs:"自定义充电连接", comments:'当mode为"USER"时，提供一个获取连接模式的头文件和函数'}
             ],
             protocol: "GB2015",
             mode: "GB_DC",
             dintype: "LEVEL",
             dinChannel: "BCU_DIN1",
             relay: "快充正",
+            userModeFunction: ["UserStrategy.h", "UserStrategy_DCConnected"],
         },
 
         ac: {
             notes:[
                 {section:"protocol", chs:"协议", comments:'可选:"NONE", "USER", "GB2015"'},
-                {section:"mode", chs:"连接模式", comments:'可选:"NONE", "COMM", "DIN", "CURRENT", "GB_MODE1_CONNECT_B", "GB_MODE2_CONNECT_B", "GB_MODE3_CONNECT_A", "GB_MODE3_CONNECT_B", "GB_MODE3_CONNECT_C"'},
+                {section:"mode", chs:"连接模式", comments:'可选:"NONE", "USER", COMM", "DIN", "CURRENT", "GB_MODE1_CONNECT_B", "GB_MODE2_CONNECT_B", "GB_MODE3_CONNECT_A", "GB_MODE3_CONNECT_B", "GB_MODE3_CONNECT_C"'},
                 {section:"dintype", chs:"数字输入类型", comments:'只有mode为"DIN"时可用, 可选:"LEVEL", "SW", "WAKEUP_SIGNAL"'},
                 {section:"dinChannel", chs:"数字输入通道", comments:'可选:"BCU_DIN1", "BCU_DIN2", "BCU_SW1", "BCU_SW2", "OBC", "DCC"'},
+                {section:"userModeFunction", chs:"自定义充电连接", comments:'当mode为"USER"时，提供一个获取连接模式的函数'}
             ],
             protocol: "USER",
             mode: "GB_MODE1_CONNECT_B",
             dintype: "LEVEL",
             dinChannel: "BCU_DIN2",
             relay: "慢充正",
+            userModeFunction: ["UserStrategy.h", "UserStrategy_ACConnected"],
         },
 
         el: {

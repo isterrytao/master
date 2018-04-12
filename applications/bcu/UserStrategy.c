@@ -186,6 +186,18 @@ boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
     return UserStrategy_IsSafeToOff();
 }
 
+/**< 建议由连接到未连接变化时增加适当延时，保证连接状态不会突变而导致异常 */
+Std_ReturnType UserStrategy_ACConnected(void)
+{
+    return E_NOT_OK;
+}
+
+/**< 建议由连接到未连接变化时增加适当延时，保证连接状态不会突变而导致异常 */
+Std_ReturnType UserStrategy_DCConnected(void)
+{
+    return E_NOT_OK;
+}
+
 uint16 UserStrategy_GetCrashFault(void)
 {
     return 0U;

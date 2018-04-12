@@ -367,6 +367,14 @@ uint16 ChargerComm_DiagGetDeltaCurWithChr(void);
  */
 boolean ChargerComm_IsCVCharge(void);
 
+/**
+ * \brief 充电机通信状态是否为空闲状态
+ * \details 即无快充通信也无慢充通信时为空闲状态
+ *
+ * \return FALSE-是 TRUE-否
+ */
+boolean ChargerComm_IsIdle(void);
+
 
 #endif
 
