@@ -4,6 +4,10 @@
 
 const RelayM_FunctionType RelayMFnNum = RELAYM_FN_NUM;
 
+const RelayM_CommonConfigType RelayMCommonConfigData = {
+    50UL, /**< MinTimeSapce: 继电器最小闭合间隔 */
+};
+
 const RelayM_ConfigType RelayMConfigData[RELAYM_FN_NUM] = {<%
 for (var relay of relays) {%>
     {

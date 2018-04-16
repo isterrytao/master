@@ -106,6 +106,12 @@ typedef struct {
     Dio_LevelType IoLevelOfAuxContactWhenOn; /**< 闭合是辅助触点的状态 */
 } RelayM_ConfigType;
 
+/**
+ * \brief 继电器通用配置的数据结构
+ */
+typedef struct {
+    uint32 MinTimeSapce; /**< 继电器最小闭合间隔 */
+} RelayM_CommonConfigType;
 
 /**
  * \brief 继电器粘连检测回调函数.
@@ -133,6 +139,7 @@ typedef struct {
 } RelayM_InnerDataType;
 
 extern const RelayM_FunctionType RelayMFnNum;
+extern const RelayM_CommonConfigType RelayMCommonConfigData;
 extern const RelayM_ConfigType RelayMConfigData[];
 extern RelayM_InnerDataType RelayMInnerData[];
 
