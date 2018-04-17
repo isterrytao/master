@@ -19,6 +19,8 @@
 #define HV_PROCESS__DCHG_H_
 
 #include "HvProcess_Types.h"
+#include "Async_Looper.h"
+#include "Async_Event.h"
 
 /**
  * \brief 放电高压流程控制状态类型
@@ -46,7 +48,7 @@ extern const HvProcess_StateConfigType HvProcess_DchgStateConfig[HVPROCESS_DCHG_
 /**
  * \brief 放电高压流程控制初始化
  */
-void HvProcess_DchgInit(void);
+void HvProcess_DchgInit(Async_LooperType *looper);
 
 /**
  * \brief 获取放电高压流程控制状态

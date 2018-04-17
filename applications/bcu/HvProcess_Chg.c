@@ -22,8 +22,9 @@
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
 
-void HvProcess_ChgInit(void)
+void HvProcess_ChgInit(Async_LooperType *looper)
 {
+    (void)looper;
     HvProcess_ChgInnerData.State = HVPROCESS_CHG_START;
 }
 

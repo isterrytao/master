@@ -19,6 +19,8 @@
 #define HV_PROCESS_TYPES_H_
 
 #include "App_Types.h"
+#include "Async_Looper.h"
+#include "Async_Event.h"
 
 /**
  * \brief 高压流程控制条件函数类型
@@ -60,6 +62,11 @@ typedef void (*HvProcess_SetStateFuncPtr)(uint16 state);
 /**
  * \brief 高压流程轮循函数指针类型定义
  */
+typedef void (*HvProcess_InitFuncPtr)(Async_LooperType *looper);
+
+/**
+ * \brief 高压流程轮循函数指针类型定义
+ */
 typedef void (*HvProcess_PollFuncPtr)(void);
 
 /**
@@ -70,6 +77,7 @@ typedef struct{
     const HvProcess_StateConfigType *Config; /**< 高压流程配置指针 */
     HvProcess_GetStateFuncPtr GetState; /**< 读取状态函数指针 */
     HvProcess_SetStateFuncPtr SetState; /**< 设置状态函数指针 */
+    HvProcess_InitFuncPtr Init; /**< 初始化函数指针 */
     HvProcess_PollFuncPtr Poll; /**< 轮循函数指针 */
 }HvProcess_ProcessDataType;
 

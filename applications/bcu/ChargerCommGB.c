@@ -475,11 +475,11 @@ void ChargerCommGB_GetBCPDataCbk(uint8 *Buffer, uint16 *Length)
             MV_TO_10MV(temp));//最高允许充电单体电压
     if (ChargerCommGB_innerData.currentChargeType == CHARGE_TYPE_DC)
     {
-        temp = ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_DC_CHG_OC, 0U);
+        temp = BatteryInfo_BaseConfigInfo.NominalDCCurrent + 20U;
     }
     else
     {
-        temp = ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_AC_CHG_OC, 0U);
+        temp = BatteryInfo_BaseConfigInfo.NominalACCurrent + 20U;
     }
     WRITE_LT_UINT16(
         Buffer,
@@ -845,7 +845,7 @@ void ChargerCommGB_GetBSMDataCbk(uint8 *Buffer, uint16 *Length)
     {
     }
     WRITE_LT_UINT8(Buffer, index, temp);
-    temp = 0U;
+    temp = 0xC0U;
     if(Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) >= DIAGNOSIS_LEVEL_THIRD)  //漏电
     {
         temp |= 0x01U;
@@ -996,6 +996,7 @@ Std_ReturnType ChargerCommGB_BSTSendConditionCheck(void)
 
 void ChargerCommGB_GetBSTDataCbk(uint8 *Buffer, uint16 *Length)
 {
+    uint8 error;
     uint16 index = 0U;
     uint16 temp;
 
@@ -1010,7 +1011,8 @@ void ChargerCommGB_GetBSTDataCbk(uint8 *Buffer, uint16 *Length)
     }
     WRITE_LT_UINT8(Buffer, index, temp);//BMS中止充电原因
     WRITE_LT_UINT16(Buffer, index, ChargerCommGB_innerData.bmsFaultReason);//BMS中止充电故障原因
-    WRITE_LT_UINT8(Buffer, index, ChargerCommGB_innerData.bmsErrorReason);//BMS中止充电错误原因
+    error = ChargerCommGB_innerData.bmsErrorReason & 0xF0U;
+    WRITE_LT_UINT8(Buffer, index, error);//BMS中止充电错误原因
     ChargerCommGB_innerData.bstSendCnt++;
     ChargeM_SetChargerGBReadyStatus(CHARGEM_CHARGERGB_READY_RELAY_INDEX, CHARGEM_CHARGE_DISABLE);
 
@@ -1091,7 +1093,10 @@ void ChargerCommGB_GetBEMDataCbk(uint8 *Buffer, uint16 *Length)
     VALIDATE_PTR(Buffer, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
     VALIDATE_PTR(Length, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
 
-    (void)memcpy(Buffer, ChargerCommGB_innerData.bmsTimeoutReason, CHARGERCOMMGB_BMS_TIMEOUT_BYTE_NUM);
+    Buffer[0] = ChargerCommGB_innerData.bmsTimeoutReason[0] & 0xF0U;
+    Buffer[1] = ChargerCommGB_innerData.bmsTimeoutReason[1] & 0xF0U;
+    Buffer[2] = ChargerCommGB_innerData.bmsTimeoutReason[2] & 0xF0U;
+    Buffer[3] = ChargerCommGB_innerData.bmsTimeoutReason[3] & 0xFCU;
 
     now = OSTimeGet();
     if (ChargerCommGB_innerData.bemCurDecreaseLastTick == 0U)

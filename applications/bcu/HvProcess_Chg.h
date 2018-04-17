@@ -19,6 +19,8 @@
 #define HV_PROCESS__CHG_H_
 
 #include "HvProcess_Types.h"
+#include "Async_Looper.h"
+#include "Async_Event.h"
 
 /**
  * \brief 充电高压流程控制状态类型
@@ -46,7 +48,7 @@ extern const HvProcess_StateConfigType HvProcess_ChgStateConfig[HVPROCESS_CHG_ST
 /**
  * \brief 充电高压流程控制初始化
  */
-void HvProcess_ChgInit(void);
+void HvProcess_ChgInit(Async_LooperType *looper);
 
 
 /**

@@ -19,6 +19,7 @@ const HvProcess_ProcessDataType HvProcess_ProcessList[] = {
         HvProcess_ChgStateConfig, /**< Config: 高压流程配置指针 */
         (HvProcess_GetStateFuncPtr)HvProcess_GetChgState, /**< GetState: 读取状态函数指针 */
         (HvProcess_SetStateFuncPtr)HvProcess_SetChgState, /**< SetState: 设置状态函数指针 */
+        HvProcess_ChgInit, /**< Init: 初始化函数指针 */
         HvProcess_ChgPoll, /**< Poll: 轮循函数指针 */
     },
     {
@@ -26,6 +27,7 @@ const HvProcess_ProcessDataType HvProcess_ProcessList[] = {
         HvProcess_DchgStateConfig, /**< Config: 高压流程配置指针 */
         (HvProcess_GetStateFuncPtr)HvProcess_GetDchgState, /**< GetState: 读取状态函数指针 */
         (HvProcess_SetStateFuncPtr)HvProcess_SetDchgState, /**< SetState: 设置状态函数指针 */
+        HvProcess_DchgInit, /**< Init: 初始化函数指针 */
         HvProcess_DchgPoll, /**< Poll: 轮循函数指针 */
     },
 };

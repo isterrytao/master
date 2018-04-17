@@ -22,7 +22,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo =
     V_TO_100MV(50U), /**< validVoltMin: 最低有效电压 */
     {
         PRECHARGEM_FINISH_TYPE_PERCENT, /**< type: 预充完成条件类型 */
-        PERCENT_TO_THOUSAND(96U), /**< value: 预充完成值,若预充类型为延时，此值必须大于“预充超时时间” */
+        PERCENT_TO_THOUSAND(96U), /**< value: 预充完成值,若预充类型为延时，此值必须小于“预充超时时间” */
         CURRENT_100MA_FROM_A(5U), /**< current: 完成电流值(0.1A) */
     },
     UserStrategy_GetMcuVoltage, /**< getMcuVoltFunc: 获取MCU总压接口 */

@@ -53,8 +53,6 @@
 #include "VcuComm.h"
 #include "VcuComm_Messages.h"
 #include "HvProcess.h"
-#include "HvProcess_Chg.h"
-#include "HvProcess_Dchg.h"
 #include "PowerM.h"
 #include "FullCharge.h"
 #include "WatchDogM.h"
@@ -411,8 +409,6 @@ static void start_task(void *pdata) {
         mode == RUNTIMEM_RUNMODE_NORMAL) {
         SocCalib_Init(&extLooper);
         HvProcess_Init(HVPROCESS_TASK_PRI);
-        HvProcess_ChgInit();
-        HvProcess_DchgInit();
         ChargerComm_Init(CHARGERCOMM_TASK_PRI);
         ChargerCommGB_Init();
         ChargerCommUser_Init();
