@@ -51,6 +51,7 @@ typedef enum{
 typedef struct{
     PrechargeM_FinishType type; /**< 预充完成条件类型 */
     uint16 value; /**< 预充完成值 */
+    uint16 current; /**< 完成电流值(0.1A) */
 }PrechargeM_FinishCondType;
 
 /**
@@ -70,6 +71,8 @@ typedef struct{
     uint16 dchgRelayOnTimeout; /**< 放电继电器闭合超时(ms) */
     uint8 prechargeRelayChannel; /**< 预充继电器通道号 */
     uint8 dchgRelayChannel; /**< 放电继电器通道号 */
+    uint16 currentMax; /**< 预充最大安全电流(0.1A) */
+    uint32 overCurTime; /**< 允许超预充最大电流最大时间(ms) */
 }PrechargeM_ConfigInfoType;
 
 /**
@@ -80,6 +83,7 @@ typedef struct{
     uint8 retryCnt; /**< 重试计数 */
     uint32 timeoutTick; /**< 超时计时 */
     uint32 finishTick; /**< 预充完成计时 */
+    uint32 overCurTick; /**< 预充过流计时 */
     Async_EventType event; /**< 异步事件 */
     PrechargeM_StatusType status; /**< 预充状态 */
 }PrechargeM_InnerDataType;
@@ -100,6 +104,11 @@ void PrechargeM_Start(void);
  * \brief 停止预充
  */
 void PrechargeM_Stop(void);
+
+/**
+ * \brief 复位预充
+ */
+void PrechargeM_Reset(void);
 
 /**
  * \brief 预充是否已经启动

@@ -18,7 +18,7 @@ module.exports = {
         //];
 
         var relayparams = {
-            UNKNOWN: {name:'未知', onDelay: 50,  offDelay: 100, resistor: 'RELAYM_INVALID_RESISTOR', comments: '未知继电器' },
+            UNKNOWN: {name:'未知', onDelay: 30,  offDelay: 30, resistor: 'RELAYM_INVALID_RESISTOR', comments: '未知继电器' },
         };
 
         for (var cfg of cfgs) {
