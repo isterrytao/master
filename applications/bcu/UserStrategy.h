@@ -118,5 +118,12 @@ Std_ReturnType UserStrategy_ACConnected(void);
  */
 Std_ReturnType UserStrategy_DCConnected(void);
 
+/**
+ * \brief 满充及满充释放事件钩子函数
+ * \details 由满充及满充释放事件触发回调
+ */
+void UserStrategy_FullChargeHook(void);
+void UserStrategy_FullChargeReleaseHook(void);
+
 
 #endif

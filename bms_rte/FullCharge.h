@@ -16,10 +16,6 @@
 #include "Async_Looper.h"
 #include "Async_Event.h"
 
-/**
- * \brief 满充成立延时
- */
-#define FULLCHARGE_FULL_CHARGE_DELAY            3000U
 
 /**
  * \brief 最小有效充电电流值
@@ -40,16 +36,23 @@ typedef enum{
 typedef struct{
     uint8 flag; /**< 满充标志 */
     uint32 tick; /**< 计时 */
+    uint32 relTick; /**< 释放计时 */
     uint8 chargeConnectOff; /**< 充电连接断开标志 */
     FullCharge_StateType state; /**< 满充状态 */
     Async_EventType event; /**< 异步事件 */
 }FullCharge_InnerDataType;
+
+typedef void (*FullCharge_FullChargeEventHook)(void);
 
 /**
  * \brief 满充配置类型
  */
 typedef struct{
     uint8 currentDecreaseEndFlag; /**< 充电降流末端检查标志 */
+    uint32 fullChargeDelay; /**< 满充延时 */
+    uint32 fullChargeRelDelay; /**< 满充释放延时 */
+    FullCharge_FullChargeEventHook fullHook; /**< 满充钩子函数 */
+    FullCharge_FullChargeEventHook fullRelHook; /**< 满充释放钩子函数 */
 }FullCharge_ConfigInfoType;
 
 extern const FullCharge_ConfigInfoType FullCharge_ConfigInfo;

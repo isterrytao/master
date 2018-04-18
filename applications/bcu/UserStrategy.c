@@ -19,6 +19,8 @@
 #include "PowerM.h"
 #include "TemperatureM.h"
 #include "ChargeConnectM.h"
+#include "SocCalib_Cbk.h"
+#include "ChargeM.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -202,3 +204,16 @@ uint16 UserStrategy_GetCrashFault(void)
 {
     return 0U;
 }
+
+void UserStrategy_FullChargeHook(void)
+{
+    SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+    ChargeM_DiagnosisCtlDisableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+}
+
+void UserStrategy_FullChargeReleaseHook(void)
+{
+    SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_NONE, DIAGNOSIS_EVENT_DEASSERT);
+    ChargeM_DiagnosisCtlEnableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_NONE, DIAGNOSIS_EVENT_DEASSERT);
+}
+
