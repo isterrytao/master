@@ -783,10 +783,11 @@ void VcuComm_RecTimeoutCbk(void)
 
 
 // Condition Check function define
-Std_ReturnType VcuComm_SendConditionCheck(void)
+Std_ReturnType VcuComm_SendConditionCheck(uint16 IPdu)
 {
     Std_ReturnType res = E_NOT_OK;
 
+    (void)IPdu;
     if (VcuComm_GetCurrentRecStage() == (uint16)VCUCOMM_STAGE_STAGE1)
     {
         res = E_OK;

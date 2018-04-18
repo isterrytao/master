@@ -72,7 +72,7 @@ typedef void (*VcuCommSendFuncCbk)(uint8 *dataPtr, uint16 *Length);
 /**
  * \brief 发送条件检查函数类型定义
  */
-typedef Std_ReturnType (*CharerCommSendCondCheckFunc)(void);
+typedef Std_ReturnType (*VcuCommSendCondCheckFunc)(uint16 IPdu);
 
 /**
  * \brief 整车通信数据接收回调函数类型定义
@@ -98,7 +98,7 @@ typedef struct{
     uint16 IPdu; /**< 发送IPdu */
     uint16 Length; /**< 发送数据长度 */
     uint16 Cycle; /**< 数据发送周期 */
-    CharerCommSendCondCheckFunc CondFunc; /**< 发送条件检查函数 */
+    VcuCommSendCondCheckFunc CondFunc; /**< 发送条件检查函数 */
     VcuCommSendFuncCbk Func; /**< 数据发送回调函数 */
 }VcuComm_SendIPduCfgType;
 

@@ -73,7 +73,7 @@ void VcuComm_RecTimeoutCbk(void);
  *
  * \return E_OK: 允许发送 E_NOT_OK: 不允许发送
  */
-Std_ReturnType VcuComm_SendConditionCheck(void);
+Std_ReturnType VcuComm_SendConditionCheck(uint16 IPdu);
 
 /**
  * \brief 接收整车报文条件检查
