@@ -184,6 +184,13 @@ Std_ReturnType ChargeM_DiagnosisIsNormal(void);
 Std_ReturnType ChargeM_DiagnosisIsFaultAction(void);
 
 /**
+ * \brief 排除某一故障后故障诊断充电故障动作是否已成立
+ * \details 此函数用于确认排除某一故障后是否有诊断故障需要断充电高压
+ * \return E_OK:成立 E_NOT_OK:未成立
+ */
+Std_ReturnType ChargeM_DiagnosisIsFaultActionExcludeItem(Diagnosis_ItemType item);
+
+/**
  * \brief 设置国标充电控制状态
  * \details 通过此函数可设置国标充电时进行充电启停的控制状态
  *
