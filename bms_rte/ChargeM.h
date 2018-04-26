@@ -125,6 +125,15 @@ Std_ReturnType ChargeM_ChargeIsReady(void);
 Std_ReturnType ChargeM_ChargeIsFault(void);
 
 /**
+ * \brief 排除指定诊断项后当前充电故障动作是否已经成立
+ * \details 检查包含禁止充电的故障，也包含国标快充定义的结束充电时（若为快充连接状态），进入国标快充未就绪状态
+ *
+ * \param item 指定要排除的诊断项
+ * \return E_OK: 故障动作已成立 E_NOT_OK: 未成立
+ */
+Std_ReturnType ChargeM_ChargeIsFaultExcludeItem(Diagnosis_ItemType item);
+
+/**
  * \brief 获取充电控制上电自检故障码
  * \details 未自检完成前返回无故障
  *

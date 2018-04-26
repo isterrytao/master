@@ -573,7 +573,7 @@ static const GB32960_RecordItemType unfixedCycleDataList[] = {
     {GB_TYPE_TO_RECORD_TYPE(0x86U), MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copyRecordSegmentsBalanceStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsBalanceStatus), BalanceM_IsBalance},
     {GB_TYPE_TO_RECORD_TYPE(0x85U), MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copyRecordSegmentsChargerStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsChargerStatus), is_valid_in_charging_mode},
     {GB_TYPE_TO_RECORD_TYPE(0x87U), 0U, getAlarmLengthRecord, (GB32960_FillMessageFuncType)fillAlarmStatusRecord, copyRecordSegmentsAlarmStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsAlarmStatus), NULL},
-    {GB_TYPE_TO_RECORD_TYPE(0x89U), MSG_LENGTH_CUMU_INFO, NULL, (GB32960_FillMessageFuncType)fillPowerInfoRecord, copyRecordSegmentsPowerInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsPowerInfo), NULL},
+    {GB_TYPE_TO_RECORD_TYPE(0x88U), MSG_LENGTH_CUMU_INFO, NULL, (GB32960_FillMessageFuncType)fillPowerInfoRecord, copyRecordSegmentsPowerInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsPowerInfo), NULL},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
 };
 
