@@ -23,7 +23,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo =
     {
         PRECHARGEM_FINISH_TYPE_PERCENT, /**< type: 预充完成条件类型 */
         PERCENT_TO_THOUSAND(96U), /**< value: 预充完成值,若预充类型为延时，此值必须小于“预充超时时间” */
-        CURRENT_100MA_FROM_A(5U), /**< current: 完成电流值(0.1A) */
+        CURRENT_S_100MA_FROM_A(5), /**< current: 完成电流值(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
     },
     UserStrategy_GetMcuVoltage, /**< getMcuVoltFunc: 获取MCU总压接口 */
     200U, /**< continuousTime: 预充完成持续时间(ms),当finishCond.type为PRECHARGEM_FINISH_TYPE_DELAY时，此值不启作用 */
@@ -32,7 +32,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo =
     5000U, /**< dchgRelayOnTimeout: 放电继电器闭合超时(ms) */
     RELAYM_FN_PRECHARGE, /**< prechargeRelayChannel: 预充继电器通道号 */
     RELAYM_FN_POSITIVE_MAIN, /**< dchgRelayChannel: 放电继电器通道号 */
-    CURRENT_100MA_FROM_A(10U), /**< currentMax: 预充最大安全电流(0.1A) */
+    CURRENT_S_100MA_FROM_A(10), /**< currentMax: 预充最大安全电流(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
     1000U, /**< overCurTime: 允许超预充最大电流最大时间(ms) */
 };
 

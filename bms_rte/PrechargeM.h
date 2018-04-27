@@ -22,6 +22,7 @@
 #include "Async_Looper.h"
 #include "Async_Event.h"
 #include "PrechargeM_Cfg.h"
+#include "CurrentM.h"
 
 /**
  * \brief 预充状态类型定义
@@ -51,7 +52,7 @@ typedef enum{
 typedef struct{
     PrechargeM_FinishType type; /**< 预充完成条件类型 */
     uint16 value; /**< 预充完成值 */
-    uint16 current; /**< 完成电流值(0.1A) */
+    Current_CurrentType current; /**< 完成电流值(0.1A) */
 }PrechargeM_FinishCondType;
 
 /**
@@ -71,7 +72,7 @@ typedef struct{
     uint16 dchgRelayOnTimeout; /**< 放电继电器闭合超时(ms) */
     uint8 prechargeRelayChannel; /**< 预充继电器通道号 */
     uint8 dchgRelayChannel; /**< 放电继电器通道号 */
-    uint16 currentMax; /**< 预充最大安全电流(0.1A) */
+    Current_CurrentType currentMax; /**< 预充最大安全电流(0.1A) */
     uint32 overCurTime; /**< 允许超预充最大电流最大时间(ms) */
 }PrechargeM_ConfigInfoType;
 
