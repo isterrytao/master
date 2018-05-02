@@ -353,6 +353,7 @@ uint8 gDTCSwitch;
 #define RoutineHandle_0xF006    (6u)
 #define RoutineHandle_0xF007    (7u)
 #define RoutineHandle_0xF008    (8u)
+#define RoutineHandle_0xF009    (9u)
 
 /*******************************************************************************
 * Global variables(Scope:local)
@@ -5382,6 +5383,34 @@ void APP_RequestResultsRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
     uint16 length = 4U;
     uint16 res = Insu_GetSystem();
     WRITE_BT_UINT16(pMsgContext->resData, length, res);
+    pMsgContext->resDataLen = length;
+    DsdInternal_RequestRoutineResults();
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+
+void App_StartRoutine0xF009(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    DsdInternal_RoutineStarted();
+    if (pMsgContext->reqDataLen >= 5U)
+    {
+        Statistic_SetSimulationHt(pMsgContext->reqData[4]);
+        Statistic_SetSimulationLt(pMsgContext->reqData[5]);
+        Statistic_SimulationHtLtEnable();
+    }
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void App_StopRoutine0xF009(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    DsdInternal_RoutineStopped();
+    Statistic_SimulationHtLtDisable();
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void APP_RequestResultsRoutine0xF009(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    WRITE_BT_UINT8(pMsgContext->resData, length, Statistic_GetSimulationHt());
+    WRITE_BT_UINT8(pMsgContext->resData, length, Statistic_GetSimulationLt());
     pMsgContext->resDataLen = length;
     DsdInternal_RequestRoutineResults();
     DsdInternal_ProcessingDone(pMsgContext);

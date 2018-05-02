@@ -20,6 +20,7 @@
 #include "BalanceM_Cfg.h"
 #include "SystemConnection.h"
 #include "Async_Looper.h"
+#include "Async_Event.h"
 
 #define STATISTIC_TIME_INVALID_VALUE		0xFFFFFFFFUL
 
@@ -134,6 +135,17 @@ typedef struct{
 }Statistic_ConfigInfoType;
 
 #pragma pop
+
+typedef struct{
+	Async_EventType asyncEvent;
+	uint32 chargeTimeLast;
+	uint32 dischargeTimeLast;
+	App_Tv100mvType totalVoltage;
+	uint32 totalVoltageTick;
+	boolean isSimulationHtLt; /**< 是否使用模拟高温低温值 */
+	App_TemperatureType simulationHt; /**< 模拟高温 */
+	App_TemperatureType simulationLt; /**< 模拟低温 */
+}Statistic_innerDataType;
 
 
 #pragma push
@@ -784,6 +796,41 @@ uint16 Statistic_ActureBatNumIsNotMatch(void);
  */
 uint16 Statistic_ActureTemperatureNumIsNotMatch(void);
 
+/**
+ * \brief 开启最高最低温度模拟
+ */
+void Statistic_SimulationHtLtEnable(void);
+
+/**
+ * \brief 关闭最高最低温度模拟
+ */
+void Statistic_SimulationHtLtDisable(void);
+
+/**
+ * \brief 设置模拟最高温度值
+ * \details 仅设置模拟最高温度值，但不会开启模拟功能
+ *
+ * \param ht 模拟最高温度值
+ */
+void Statistic_SetSimulationHt(App_TemperatureType ht);
+
+/**
+ * \brief 获取模拟最高温度值
+ */
+App_TemperatureType Statistic_GetSimulationHt(void);
+
+/**
+ * \brief 设置模拟最低温度值
+ * \details 仅设置模拟最低温度值，但不会开启模拟功能
+ *
+ * \param ht 模拟最低温度值
+ */
+void Statistic_SetSimulationLt(App_TemperatureType lt);
+
+/**
+ * \brief 获取模拟最低温度值
+ */
+App_TemperatureType Statistic_GetSimulationLt(void);
 
 
 

@@ -31,6 +31,7 @@ module.exports = {
 
         for (var cfg of cfgs) {
             var hv = 'HV_CHANNEL_NONE';
+            var hv_user_function = false;
             var isPositive = true;
             var totalDecPercent = 40;
             var continueDecPercent = 20;
@@ -41,6 +42,12 @@ module.exports = {
             var ioLevelOfAuxContactWhenOn = 'STD_HIGH';
 
             if (cfg.hasOwnProperty('hv')) hv = 'HV_CHANNEL_' + cfg.hv.toUpperCase();
+
+            if (hv.endsWith ('()')) {
+                hv = cfg.hv.slice(0,-2);
+                hv_user_function = true;
+            }
+
             if (cfg.hasOwnProperty('isPositive')) isPositive = cfg.isPositive
             if (cfg.hasOwnProperty('totalDecPercent')) totalDecPercent = cfg.totalDecPercent;
             if (cfg.hasOwnProperty('continueDecPercent')) continueDecPercent = cfg.continueDecPercent;
@@ -61,6 +68,7 @@ module.exports = {
                 hlss: cfg.hlss ? cfg.hlss : 'HLSS_CHANNEL_NONE',
                 isSafeToOff: isSafeToOff,
                 hv: hv,
+                hvUserFunction: hv_user_function,
                 isPositive: isPositive,
                 totalDecPercent: totalDecPercent,
                 continueDecPercent: continueDecPercent,

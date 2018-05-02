@@ -96,7 +96,7 @@ typedef struct {
     uint16 Resistor; /**< 线圈电阻 */
     HLSS_ChannelType DriveHSS; /**< 驱动的高边开关通道 */
     boolean (*IsSafeToOff)(void); /**< 判断是否可以安全切断 */
-    HV_ChannelType HvChannel; /**< 后端高压通道 */
+    sint16 (*GetInstantVoltage)(void);  /**< 获取后端电压的用户函数 */
     uint16 HvChannelCheckInterval; /**< 开路或黏连检测高压检测周期, ms */
     uint8 OnWhere; /**< 继电器所在位置, RELAYM_RELAY_ON_POS RELAYM_RELAY_ON_NEG */
     uint8 continuePercent; /**< 连续下降(上升)百分比 */
