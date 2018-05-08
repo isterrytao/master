@@ -92,6 +92,7 @@ static void safeCurrentCheck(void)
     }
 }
 
+//此函数底层仅调用一次，需要循环调用请在UserStrategy_SaftyOff函数中实现
 boolean UserStrategy_IsSafeToOff(void) {
     boolean res = FALSE;
 

@@ -8,20 +8,31 @@ Std_ReturnType Hmi_Init(Async_LooperType *looper, uint32 baud);
 
 
 typedef struct Modbus_RegistersRegion {
-	uint16 startaddr; /*收到的寄存器地址*/
-	uint16 endaddr;
-	uint16 (*getRegisterValue)(const struct Modbus_RegistersRegion *regs, uint16 addr);
+    uint16 startaddr; /*功能函数可处理的起始地址*/
+    uint16 endaddr; /*功能函数可处理的结束地址*/
+    uint16 (*getRegisterValue)(const struct Modbus_RegistersRegion *regs, uint16 addr); 
+            /*功能函数。参数说明：regs,为当前结构体; addr,当前读取目标地址。可利用addr减去起始地址得到偏移地址*/
 } Modbus_RegistersRegionType;
 
 typedef struct {
-	const Modbus_RegistersRegionType *regRegions;
-	uint8 regionsNum;
-	uint8 addrIncEachWord;
+    const Modbus_RegistersRegionType *regRegions;
+    uint8 regionsNum;
+    uint8 addrIncEachWord;/*读取目标是coil还是register. 16->coil, 1->register*/
 } Modbus_RegistersTableType;
 
+/*modbus功能初始化结构体，需在Hmi_Lcfg.c中配置*/
+typedef struct {
+    uint8  slaveaddr;/*从机地址*/
+    uint8  broadcastaddr;/*广播地址*/
+    uint16 CRCpolynomial;/*CRC校验多项式*/
+    uint16 CRCInit;/*CRC校验初始值*/
+    Modbus_RegistersTableType Modbus_X01registerTable;/*01功能码的处理结构体*/
+    Modbus_RegistersTableType Modbus_X02registerTable;/*02功能码的处理结构体*/
+    Modbus_RegistersTableType Modbus_X03registerTable;/*03功能码的处理结构体*/
+    Modbus_RegistersTableType Modbus_X04registerTable;/*04功能码的处理结构体*/
+} Modbus_Cfg;
 
-extern const Modbus_RegistersTableType Modbus_X02registerTable;
-extern const Modbus_RegistersTableType Modbus_X04registerTable;
+extern const Modbus_Cfg ModbusCfg;
 
 
 #endif

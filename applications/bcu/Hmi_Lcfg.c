@@ -6,6 +6,7 @@
 #include "statistic.h"
 #include "Hmi.h"
 
+
 static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
     uint16 rc;
     (void)addr;
@@ -23,17 +24,16 @@ static uint16 MDBSgetTotalCurrent(const Modbus_RegistersRegionType *p, uint16 ad
 
     rc =  (sint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
-	if(rc > (-32766L))	{
-		if (rc < 0) {
-			rc = (rc - 5) / 10;
-		} else {
-			rc = (rc + 5) / 10;
-		}
-	}
-	else{
+    if (rc > (-32766L))	{
+        if (rc < 0) {
+            rc = (rc - 5) / 10;
+        } else {
+            rc = (rc + 5) / 10;
+        }
+    } else {
 
-	}
-    
+    }
+
     return (uint16)rc;
 }
 
@@ -122,8 +122,45 @@ static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_RegistersRegion
     return (uint16)rc;
 }
 
-static const Modbus_RegistersRegionType x04registerTable[] = {
 
+
+static uint16 MDBSgetalarm(const Modbus_RegistersRegionType *p, uint16 addr) {
+    uint8 i, j;
+    uint16 trc, rc = 0U;
+
+    for (i = 0U; i < 16U; i++) {
+        if (Diagnosis_GetLevel((Diagnosis_ItemType)(i + addr - p->startaddr))) {
+            rc = (rc | ((uint16)0x0001U << i));
+        }
+    }
+    trc = rc & 0x00ffU;
+    j = (uint8)(rc >> 8U);
+    rc = (trc << 8U) | j;
+    return rc;
+}
+
+static uint16 test_modbus_x01(const Modbus_RegistersRegionType *p, uint16 addr) {
+    (void) p;
+    (void) addr;
+    return 0x1234U;
+
+}
+static const Modbus_RegistersRegionType x01registerTable[] = {
+    {2000U, 2399U, test_modbus_x01},
+};
+
+
+static const Modbus_RegistersRegionType x02registerTable[] = {
+    {2000U, 2399U, MDBSgetalarm},
+};
+
+
+static const Modbus_RegistersRegionType x03registerTable[] = {
+    {2000U, 2399U, test_modbus_x01},
+};
+
+
+static const Modbus_RegistersRegionType x04registerTable[] = {
     {2000U, 2399U, MDBSget_CellDataM_GetVoltage},
     /*	{2400, 2999, get2},*/
     {3000U, 3199U, MDBSget_CellDataM_GetTemperature},
@@ -143,34 +180,14 @@ static const Modbus_RegistersRegionType x04registerTable[] = {
 };
 
 
-const Modbus_RegistersTableType Modbus_X04registerTable = {
-    x04registerTable,
-    (uint8)ARRAY_SIZE(x04registerTable),
-    1U,
-};
-
-static uint16 MDBSgetalarm(const Modbus_RegistersRegionType *p, uint16 addr) {
-    uint8 i, j;
-    uint16 trc, rc = 0U;
-
-    for (i = 0U; i < 16U; i++) {
-        if (Diagnosis_GetLevel((Diagnosis_ItemType)(i + addr - p->startaddr))) {
-            rc = (rc | ((uint16)0x0001U << i));
-        }
-    }
-    trc = rc & 0x00ffU;
-    j = (uint8)(rc >> 8U);
-    rc = (trc << 8U) | j;
-    return rc;
-}
-
-static const Modbus_RegistersRegionType x02registerTable[] = {
-    {2000U, 2399U, MDBSgetalarm},
-};
-
-const Modbus_RegistersTableType Modbus_X02registerTable = {
-    x02registerTable,
-    (uint8)ARRAY_SIZE(x02registerTable),
-    16U,
+const Modbus_Cfg ModbusCfg = {
+    0x01U, //uint8  slaveaddr;
+    0x00U, //uint8  broadcastaddr;
+    0xa001U, //uint16 CRCpolynomial;
+    0xffffU, //uint16 CRCInit;
+    {x01registerTable, (uint8)ARRAY_SIZE(x01registerTable), 16U}, //Modbus_RegistersTableType Modbus_X01registerTable;
+    {x02registerTable, (uint8)ARRAY_SIZE(x02registerTable), 16U}, //Modbus_RegistersTableType Modbus_X02registerTable;
+    {x03registerTable, (uint8)ARRAY_SIZE(x03registerTable), 1U}, //Modbus_RegistersTableType odbus_X03registerTable;
+    {x04registerTable, (uint8)ARRAY_SIZE(x04registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X04registerTable;
 };
 
