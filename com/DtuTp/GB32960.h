@@ -87,7 +87,17 @@ typedef struct {
 typedef struct {
     GB32960_DateTimeType datatime;
     uint8 num;
+    uint8 parameterBegin;
 } GB32960_PACKED GB32960_ParamSetHeaderType;
+
+typedef struct {
+    GB32960_DateTimeType datatime;
+    uint8 cmdID;
+} GB32960_PACKED GB32960_CommandHeaderType;
+
+
+#define GB32960_SUPPORT_COMMAND_NUMBER 1U
+extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);
 typedef void (*GB32960_NotifyRtMessageReportConfirmation)(boolean succeed);

@@ -123,6 +123,10 @@ typedef struct {
             uint32 totalDchgCumu;
         } powerInfo;
 
+        struct {
+            uint16 num;
+        } gb32960SupportCmdId;
+
     } dataHeader;
 } GB32960_PACKED GBRt_MsgBuffer;
 
@@ -141,6 +145,7 @@ typedef struct {
 #define MSG_LENGTH_ALARM_STATUS        (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(alarmStatus))
 #define MSG_LENGTH_CHARGER_STATUS      (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(chargerStatus))
 #define MSG_LENGTH_CUMU_INFO           (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(powerInfo))
+#define MSG_LENGTH_GB32960_SUPPORT_CMDID  (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId) + GB32960_SUPPORT_COMMAND_NUMBER)
 
 
 static GBRt_MsgBuffer headerBuffer;
@@ -396,9 +401,20 @@ static const GB32960_CopySegmentType copySegmentsAlarmStatus[] = {
     {1U + MEMBER_SIZEOF_MSG_HEADER(alarmStatus), 0xFFFEU, PTR_TYPE_COPY_DATA, {copyAlarmData}},
 };
 
+
+static void fillGB32960CommandListNum(GBRt_MsgBuffer *msgHeader) {
+    msgHeader->dataHeader.gb32960SupportCmdId.num = GB32960_SUPPORT_COMMAND_NUMBER;
+}
+
+static const GB32960_CopySegmentType copySupportCommandIDs[] = {
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId), PTR_TYPE_DATA, {&headerBuffer}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId), MSG_LENGTH_GB32960_SUPPORT_CMDID, PTR_TYPE_DATA, {GB32960_SupportCommandId}},
+};
+
 const GB32960_RTMessageItemType loginOnceData[] = {
     {0x81U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copySegmentsDeviceInfo, (uint8)ARRAY_SIZE(copySegmentsDeviceInfo)},
     {0x82U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_LIST, NULL, (GB32960_FillMessageFuncType)fillDeviceList, copySegmentsDeviceList, (uint8)ARRAY_SIZE(copySegmentsDeviceList)},
+    {0x91U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_GB32960_SUPPORT_CMDID, NULL, (GB32960_FillMessageFuncType)fillGB32960CommandListNum, copySupportCommandIDs, (uint8)ARRAY_SIZE(copySupportCommandIDs)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}
 };
 
@@ -573,7 +589,7 @@ static const GB32960_RecordItemType unfixedCycleDataList[] = {
     {GB_TYPE_TO_RECORD_TYPE(0x86U), MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copyRecordSegmentsBalanceStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsBalanceStatus), BalanceM_IsBalance},
     {GB_TYPE_TO_RECORD_TYPE(0x85U), MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copyRecordSegmentsChargerStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsChargerStatus), is_valid_in_charging_mode},
     {GB_TYPE_TO_RECORD_TYPE(0x87U), 0U, getAlarmLengthRecord, (GB32960_FillMessageFuncType)fillAlarmStatusRecord, copyRecordSegmentsAlarmStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsAlarmStatus), NULL},
-    {GB_TYPE_TO_RECORD_TYPE(0x88U), MSG_LENGTH_CUMU_INFO, NULL, (GB32960_FillMessageFuncType)fillPowerInfoRecord, copyRecordSegmentsPowerInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsPowerInfo), NULL},
+    {GB_TYPE_TO_RECORD_TYPE(0x89U), MSG_LENGTH_CUMU_INFO, NULL, (GB32960_FillMessageFuncType)fillPowerInfoRecord, copyRecordSegmentsPowerInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsPowerInfo), NULL},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
 };
 

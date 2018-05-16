@@ -96,15 +96,15 @@ typedef enum {
 /**
  * \brief SOC macro
  */
-#define SOC_TO_UINT8(VALUE)             ((uint8)DIVISION(VALUE, 4U))
-#define SOC_TO_PERCENT(VALUE)           ((uint8)DIVISION(VALUE, 10U))
+#define SOC_TO_UINT8(VALUE)             (DIVISION(VALUE, 4U))
+#define SOC_TO_PERCENT(VALUE)           (DIVISION(VALUE, 10U))
 #define PERCENT_TO_SOC(VALUE)           ((uint16)(VALUE) * 10U)
 
 /**
  * \brief SOH macro
  */
-#define SOH_TO_UINT8(VALUE)             ((uint8)DIVISION(VALUE, 4U))
-#define SOH_TO_PERCENT(VALUE)           ((uint8)DIVISION(VALUE, 10U))
+#define SOH_TO_UINT8(VALUE)             (DIVISION(VALUE, 4U))
+#define SOH_TO_PERCENT(VALUE)           (DIVISION(VALUE, 10U))
 #define PERCENT_TO_SOH(VALUE)           ((uint16)(VALUE) * 10U)
 
 /**
@@ -156,7 +156,7 @@ typedef enum {
 /**
  * \brief Temperature macro
  */
-#define TEMPERATURE_TO_C(VALUE)         ((VALUE) - TEMPERATURE_OFFSET)
+#define TEMPERATURE_TO_C(VALUE)         ((uint8)(VALUE) - (uint8)(TEMPERATURE_OFFSET))
 #define TEMPERATURE_FROM_C(VALUE)       (TEMPERATURE_OFFSET + (VALUE))
 
 #define TEMP_TO_40_OFFSET(VALUE)        (CellDataM_TemperatureIsValid((uint16)(VALUE)) ? ((VALUE) >= 10U ? ((VALUE) - 10U) : 0U) : (VALUE))
