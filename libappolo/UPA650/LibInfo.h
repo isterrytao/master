@@ -23,26 +23,26 @@
 #include "BootInfo.h"
 
 
-#define FWVERSION_MAJOR                   2
+#define FWVERSION_MAJOR                   3
 #define FWVERSION_MINOR                   0
 #define FWVERSION_REVISION                0
 #define FWVERSION_BUILD                   0
-#define LIB_INFO_FWVERSION                "2.0.0.0"
+#define LIB_INFO_FWVERSION                "3.0.0.0"
 
 /**
  * 以下宏定义由cmake自动生成,不需要手动修改
  */
-#define LIB_INFO_SOURCE_COMMIT_ID        "4730916389a5ab9c61a931672e509c99f32ecdcf"
-#define LIB_INFO_CONFIG_COMMIT_ID        "4730916389a5ab9c61a931672e509c99f32ecdcf"
-#define LIB_INFO_BUILD_TIME              "20180516143308"
+#define LIB_INFO_SOURCE_COMMIT_ID        "4ca2d8d68e14be29dcf115c830ef0c802fae59c8"
+#define LIB_INFO_CONFIG_COMMIT_ID        "4ca2d8d68e14be29dcf115c830ef0c802fae59c8"
+#define LIB_INFO_BUILD_TIME              "20180522124809"
 
 #define LIB_INFO_BUILD_DATE_Y            2018
 #define LIB_INFO_BUILD_DATE_M            5
-#define LIB_INFO_BUILD_DATE_D            16
+#define LIB_INFO_BUILD_DATE_D            22
 
-#define LIB_INFO_BUILD_TIME_H            14
-#define LIB_INFO_BUILD_TIME_M            33
-#define LIB_INFO_BUILD_TIME_S            8
+#define LIB_INFO_BUILD_TIME_H            12
+#define LIB_INFO_BUILD_TIME_M            48
+#define LIB_INFO_BUILD_TIME_S            9
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO

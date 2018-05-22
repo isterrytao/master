@@ -23,7 +23,7 @@
 #include "Shunt.h"
 #include "Hv.h"
 #include "InnerTp_Lcfg.h"
-#include "BridgeInsu.h"
+#include "BridgeInsu_Lcfg.h"
 #include "DatetimeM.h"
 #include "DtuComm_M35.h"
 #include "GB32960.h"
@@ -64,6 +64,10 @@
 #include "HardwareIO.h"
 #include "Hmi.h"
 #include "App_Cfg.h"
+#include "BridgeInsu.h"
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#include "Rs485Shell.h"
+#endif
 
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 #include "logger.h"
@@ -104,7 +108,11 @@ static void start_dtu_task(void) {
         NULL,
         OS_TASK_OPT_NONE);
 }
+void start_dtu_task_testmode(void) ;
 
+void start_dtu_task_testmode(void) {
+    start_dtu_task();
+}
 
 static OS_STK driver_looper_stack[400];
 static uint8 driverLooperCmdBuffer[100];
@@ -200,14 +208,11 @@ static boolean isNeedStartSampleTask(void) {
 
     if (mode == RUNTIMEM_RUNMODE_CALIBRATE) {
         ret = TRUE;
-    }
-    else if (mode == RUNTIMEM_RUNMODE_NORMAL) {
+    } else if (mode == RUNTIMEM_RUNMODE_NORMAL) {
         ret = TRUE;
-    }
-    else if (mode == RUNTIMEM_RUNMODE_DTU) {
+    } else if (mode == RUNTIMEM_RUNMODE_DTU) {
         ret = TRUE;
-    }
-    else {
+    } else {
     }
     return ret;
 }
@@ -263,9 +268,6 @@ static void run_test_mode(void) {
     OSTimeDly(2U);
     HC12XIrq_InstallVector(IRQ_ATD0, ADT0_Isr, 0U);
     Adc_StartGroupConversion(ADC_GROUP_ADT0);
-    if (SystemConnection_ConfigInfo.DtuSupport) {
-        start_dtu_task();
-    }
     start_hvadc_task(hvadc_test_task_testmode);
     nand_init();
     CanEcho_Init(&extLooper);
@@ -273,6 +275,10 @@ static void run_test_mode(void) {
     PwmCapture_Start();
     Shunt_Init(&shuntLooper, 1000U);
     (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, TRUE);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+    (void)UartShell_Init((const UartShell_ConfigType *)UartShellConfigType, 0U);
+#endif
     for (;;) {
         Shell_Loop();
     }
@@ -322,9 +328,9 @@ static void start_task(void *pdata) {
 
     HLSS_Init(&driverLooper);
     if (isNeedStartSampleTask()) {
-        HLSS_Drive(HLSS_BCU_BMU_ENABLE , HLSS_DRIVE_ON);
+        HLSS_Drive(HLSS_BCU_BMU_ENABLE, HLSS_DRIVE_ON);
     } else {
-        HLSS_Drive(HLSS_BCU_BMU_ENABLE , HLSS_DRIVE_OFF);
+        HLSS_Drive(HLSS_BCU_BMU_ENABLE, HLSS_DRIVE_OFF);
     }
     DischargeM_Init(&extLooper);
     ChargeM_Init(&extLooper);
@@ -378,7 +384,14 @@ static void start_task(void *pdata) {
     }
     Soc_Init(&extLooper);
     Soh_Init();
-    BridgeInsu_Init(&driverLooper);
+#if defined(A650) || defined(A651)
+    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A650);
+#elif defined(A652) || defined(A653)
+    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
+#else
+    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData);
+#endif
+
     if (isNeedStartSampleTask()) {
         BridgeInsu_Start();
     }
@@ -406,7 +419,7 @@ static void start_task(void *pdata) {
     ChgSckTmpM_Init();
     mode = RuntimeM_GetMode();
     if (mode == RUNTIMEM_RUNMODE_CALIBRATE ||
-        mode == RUNTIMEM_RUNMODE_NORMAL) {
+            mode == RUNTIMEM_RUNMODE_NORMAL) {
         SocCalib_Init(&extLooper);
         HvProcess_Init(HVPROCESS_TASK_PRI);
         ChargerComm_Init(CHARGERCOMM_TASK_PRI);

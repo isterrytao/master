@@ -94,8 +94,9 @@ ELSE ("1" STREQUAL "$ENV{MAKELIB}")
 
     SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D${TARGET_BOARD} -D${BCU_TYPE}")
     SET (CMAKE_CXGATE_FLAGS "${CMAKE_CXGATE_FLAGS} -D${BCU_TYPE}")
-    SET (CMAKE_PC_LINT_FLAGS ${TARGET_LINT_FLAGS})
-
+    SET (CMAKE_PC_LINT_FLAGS ${TARGET_LINT_FLAGS} "-D${BCU_TYPE}")
+	MESSAGE("" ${CMAKE_PC_LINT_FLAGS})
+	
     INCLUDE (${TOPDIR}/applications/${BUILD_APP}/app.cmake)
 
 ##############################################################
