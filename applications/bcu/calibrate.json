@@ -350,7 +350,7 @@
     "ChargeParam": [
         {
             "name": "直流快充",
-            "chargeTotalVoltMax":55.2,
+            "chargeTotalVoltMax":56.8,
             "chargeCurrentMin": 5,
             "fullChargeRelTotalVolt": 54.4,
 
@@ -361,7 +361,7 @@
         },
         {
             "name": "交流慢充",
-            "chargeTotalVoltMax":55.2,
+            "chargeTotalVoltMax":56.8,
             "chargeCurrentMin": 5,
             "fullChargeRelTotalVolt": 54.4,
 

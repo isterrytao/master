@@ -148,7 +148,7 @@ boolean HvProcess_DchgChrIsStopCond(void)
 
     if (CHARGECONNECTM_IS_CONNECT())
     {
-        current = CurrentM_GetCurrent(CURRENTM_CHANNEL_MAIN);
+        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
         current = abs(current);
         if (current < CURRENT_S_100MA_FROM_A(1))
         {
@@ -177,7 +177,7 @@ boolean HvProcess_DchgRelayOffDelayCond(void)
 
     if (CHARGECONNECTM_IS_CONNECT())
     {
-        current = CurrentM_GetCurrent(CURRENTM_CHANNEL_MAIN);
+        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
         current = abs(current);
         if (current > CURRENT_S_100MA_FROM_A(0))
         {
