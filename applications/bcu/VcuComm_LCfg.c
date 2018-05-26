@@ -27,116 +27,32 @@ const uint16 VcuComm_StageMax = (uint16)VCUCOMM_STAGE_MAX;
 const uint8 VcuComm_SendIPduNum = (uint8)VCUCOMM_SEND_IPDU_CFG_NUM;
 const VcuComm_SendIPduCfgType VcuComm_IPduSendConfigInfo[VCUCOMM_SEND_IPDU_CFG_NUM] = {
     {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1801FFF4, /**< IPdu */
+        (uint16)VCUCOMM_TX_IPDU_MSG_0x000002F4, /**< IPdu */
+        8U, /**< Length */
+        20U, /**< Cycle */
+        NULL, /**< CondFunc */
+        VcuComm_GetMsgData0x000002F4Cbk, /**< Func */
+    },
+    {
+        (uint16)VCUCOMM_TX_IPDU_MSG_0x000004F4, /**< IPdu */
         8U, /**< Length */
         100U, /**< Cycle */
         NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1801FFF4Cbk, /**< Func */
+        VcuComm_GetMsgData0x000004F4Cbk, /**< Func */
     },
     {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1802FFF4, /**< IPdu */
+        (uint16)VCUCOMM_TX_IPDU_MSG_0x000005F4, /**< IPdu */
         8U, /**< Length */
         100U, /**< Cycle */
         NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1802FFF4Cbk, /**< Func */
+        VcuComm_GetMsgData0x000005F4Cbk, /**< Func */
     },
     {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1803FFF4, /**< IPdu */
+        (uint16)VCUCOMM_TX_IPDU_MSG_0x000007F4, /**< IPdu */
         8U, /**< Length */
         100U, /**< Cycle */
         NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1803FFF4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1804FFF4, /**< IPdu */
-        8U, /**< Length */
-        100U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1804FFF4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1807FFF4, /**< IPdu */
-        8U, /**< Length */
-        100U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1807FFF4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1801D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1801D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1802D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1802D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1803D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1803D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1804D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1804D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1805D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1805D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1806D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1806D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1807D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1807D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1808D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1808D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1809D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1809D2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x180AD2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x180AD2F4Cbk, /**< Func */
-    },
-    {
-        (uint16)VCUCOMM_TX_IPDU_MSG_0x1850D2F4, /**< IPdu */
-        8U, /**< Length */
-        1000U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetMsgData0x1850D2F4Cbk, /**< Func */
+        VcuComm_GetMsgData0x000007F4Cbk, /**< Func */
     },
 };
 

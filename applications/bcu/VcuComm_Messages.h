@@ -44,22 +44,10 @@ void VcuComm_MessageInit(Async_LooperType *looper);
  * \param Buffer 数据缓存
  * \param Length 数据长度
  */
-void VcuComm_GetMsgData0x1801FFF4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1802FFF4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1803FFF4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1804FFF4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1807FFF4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1801D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1802D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1803D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1804D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1805D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1806D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1807D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1808D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1809D2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x180AD2F4Cbk(uint8 *Buffer, uint16 *Length);
-void VcuComm_GetMsgData0x1850D2F4Cbk(uint8 *Buffer, uint16 *Length);
+void VcuComm_GetMsgData0x000002F4Cbk(uint8 *Buffer, uint16 *Length);
+void VcuComm_GetMsgData0x000004F4Cbk(uint8 *Buffer, uint16 *Length);
+void VcuComm_GetMsgData0x000005F4Cbk(uint8 *Buffer, uint16 *Length);
+void VcuComm_GetMsgData0x000007F4Cbk(uint8 *Buffer, uint16 *Length);
 
 
 /**
