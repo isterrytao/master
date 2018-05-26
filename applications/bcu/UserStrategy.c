@@ -403,7 +403,7 @@ static void UserStrategy_AutoLostPower(void)
     {
         if (current < CURRENT_S_100MA_FROM_A(3) && current > CURRENT_S_100MA_FROM_A(-3))
         {
-            if (MS_GET_INTERNAL(preTime, nowTime) >= 30UL * 60UL * 1000UL)
+            if (MS_GET_INTERNAL(preTime, nowTime) >= 2UL * 60UL * 60UL * 1000UL)
             {
                 DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_SELF_LOCK, DISCHARGEM_DISCHARGE_DISABLE);
                 ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_SELF_LOCK, CHARGEM_CHARGE_DISABLE);
