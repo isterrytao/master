@@ -67,22 +67,22 @@ module.exports = {
                 {section:"battconn", chs:"电池连接", comments:"电池连接, 只有型号为A60X的时候有效, 长度与型号相关."},
                 {section:"tempconn", chs:"温感连接", comments:"只有型号为A60X的时候有效, 长度与型号相关; C标识电池单体温感,P表示电池极柱温感,H表示加热片温感,0表示没有链接温感."},
             ],
-            type:"A601",
+            type:"C601",
             battconn:"110110111100_111101111000",
             tempconn:"CCCC_CCCC",
         },
 
         bmus:[
-            /*{
+            {
                 notes:[
                     {section:"type", chs:"BMU类型", comments:'可选:"M600", "M601", "M602", "M603".'},
                     {section:"battconn", chs:"电池连接", comments:"电池连接, 长度与型号相关."},
                     {section:"tempconn", chs:"温感连接", comments:"长度与型号相关; C标识电池单体温感,P表示电池极柱温感,H表示加热片温感,0表示没有链接温感."},
                 ],
                 type:"M600",
-                battconn:"111000111000_111000111000",
-                tempconn:"000000_CCCC_CCCC"
-            },{
+                battconn:"110110111100_111101111000",
+                tempconn:"000000_CCCC_CCCC",
+            }/*,{
                 type:"M601",
                 battconn:"110000110000_110000110000_110000110000",
                 tempconn:"00C000_CC00_CC00_C0CC"
@@ -1355,7 +1355,7 @@ module.exports = {
             hw:0, baud:250000,
         },
 
-        {hw:1, baud: 125000},
+        {hw:1, baud: 250000},
         {hw:2, baud: 250000},
         {hw:3, baud: 250000},
     ],
