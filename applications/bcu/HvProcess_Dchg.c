@@ -9,6 +9,7 @@
  * | :--- | :--- | :--- | :--- |
  * | 0.1 | 初始版本, 完成讨论部分的定义. | UD00004 | 20170320 |
  */
+#include <stdlib.h>
 #include "Cpu.h"
 #include "HvProcess_Dchg.h"
 #include "HvProcess_Chg.h"
@@ -56,66 +57,81 @@ void HvProcess_DchgPoll(void)
 boolean HvProcess_DchgStateStartCond(void)
 {
     boolean res = FALSE;
-    Std_ReturnType allow;
-    HvProcess_ChgStateType chgState;
+    uint32 nowTime = OSTimeGet();
+    Dio_LevelType powerOn = Dio_ReadChannel(DIO_CHANNEL_KEY_ON);
 
-    chgState = HvProcess_GetChgState();
-    allow = DischargeM_DischargeIsAllowed();
-
-    if ((!CHARGECONNECTM_IS_CONNECT()) &&
-        chgState == HVPROCESS_CHG_START &&
-        allow == E_OK)
+    if (!HvProcess_DchgInnerData.RelayFaultCheckFlag && nowTime >= 300UL)
     {
-        res = TRUE;
+        HvProcess_DchgInnerData.RelayFaultCheckFlag = TRUE;
+        (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_MAIN, NULL);
+    }
+    if (RELAYM_DIAGNOSIS_IS_NORMAL(RelayM_GetDiagnosisStatus(RELAYM_FN_POSITIVE_MAIN)) &&
+        HvProcess_DchgInnerData.RelayFaultCheckFlag&&
+        powerOn == STD_LOW)
+    {
+        if (CHARGECONNECTM_IS_CONNECT())
+        {
+            if (ChargeM_ChargeIsAllowed() == E_OK)
+            {
+                res = TRUE;
+            }
+        }
+        else
+        {
+            if (DischargeM_DischargeIsAllowed() == E_OK)
+            {
+                res = TRUE;
+            }
+        }
     }
     return res;
 }
 
 void HvProcess_DchgStateStartAction(void)
 {
-    PrechargeM_Start();
-}
-
-boolean HvProcess_DchgStatePrechargeCond(void)
-{
-    boolean res = FALSE;
-
-    if (PrechargeM_IsFinish() == TRUE)
-    {
-        res = TRUE;
-    }
-    return res;
-}
-
-void HvProcess_DchgStatePrechargeAction(void)
-{
     (void)RelayM_Control(RELAYM_FN_POSITIVE_MAIN, RELAYM_CONTROL_ON);
 }
 
-boolean HvProcess_DchgChargeConnectionCond(void)
+boolean HvProcess_DchgConnectionCond(void)
 {
     boolean res = FALSE;
 
-    if (CHARGECONNECTM_IS_CONNECT())
+    if (!CHARGECONNECTM_IS_CONNECT())
     {
         res = TRUE;
     }
     return res;
 }
 
-void HvProcess_DchgChargeConnectionAction(void)
+void HvProcess_DchgConnectionAction(void)
 {
-    HvProcess_DchgInnerData.RelayOffTick = OSTimeGet();
-    PrechargeM_Stop();
+    // HvProcess_DchgInnerData.RelayOffTick = OSTimeGet();
 }
 
 boolean HvProcess_DchgFaultCond(void)
 {
     boolean res = FALSE;
+    Dio_LevelType powerOn = Dio_ReadChannel(DIO_CHANNEL_KEY_ON);
 
-    if (DischargeM_DischargeIsFault() == E_OK)
+    if (CHARGECONNECTM_IS_CONNECT())
     {
-        res = TRUE;
+        if (ChargeM_ChargeIsFault() == E_OK ||
+            powerOn == STD_HIGH)
+        {
+            if (HvProcess_ChgIsFinishCond())
+            {
+                HvProcess_ChgFinishAction();
+            }
+            res = TRUE;
+        }
+    }
+    else
+    {
+        if (DischargeM_DischargeIsFault() == E_OK ||
+            powerOn == STD_HIGH)
+        {
+            res = TRUE;
+        }
     }
     return res;
 }
@@ -123,15 +139,59 @@ boolean HvProcess_DchgFaultCond(void)
 void HvProcess_DchgFaultAction(void)
 {
     HvProcess_DchgInnerData.RelayOffTick = OSTimeGet();
-    PrechargeM_Stop();
+}
+
+boolean HvProcess_DchgChrIsStopCond(void)
+{
+    boolean res = FALSE;
+    Current_CurrentType current;
+
+    if (CHARGECONNECTM_IS_CONNECT())
+    {
+        current = CurrentM_GetCurrent(CURRENTM_CHANNEL_MAIN);
+        current = abs(current);
+        if (current < CURRENT_S_100MA_FROM_A(1))
+        {
+            res = TRUE;
+        }
+    }
+    return res;
+}
+
+boolean HvProcess_DchgChgOhvCond(void)
+{
+    boolean res = FALSE;
+
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HV) == DIAGNOSIS_LEVEL_FOURTH)
+    {
+        res = TRUE;
+    }
+    return res;
 }
 
 boolean HvProcess_DchgRelayOffDelayCond(void)
 {
     boolean res = FALSE;
-    uint32 nowTime = OSTimeGet();
+    uint32 delay = 5000UL, nowTime = OSTimeGet();
+    Current_CurrentType current;
 
-    if (MS_GET_INTERNAL(HvProcess_DchgInnerData.RelayOffTick, nowTime) >= 2000U)
+    if (CHARGECONNECTM_IS_CONNECT())
+    {
+        current = CurrentM_GetCurrent(CURRENTM_CHANNEL_MAIN);
+        current = abs(current);
+        if (current > CURRENT_S_100MA_FROM_A(0))
+        {
+            if (current >= CURRENT_S_100MA_FROM_A(20))
+            {
+                delay = 5000UL;
+            }
+            else
+            {
+                delay = 20000UL;
+            }
+        }
+    }
+    if (MS_GET_INTERNAL(HvProcess_DchgInnerData.RelayOffTick, nowTime) >= delay)
     {
         res = TRUE;
         HvProcess_DchgInnerData.RelayOffTick = nowTime;
@@ -142,4 +202,41 @@ boolean HvProcess_DchgRelayOffDelayCond(void)
 void HvProcess_DchgRelayOffDelayAction(void)
 {
     (void)RelayM_Control(RELAYM_FN_POSITIVE_MAIN, RELAYM_CONTROL_OFF);
+}
+
+//HVPROCESS_DCHG_ALLOW_RESTART_CHECK
+boolean HvProcess_DchgIsAllowRestartCond(void)
+{
+    boolean res = FALSE;
+    static uint32 lastTime = 0UL;
+    uint32 nowTime = OSTimeGet();
+
+    if (lastTime == 0UL)
+    {
+        lastTime = nowTime;
+    }
+    if (MS_GET_INTERNAL(lastTime, nowTime) >= 3000UL)
+    {
+        lastTime = 0UL;
+        if (CHARGECONNECTM_IS_CONNECT())
+        {
+            if (ChargeM_ChargeIsAllowed() == E_OK)
+            {
+                res = TRUE;
+            }
+        }
+        else
+        {
+            if (DischargeM_DischargeIsAllowed() == E_OK)
+            {
+                res = TRUE;
+            }
+        }
+    }
+    return res;
+}
+
+void HvProcess_DchgIsAllowRestartAction(void)
+{
+    HvProcess_DchgInnerData.RelayFaultCheckFlag = FALSE;
 }

@@ -16,34 +16,11 @@ const HvProcess_StateInfoType HvProcess_DchgStartInfoConfig[] = {
     {
         HvProcess_DchgStateStartCond, /**< Cond: 条件函数指针 */
         HvProcess_DchgStateStartAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_PRECHARGE, /**< Next: 下一状态 */
-    },
-};
-
-const HvProcess_StateInfoType HvProcess_DchgPrechargeInfoConfig[] = {
-    {
-        HvProcess_DchgChargeConnectionCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgChargeConnectionAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
-    },
-    {
-        HvProcess_DchgFaultCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgFaultAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
-    },
-    {
-        HvProcess_DchgStatePrechargeCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgStatePrechargeAction, /**< Action: 动作函数指针 */
         (uint16)HVPROCESS_DCHG_HV_ON, /**< Next: 下一状态 */
     },
 };
 
 const HvProcess_StateInfoType HvProcess_DchgHvOnInfoConfig[] = {
-    {
-        HvProcess_DchgChargeConnectionCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgChargeConnectionAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
-    },
     {
         HvProcess_DchgFaultCond, /**< Cond: 条件函数指针 */
         HvProcess_DchgFaultAction, /**< Action: 动作函数指针 */
@@ -53,8 +30,34 @@ const HvProcess_StateInfoType HvProcess_DchgHvOnInfoConfig[] = {
 
 const HvProcess_StateInfoType HvProcess_DchgRelayOffDelayInfoConfig[] = {
     {
+        HvProcess_DchgChrIsStopCond, /**< Cond: 条件函数指针 */
+        NULL, /**< Action: 动作函数指针 */
+        (uint16)HVPROCESS_DCHG_CHG_TO_DCHG_WAIT, /**< Next: 下一状态 */
+    },
+    {
         HvProcess_DchgRelayOffDelayCond, /**< Cond: 条件函数指针 */
         HvProcess_DchgRelayOffDelayAction, /**< Action: 动作函数指针 */
+        (uint16)HVPROCESS_DCHG_ALLOW_RESTART_CHECK, /**< Next: 下一状态 */
+    },
+};
+
+const HvProcess_StateInfoType HvProcess_DchgChgToDchgWaitInfoConfig[] = {
+    {
+        HvProcess_DchgConnectionCond, /**< Cond: 条件函数指针 */
+        HvProcess_DchgConnectionAction, /**< Action: 动作函数指针 */
+        (uint16)HVPROCESS_DCHG_HV_ON, /**< Next: 下一状态 */
+    },
+    {
+        HvProcess_DchgChgOhvCond, /**< Cond: 条件函数指针 */
+        HvProcess_DchgRelayOffDelayAction, /**< Action: 动作函数指针 */
+        (uint16)HVPROCESS_DCHG_ALLOW_RESTART_CHECK, /**< Next: 下一状态 */
+    },
+};
+
+const HvProcess_StateInfoType HvProcess_DchgAllowRestartInfoConfig[] = {
+    {
+        HvProcess_DchgIsAllowRestartCond, /**< Cond: 条件函数指针 */
+        HvProcess_DchgIsAllowRestartAction, /**< Action: 动作函数指针 */
         (uint16)HVPROCESS_DCHG_START, /**< Next: 下一状态 */
     },
 };
@@ -65,16 +68,20 @@ const HvProcess_StateConfigType HvProcess_DchgStateConfig[HVPROCESS_DCHG_STATE_M
         HvProcess_DchgStartInfoConfig, /**< State: 状态信息指针 */
     },
     {
-        (uint8)ARRAY_SIZE(HvProcess_DchgPrechargeInfoConfig), /**< Num: 状态配置个数 */
-        HvProcess_DchgPrechargeInfoConfig, /**< State: 状态信息指针 */
-    },
-    {
         (uint8)ARRAY_SIZE(HvProcess_DchgHvOnInfoConfig), /**< Num: 状态配置个数 */
         HvProcess_DchgHvOnInfoConfig, /**< State: 状态信息指针 */
     },
     {
         (uint8)ARRAY_SIZE(HvProcess_DchgRelayOffDelayInfoConfig), /**< Num: 状态配置个数 */
         HvProcess_DchgRelayOffDelayInfoConfig, /**< State: 状态信息指针 */
+    },
+    {
+        (uint8)ARRAY_SIZE(HvProcess_DchgChgToDchgWaitInfoConfig), /**< Num: 状态配置个数 */
+        HvProcess_DchgChgToDchgWaitInfoConfig, /**< State: 状态信息指针 */
+    },
+    {
+        (uint8)ARRAY_SIZE(HvProcess_DchgAllowRestartInfoConfig), /**< Num: 状态配置个数 */
+        HvProcess_DchgAllowRestartInfoConfig, /**< State: 状态信息指针 */
     },
 };
 

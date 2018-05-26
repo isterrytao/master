@@ -15,7 +15,7 @@
 
 const FullCharge_ConfigInfoType FullCharge_ConfigInfo = {
     TRUE, /**< currentDecreaseEndFlag: 充电降流末端检查标志 */
-    5000UL, /**< fullChargeDelay: 满充延时 */
+    1000UL, /**< fullChargeDelay: 满充延时 */
     5000UL, /**< fullChargeRelDelay: 满充释放延时 */
     UserStrategy_FullChargeHook, /**< fullHook: 满充钩子函数 */
     UserStrategy_FullChargeReleaseHook, /**< fullRelHook: 满充释放钩子函数 */

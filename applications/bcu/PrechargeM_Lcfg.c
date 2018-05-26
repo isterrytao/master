@@ -30,7 +30,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo =
     5000U, /**< relayOnTimeout: 预充继电器闭合超时(ms) */
     500U, /**< relayOffDelay: 预充继电器断开延时，用于放电闭合后预充延时断开(ms) */
     5000U, /**< dchgRelayOnTimeout: 放电继电器闭合超时(ms) */
-    RELAYM_FN_PRECHARGE, /**< prechargeRelayChannel: 预充继电器通道号 */
+    RELAYM_FN_NONE, /**< prechargeRelayChannel: 预充继电器通道号 */
     RELAYM_FN_POSITIVE_MAIN, /**< dchgRelayChannel: 放电继电器通道号 */
     (Current_CurrentType)CURRENT_INVALID_VALUE, /**< currentMax: 预充最大安全电流(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
     1000U, /**< overCurTime: 允许超预充最大电流最大时间(ms) */
