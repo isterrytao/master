@@ -302,7 +302,7 @@ Std_ReturnType ChargerComm_ClearChargerFaultWithIndex(ChargerComm_ChargerFaultTy
  * \brief 获取指定索引的充电机故障状态
  *
  * \param num 充电机故障索引
- * \return 故障状态
+ * \return 故障状态 0-正常 1/2-故障 0xFF-复位状态（无故障）
  */
 uint8 ChargerComm_GetChargerFaultWithIndex(ChargerComm_ChargerFaultType num);
 
@@ -340,6 +340,8 @@ uint8 ChargerComm_ChargerIsFaultWithNoInputVolt(void);
 
 /**
  * \brief 充电机是否故障
+ * \note 不包含正常充电结束相关状态，仅指充电机相关故障信息
+ *
  * \return 故障返回TRUE,否则返回FALSE
  */
 uint8 ChargerComm_ChargerIsFault(void);

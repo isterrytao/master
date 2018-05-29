@@ -805,7 +805,7 @@ void ChargerCommGB_GetBSMDataCbk(uint8 *Buffer, uint16 *Length)
         {
         }
     }
-    if(Diagnosis_GetLevel(DIAGNOSIS_ITEM_HSOC) >= DIAGNOSIS_LEVEL_THIRD) //HSOC
+    /*if(Diagnosis_GetLevel(DIAGNOSIS_ITEM_HSOC) >= DIAGNOSIS_LEVEL_THIRD) //HSOC
     {
         temp |= 0x04U;
     }
@@ -815,7 +815,7 @@ void ChargerCommGB_GetBSMDataCbk(uint8 *Buffer, uint16 *Length)
     }
     else
     {
-    }
+    }*/
     if (ChargerCommGB_innerData.currentChargeType == CHARGE_TYPE_DC) //过流
     {
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC) >= DIAGNOSIS_LEVEL_THIRD)

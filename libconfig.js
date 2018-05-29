@@ -1,6 +1,6 @@
 module.exports = {
     LibInfo: {
-	    masterVersion: "3.0.0.0",
+	    masterVersion: "3.0.0.1",
         releaseName: "AppoloLib",
     },
 
