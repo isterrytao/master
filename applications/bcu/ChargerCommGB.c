@@ -1325,10 +1325,19 @@ void ChargerCommGB_ReceiveCRMCbk(const uint8 *Buffer, uint16 Length)
             ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CTS_CML);
             ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_PARA_CONFIG;
         }
-        else //if (identify == CHARGERCOMMGB_CHG_UN_IDENT_NUM)
+        else if (identify == CHARGERCOMMGB_CHG_UN_IDENT_NUM)
         {
             ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CRM_AA);
             ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_SHAKEHAND_IDENTIFY;
+        }
+        else
+        {
+            ChargerComm_ClrChargerStatus();
+            ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
+            ChargerCommGB_innerData.bmsTimeoutReason[0] &= 0xFCU;
+            ChargerCommGB_innerData.bmsTimeoutReason[0] |= CHARGERCOMMGB_REC_SPN2560_00_UNKNOWN_VALUE;
+            ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3901);
+            ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
         }
     }
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
@@ -1449,10 +1458,19 @@ void ChargerCommGB_ReceiveCROCbk(const uint8 *Buffer, uint16 Length)
                 ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CHARGING;
             }
         }
-        else
+        else if (readyFlag == CHARGERCOMMGB_CHG_UN_IDENT_NUM)
         {
             ChargerComm_RecAsyncEventType *recEvent = ChargerComm_GetRecAsyncEventPtr();
             Async_EventSetTimeout(&recEvent[1].event, CHARGERCOMMGB_REC_TIMEOUT_CRO_AA);
+        }
+        else
+        {
+            ChargerComm_ClrChargerStatus();
+            ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
+            ChargerCommGB_innerData.bmsTimeoutReason[1] &= 0xF3U;
+            ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CHARGER_READY_UNKNOWN_VALUE;
+            ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3923);
+            ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
         }
     }
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
@@ -1493,19 +1511,52 @@ void ChargerCommGB_ReceiveCCSCbk(const uint8 *Buffer, uint16 Length)
         ChargerComm_SetChargerOutputCurrent(current);
         ChargerComm_SetChargerChargedTime(READ_LT_UINT16(Buffer, index));
         chargeState = READ_LT_UINT8(Buffer, index);
+        chargeState &= 0x03U;
         type = ChargerComm_GetProtocol();
-        if(ChargerComm_GetChargerOutputHV() &&
-            current != 0 &&
-            (type != CHARGERCOMM_PROTOCOL_GB2015 || chargeState)) //0:暂停 1:允许
+
+        flag = 0U;
+        if (ChargerComm_GetChargerOutputHV() && current != 0)
         {
-            ChargerComm_SetChargingStatus(TRUE);
+            flag = 1U;
+        }
+        if (type != CHARGERCOMM_PROTOCOL_GB2015)
+        {
+            if (flag != 0U)
+            {
+                ChargerComm_SetChargingStatus(TRUE);
+            }
+            else
+            {
+                ChargerComm_SetChargingStatus(FALSE);
+            }
+            ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CCS);
+            ChargerCommGB_innerData.ccsRecFlag = TRUE;
         }
         else
         {
-            ChargerComm_SetChargingStatus(FALSE);
+            if (chargeState > 1U) //异常状态
+            {
+                ChargerComm_SetChargingStatus(FALSE);
+                ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
+                ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
+                ChargerCommGB_innerData.bmsTimeoutReason[2] &= 0xFCU;
+                ChargerCommGB_innerData.bmsTimeoutReason[2] |= CHARGERCOMMGB_REC_CHARGER_STATUS_UNKNOWN_VALUE;
+                ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3905);
+            }
+            else
+            {
+                if (flag != 0U && chargeState) //0:暂停 1:允许
+                {
+                    ChargerComm_SetChargingStatus(TRUE);
+                }
+                else
+                {
+                    ChargerComm_SetChargingStatus(FALSE);
+                }
+                ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CCS);
+                ChargerCommGB_innerData.ccsRecFlag = TRUE;
+            }
         }
-        ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CCS);
-        ChargerCommGB_innerData.ccsRecFlag = TRUE;
     }
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
 cleanup:
@@ -1515,7 +1566,7 @@ cleanup:
 
 void ChargerCommGB_ReceiveCSTCbk(const uint8 *Buffer, uint16 Length)
 {
-    uint8 flag = 1U;
+    uint8 flag = 1U, unkonw_state = 0U;
     uint16 index = 0U;
     VALIDATE_PTR(Buffer, CHARGERCOMMGB_API_ID_ReceiveCHMCbk);
 
@@ -1543,163 +1594,193 @@ void ChargerCommGB_ReceiveCSTCbk(const uint8 *Buffer, uint16 Length)
         ChargerCommGB_innerData.chargerErrorReason = READ_LT_UINT8(Buffer, index);
 
         flag = ChargerCommGB_innerData.chargerStopReason & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_STOP_CHG_WITH_FINISH, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_STOP_CHG_WITH_FINISH);
         }
-        else
-        {
-        }
         flag = (ChargerCommGB_innerData.chargerStopReason >> 2) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_MANUAL_STOP_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_MANUAL_STOP_INDEX);
         }
-        else
-        {
-        }
         flag = (ChargerCommGB_innerData.chargerStopReason >> 4) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_FAULT_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_FAULT_FAULT_INDEX);
         }
-        else
-        {
-        }
         flag = (ChargerCommGB_innerData.chargerStopReason >> 6) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_BMS_STOP_CHARGE_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_BMS_STOP_CHARGE_FAULT_INDEX);
         }
-        else
-        {
-        }
         flag = (uint8)ChargerCommGB_innerData.chargerFaultReason & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_OVER_TEMPERATURE_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_OVER_TEMPERATURE_FAULT_INDEX);
         }
-        else
-        {
-        }
         flag = (uint8)(ChargerCommGB_innerData.chargerFaultReason >> 2) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_CHAGER_CONNECTOR_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_CHAGER_CONNECTOR_FAULT_INDEX);
         }
-        else
-        {
-        }
         flag = (uint8)(ChargerCommGB_innerData.chargerFaultReason >> 4) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_INNER_OVER_TEMPERATURE_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_INNER_OVER_TEMPERATURE_FAULT_INDEX);
         }
-        else
-        {
-        }
         flag = (uint8)(ChargerCommGB_innerData.chargerFaultReason >> 6) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_ENERGY_TRANSIMIT_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_ENERGY_TRANSIMIT_FAULT_INDEX);
         }
-        else
-        {
-        }
         flag = (uint8)(ChargerCommGB_innerData.chargerFaultReason >> 8) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_EMERGENCY_STOP_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_EMERGENCY_STOP_INDEX);
         }
+        flag = (uint8)(ChargerCommGB_innerData.chargerFaultReason >> 10) & 0x03U;
+        if(flag != 0U)
+        {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
+            (void) ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_FAULT_FAULT_INDEX, flag);
+        }
         else
         {
-        }
-        flag = (uint8)(ChargerCommGB_innerData.chargerFaultReason >> 10) & 0x03U;
-        if(flag == 1U)
-        {
-           (void) ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_FAULT_FAULT_INDEX, flag);
+            (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_FAULT_FAULT_INDEX);
         }
         flag = ChargerCommGB_innerData.chargerErrorReason & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_CURRENT_NOT_MATCH_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_CURRENT_NOT_MATCH_INDEX);
         }
-        else
-        {
-        }
         flag = (ChargerCommGB_innerData.chargerErrorReason >> 2) & 0x03U;
-        if(flag == 1U)
+        if(flag != 0U)
         {
+            if (flag == 3U)
+            {
+                unkonw_state = 1U;
+            }
             (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_OUTPUT_VOLT_FAULT_INDEX, flag);
         }
-        else if(flag == 0U)
+        else
         {
             (void)ChargerComm_ClearChargerFaultWithIndex(CHARGERCOMM_CHR_OUTPUT_VOLT_FAULT_INDEX);
         }
-        else
+        if (unkonw_state == 0U)
         {
-        }
-        ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CHARGE_STOP;
-        if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_BMS)
-        {
-            ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_STATISTIC;
-            ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CST_CSD);
-        }
-        else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_NONE)
-        {
-            ChargerCommGB_innerData.stopChargeDev = CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER; //正常充电完成
-        }
-        else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER)
-        {
-            if(ChargerCommGB_innerData.bstSendCnt >= 3U)
+            ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CHARGE_STOP;
+            if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_BMS)
             {
-                ChargerCommGB_innerData.bstSendCnt = 0U;
                 ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_STATISTIC;
                 ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CST_CSD);
+            }
+            else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_NONE)
+            {
+                ChargerCommGB_innerData.stopChargeDev = CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER; //正常充电完成
+            }
+            else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER)
+            {
+                if(ChargerCommGB_innerData.bstSendCnt >= 3U)
+                {
+                    ChargerCommGB_innerData.bstSendCnt = 0U;
+                    ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_STATISTIC;
+                    ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CST_CSD);
+                }
+            }
+            else
+            {
             }
         }
         else
         {
+            ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
+            ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
+            ChargerCommGB_innerData.bmsTimeoutReason[2] &= 0xF3U;
+            ChargerCommGB_innerData.bmsTimeoutReason[2] |= CHARGERCOMMGB_REC_CHARGER_STOP_UNKNOWN_VALUE;
+            ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3906);
         }
     }
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
@@ -1830,14 +1911,16 @@ void ChargerCommGB_RecCRMTimeoutCbk(void)
     {
         ChargerComm_ClrChargerStatus();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-        ChargerCommGB_innerData.bmsTimeoutReason[0] |= CHARGERCOMMGB_REC_SPN2560_00_TIMEOUT_BIT;
+        ChargerCommGB_innerData.bmsTimeoutReason[0] &= 0xFCU;
+        ChargerCommGB_innerData.bmsTimeoutReason[0] |= CHARGERCOMMGB_REC_SPN2560_00_TIMEOUT_VALUE;
         ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3901);
     }
     else if (RecStage == CHARGERCOMM_STAGE_GB_CRM_AA)
     {
         ChargerComm_ClrChargerStatus();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-        ChargerCommGB_innerData.bmsTimeoutReason[0] |= CHARGERCOMMGB_REC_SPN2560_AA_TIMEOUT_BIT;
+        ChargerCommGB_innerData.bmsTimeoutReason[0] &= 0xF3U;
+        ChargerCommGB_innerData.bmsTimeoutReason[0] |= CHARGERCOMMGB_REC_SPN2560_AA_TIMEOUT_VALUE;
         ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3902);
     }
     else
@@ -1851,7 +1934,8 @@ void ChargerCommGB_RecCMLTimeoutCbk(void)
     ChargerCommGB_SetCommunication(FALSE);
     ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
     ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-    ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CAPABILITY_TIMEOUT_BIT;
+    ChargerCommGB_innerData.bmsTimeoutReason[1] &= 0xFCU;
+    ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CAPABILITY_TIMEOUT_VALUE;
     ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3903);
 }
 
@@ -1860,7 +1944,8 @@ void ChargerCommGB_RecCROTimeoutCbk(void)
     ChargerCommGB_SetCommunication(FALSE);
     ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
     ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-    ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CHARGER_READY_TIMEOUT_BIT;
+    ChargerCommGB_innerData.bmsTimeoutReason[1] &= 0xF3U;
+    ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CHARGER_READY_TIMEOUT_VALUE;
     ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3904);
 }
 
@@ -1869,7 +1954,8 @@ void ChargerCommGB_RecCROAATimeoutCbk(void)
     ChargerCommGB_SetCommunication(FALSE);
     ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
     ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-    ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CHARGER_READY_TIMEOUT_BIT;
+    ChargerCommGB_innerData.bmsTimeoutReason[1] &= 0xF3U;
+    ChargerCommGB_innerData.bmsTimeoutReason[1] |= CHARGERCOMMGB_REC_CHARGER_READY_TIMEOUT_VALUE;
     ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3904);
 }
 
@@ -1878,17 +1964,22 @@ void ChargerCommGB_RecCCSTimeoutCbk(void)
     ChargerCommGB_SetCommunication(FALSE);
     ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
     ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-    ChargerCommGB_innerData.bmsTimeoutReason[3] |= CHARGERCOMMGB_REC_CHARGER_STATUS_TIMEOUT_BIT;
+    ChargerCommGB_innerData.bmsTimeoutReason[2] &= 0xFCU;
+    ChargerCommGB_innerData.bmsTimeoutReason[2] |= CHARGERCOMMGB_REC_CHARGER_STATUS_TIMEOUT_VALUE;
     ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3905);
 }
 
 void ChargerCommGB_RecCSTTimeoutCbk(void)
 {
-    ChargerCommGB_SetCommunication(FALSE);
-    ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
-    ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-    ChargerCommGB_innerData.bmsTimeoutReason[2] |= CHARGERCOMMGB_REC_CHARGER_STOP_TIMEOUT_BIT;
-    ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3906);
+    if (ChargerCommGB_innerData.stage == CHARGERCOMMGB_STAGE_CHARGE_STOP)
+    {
+        ChargerCommGB_SetCommunication(FALSE);
+        ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
+        ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
+        ChargerCommGB_innerData.bmsTimeoutReason[2] &= 0xF3U;
+        ChargerCommGB_innerData.bmsTimeoutReason[2] |= CHARGERCOMMGB_REC_CHARGER_STOP_TIMEOUT_VALUE;
+        ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3906);
+    }
 }
 
 void ChargerCommGB_RecCSDTimeoutCbk(void)
@@ -1896,7 +1987,8 @@ void ChargerCommGB_RecCSDTimeoutCbk(void)
     ChargerCommGB_SetCommunication(FALSE);
     ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_FAULT;
     ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CEM);
-    ChargerCommGB_innerData.bmsTimeoutReason[3] |= CHARGERCOMMGB_REC_CHARGER_STATIS_TIMEOUT_BIT;
+    ChargerCommGB_innerData.bmsTimeoutReason[3] &= 0xFCU;
+    ChargerCommGB_innerData.bmsTimeoutReason[3] |= CHARGERCOMMGB_REC_CHARGER_STATIS_TIMEOUT_VALUE;
     ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_CHR_GB_SPN3907);
 }
 
