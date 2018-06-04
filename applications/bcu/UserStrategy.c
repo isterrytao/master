@@ -43,12 +43,12 @@ void UserStrategy_Init(Async_LooperType *looper)
     UserStrategy_innerData.currentIsAllowToPowerOff = TRUE;
     if (looper != NULL)
     {
+        UserCurrentSensor_Init(looper);
         if (E_OK == Async_EventInit(&UserStrategy_innerData.event, looper, UserStrategy_Poll, 100UL))
         {
             (void)Async_EventRegisterToLooper(&UserStrategy_innerData.event);
         }
     }
-    UserCurrentSensor_Init(looper);
 }
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)
