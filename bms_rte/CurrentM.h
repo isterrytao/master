@@ -10,6 +10,7 @@
 #include "Current_Types.h"
 #include "Hall.h"
 #include "Shunt.h"
+#include "UserCurrentSensor.h"
 
 #define CURRENTM_DEV_ERROR_DETECT           STD_OFF
 #define CURRENTM_HALL_REVERSE_EN            STD_OFF //需要同时修改HALL配置通道反向
@@ -31,7 +32,9 @@ typedef enum {
     CURRENTM_SAMPLE_CHANNEL_HALL1 = CURRENTM_SAMPLE_CHANNEL_HALL, /**< 第一路HALL传感器采集通道 */
     CURRENTM_SAMPLE_CHANNEL_HALL2 = 1, /**< 第二路HALL传感器采集通道 */
     CURRENTM_SAMPLE_CHANNEL_SHUNT = 2, /**< 分流器采集通道 */
-    CURRENTM_SAMPLE_CHANNEL_MAX = 3,
+    CURRENTM_SAMPLE_CHANNEL_USERDEF1 = 3,
+    CURRENTM_SAMPLE_CHANNEL_USERDEF2 = 4,
+    CURRENTM_SAMPLE_CHANNEL_MAX = 5,
     CURRENTM_SAMPLE_CHANNEL_INVALID = 0xFF /**< 无效通道 */
 } CurrentM_SampleChannelType;
 

@@ -213,15 +213,15 @@ module.exports = {
 
         // 主回路电流采集
         main: {
-            // 可选 "hall1", "hall2", "shunt",
+            // 可选 "hall1", "hall2", "shunt", "userdef1", "userdef2"
             channel: "shunt", //注：若使用分流器，需要关闭电流的所有上电自检。
-            // 可选 "hall1", "hall2", "shunt", "none", 但是不能与channel相同,
+            // 可选 "hall1", "hall2", "shunt", "none", "userdef1", "userdef2" 但是不能与channel相同,
             redundant: "none"
 
         },
         // 加热回路电流采集
         heater: {
-            // 可选 "hall1", "hall2", "shunt", "none",
+            // 可选 "hall1", "hall2", "shunt", "userdef1", "userdef2", "none"
             channel: "none",
             redundant: "none"
         },
@@ -1351,6 +1351,8 @@ module.exports = {
             {name:"CANIF_RX_CANECHO_0", to:"CanEcho", id:0x7f0, hw:1, define:0},
             {name:"CANIF_RX_CANECHO_1", to:"CanEcho", id:0x7f1, hw:2, define:1},
             {name:"CANIF_RX_CANECHO_2", to:"CanEcho", id:0x7f2, hw:3, define:2},
+            //{name:"CANIF_RX_USERCURRENTSENSOR_1", to:"UserCurrentSensor", id:0x3c0, hw:3, define:0},
+            //{name:"CANIF_RX_USERCURRENTSENSOR_2", to:"UserCurrentSensor", id:0x3c1, hw:3, define:1},
         ],
         txsduids:[
             {

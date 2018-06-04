@@ -48,6 +48,7 @@ void UserStrategy_Init(Async_LooperType *looper)
             (void)Async_EventRegisterToLooper(&UserStrategy_innerData.event);
         }
     }
+    UserCurrentSensor_Init(looper);
 }
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)

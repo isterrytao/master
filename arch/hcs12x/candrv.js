@@ -37,7 +37,7 @@ module.exports = {
 
         var oneZeroToAcceptMask = (oneZero)=> {
             return {
-                mask0: oneZero[0] ^ oneZero[1],
+                mask0: (oneZero[0] ^ oneZero[1]) | (0x01 << 20),
                 accept0: oneZero[0] & oneZero[1],
                 mask1: (oneZero[2] ^ oneZero[3]) | (0x07 << 16),
                 accept1: oneZero[2] & oneZero[3],
