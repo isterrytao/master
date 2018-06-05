@@ -39,7 +39,7 @@
 /**
  * \brief SOC跳变缓存大小
  */
-#define SOC_JUMP_BUFF_SIZE          15U
+#define SOC_JUMP_BUFF_SIZE          30U
 
 #endif
 

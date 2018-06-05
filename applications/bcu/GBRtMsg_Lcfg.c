@@ -21,7 +21,7 @@
 #include "Diagnosis.h"
 #include "Dio.h"
 
-#define LOG_LEVEL LOG_LEVEL_DEBUG
+#define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
 
 
