@@ -51,6 +51,7 @@ typedef struct{
     uint8 currentDecreaseEndFlag; /**< 充电降流末端检查标志 */
     uint32 fullChargeDelay; /**< 满充延时 */
     uint32 fullChargeRelDelay; /**< 满充释放延时 */
+    uint16 fullChargeVolt; /**< 满充单体电压 */
     FullCharge_FullChargeEventHook fullHook; /**< 满充钩子函数 */
     FullCharge_FullChargeEventHook fullRelHook; /**< 满充释放钩子函数 */
 }FullCharge_ConfigInfoType;

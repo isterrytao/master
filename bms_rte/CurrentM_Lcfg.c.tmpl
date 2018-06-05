@@ -48,6 +48,32 @@ const Hall_ConfigType HallConfigData[HALL_CHANNEL_NUM] = {
 
 #include "CurrentM.h"
 
+<% if (!usersensor1_enable) { %>
+Std_ReturnType UserCurrentSensor1_WaitCurrentCalibrated(Current_TimedCurrentType *current, uint16 timeout) {
+    (void)current;
+    (void)timeout;
+    return E_NOT_OK;
+}
+
+Current_CurrentType UserCurrentSensor1_GetCurrent(void) {
+    return (Current_CurrentType)CURRENT_INVALID_VALUE;
+}
+
+<% } %>
+
+<% if (!usersensor2_enable) { %>
+Std_ReturnType UserCurrentSensor2_WaitCurrentCalibrated(Current_TimedCurrentType *current, uint16 timeout) {
+    (void)current;
+    (void)timeout;
+    return E_NOT_OK;
+}
+
+Current_CurrentType UserCurrentSensor2_GetCurrent(void) {
+    return (Current_CurrentType)CURRENT_INVALID_VALUE;
+}
+
+<% } %>
+
 const CurrentM_ConfigType CurrentM_ConfigInfo = {
     <%- currentmcfg.isDualRange ? "STD_ON" : "STD_OFF" %>, /**< hallIsDualRange: 2路HALL传感器是否为双量程传感器 */
     <%- Math.round(currentmcfg.lowerHallMaxValue) %>, /**< LowHallCurrentMax: 小量程HALL最大电流值，超过此值启用大量程, 单位0.1A */
@@ -70,12 +96,16 @@ const CurrentM_ConfigType CurrentM_ConfigInfo = {
         <%- Math.round(currentmcfg.autoCalibLimit.hall1) %>, /**< HALL1 , 单位0.1A*/
         <%- Math.round(currentmcfg.autoCalibLimit.hall2) %>, /**< HALL2 , 单位0.1A*/
         <%- Math.round(currentmcfg.autoCalibLimit.shunt) %>, /**< SHUNT , 单位0.1A*/
+        100, /**< CURRENTM_SAMPLE_CHANNEL_USERDEF1 , 单位0.1A*/
+        100, /**< CURRENTM_SAMPLE_CHANNEL_USERDEF2 , 单位0.1A*/
     },
     //zeroFilter
     {
         <%- Math.round(currentmcfg.zeroFilter.hall1) %>, /**< HALL1 , 单位0.1A*/
         <%- Math.round(currentmcfg.zeroFilter.hall2) %>, /**< HALL2 , 单位0.1A*/
         <%- Math.round(currentmcfg.zeroFilter.shunt) %>, /**< SHUNT , 单位0.1A*/
+        10, /**< CURRENTM_SAMPLE_CHANNEL_USERDEF1 , 单位0.1A*/
+        10, /**< CURRENTM_SAMPLE_CHANNEL_USERDEF2 , 单位0.1A*/
     },
 };
 

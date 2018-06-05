@@ -238,6 +238,14 @@ static const ChargerComm_RecIPduInfoType ChargerComm_StageGBCrmAARecItem[] = {
         ChargerCommGB_ReceiveCRMCbk, /**< RecFunc: 数据接收回调函数 */
         ChargerCommGB_RecCRMTimeoutCbk, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
     },
+    {
+        PDUR_CHARGERCOMM_RX_PDUID_GB_CRM, /**< IPdu */
+        8U,
+        CHARGERCOMMGB_REC_TIMEOUT_CRM_AA, /**< Timeout: 接收超时时间 */
+        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
+        NULL, /**< RecFunc: 数据接收回调函数 */
+        ChargerCommGB_RecCRMTimeoutCbk, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
+    },
 };
 
 static const ChargerComm_RecIPduInfoType ChargerComm_StageGBCtsCmlRecItem[] = {

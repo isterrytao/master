@@ -72,12 +72,12 @@ module.exports = {
             lowerHallMaxValue = cfg.hall2.lowerHallMaxValue * 10;
         }
 
-        var mainIndex = ['hall1', 'hall2', 'shunt'].indexOf(cfg.main.channel);
-        var mainRedundantIndex = ['hall1', 'hall2', 'shunt'].indexOf(cfg.main.redundant);
-        var heaterIndex = ['hall1', 'hall2', 'shunt'].indexOf(cfg.heater.channel);
-        var heaterRedundantIndex = ['hall1', 'hall2', 'shunt'].indexOf(cfg.heater.redundant);
+        var mainIndex = ['hall1', 'hall2', 'shunt', 'userdef1', 'userdef2'].indexOf(cfg.main.channel);
+        var mainRedundantIndex = ['hall1', 'hall2', 'shunt', 'userdef1', 'userdef2'].indexOf(cfg.main.redundant);
+        var heaterIndex = ['hall1', 'hall2', 'shunt', 'userdef1', 'userdef2'].indexOf(cfg.heater.channel);
+        var heaterRedundantIndex = ['hall1', 'hall2', 'shunt', 'userdef1', 'userdef2'].indexOf(cfg.heater.redundant);
 
-        if (mainIndex < 0) throw 'Current channel main must be one of "hall1", "hall2" or "shunt"';
+        if (mainIndex < 0) throw 'Current channel main must be one of "hall1", "hall2", "shunt", "userdef1" or "userdef2"';
         if (mainIndex == mainRedundantIndex || mainIndex == heaterIndex || mainIndex == heaterRedundantIndex) throw cfg.main.channel + " selected by multi";
         if (mainRedundantIndex >=0 && (mainRedundantIndex == heaterIndex || mainRedundantIndex == heaterRedundantIndex)) throw cfg.main.redundant + " selected by multi";
         if (heaterIndex >= 0 && heaterIndex == heaterRedundantIndex)   throw cfg.heater.channel + " selected by multi";
@@ -114,11 +114,14 @@ module.exports = {
             hall2sensor: hall2sensor,
             shuntsensor: shuntsensor,
             currentmcfg: currentmcfg,
+            usersensor1_enable: cfg.main.channel.toUpperCase() == 'USERDEF1' || cfg.main.redundant.toUpperCase() == 'USERDEF1' || cfg.heater.channel.toUpperCase() == 'USERDEF1' || cfg.heater.redundant.toUpperCase() == 'USERDEF1',
+            usersensor2_enable: cfg.main.channel.toUpperCase() == 'USERDEF2' || cfg.main.redundant.toUpperCase() == 'USERDEF2' || cfg.heater.channel.toUpperCase() == 'USERDEF2' || cfg.heater.redundant.toUpperCase() == 'USERDEF2',
         };
 
         //console.log("================= currentm ==============")
         //console.log(JSON.stringify(mdata, null, "  "));
 
         info.render("CurrentM_Lcfg.c", "CurrentM_Lcfg.c.tmpl", mdata);
+        info.render("CurrentM_Lcfg.h", "CurrentM_Lcfg.h.tmpl", mdata);
     }
 }

@@ -176,6 +176,8 @@ typedef struct {
     uint16 ltValue;
     uint8 ht;
     uint8 lt;
+    uint8 lastltindex;
+    uint8 lasthtindex;
     boolean chargeEndFinished;
     boolean chargeEndDecreasing;
     const PowerM_ChargeEndConfigType *curEndCfg;

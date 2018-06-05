@@ -213,15 +213,15 @@ module.exports = {
 
         // 主回路电流采集
         main: {
-            // 可选 "hall1", "hall2", "shunt",
+            // 可选 "hall1", "hall2", "shunt", "userdef1", "userdef2"
             channel: "shunt", //注：若使用分流器，需要关闭电流的所有上电自检。
-            // 可选 "hall1", "hall2", "shunt", "none", 但是不能与channel相同,
+            // 可选 "hall1", "hall2", "shunt", "none", "userdef1", "userdef2" 但是不能与channel相同,
             redundant: "none"
 
         },
         // 加热回路电流采集
         heater: {
-            // 可选 "hall1", "hall2", "shunt", "none",
+            // 可选 "hall1", "hall2", "shunt", "userdef1", "userdef2", "none"
             channel: "none",
             redundant: "none"
         },
@@ -291,8 +291,8 @@ module.exports = {
 
     Ntc: {
         //可选 "Shiheng_CWF4B_103F_3435B":时恒10K; "Soarwhale_10K3435B":由甲申田10K; "Kemit_CWF110KF3435":科敏10K; "Kemit_CWF110KF4150":科敏10K; Yonggui_YG691_51_00_50":永贵10K; "Shiheng_CWF4B_104F_3950":时恒100K; "MTG2_420F103H":MTG2_10K; "Kemit_CWF110KF3950":科敏10K; "BoDian_FW10K3950":铂电10K; "Soarwhale_SW_NTC_C4_103B1A1":由甲申田10K;
-        //     "Shiheng_CWF4B_103F_3950":时恒10K; "Microtherm_TR29_NTC_ALW600_D3_2L15":麦柯泰姆10K; "Microtherm_RT29_NTC_ALW500_D3_2L15":麦柯泰姆100K-3950; "YiDa_BLMF103F3435F":苏州怡达10K;
-        cellTempType: "Shiheng_CWF4B_103F_3950", // 电池温感型号
+        //     "Shiheng_CWF4B_103F_3950":时恒10K; "Microtherm_TR29_NTC_ALW600_D3_2L15":麦柯泰姆10K; "Microtherm_RT29_NTC_ALW500_D3_2L15":麦柯泰姆100K-3950; "YiDa_BLMF103F3435F":苏州怡达10K; "CATL_10K_SMD":CATL 10K;
+        cellTempType: "Shiheng_CWF4B_103F_3435B", // 电池温感型号
         chgSckTempType:'Shiheng_CWF4B_103F_3435B', // 充电插座温感信号
         chgSckTempMap: {
             //SCH_T1,SCH_T2,SCH_T3,FCH_T1,FCH_T2,OFF
@@ -1370,6 +1370,8 @@ module.exports = {
             {name:"CANIF_RX_CANECHO_0", to:"CanEcho", id:0x7f0, hw:1, define:0},
             {name:"CANIF_RX_CANECHO_1", to:"CanEcho", id:0x7f1, hw:2, define:1},
             {name:"CANIF_RX_CANECHO_2", to:"CanEcho", id:0x7f2, hw:3, define:2},
+            //{name:"CANIF_RX_USERCURRENTSENSOR_1", to:"UserCurrentSensor", id:0x3c0, hw:3, define:0},
+            //{name:"CANIF_RX_USERCURRENTSENSOR_2", to:"UserCurrentSensor", id:0x3c1, hw:3, define:1},
         ],
         txsduids:[
             {
