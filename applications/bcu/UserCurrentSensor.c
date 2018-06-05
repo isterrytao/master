@@ -8,7 +8,7 @@
 #define TIMES 20U  //平均电流统计周期
 
 
-#if !defined(USERCURRENTSENSOR1_TMPL) || !defined(USERCURRENTSENSOR2_TMPL)
+#if !(USERCURRENTSENSOR1_TMPL && USERCURRENTSENSOR2_TMPL)
 typedef struct {
     Async_EventType event;
     uint32  rxtime;
@@ -22,7 +22,7 @@ typedef struct {
 #endif
 
 
-#ifndef USERCURRENTSENSOR1_TMPL    //判断是否需要定义，如果模板没有给出此定义（表示userdef1使能），则定义
+#if !USERCURRENTSENSOR1_TMPL    //判断是否需要定义，如果模板没有给出此定义（表示userdef1使能），则定义
 
 static UserCurrentSensor_DataType userCurrentSensor1Data;
 
@@ -44,7 +44,7 @@ Std_ReturnType UserCurrentSensor1_WaitCurrentCalibrated(Current_TimedCurrentType
             if (userCurrentSensor1Data.state == E_OK) {
                 current->current = userCurrentSensor1Data.current;
             } else {
-                current->current = CURRENT_INVALID_VALUE;
+                current->current = (sint16)CURRENT_INVALID_VALUE;
             }
             Irq_Restore(flag);
             ret = E_OK;
@@ -62,7 +62,7 @@ Current_CurrentType UserCurrentSensor1_GetCurrent(void) {
     if (userCurrentSensor1Data.state == E_OK) {
         ret = userCurrentSensor1Data.current;
     } else {
-        ret = CURRENT_INVALID_VALUE;
+        ret = (sint16)CURRENT_INVALID_VALUE;
     }
     Irq_Restore(mask);
 
@@ -93,7 +93,7 @@ static Async_EvnetCbkReturnType async_UserCurrentSensor1_cbk(UserCurrentSensor_D
 
 #endif
 
-#ifndef USERCURRENTSENSOR2_TMPL    //判断是否需要定义，如果模板没有给出此定义（表示userdef2使能），则定义
+#if !USERCURRENTSENSOR2_TMPL    //判断是否需要定义，如果模板没有给出此定义（表示userdef2使能），则定义
 static UserCurrentSensor_DataType userCurrentSensor2Data;
 Std_ReturnType UserCurrentSensor2_WaitCurrentCalibrated(Current_TimedCurrentType *current, uint16 timeout) {
     uint8 err;
@@ -112,7 +112,7 @@ Std_ReturnType UserCurrentSensor2_WaitCurrentCalibrated(Current_TimedCurrentType
             if (userCurrentSensor2Data.state == E_OK) {
                 current->current = userCurrentSensor2Data.current;
             } else {
-                current->current = CURRENT_INVALID_VALUE;
+                current->current = (sint16)CURRENT_INVALID_VALUE;
             }
             Irq_Restore(flag);
             ret = E_OK;
@@ -130,7 +130,7 @@ Current_CurrentType UserCurrentSensor2_GetCurrent(void) {
     if (userCurrentSensor2Data.state == E_OK) {
         ret = userCurrentSensor2Data.current;
     } else {
-        ret = CURRENT_INVALID_VALUE;
+        ret = (sint16)CURRENT_INVALID_VALUE;
     }
     Irq_Restore(mask);
 
@@ -162,7 +162,7 @@ static Async_EvnetCbkReturnType async_UserCurrentSensor2_cbk(UserCurrentSensor_D
 #endif
 
 
-#if !defined(USERCURRENTSENSOR1_TMPL) || !defined(USERCURRENTSENSOR2_TMPL)
+#if !(USERCURRENTSENSOR1_TMPL && USERCURRENTSENSOR2_TMPL)
 
 #include <string.h>
 
@@ -175,7 +175,7 @@ void  UserCurrentSensor_RxIndication(PduIdType RxPduId, const PduInfoType *PduIn
 
     switch (RxPduId) {
 
-#ifndef USERCURRENTSENSOR1_TMPL    //判断can电流传感器1是否开启
+#if !USERCURRENTSENSOR1_TMPL    //判断can电流传感器1是否开启
     case CANIF_RX_USERCURRENTSENSOR_1:
         if (PduInfoPtr->SduLength == 8U) {
             (void)memcpy(&current, PduInfoPtr->SduDataPtr, 4U);
@@ -208,7 +208,7 @@ void  UserCurrentSensor_RxIndication(PduIdType RxPduId, const PduInfoType *PduIn
         break;
 #endif
 
-#ifndef USERCURRENTSENSOR2_TMPL    //判断can电流传感器1是否开启
+#if !USERCURRENTSENSOR2_TMPL    //判断can电流传感器1是否开启
     case CANIF_RX_USERCURRENTSENSOR_2:
         if (PduInfoPtr->SduLength == 8U) {
             (void)memcpy(&current, PduInfoPtr->SduDataPtr, 4U);
@@ -253,15 +253,15 @@ void UserCurrentSensor_TxConfirmation(PduIdType RxPduId) {
 
 void UserCurrentSensor_Init(Async_LooperType *looper) {
     (void) looper;
-#ifndef USERCURRENTSENSOR1_TMPL    //判断can电流传感器1是否开启
+#if !USERCURRENTSENSOR1_TMPL    //判断can电流传感器1是否开启
     userCurrentSensor1Data.newCurrentSem = OSSemCreate(0U);
-    (void)Async_EventInit(&userCurrentSensor1Data.event, looper, (Async_EventCbkType)async_UserCurrentSensor1_cbk, 500);
+    (void)Async_EventInit(&userCurrentSensor1Data.event, looper, (Async_EventCbkType)async_UserCurrentSensor1_cbk, 500UL);
     (void)Async_EventRegisterToLooper(&userCurrentSensor1Data.event);
 #endif
 
-#ifndef USERCURRENTSENSOR2_TMPL    //判断can电流传感器2是否开启
+#if !USERCURRENTSENSOR2_TMPL    //判断can电流传感器2是否开启
     userCurrentSensor2Data.newCurrentSem = OSSemCreate(0U);
-    (void)Async_EventInit(&userCurrentSensor2Data.event, looper, (Async_EventCbkType)async_UserCurrentSensor2_cbk, 500);
+    (void)Async_EventInit(&userCurrentSensor2Data.event, looper, (Async_EventCbkType)async_UserCurrentSensor2_cbk, 500UL);
     (void)Async_EventRegisterToLooper(&userCurrentSensor2Data.event);
 #endif
 }
