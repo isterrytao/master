@@ -14,9 +14,9 @@
 
 const HvProcess_StateInfoType HvProcess_ChgStartInfoConfig[] = {
     {
-        NULL, /**< Cond: 条件函数指针 */
-        NULL, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_CHG_START, /**< Next: 下一状态 */
+        HvProcess_ChgStateStartCond, /**< Cond: 条件函数指针 */
+        HvProcess_ChgStateStartAction, /**< Action: 动作函数指针 */
+        (uint16)HVPROCESS_CHG_HV_ON, /**< Next: 下一状态 */
     },
 };
 

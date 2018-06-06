@@ -16,7 +16,7 @@
 #include "ChargeM.h"
 #include "DischargeM.h"
 #include "RelayM.h"
-// #include "RelayM_Lcfg.h"
+#include "RelayM_Lcfg.h"
 #include "ChargerComm.h"
 #include "RuntimeM.h"
 

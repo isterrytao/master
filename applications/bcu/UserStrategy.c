@@ -21,10 +21,6 @@
 #include "ChargeConnectM.h"
 #include "SocCalib_Cbk.h"
 #include "ChargeM.h"
-#include "ChargeM_Cfg.h"
-#include "DischargeM.h"
-#include "DischargeM_Cfg.h"
-#include "RelayM_Lcfg.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -41,9 +37,6 @@ UserStrategy_InnerDataType UserStrategy_innerData;
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat);
 static void safeCurrentCheck(void);
-static void UserStrategy_Beep(void);
-static void UserStrategy_AutoLostPower(void);
-static void UserStrategy_ResetToOTA(void);
 
 void UserStrategy_Init(Async_LooperType *looper)
 {
@@ -64,9 +57,6 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
     (void)byWhat;
 
     safeCurrentCheck();
-    UserStrategy_Beep();
-    UserStrategy_AutoLostPower();
-    UserStrategy_ResetToOTA();
 
     return ASYNC_EVENT_CBK_RETURN_OK;
 }
@@ -131,9 +121,6 @@ App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
 Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
 {
     Current_CurrentType current;
-    uint32 nowTime;
-    static uint8 state = 0U;
-    static uint32 lastTime = 0UL;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
 
     if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
@@ -146,32 +133,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     }
     else
     {
-        nowTime = OSTimeGet();
         current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
-        if (current == CURRENT_S_100MA_FROM_A(150))
-        {
-            if (state == 0U)
-            {
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= 10UL * 60UL * 1000UL)
-                {
-                    state = 1U;
-                    lastTime = nowTime;
-                }
-            }
-            else
-            {
-                current = CURRENT_S_100MA_FROM_A(100);
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= 5UL * 60UL * 1000UL)
-                {
-                    state = 0U;
-                    lastTime = nowTime;
-                }
-            }
-        }
-        else
-        {
-            lastTime = nowTime;
-        }
     }
     return current;
 }
@@ -255,186 +217,5 @@ void UserStrategy_FullChargeReleaseHook(void)
 {
     SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_NONE, DIAGNOSIS_EVENT_DEASSERT);
     ChargeM_DiagnosisCtlEnableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_NONE, DIAGNOSIS_EVENT_DEASSERT);
-}
-
-static void UserStrategy_Beep(void)
-{
-    boolean is_alarm = FALSE, limit = FALSE;
-    uint32 nowTime;
-    static boolean is_on = FALSE, limit_is_start = FALSE;
-    static uint32 lastTime = 0UL, limitLastTime = 0UL;
-
-    nowTime = OSTimeGet();
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_DV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_DT) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_INTER_COMM) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_VOLT_LINE) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_TEMP_LINE) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_RELAY_ABNORMAL) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        is_alarm = TRUE;
-    }
-    else if((Diagnosis_GetLevel(DIAGNOSIS_ITEM_LSOC) > DIAGNOSIS_LEVEL_FIRST))
-    {
-        is_alarm = TRUE;
-    }
-    else if((Diagnosis_GetLevel(DIAGNOSIS_ITEM_LSOC) == DIAGNOSIS_LEVEL_FIRST))
-    {
-        limit = TRUE;
-    }
-    else
-    {
-    }
-
-    if (limit)
-    {
-        if (!limit_is_start)
-        {
-            limit_is_start = TRUE;
-            limitLastTime = nowTime;
-        }
-        if (limit_is_start)
-        {
-            if (MS_GET_INTERNAL(limitLastTime, nowTime) <= 15000UL)
-            {
-                is_alarm = TRUE;
-            }
-        }
-    }
-    else
-    {
-        limit_is_start = FALSE;
-    }
-
-    if (is_on)
-    {
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000UL || !is_alarm)
-        {
-            is_on = FALSE;
-            lastTime = nowTime;
-            (void)RelayM_Control(RELAYM_FN_BEEP, RELAYM_CONTROL_OFF);
-        }
-    }
-    else
-    {
-        if (is_alarm)
-        {
-            if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000UL)
-            {
-                is_on = TRUE;
-                lastTime = nowTime;
-                (void)RelayM_Control(RELAYM_FN_BEEP, RELAYM_CONTROL_ON);
-            }
-        }
-        else
-        {
-            lastTime = nowTime;
-        }
-    }
-}
-
-static void UserStrategy_AutoLostPower(void)
-{
-    sint16 current;
-    uint32 nowTime;
-    static uint32 preTime = 0UL;
-    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-    nowTime = OSTimeGet();
-
-    if (CurrentM_IsValidCurrent(current))
-    {
-        if (current < CURRENT_S_100MA_FROM_A(3) && current > CURRENT_S_100MA_FROM_A(-3))
-        {
-            if (MS_GET_INTERNAL(preTime, nowTime) >= 30UL * 60UL * 1000UL)
-            {
-                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_SELF_LOCK, DISCHARGEM_DISCHARGE_DISABLE);
-                ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_SELF_LOCK, CHARGEM_CHARGE_DISABLE);
-            }
-        }
-        else
-        {
-            preTime = nowTime;
-        }
-    }
-    else
-    {
-        preTime = nowTime;
-    }
-}
-
-static void UserStrategy_ResetToOTA(void)
-{
-    Current_CurrentType current;
-
-    if (RuntimeM_HasOtaRequest())
-    {
-        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-        if (CurrentM_IsValidCurrent(current))
-        {
-            if (abs(current) < CURRENT_S_100MA_FROM_A(5))
-            {
-                (void)RuntimeM_RequestToDtuMode();
-            }
-        }
-    }
 }
 

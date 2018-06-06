@@ -25,38 +25,21 @@ static const PowerM_DiagnosisPercentMapType dcchgdiag[] = {
     {DIAGNOSIS_ITEM_CHG_LT, {60U, 50U, 10U, 0U}},
 };
 
-static const PowerM_ChargeEndConfigType dcDecreaseCurrent2 = {
-    &dcDecreaseCurrent2,
-    3650U,
-    5000U,
-    POWERM_CHARGE_END_DEC_TO_CONSTVAL,
-    CURRENT_100MA_FROM_A(3U),
-    CURRENT_100MA_FROM_A(3U),
-};
-
-static const PowerM_ChargeEndConfigType dcDecreaseCurrent1 = {
-    &dcDecreaseCurrent2,
-    3600U,
-    5000U,
-    POWERM_CHARGE_END_DEC_TO_CONSTVAL,
-    CURRENT_100MA_FROM_A(30U),
-    CURRENT_100MA_FROM_A(10U),
-};
-
+/*
 static const PowerM_ChargeEndConfigType dcDecreaseCurrent = {
-    &dcDecreaseCurrent1,
-    3500U,
-    5000U,
-    POWERM_CHARGE_END_DEC_TO_CONSTVAL,
-    CURRENT_100MA_FROM_A(100U),
-    CURRENT_100MA_FROM_A(10U),
+    &dcDecreaseCurrent,
+    4180,
+    5000,
+    POWERM_CHARGE_END_DEC_CONSTVAL,
+    CURRENT_100MA_FROM_A(10),
+    CURRENT_100MA_FROM_A(10),
 };
 
 static Std_ReturnType thisHvGet(uint16 *v) {
     *v = Statistic_GetBcuHvMax();
     return CellDataM_VoltageIsValid(*v) ? E_OK : E_NOT_OK;
 }
-
+*/
 static const PowerM_ConfigParamType PowerMCurChgDcConfigTable = {
     ARRAY_SIZE(dcchgsocxvalue), /**< 功率控制表X轴分隔数量 */
     ARRAY_SIZE(dcchgtempyvalue), /**< 功率控制表Y轴分隔数量 */
@@ -76,17 +59,21 @@ static const PowerM_ConfigParamType PowerMCurChgDcConfigTable = {
     500U, /**< 功率输出时减小斜率时间参数 */
     CURRENT_100MA_FROM_A(10U), /**< 功率输出时减小斜率步进参数 */
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
-    &dcDecreaseCurrent, /**< 降流链表 */
-    thisHvGet,  /**< 获取降流末端比较值函数 */
+    NULL /* &dcDecreaseCurrent */, /**< 降流链表 */
+    NULL /* thisHvGet */,  /**< 获取降流末端比较值函数 */
 };
 
 // 慢充充电电流表（无特殊说明，所有温度点必须有回滚）
-static uint16 const acchgsocxvalue[] = {PERCENT_TO_SOC(104)};
-static sint16 const acchgtempyvalue[] = {TEMPERATURE_FROM_C(-6), TEMPERATURE_FROM_C(60)};
-static sint16 const acchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-7), TEMPERATURE_FROM_C(58)};
+static uint16 const acchgsocxvalue[] = {PERCENT_TO_SOC(50), PERCENT_TO_SOC(80), PERCENT_TO_SOC(90), PERCENT_TO_SOC(104)};
+static sint16 const acchgtempyvalue[] = {TEMPERATURE_FROM_C(-11), TEMPERATURE_FROM_C(0), TEMPERATURE_FROM_C(15), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45), TEMPERATURE_FROM_C(50)};
+static sint16 const acchgtempaltyvalue[] = {TEMPERATURE_FROM_C(-12), TEMPERATURE_FROM_C(-1), TEMPERATURE_FROM_C(14), TEMPERATURE_FROM_C(35), TEMPERATURE_FROM_C(40), TEMPERATURE_FROM_C(45)};
 static uint16 const acchgtableValue[] = {
-    CURRENT_100MA_FROM_A(0U), // <= -5
-    CURRENT_100MA_FROM_A(150U), // <= 60
+    CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), CURRENT_100MA_FROM_A(0U), // <= -11
+    CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // <= 0
+    CURRENT_100MA_FROM_A(30U), CURRENT_100MA_FROM_A(30U), CURRENT_100MA_FROM_A(30U), CURRENT_100MA_FROM_A(10U), // <= 15
+    CURRENT_100MA_FROM_A(50U), CURRENT_100MA_FROM_A(30U), CURRENT_100MA_FROM_A(20U), CURRENT_100MA_FROM_A(10U), // <= 40
+    CURRENT_100MA_FROM_A(20U), CURRENT_100MA_FROM_A(20U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // <= 45
+    CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), CURRENT_100MA_FROM_A(10U), // <= 50
 };
 static const PowerM_DiagnosisPercentMapType acchgdiag[] = {
     {DIAGNOSIS_ITEM_CHG_HV, {60U, 50U, 10U, 0U}},
@@ -112,7 +99,7 @@ static const PowerM_ConfigParamType PowerMCurChgAcConfigTable = {
     CURRENT_100MA_FROM_A(10U), /**< 功率输出时增加斜率步进参数 */
     500U, /**< 功率输出时减小斜率时间参数 */
     CURRENT_100MA_FROM_A(10U), /**< 功率输出时减小斜率步进参数 */
-    3500U, /**< 充电末端X轴达到这个值时进入降流阶段 */
+    0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
 };

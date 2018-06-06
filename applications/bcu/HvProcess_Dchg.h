@@ -27,11 +27,10 @@
  */
 typedef enum{
     HVPROCESS_DCHG_START = 0, /**< 启动状态 */
-    HVPROCESS_DCHG_HV_ON = 1, /**< 高压上电状态 */
-    HVPROCESS_DCHG_RELAY_OFF_DELAY = 2, /**< 继电器断开延时状态 */
-    HVPROCESS_DCHG_CHG_TO_DCHG_WAIT =3, /**< 等待从充电转放电状态 */
-    HVPROCESS_DCHG_ALLOW_RESTART_CHECK = 4, /**< 放电状态允许复位检查状态 */
-    HVPROCESS_DCHG_STATE_MAX = 5, /**< 放电高压流程控制状态最大值 */
+    HVPROCESS_DCHG_PRECHARGE = 1, /**< 预充状态 */
+    HVPROCESS_DCHG_HV_ON = 2, /**< 高压上电状态 */
+    HVPROCESS_DCHG_RELAY_OFF_DELAY = 3, /**< 继电器断开延时状态 */
+    HVPROCESS_DCHG_STATE_MAX = 4, /**< 放电高压流程控制状态最大值 */
 }HvProcess_DchgStateType;
 
 
@@ -41,7 +40,6 @@ typedef enum{
 typedef struct{
     HvProcess_DchgStateType State; /**< 放电高压流程状态 */
     uint32 RelayOffTick; /**< 继电器断开计时 */
-    boolean RelayFaultCheckFlag;  /**< 继电器故障检查标志 */
 }HvProcess_DchgInnerDataType;
 
 
@@ -83,15 +81,26 @@ boolean HvProcess_DchgStateStartCond(void);
 void HvProcess_DchgStateStartAction(void);
 
 /**
+ * \brief 放电预充状态条件函数
+ * \return TRUE-正常 FALSE-故障
+ */
+boolean HvProcess_DchgStatePrechargeCond(void);
+
+/**
+ * \brief 放电预充状态动作函数
+ */
+void HvProcess_DchgStatePrechargeAction(void);
+
+/**
  * \brief 放电高压上电状态条件1函数
  * \return TRUE-正常 FALSE-故障
  */
-boolean HvProcess_DchgConnectionCond(void);
+boolean HvProcess_DchgChargeConnectionCond(void);
 
 /**
  * \brief 放电高压上电状态动作1函数
  */
-void HvProcess_DchgConnectionAction(void);
+void HvProcess_DchgChargeConnectionAction(void);
 
 /**
  * \brief 放电高压上电状态条件2函数
@@ -105,19 +114,6 @@ boolean HvProcess_DchgFaultCond(void);
 void HvProcess_DchgFaultAction(void);
 
 /**
- * \brief 充电机正常停止输出条件
- * \return TRUE-成立 FALSE-不成立
- */
-boolean HvProcess_DchgChrIsStopCond(void);
-
-/**
- * \brief 电池电压过充电条件
- * \note 用于监控在充电结束后,不断开继电器时,持续监控是否电池被异常过充电
- * \return TRUE-成立 FALSE-不成立
- */
-boolean HvProcess_DchgChgOhvCond(void);
-
-/**
  * \brief 继电器断开延时条件
  * \return TRUE-成立 FALSE-不成立
  */
@@ -127,17 +123,6 @@ boolean HvProcess_DchgRelayOffDelayCond(void);
  * \brief 继电器断开动作
  */
 void HvProcess_DchgRelayOffDelayAction(void);
-
-/**
- * \brief 放电状态复位条件
- * \return TRUE-成立 FALSE-不成立
- */
-boolean HvProcess_DchgIsAllowRestartCond(void);
-
-/**
- * \brief 放电状态复位动作
- */
-void HvProcess_DchgIsAllowRestartAction(void);
 
 
 
