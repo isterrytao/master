@@ -281,18 +281,9 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
         ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
-    // soc是否满电
-    if (ChargeM_BatteryChargeIsFinish())
-    {
-        flag = 1U;
-    }
-    else
-    {
-        flag = 0U;
-    }
-    WRITE_BT_UINT8(Buffer, index,  flag);
     // 保留
     WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    WRITE_BT_UINT8(Buffer, index,  0xFFU);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
