@@ -302,7 +302,6 @@ cleanup:
 
 static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
 {
-    uint8 flag;
     uint16 index = 0U;
 
     ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
@@ -315,18 +314,9 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     WRITE_BT_UINT16(Buffer, index, 0U);
     // 充电允许
     WRITE_BT_UINT8(Buffer, index,  1U);
-    // soc是否满电
-    if (ChargeM_BatteryChargeIsFinish())
-    {
-        flag = 1U;
-    }
-    else
-    {
-        flag = 0U;
-    }
-    WRITE_BT_UINT8(Buffer, index,  flag);
     // 保留
     WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    WRITE_BT_UINT8(Buffer, index,  0xFFU);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
