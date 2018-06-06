@@ -34,15 +34,15 @@
  */
 #define LIB_INFO_SOURCE_COMMIT_ID        "21bdbcc665a9774c44b7cc8fcbf9646a551a2283"
 #define LIB_INFO_CONFIG_COMMIT_ID        "21bdbcc665a9774c44b7cc8fcbf9646a551a2283"
-#define LIB_INFO_BUILD_TIME              "20180605210508"
+#define LIB_INFO_BUILD_TIME              "20180606093642"
 
 #define LIB_INFO_BUILD_DATE_Y            2018
 #define LIB_INFO_BUILD_DATE_M            6
-#define LIB_INFO_BUILD_DATE_D            5
+#define LIB_INFO_BUILD_DATE_D            6
 
-#define LIB_INFO_BUILD_TIME_H            21
-#define LIB_INFO_BUILD_TIME_M            5
-#define LIB_INFO_BUILD_TIME_S            8
+#define LIB_INFO_BUILD_TIME_H            9
+#define LIB_INFO_BUILD_TIME_M            36
+#define LIB_INFO_BUILD_TIME_S            42
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO
