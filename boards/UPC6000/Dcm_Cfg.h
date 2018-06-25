@@ -79,7 +79,7 @@
 /* For 0x85 */
 #define DTC_RECORD_ON                                               (0x01U)
 #define DTC_RECORD_OFF                                              (0x02U)
-#define DcmTransmit(DcmTxPduId,PduInfoPtr)                          PduR_DcmTransmit(gDcmConfigData->TxPduId,PduInfoPtr)
+#define DcmTransmit(DcmTxPduId,PduInfoPtr)                          PduR_DcmTransmit(DcmTxPduId,PduInfoPtr)
 #define Dcm_DefaultSessionPost(result)                              App_DefaultPost(result)
 
 #define DCM_DSP_DATA_USE_PORT                                       UseFnc
@@ -148,7 +148,8 @@
 #define DCM_SERVICE_22_ENABLED                                      STD_ON
 #define DCM_SERVICE_22_COMBINED_DID                                 STD_OFF
 #define MAX_NUM_OF_DID_TO_READ                                      (1U)
-#define NUMBER_OF_READ_DID                                          (198U)
+#define NUMBER_OF_READ_DID                                          Dcm_NumberOfReadDID
+
 
 #define DCM_SERVICE_23_ENABLED                                      STD_OFF
 
@@ -169,7 +170,7 @@
 #define NUM_OF_2C_SUB_FUNCTION                                      (0U)
 
 #define DCM_SERVICE_2E_ENABLED                                      STD_ON
-#define NUMBER_OF_WRITE_DID                                         (50U)
+#define NUMBER_OF_WRITE_DID                                         Dcm_NumberOfWriteDID
 
 #define DCM_SERVICE_2F_ENABLED                                      STD_ON
 #define NUMBER_OF_CONTROL_DID                                       (3U)
@@ -448,7 +449,8 @@ extern const DcmDspSecurityRow /*DCM_CONFIG_CONST*/gDcmDspSecurityRow[KIND_OF_SE
 #endif
 
 #if(DCM_SERVICE_22_ENABLED == STD_ON)
-extern const Dcm_22_ServiceInfoType /*DCM_CONFIG_CONST*/gDcmDsdSubService_22[NUMBER_OF_READ_DID];    /* For 0x22 */
+extern const Dcm_22_ServiceInfoType /*DCM_CONFIG_CONST*/gDcmDsdSubService_22[];    /* For 0x22 */
+extern uint8 Dcm_NumberOfReadDID;
 #endif
 
 #if((DCM_SERVICE_23_ENABLED == STD_ON)|| (DCM_SERVICE_2C_ENABLED == STD_ON)||(DCM_SERVICE_3D_ENABLED == STD_ON))
@@ -473,7 +475,8 @@ extern const Dcm_2C_ServiceInfoType /*DCM_CONFIG_CONST*/gDcmDsdSubService_2C[NUM
 #endif
 
 #if(DCM_SERVICE_2E_ENABLED == STD_ON)
-extern const Dcm_2E_ServiceInfoType /*DCM_CONFIG_CONST*/gDcmDsdSubService_2E[NUMBER_OF_WRITE_DID];   /* For 0x2E */
+extern const Dcm_2E_ServiceInfoType /*DCM_CONFIG_CONST*/gDcmDsdSubService_2E[];   /* For 0x2E */
+extern uint8 Dcm_NumberOfWriteDID;
 #endif
 
 #if(DCM_SERVICE_2F_ENABLED == STD_ON)
@@ -500,9 +503,6 @@ extern Std_ReturnType App_DiagnosticActive(void);
 #if(DCM_COSTOMIZED_SERVCIE_SUPPORTED == STD_ON)
 extern void App_CustomizedServcie(Dcm_MsgContextType *pMsgContext);
 #endif
-
-#define NUM_OF_DTC   (6U)
-extern uint8/*DCM_VARIABLE*/ DTCStatus[NUM_OF_DTC];
 
 /* 10 */
 extern void App_DefaultPost(Std_ReturnType Result);

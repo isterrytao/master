@@ -594,10 +594,10 @@ static const GB32960_RecordItemType unfixedCycleDataList[] = {
 };
 
 static uint32 UnfixedAlarmListCycle[] = {
-    30000U,  /*!< 正常 */
-    20000U,  /*!< 一级报警 */
-    10000U,  /*!< 二级报警 */
-    5000U,   /*!< 三级报警 */
+    5000U,  /*!< 正常 */
+    3000U,  /*!< 一级报警 */
+    2000U,  /*!< 二级报警 */
+    1000U,   /*!< 三级报警 */
     1000U,   /*!< 四级报警 */
 };
 static const Diagnosis_ItemType UnfixedAlarmList[] = {
@@ -637,42 +637,25 @@ static const Diagnosis_ItemType UnfixedAlarmList[] = {
 };
 
 static uint32 unfixed_get_cycle(void) {
-    uint16 lv_flags[DIAGNOSIS_SUPPORT_LEVEL] = {0U};
     uint8 i;
-    Diagnosis_LevelType lv;
-    uint32 res = UnfixedAlarmListCycle[0];
+
+    Diagnosis_LevelType lv = DIAGNOSIS_LEVEL_NONE;
+    Diagnosis_LevelType tmp;
+    uint32 res;
 
     for(i = 0U; i < ARRAY_SIZE(UnfixedAlarmList); i++) {
-        lv = Diagnosis_GetLevel(UnfixedAlarmList[i]);
-        switch(lv){
-#if DIAGNOSIS_SUPPORT_LEVEL > 3U
-        case DIAGNOSIS_LEVEL_FOURTH:
-            lv_flags[3] |= ((uint16)1U << i);
-            break;
-#endif
-#if DIAGNOSIS_SUPPORT_LEVEL > 2U
-        case DIAGNOSIS_LEVEL_THIRD:
-            lv_flags[2] |= ((uint16)1U << i);
-            break;
-#endif
-#if DIAGNOSIS_SUPPORT_LEVEL > 1U
-        case DIAGNOSIS_LEVEL_SECOND:
-            lv_flags[1] |= ((uint16)1U << i);
-            break;
-#endif
-        case DIAGNOSIS_LEVEL_FIRST:
-            lv_flags[0] |= ((uint16)1U << i);
-            break;
-        default:
-            break;
+        tmp = Diagnosis_GetLevel(UnfixedAlarmList[i]);
+        if (tmp > lv) {
+            lv = tmp;
         }
     }
-    for(i = DIAGNOSIS_SUPPORT_LEVEL; i--;) {
-        if(lv_flags[i]) {
-            res = UnfixedAlarmListCycle[i + 1U];
-            break;
-        }
+
+    if (lv < ARRAY_SIZE(UnfixedAlarmListCycle)) {
+        res = UnfixedAlarmListCycle[lv];
+    } else {
+        res = UnfixedAlarmListCycle[0];
     }
+
     return res;
 }
 
@@ -698,12 +681,12 @@ const SaveM_RecordConfigDataType SaveMRecordConfigData = {
         onceDataList
     },
     /* fixedCycleData = */ {
-        30000U,
+        5000U,
         NULL,
         fixedCycleDataList
     },
     /* unfixedCycleData = */ {
-        30000U,
+        5000U,
         unfixed_get_cycle,
         unfixedCycleDataList
     }

@@ -1471,7 +1471,9 @@ module.exports = {
     PduR:{
         tx:[
             {upper:["Dcm", 0], middle:["CanTp", "UdsPhy"]},
+            {upper:["Dcm", 1], middle:["CanTp", "UdsPhy"]},
             {upper:["Dcm", 2], middle:["DtuTp", "UDS_PHYICAL"]},
+            {upper:["Dcm", 3], middle:["DtuTp", "UDS_PHYICAL"]},
             {upper:["ChargerComm", "GB_BHM"], middle:["J1939Tp", "Charger_PG_2700"]},
             {upper:["ChargerComm", "GB_BRM"], middle:["J1939Tp", "Charger_PG_0200"]},
             {upper:["ChargerComm", "GB_BCP"], middle:["J1939Tp", "Charger_PG_0600"]},

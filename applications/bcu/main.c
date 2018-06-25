@@ -73,18 +73,34 @@
 #include "logger.h"
 
 
+static boolean DcmOnCanTp_RxPduIdIsValid(PduIdType RxPduId) {
+    boolean ret;
+    if (RxPduId == 0U || RxPduId == 1U) {
+        ret = TRUE;
+    } else {
+        ret = FALSE;
+    }
+    return ret;
+}
+
 static const Dcm_ConfigType DcmConfigCanTp = {
     DCM_UDS_ON_CAN, /* Dcm_ProtocolType protocolType; */
-    0U, /* PduIdType TxPduId; */
-    0U, /* PduIdType RxPduIdBase; */
+    DcmOnCanTp_RxPduIdIsValid, /* boolean (*RxPduIdIsValid)(PduIdType RxPduId); */
     5000U, /* Dcm_DspNonDefaultSessionS3ServerType DcmDspNonDefaultSessionS3Server; */
 };
 
-
+static boolean DcmOnDtuTp_RxPduIdIsValid(PduIdType RxPduId) {
+    boolean ret;
+    if (RxPduId == 2U) {
+        ret = TRUE;
+    } else {
+        ret = FALSE;
+    }
+    return ret;
+}
 static const Dcm_ConfigType DcmConfigDtuTp = {
     DCM_UDS_ON_CAN, /* Dcm_ProtocolType protocolType; */
-    2U, /* PduIdType TxPduId; */
-    2U, /* PduIdType RxPduIdBase; */
+    DcmOnDtuTp_RxPduIdIsValid, /* boolean (*RxPduIdIsValid)(PduIdType RxPduId); */
     120000U, /* Dcm_DspNonDefaultSessionS3ServerType DcmDspNonDefaultSessionS3Server; */
 };
 

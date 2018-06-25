@@ -92,7 +92,7 @@ const DcmDspSecurityRow/*DCM_CONFIG_CONST*/  gDcmDspSecurityRow[KIND_OF_SECURITY
 
 /* 0x22 */
 #if(DCM_SERVICE_22_ENABLED == STD_ON)
-const Dcm_22_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_22[NUMBER_OF_READ_DID] = {
+const Dcm_22_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_22[] = {
     {
         (uint32)0x0100U, /* DID */
         STD_ON, /* Switch */
@@ -1876,6 +1876,8 @@ const Dcm_22_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_22[NUMBER_OF_
         PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
     },
 };
+
+uint8 Dcm_NumberOfReadDID = (uint8)ARRAY_SIZE(gDcmDsdSubService_22);
 #endif
 
 /* 0x23 0x3D */
@@ -1911,7 +1913,7 @@ const Dcm_2C_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_2C[NUMBER_OF_
 
 /* 0x2E */
 #if(DCM_SERVICE_2E_ENABLED == STD_ON)
-const Dcm_2E_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_2E[NUMBER_OF_WRITE_DID] = {
+const Dcm_2E_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_2E[] = {
     {
         (uint32)0x0E11U, /* DID */
         STD_ON, /* Switch */
@@ -2483,6 +2485,8 @@ const Dcm_2E_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_2E[NUMBER_OF_
         PHYSICAL_REQ_SUPPORTED, /* Supported Address Type */
     },
 };
+
+uint8 Dcm_NumberOfWriteDID = (uint8)ARRAY_SIZE(gDcmDsdSubService_2E);
 #endif
 
 /* 0x2F */

@@ -13,15 +13,23 @@
 #define CANTP_SHUTDOWN_API            STD_OFF
 #define CANTP_MAIN_FUNCTION_PERIOD    (2u)
 
-#define CANTP_FILLPATTERN    ((uint8)0xAAu)
+#define CANTP_FILLPATTERN    ((uint8)0x00u)
 #define CANTP_CHANNELS         (5u)
-#define CANTP_RXSDU_PADDING_ENABLE
+
+//#define CANTP_RXSDU_PADDING_ENABLE
+#define CANTP_RXSDU_PADDING_DISABLE
+#define CANTP_RXSDU_TXFC_PADDING_ENABLE
+//#define CANTP_RXSDU_TXFC_PADDING_DISABLE
+
 
 #if defined(CANTP_RXSDU_PADDING_ENABLE)&& defined(CANTP_RXSDU_PADDING_DISABLE)
 #error "none or one kind of RXSDU padding can be defined"
 #endif
 
 #define CANTP_TXSDU_PADDING_ENABLE
+//#define CANTP_TXSDU_PADDING_DISABLE
+//#define CANTP_TXSDU_RXFC_PADDING_ENABLE
+#define CANTP_TXSDU_RXFC_PADDING_DISABLE
 
 #if defined(CANTP_TXSDU_PADDING_ENABLE)&& defined(CANTP_TXSDU_PADDING_DISABLE)
 #error "none or one kind of TXSDU padding can be defined"

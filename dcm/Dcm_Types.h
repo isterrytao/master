@@ -342,8 +342,7 @@ typedef enum {
 
 typedef struct {
     Dcm_ProtocolType protocolType;
-    PduIdType TxPduId;
-    PduIdType RxPduIdBase;
+    boolean (*RxPduIdIsValid)(PduIdType RxPduId);
     Dcm_DspNonDefaultSessionS3ServerType DcmDspNonDefaultSessionS3Server;
 } Dcm_ConfigType; /* Need change */
 

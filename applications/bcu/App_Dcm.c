@@ -369,7 +369,7 @@ uint8 gDTCSwitch;
 
 static uint8 DTCStatusAvailabilityMask = 0xffU;
 uint32 SupportedDTCGroup = 0x00U;
-static uint32 SupportedDTC[NUM_OF_DTC] = {
+static uint32 SupportedDTC[] = {
     0x100000U,
     0x100001U,
     0x100002U,
@@ -377,6 +377,8 @@ static uint32 SupportedDTC[NUM_OF_DTC] = {
     0x100004U,
     0x100005U
 };
+const uint16 Dcm_NumberOfDTC = ARRAY_SIZE(SupportedDTC);
+#define NUM_OF_DTC 6U
 uint8 DTCStatus[NUM_OF_DTC];
 
 uint8 DATA_0xDFEF[64];
@@ -4850,6 +4852,7 @@ void App_ShortTermAdjustment0x0968 (Dcm_MsgContextType *pMsgContext) {
 #endif
 
 /* 0x19 */
+
 #if(DCM_SERVICE_19_ENABLED == STD_ON)
 /******************************************************************************
 * Name         :App_ReportNumberOfDTCByStatusMask
