@@ -632,8 +632,39 @@ static const Diagnosis_ItemType UnfixedAlarmList[] = {
 
     DIAGNOSIS_ITEM_LEAK, /**< 漏电 */
 
+    DIAGNOSIS_ITEM_CHG_HEAT_HT, /**< 充电加热高温 */
+    DIAGNOSIS_ITEM_CHG_HEAT_TIMEOUT, /**< 充电加热超时 */
+    DIAGNOSIS_ITEM_CHG_HEAT_OC, /**< 充电加热过流 */
+    DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, /**< 供电电压过低 */
+
     DIAGNOSIS_ITEM_VOLT_LINE, /**< 电压排线 */
     DIAGNOSIS_ITEM_TEMP_LINE, /**< 温感排线 */
+    DIAGNOSIS_ITEM_INTER_COMM, /**< 内网通信 */
+
+    DIAGNOSIS_ITEM_CHGSCKTMP_DC_POSITIVE, /**< 快充正极高温 */
+    DIAGNOSIS_ITEM_CHGSCKTMP_DC_NEGATIVE, /**< 快充负极高温 */
+    DIAGNOSIS_ITEM_CHGSCKTMP_AC_AL, /**< 慢充AL极高温 */
+    DIAGNOSIS_ITEM_CHGSCKTMP_AC_BN, /**< 慢充BN极高温 */
+    DIAGNOSIS_ITEM_CHGSCKTMP_AC_C, /**< 慢充C极高温 */
+
+    DIAGNOSIS_ITEM_CHARGER_COMM, /**< 充电机通信 */
+    DIAGNOSIS_ITEM_VCU_COMM, /**< 整车通信 */
+    DIAGNOSIS_ITEM_FULL_CHARGE, /**< 满充 */
+    DIAGNOSIS_ITEM_CHGSCKTMP_ABNORMAL, /**< 充电插座温感异常 */
+    DIAGNOSIS_ITEM_PRECHARGE_FAILURE, /**< 预充失败 */
+    DIAGNOSIS_ITEM_CURRENT_ABNORMAL, /**< 电流异常 */
+    DIAGNOSIS_ITEM_BMS_INIT_FAILURE, /**< BMS初始化故障 */
+    DIAGNOSIS_ITEM_HVIL_ABNORMAL, /**< HVIL故障 */
+    DIAGNOSIS_ITEM_RELAY_ABNORMAL, /**< 继电器故障 */
+    DIAGNOSIS_ITEM_HEAT_FAULT, /**< 加热故障 */
+    DIAGNOSIS_ITEM_CC2_CONNECT_FAULT, /**< CC2连接故障 */
+    DIAGNOSIS_ITEM_CC_CONNECT_FAULT, /**< CC连接故障 */
+    DIAGNOSIS_ITEM_CP_CONNECT_FAULT, /**< CP连接故障 */
+    DIAGNOSIS_ITEM_HEAT_TEMP_LINE_FAULT, /**< 加热温感异常 */
+    DIAGNOSIS_ITEM_EL_FAULT, /**< 电子锁故障 */
+
+    DIAGNOSIS_ITEM_SUPPLY_VOL_ABNOMAL, /**< 供电电压异常 */
+    DIAGNOSIS_ITEM_CRASH_FAULT, /**< 碰撞故障 */
 };
 
 static uint32 unfixed_get_cycle(void) {

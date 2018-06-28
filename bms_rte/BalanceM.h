@@ -53,6 +53,11 @@ typedef enum{
     BALANCE_STATIC_BALANCE, /**< 静态均衡 */
 }BalanceM_BalanceTypeType;
 
+typedef enum{
+    BALANCEM_REFERENCE_AVERAGE, /**< 平均电压为参考基准 */
+    BALANCEM_REFERENCE_LV_MAX, /**< 最低电压为参考基准 */
+}BalanceM_ReferenceTypeType;
+
 /**
  * \brief 均衡管理均衡配置类型
  */
@@ -74,6 +79,7 @@ typedef struct{
     BalanceM_BalanceConfigType stc_bal_config; /**< 静态均衡参数配置 */
     Diagnosis_LevelType disable_bal_ht_level; /**< 禁止均衡高温等级 */
     Diagnosis_LevelType disable_bal_lv_level; /**< 禁止均衡低压等级 */
+    BalanceM_ReferenceTypeType reference; /**< 参考基准电压 */
 }BalanceM_ConfigType;
 
 /**

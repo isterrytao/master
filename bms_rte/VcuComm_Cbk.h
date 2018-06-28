@@ -34,7 +34,7 @@
 /**
  * \brief 无数据发送的空闲正时时间
  */
-#define VCUCOMM_SEND_STATE_IDLE_TIMEOUT     2000U
+#define VCUCOMM_SEND_STATE_IDLE_TIMEOUT     1000U
 
 /**
  * \brief 新消息接收回调函数
