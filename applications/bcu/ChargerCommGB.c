@@ -254,6 +254,14 @@ void ChargerCommGB_CommStart(void)
         ChargerCommGB_innerData.startFlag == TRUE &&
         stage == CHARGERCOMM_STAGE_IDLE)
     {
+        if (currentType == CHARGE_TYPE_DC)
+        {
+            PowerM_Reset(POWERM_CUR_CHARGE_DC);
+        }
+        else
+        {
+            PowerM_Reset(POWERM_CUR_CHARGE_AC);
+        }
         ChargeM_SetChargerGBReadyStatus(CHARGEM_CHARGERGB_READY_RELAY_INDEX, CHARGEM_CHARGE_DISABLE);
         ChargerComm_SetChargeType(currentType);
         ChargerComm_InitChargeVoltAndCurrent();
@@ -264,12 +272,25 @@ void ChargerCommGB_CommStart(void)
 void ChargerCommGB_CommStop(void)
 {
     imask_t mask;
+    Charge_ChargeType currentType;
     ChargerComm_StageType stage = ChargerComm_GetCurrentRecStage();
 
     Irq_Save(mask);
     ChargerCommGB_innerData.communication = FALSE;
     ChargerComm_ResetCommunicationStatus();
     ChargerCommGB_RestChargerStatus();
+    currentType = ChargerCommGB_GetCurrentChargeType();
+    if (currentType == CHARGE_TYPE_DC)
+    {
+        PowerM_Reset(POWERM_CUR_CHARGE_DC);
+    }
+    else if (currentType == CHARGE_TYPE_AC)
+    {
+        PowerM_Reset(POWERM_CUR_CHARGE_AC);
+    }
+    else
+    {
+    }
     ChargerCommGB_SetCurrentChargeType(CHARGE_TYPE_NONE);
     ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CONNECT_WAITING;
     if (ChargerCommGB_innerData.stopFlag == TRUE)

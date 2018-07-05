@@ -16,6 +16,7 @@
 #include "ChargerComm.h"
 #include "ChargerComm_LCfg.h"
 #include "ChargerCommUser_Messages.h"
+#include "PowerM.h"
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 #include "Modules.h"
 #endif
@@ -88,6 +89,14 @@ void ChargerCommUser_CommStart(void)
         stage == CHARGERCOMM_STAGE_IDLE &&
         type != CHARGE_TYPE_NONE)
     {
+        if (type == CHARGE_TYPE_DC)
+        {
+            PowerM_Reset(POWERM_CUR_CHARGE_DC);
+        }
+        else
+        {
+            PowerM_Reset(POWERM_CUR_CHARGE_AC);
+        }
         ChargerComm_SetChargeType(type);
         ChargerComm_InitChargeVoltAndCurrent();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_USER_TC);
@@ -97,6 +106,7 @@ void ChargerCommUser_CommStart(void)
 void ChargerCommUser_CommStop(void)
 {
     imask_t mask;
+    Charge_ChargeType currentType;
     ChargerComm_StageType stage = ChargerComm_GetCurrentRecStage();
 
     if (stage >= CHARGERCOMM_STAGE_USER_START && stage <= CHARGERCOMM_STAGE_USER_STOP)
@@ -105,6 +115,18 @@ void ChargerCommUser_CommStop(void)
         ChargerComm_ClrChargeStatus();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_IDLE);
         Irq_Restore(mask);
+        currentType = ChargerCommUser_GetCurrentChargeType();
+        if (currentType == CHARGE_TYPE_DC)
+        {
+            PowerM_Reset(POWERM_CUR_CHARGE_DC);
+        }
+        else if (currentType == CHARGE_TYPE_AC)
+        {
+            PowerM_Reset(POWERM_CUR_CHARGE_AC);
+        }
+        else
+        {
+        }
         ChargerCommUser_SetCurrentChargeType(CHARGE_TYPE_NONE);
     }
 }
