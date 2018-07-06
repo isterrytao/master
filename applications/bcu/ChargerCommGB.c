@@ -2308,14 +2308,19 @@ uint8 ChargerCommGB_CheckChargeReq(uint16 delay) //return 0-waitting 1-ready 2-f
     {
         version2015 = TRUE;
     }
-    if(ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HTV) == CHARGEM_CHARGE_DISABLE)//达到总压设定值
+    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HTV) == CHARGEM_CHARGE_DISABLE)//达到总压设定值
     {
         ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_BMS_HTV);
         reason |= 0x04U;
     }
-    if(ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HV) == CHARGEM_CHARGE_DISABLE) //达到单体电压设定值
+    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HV) == CHARGEM_CHARGE_DISABLE) //达到单体电压设定值
     {
         ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_BMS_HV);
+        reason |= 0x10U;
+    }
+    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_FULL_CHARGE) == CHARGEM_CHARGE_DISABLE) //满充
+    {
+        ChargerCommGB_UpdateSelfDiagnosis(CHARGERCOMM_SELFDIAG_BMS_FULL_CHARGE);
         reason |= 0x10U;
     }
     ChargerCommGB_innerData.bmsStopReason = (uint8)reason;
