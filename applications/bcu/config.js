@@ -33,7 +33,7 @@ module.exports = {
             {section:"initsoc", chs: "初始SOC, 单位1%"},
             {section:"initsoh", chs: "初始SOH, 单位1%"},
         ],
-        type: "磷酸铁锂",
+        type: "三元材料",
         nominal: {
             notes:[
                 {section:"cap", chs:"额定容量, 单位Ah"},

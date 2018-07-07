@@ -34,6 +34,10 @@ typedef struct{
     uint16 InitialSOH; /**< 初始SOH */
     uint16 PoleTemperatureNum; /**< 极柱温感数*/
     uint16 HeatTemperatureNum; /**< 加热温感数*/
+    App_VoltageType HighVoltLimit; /**< 单体电压高极限保护 */
+    App_VoltageType LowVoltLimit; /**< 单体电压低极限保护 */
+    App_VoltageType HighTempLimit; /**< 单体温度高极限保护 */
+    uint32 LimitProtectDelay; /**< 极限保护延时 */
 }BatteryInfo_BaseConfigType;
 
 /**

@@ -65,6 +65,7 @@
 #include "Hmi.h"
 #include "App_Cfg.h"
 #include "BridgeInsu.h"
+#include "LimitProtect.h"
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653)
 #include "Rs485Shell.h"
 #endif
@@ -448,6 +449,7 @@ static void start_task(void *pdata) {
         (void)Hmi_Init(&extLooper, 9600UL);
     }
     UserStrategy_Init(&extLooper);
+    LimitProtect_Init(&extLooper);
 
     WatchdogM_Enable();
 

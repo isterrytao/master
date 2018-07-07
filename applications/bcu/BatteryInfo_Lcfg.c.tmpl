@@ -26,4 +26,8 @@ const BatteryInfo_BaseConfigType BatteryInfo_BaseConfigInfo = {
     <%-initsoh * 10%>U, /**< InitialSOH: 初始SOH */
     <%-poletempnum%>U, /**< 极柱温感数*/
     <%-heattempnum%>U, /**< 加热温感数*/
+    <%-highVoltLimit%>U, /**< 单体电压高极限保护 */
+    <%-lowVoltLimit%>U, /**< 单体电压低极限保护 */
+    <% if (highTempLimit != 0xff) { %>(App_TemperatureType)TEMPERATURE_FROM_C(<%-highTempLimit%>), /**< 单体温度高极限保护 */<% } else { %>0xFFU, /**< 单体温度高极限保护 */<% } %>
+    <%-limitProtectDelay%>UL, /**< 极限保护延时 */
 };

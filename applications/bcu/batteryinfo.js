@@ -6,21 +6,23 @@ module.exports = {
         //console.log(cfg);
 
         var typeToDescMap = [
-            ["APP_BATTERY_TYPE_LEAD_ACID", "铅酸"],
-            ["APP_BATTERY_TYPE_NIMH", "镍氢"],
-            ["APP_BATTERY_TYPE_LIFEPO4", "磷酸铁锂"],
-            ["APP_BATTERY_TYPE_LIMN2O4", "锰酸锂"],
-            ["APP_BATTERY_TYPE_LICOO2", "钴酸锂"],
-            ["APP_BATTERY_TYPE_TERNARY", "三元材料"],
-            ["APP_BATTERY_TYPE_POLYMER_LI_LON", "聚合物锂离子"],
-            ["APP_BATTERY_TYPE_LI4O4TI", "钛酸锂"],
-            ["APP_BATTERY_TYPE_OTHERS", "其他"],
+        // [电池类型宏，电池类型，极限保护高压，极限保护低压，极限保护高温，极限保护延时]
+            ["APP_BATTERY_TYPE_LEAD_ACID", "铅酸", 3000, 1000, 63, 5000],
+            ["APP_BATTERY_TYPE_NIMH", "镍氢", 1800, 700, 63, 5000],
+            ["APP_BATTERY_TYPE_LIFEPO4", "磷酸铁锂", 3900, 2300, 63, 5000],
+            ["APP_BATTERY_TYPE_LIMN2O4", "锰酸锂", 4300, 2200, 63, 5000],
+            ["APP_BATTERY_TYPE_LICOO2", "钴酸锂", 4300, 2200, 63, 5000],
+            ["APP_BATTERY_TYPE_TERNARY", "三元材料", 4300, 2700, 63, 5000],
+            ["APP_BATTERY_TYPE_POLYMER_LI_LON", "聚合物锂离子", 4300, 2700, 63, 5000],
+            ["APP_BATTERY_TYPE_LI4O4TI", "钛酸锂", 3000, 1500, 65, 5000],
+            ["APP_BATTERY_TYPE_OTHERS", "其他", 0xffff, 0xffff, 0xff, 5000],
         ];
 
         var type = "APP_BATTERY_TYPE_UNKNOWN";
+        var desc = ["APP_BATTERY_TYPE_UNKNOWN", "未知", 0xffff, 0xffff, 0xff, 0xffff];
         for (var t of typeToDescMap) {
             if (t[1] == cfg.type) {
-                type = t[0];
+                desc = t
                 break;
             }
         }
@@ -34,7 +36,7 @@ module.exports = {
         }
 
         var mdata = {
-            batttype: type,
+            batttype: desc[0],
             capAH: cfg.nominal.cap,
             dischargecurrent: cfg.nominal.dischargecurrent,
             acchargecurrent: cfg.nominal.acchargecurrent,
@@ -47,6 +49,10 @@ module.exports = {
             poletempnum: cfg.poletempnum,
             initsoc: cfg.initsoc,
             initsoh: cfg.initsoh,
+            highVoltLimit: desc[2],
+            lowVoltLimit: desc[3],
+            highTempLimit: desc[4],
+            limitProtectDelay: desc[5],
         };
 
         info.render("BatteryInfo_Lcfg.c", "BatteryInfo_Lcfg.c.tmpl", mdata);
