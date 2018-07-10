@@ -73,11 +73,10 @@ SEGMENTS /* here all RAM/ROM areas of the device are listed. Used in PLACEMENT b
       RAM_F6        = READ_WRITE  DATA_FAR           0xF61000 TO 0xF61FFF;
       RAM_F7        = READ_WRITE  DATA_FAR           0xF71000 TO 0xF71FFF;
       RAM_F8        = READ_WRITE  DATA_FAR           0xF81000 TO 0xF81FFF;
-      // RAM_F9        = READ_WRITE  DATA_FAR           0xF91000 TO 0xF91FFF;
+      RAM_F9        = READ_WRITE  DATA_FAR           0xF91000 TO 0xF91FFF;
       // RAM_FA        = READ_WRITE  DATA_FAR           0xFA1000 TO 0xFA1FFF;
       // RAM_FB        = READ_WRITE  DATA_FAR           0xFB1000 TO 0xFB1FFF;
       // RAM_STACK_1   = NO_INIT     DATA_FAR           0xFC1000 TO 0xFC13FF ALIGN 8[1:1];
-      RAM_STACK_0   = NO_INIT     DATA_FAR           0xF91000 TO 0xF91FFF ALIGN 8[1:1];
       RAM_XGATE_0   = READ_WRITE  DATA_FAR           0xFA1000 TO 0xFA1FFF ALIGN 2[1:1];
       RAM_XGATE_1   = READ_WRITE  DATA_FAR           0xFB1000 TO 0xFB1FFF ALIGN 2[1:1];
       RAM_XGATE_2   = READ_WRITE  DATA_FAR           0xFC1000 TO 0xFC1FFF ALIGN 2[1:1];
@@ -152,12 +151,9 @@ PLACEMENT /* here all predefined and user segments are placed into the SEGMENTS 
                         INTO RAM_FOR_FBL;
 
       PAGED_RAM,
-                        INTO RAM_F0, RAM_F1, RAM_F2, RAM_F3, RAM_F4, RAM_F5, RAM_F6, RAM_F7,
-                             RAM_F8;
-
       TASK_STACK,
-                        INTO RAM_STACK_0/*, RAM_STACK_1*/;
-
+                        INTO RAM_F0, RAM_F1, RAM_F2, RAM_F3, RAM_F4, RAM_F5, RAM_F6, RAM_F7,
+                             RAM_F8, RAM_F9;
 
       XGATE_VECTORS,          /* XGATE vector table is allocated in FLASH */
       XGATE_STRING,           /* XGATE string literals */
