@@ -31,6 +31,7 @@ typedef struct{
 
 /**
  * \brief 整车通信初始化
+ * \details 整车通信任务初始化，看门狗监控初始化
  *
  * \param pri 任务优先级
  */
@@ -41,6 +42,28 @@ void VcuComm_Init(uint8 pri);
  * \return FALSE-未启动 TRUE-已启动
  */
 boolean VcuComm_IsStart(void);
+
+/**
+ * \brief 启动整车通信发送看门狗监控
+ * \details 启动整车通信看门狗监控功能后，如果在设定时间内未发送整车报文，则会触发看门狗复位，程序默认启动
+ *
+ * \param timeout 超时时间 默认时间为20000ms
+ * \return E_OK-启动成功 E_NOT_OK-启动失败
+ */
+Std_ReturnType VcuComm_WatchdogStart(uint16 timeout);
+
+/**
+ * \brief 停止整车通信发送看门狗监控
+ *
+ * \return E_OK-启动成功 E_NOT_OK-启动失败
+ */
+Std_ReturnType VcuComm_WatchdogStop(void);
+
+/**
+ * \brief 整车通信看门狗喂狗
+ * \details 正常通信情况下，外部模块无需调用此接口来喂狗
+ */
+void VcuComm_WatchdogFeed(void);
 
 /**
  * \brief 设置当前整车通信状态
