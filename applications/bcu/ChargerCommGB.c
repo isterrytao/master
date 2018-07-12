@@ -888,16 +888,16 @@ Std_ReturnType ChargerCommGB_BMVSendConditionCheck(void)
 {
     Std_ReturnType res = E_NOT_OK;
 
-    if (ChargerCommGB_innerData.startFlag == TRUE)
-    {
-        if (ChargerCommGB_innerData.currentChargeType != CHARGE_TYPE_NONE)
-        {
-            if (ChargerCommGB_innerData.stage == CHARGERCOMMGB_STAGE_CHARGING)
-            {
-                res = E_OK;
-            }
-        }
-    }
+    // if (ChargerCommGB_innerData.startFlag == TRUE)
+    // {
+    //     if (ChargerCommGB_innerData.currentChargeType != CHARGE_TYPE_NONE)
+    //     {
+    //         if (ChargerCommGB_innerData.stage == CHARGERCOMMGB_STAGE_CHARGING)
+    //         {
+    //             res = E_OK;
+    //         }
+    //     }
+    // }
     return res;
 }
 
@@ -962,16 +962,16 @@ Std_ReturnType ChargerCommGB_BMTSendConditionCheck(void)
 {
     Std_ReturnType res = E_NOT_OK;
 
-    if (ChargerCommGB_innerData.startFlag == TRUE)
-    {
-        if (ChargerCommGB_innerData.currentChargeType != CHARGE_TYPE_NONE)
-        {
-            if (ChargerCommGB_innerData.stage == CHARGERCOMMGB_STAGE_CHARGING)
-            {
-                res = E_OK;
-            }
-        }
-    }
+    // if (ChargerCommGB_innerData.startFlag == TRUE)
+    // {
+    //     if (ChargerCommGB_innerData.currentChargeType != CHARGE_TYPE_NONE)
+    //     {
+    //         if (ChargerCommGB_innerData.stage == CHARGERCOMMGB_STAGE_CHARGING)
+    //         {
+    //             res = E_OK;
+    //         }
+    //     }
+    // }
     return res;
 }
 

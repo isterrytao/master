@@ -122,9 +122,11 @@ typedef struct {
     uint8 percent[DIAGNOSIS_SUPPORT_LEVEL];
 } PowerM_DiagnosisPercentMapType;
 
-#define POWERM_CHARGE_END_DEC_TO_PERCENT  0x00U //下降到指定百分比
+#define POWERM_CHARGE_END_DEC_TO_PERCENT  0x00U //下降到上次输出百分比
+#define POWERM_CHARGE_END_DEC_TO_LAST_PERCENT  0x00U //下降到上次输出百分比
 #define POWERM_CHARGE_END_DEC_CONSTVAL    0x01U //下降指定值
 #define POWERM_CHARGE_END_DEC_TO_CONSTVAL 0x02U //下降到指定值
+#define POWERM_CHARGE_END_DEC_TO_TABLE_PERCENT 0x03U //下降到查表的千分比
 
 typedef struct PowerM_ChargeEndConfig {
     const struct PowerM_ChargeEndConfig *next; /**/
