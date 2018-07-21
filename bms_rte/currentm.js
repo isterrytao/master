@@ -14,6 +14,7 @@ module.exports = {
             FS500E2T: {name:"飞轩FS500E2T,500A量程", offset: -2500,  mul: 5, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-500A, 500A]" },
             FS600E2T: {name:"飞轩FS600E2T,600A量程", offset: -2500,  mul: 6, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-600A, 600A]" },
             FS700E2T: {name:"飞轩FS700E2T,700A量程", offset: -2500,  mul: 7, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-700A, 700A]" },
+            FS600BT: {name:"飞轩FS600BT,600A量程", offset: -2500,  mul: 6, div: 1, voltMin: 800, voltMax: 4200, supplyVolAdj: false, comments: "[1.5V, 3.5V] <=> [-600A, 600A]" },
             WHK30_350DHAB5S2L_1: {name:"启东双赢30/350A大量程", offset: -2500,  mul: 7, div: 4, voltMin: 50, voltMax: 5200, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-350A, 350A]" },
             WHK30_350DHAB5S2L_2: {name:"启东双赢30/350A小量程", offset: -2500,  mul: 3, div: 20, voltMin: 50, voltMax: 5200, supplyVolAdj: true, lowerHallMaxValue: 30, comments: "[0.5V, 4.5V] <=> [-30A, 30A]" },
             EHMWX911C500: {name:"松下EHMWX911C500,500A量程", offset: -2500,  mul: 5, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-500A, 500A]" },

@@ -16,6 +16,7 @@
  */
 
 #include "ComStack_Types.h"
+#include "App_Types.h"
 
 #ifndef CHARGERCOMM_TYPES_H_
 #define CHARGERCOMM_TYPES_H_
@@ -109,6 +110,7 @@ typedef struct{
     uint8 AC_RelayType; /**< 交流充电继电器 */
     uint8 DC_RelayType; /**< 直流充电继电器 */
     uint8 SendRetryNum; /**< 发送重试次数 */
+    App_VoltageType CellDeltaVoltMinForCV; /**< 满足恒压时单体电芯最小压差设定值 */
 }ChargerComm_ConfigType;
 
 
