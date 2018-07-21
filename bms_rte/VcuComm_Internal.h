@@ -194,6 +194,7 @@ typedef struct{
     VcuComm_RecHandleType RecCmdtHandle; /**< Cmdt接收句柄 */
     VcuComm_RecHandleType RecDirectHandle; /**< Direct接收句柄 */
     VcuComm_RecAsyncEventType RecEvents[VCUCOMM_MONITOR_REC_MSG_NUM_PER_STAGE];
+    uint32 WriteRBFaultCnt; /**< 写RB错误计数 */
 }VcuComm_InnerDataType;
 
 extern const uint8 VcuComm_SendIPduNum;
