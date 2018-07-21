@@ -32,17 +32,17 @@
 /**
  * 以下宏定义由cmake自动生成,不需要手动修改
  */
-#define LIB_INFO_SOURCE_COMMIT_ID        "6d84cc49fb2d1a88f257"
-#define LIB_INFO_CONFIG_COMMIT_ID        "6d84cc49fb2d1a88f257"
-#define LIB_INFO_BUILD_TIME              "20180721112809"
+#define LIB_INFO_SOURCE_COMMIT_ID        "c0a7daff636229904484d66781ea628ac7c0e467"
+#define LIB_INFO_CONFIG_COMMIT_ID        "c0a7daff636229904484d66781ea628ac7c0e467"
+#define LIB_INFO_BUILD_TIME              "20180721114737"
 
 #define LIB_INFO_BUILD_DATE_Y            2018
 #define LIB_INFO_BUILD_DATE_M            7
 #define LIB_INFO_BUILD_DATE_D            21
 
 #define LIB_INFO_BUILD_TIME_H            11
-#define LIB_INFO_BUILD_TIME_M            28
-#define LIB_INFO_BUILD_TIME_S            9
+#define LIB_INFO_BUILD_TIME_M            47
+#define LIB_INFO_BUILD_TIME_S            37
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO

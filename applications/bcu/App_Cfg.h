@@ -16,7 +16,7 @@
  * \brief 任务优先级定义
  */
 #define DRIVER_LOOPER_TASK_PRI              (1U)
-#define SHELL_LOOPER_TASK_PRI               (2U)
+#define VCUCOMM_TASK_PRI                    (2U)
 #define CURRENTM_TASK_PRI                   (3U)
 #define INTERNALCOMM_TX_TASK_PRI            (4U)
 #define START_TASK_PRI                      (5U)
@@ -26,7 +26,7 @@
 #define SHUNT_TEST_TASK_PRI                 (9U)
 #define HVPROCESS_TASK_PRI                  (10U)
 #define CHARGERCOMM_TASK_PRI                (11U)
-#define VCUCOMM_TASK_PRI                    (12U)
+#define SHELL_LOOPER_TASK_PRI               (12U)
 #define DTU_TASK_PRI                        (13U)
 #define EXT_LOOPER_TASK_PRI                 (14U)
 #define SHUNT_LOOPER_TASK_PRI               (15U)

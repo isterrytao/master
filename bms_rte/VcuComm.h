@@ -66,6 +66,14 @@ Std_ReturnType VcuComm_WatchdogStop(void);
 void VcuComm_WatchdogFeed(void);
 
 /**
+ * \brief 根据指定周期获取对应发送异步事件
+ *
+ * \param cycle 报文发送周期
+ * \return 非NULL-获取成功 NULL-获取失败
+ */
+VcuComm_SendAsyncEventType* VcuComm_GetSendAsyncEvent(uint16 cycle);
+
+/**
  * \brief 设置当前整车通信状态
  * \param status TRUE:通信中 FALSE:未通信
  */
