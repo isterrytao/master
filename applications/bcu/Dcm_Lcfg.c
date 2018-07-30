@@ -2545,7 +2545,7 @@ const Dcm_2F_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_2F[NUMBER_OF_
 
 /* 0x31 */
 #if(DCM_SERVICE_31_ENABLED == STD_ON)
-const DcmDspRoutine/*DCM_CONFIG_CONST*/  DcmDspRoutineIdentifierTable_31[NUMBER_OF_RID] = {
+const DcmDspRoutine/*DCM_CONFIG_CONST*/  DcmDspRoutineIdentifierTable_31[] = {
     {
         0xF000U, /* SID */
         STD_ON, /* Switch */
@@ -2835,6 +2835,10 @@ const DcmDspRoutine/*DCM_CONFIG_CONST*/  DcmDspRoutineIdentifierTable_31[NUMBER_
         },
     },
 };
+            
+const uint8 Dcm_NumberOfRoutineDID = (uint8)ARRAY_SIZE(DcmDspRoutineIdentifierTable_31);
+uint8 /*DCM_NOINIT_DATA*/gRountineControlSequence[(uint8)ARRAY_SIZE(DcmDspRoutineIdentifierTable_31)];
+
 #endif
 
 /* 0x3D */

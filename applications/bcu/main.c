@@ -498,4 +498,8 @@ void main(void) {
     OSStart();
 }
 
+void App_TaskIdleHook(void);
+void App_TaskIdleHook(void) {
+    Can_MainFunction_Error();
+}
 #endif

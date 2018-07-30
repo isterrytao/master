@@ -21,9 +21,9 @@ for (var v of rxsdus) {%>
 #if !defined(CANTP_ADDRESSING_STANDARD_ONLY)&&!defined(CANTP_ADDRESSING_EXTENDED_ONLY)&&!defined(CANTP_ADDRESSING_MIX_ONLY)
         CANTP_STANDARD,/* CANTP_ADDRESSING_FORMAT */
 #endif
-        0U,/* CANTP_BS */
-        2U,/* CANTP_STMIN */
-        10U,/* CANTP_WFTMAX */
+        <%- v.bs %>U,/* CANTP_BS */
+        <%- v.stmin %>U,/* CANTP_STMIN */
+        <%- v.wftmax %>U,/* CANTP_WFTMAX */
         CANTP_UNUSED,/* CANTP_RX_NAE */
         CANTP_UNUSED,/* CANTP_RX_NSA */
         CANTP_UNUSED,/* CANTP_RX_NTA */

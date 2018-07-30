@@ -796,11 +796,11 @@ module.exports = {
                 levels: [1,2,3,4],
                 cycle:500,
                 events:[
-                    {levels:[4,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[2,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[2,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[4,], event: "assert", action: "RuntimeM_LowPowerSupply"},
+                    //{levels:[4,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+                    //{levels:[2,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+                    //{levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+                    //{levels:[2,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                    //{levels:[4,], event: "assert", action: "RuntimeM_LowPowerSupply"},
                 ],
             }, {
                 name: "供电电压过高",

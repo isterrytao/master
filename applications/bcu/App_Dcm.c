@@ -5423,6 +5423,12 @@ void APP_RequestResultsRoutine0xF009(Dcm_MsgContextType *pMsgContext) {
 
 #include "DcmProgram.h"
 
+#define TRANSFER_MODE_NONE      0U
+#define TRANSFER_MODE_UPLOAD    1U
+#define TRANSFER_MODE_DOWNLOAD  2U
+
+static uint8 transfer_mode = TRANSFER_MODE_NONE;
+
 /* 0x34 */
 #if(DCM_SERVICE_34_ENABLED == STD_ON)
 void App_RequestDownload(void) {
@@ -5470,6 +5476,7 @@ void App_RequestDownload(void) {
                             if (DcmProgram_RequestDownload(addr, (uint16)len) != E_OK) {
                                 DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_REQUESTOUTOFRANGE);
                             } else {
+                                transfer_mode = TRANSFER_MODE_DOWNLOAD;
                                 gMsgContextType.resDataLen = 4U;
                                 gMsgContextType.resData[1] = 0x20U;
                                 gMsgContextType.resData[2] = 0x02U;
@@ -5487,6 +5494,7 @@ void App_RequestDownload(void) {
 }
 #endif
 
+
 /* 0x35 */
 #if(DCM_SERVICE_35_ENABLED == STD_ON)
 void App_RequestUpload(void) {
@@ -5494,9 +5502,9 @@ void App_RequestUpload(void) {
     uint8 typ;
     uint32 len;
     uint8 addr_seg = 0U;
-    if (RuntimeM_GetMode() != RUNTIMEM_RUNMODE_DATA) {
+    /*if (RuntimeM_GetMode() != RUNTIMEM_RUNMODE_DATA) {
         DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_GENERALREJECT);
-    } else {
+    } else */{
         if (gMsgContextType.reqDataLen != 9U) {
             DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
         } else {
@@ -5507,11 +5515,12 @@ void App_RequestUpload(void) {
                     DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
                 } else {
                     typ = (gMsgContextType.reqData[3]);
+                    addr_seg = (typ >> 3);
                     /**
+                    * 主机片内地址空间类型为 0
                     * 主机片外地址空间类型为 1 和 2
                     */
-                    addr_seg = (typ >> 3);
-                    if ((addr_seg != 1U) && (addr_seg != 2U)) {
+                    if ((addr_seg != 1U) && (addr_seg != 2U) && (addr_seg != 0U)) {
                         DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
                     } else {
                         addr = ((uint32)typ & 0x07U) << 24;
@@ -5545,9 +5554,10 @@ void App_RequestUpload(void) {
                             if (len > 65535U) {
                                 DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
                             } else {
-                                if (DcmUpload_RequestUpload(addr, (uint16)len) != E_OK) {
+                                if (DcmUpload_RequestUpload(addr_seg == 0U ? 1U : 0U, addr, (uint16)len) != E_OK) {
                                     DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_REQUESTOUTOFRANGE);
                                 } else {
+                                    transfer_mode = TRANSFER_MODE_UPLOAD;
                                     gMsgContextType.resDataLen = 4U;
                                     gMsgContextType.resData[1] = 0x20U;
                                     gMsgContextType.resData[2] = 0x02U;  // 512 bytes per frame
@@ -5569,23 +5579,26 @@ void App_RequestUpload(void) {
 /* 0x34 */
 #if(DCM_SERVICE_36_ENABLED == STD_ON)
 void App_DataTransfer(void) {
-    if (RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DATA) {
+    if (transfer_mode == TRANSFER_MODE_UPLOAD) {
         sint32 ret = DcmUpload_TransferData(gMsgContextType.reqData[1], &gMsgContextType.resData[2], 0x200U);
         if (ret < 0) {
             DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
+            transfer_mode = TRANSFER_MODE_NONE;
         } else {
             gMsgContextType.resDataLen = 2U + (uint32)ret;
             gMsgContextType.resData[1] = gMsgContextType.reqData[1];
             DsdInternal_ProcessingDone(&gMsgContextType);
         }
-    } else {
+    } else if (transfer_mode == TRANSFER_MODE_DOWNLOAD) {
         if (DcmProgram_ProgramData(gMsgContextType.reqData[1], &gMsgContextType.reqData[2], (uint16)(gMsgContextType.reqDataLen - 2U)) != E_OK) {
             DsdInternal_SetNegResponse(&gMsgContextType, DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT);
+            transfer_mode = TRANSFER_MODE_NONE;
         } else {
             gMsgContextType.resDataLen = 2U;
             gMsgContextType.resData[1] = gMsgContextType.reqData[1];
             DsdInternal_ProcessingDone(&gMsgContextType);
         }
+    } else {
     }
 }
 #endif
@@ -5611,9 +5624,11 @@ void App_TransferExit(void) {
         if (flag != 0U) {
             gMsgContextType.resDataLen = 1U;
             gMsgContextType.resData[1] = gMsgContextType.reqData[1];
+            transfer_mode = TRANSFER_MODE_NONE;
             DsdInternal_ProcessingDone(&gMsgContextType);
         }
     }
+
 }
 #endif
 

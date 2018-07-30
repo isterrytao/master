@@ -177,7 +177,7 @@
 
 #define DCM_SERVICE_31_ENABLED                                      STD_ON
 #define NUM_OF_31_SUB_FUNCTION                                      (3U)
-#define NUMBER_OF_RID                                               (9U)
+#define NUMBER_OF_RID                                               Dcm_NumberOfRoutineDID/*(9U)*/
 
 #define DCM_SERVICE_34_ENABLED                                      STD_ON
 #define DCM_SERVICE_35_ENABLED                                      STD_ON
@@ -484,7 +484,9 @@ extern const Dcm_2F_ServiceInfoType /*DCM_CONFIG_CONST*/gDcmDsdSubService_2F[NUM
 #endif
 
 #if(DCM_SERVICE_31_ENABLED == STD_ON)
-extern const DcmDspRoutine /*DCM_CONFIG_CONST*/DcmDspRoutineIdentifierTable_31[NUMBER_OF_RID];       /* For 0x31 */
+extern const DcmDspRoutine /*DCM_CONFIG_CONST*/DcmDspRoutineIdentifierTable_31[];       /* For 0x31 */
+extern const uint8 Dcm_NumberOfRoutineDID;
+
 #endif
 
 #if(DCM_SERVICE_3D_ENABLED == STD_ON)
@@ -780,7 +782,7 @@ extern void App_ShortTermAdjustment0x0918(Dcm_MsgContextType *pMsgContext);
 extern void App_ReturnControlToEcu0x0968(Dcm_MsgContextType *pMsgContext);
 extern void App_ShortTermAdjustment0x0968(Dcm_MsgContextType *pMsgContext);
 /* 31 */
-extern uint8/*DCM_VARIABLE*/  gRountineControlSequence[NUMBER_OF_RID];
+extern uint8/*DCM_VARIABLE*/  gRountineControlSequence[];
 extern uint8/*DCM_VARIABLE*/  gRountineControlDidHandle;
 
 extern void App_StartRoutine0xDFF0(Dcm_MsgContextType *pMsgContext);

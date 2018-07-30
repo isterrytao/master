@@ -45,6 +45,7 @@ SHELL_PROTYPE(isl);
 SHELL_PROTYPE(rs485);
 #endif
 SHELL_PROTYPE(dtustart);
+SHELL_PROTYPE(gb34014);
 
 const struct shell_command shell_commands[] = {
 #ifdef __HC12__
@@ -90,8 +91,9 @@ const struct shell_command shell_commands[] = {
 #endif
 
 #endif
-    SHELL_COMMAND("dmem", dmem),    
+    SHELL_COMMAND("dmem", dmem),
     SHELL_COMMAND("dtustart", dtustart),
+    SHELL_COMMAND("gb34014", gb34014),
     SHELL_COMMAND("help", help),
     SHELL_COMMAND_END(),
 };
