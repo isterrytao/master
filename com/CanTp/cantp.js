@@ -35,9 +35,9 @@ module.exports = {
             return {
                 name: name,
                 ch: x.ch,
-                stmin: x.stmin ? x.stmin:0,
+                stmin: x.stmin ? x.stmin:2,
                 bs: x.bs ? x.bs:0,
-                wftmax: x.wftmax ? x.wftmax:0,
+                wftmax: x.wftmax ? x.wftmax:10,
                 rxnpdu: "CANIF_RX_CANTP_NPDU_"+name,
                 txfcnpdu: x.hasOwnProperty("tx")?"CANIF_TX_CANTP_NPDU_"+name:"CANTP_UNUSED",
                 tatype: x.hasOwnProperty("tx")?"CANTP_PHYSICAL":"CANTP_FUNCTIONAL",
