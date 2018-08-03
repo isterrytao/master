@@ -71,10 +71,10 @@ typedef struct {
 
 
 typedef enum {
-    CAN_IDAM_2_32BIT,
-    CAN_IDAM_4_16BIT,
-    CAN_IDAM_8_8BIT,
-    CAN_IDAM_FILTER_CLOSED,
+    CAN_IDAM_2_32BIT = (uint16)0U << 4,
+    CAN_IDAM_4_16BIT = (uint16)1U << 4,
+    CAN_IDAM_8_8BIT = (uint16)2U << 4,
+    CAN_IDAM_FILTER_CLOSED = (uint16)3U << 4,
 } Can_IDAMType;
 
 typedef struct {
