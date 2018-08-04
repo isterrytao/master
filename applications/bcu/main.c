@@ -410,7 +410,7 @@ static void start_task(void *pdata) {
 #endif
 
     if (isNeedStartSampleTask()) {
-        BridgeInsu_Start();
+        BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
     }
 
     if (isNeedStartSampleTask()) {

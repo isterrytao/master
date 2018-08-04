@@ -5371,7 +5371,7 @@ void App_StartRoutine0xF007(Dcm_MsgContextType *pMsgContext) {
 void App_StartRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
     uint16 length = 4U;
     DsdInternal_RoutineStarted();
-    BridgeInsu_Start();
+    BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
     pMsgContext->resDataLen = length;
     DsdInternal_ProcessingDone(pMsgContext);
 }

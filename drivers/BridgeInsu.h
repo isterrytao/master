@@ -40,8 +40,13 @@ extern const BridgeInsu_ConfigType BridgeInsuConfigData_A652 ;
 
 #endif
 
+
 void BridgeInsu_Init(Async_LooperType *looper, const BridgeInsu_ConfigType *cfgData);
-void BridgeInsu_Start(void);
+
+#define BRIDGEINSU_MOS_BY_VOL 0U   /**< 根据电压自动使用平衡桥或非平衡桥 */
+#define BRIDGEINSU_MOS_ALWAYS_ON 1U /**< 使用平衡桥，一直保持MOS处于闭合状态 */
+#define BRIDGEINSU_MOS_ON_WHEN_DETECT 2U  /**<  使用平衡桥，只有在检测时MOS处于闭合状态，2次检测之间断开MOS */
+void BridgeInsu_Start(uint8 mos_op);
 void BridgeInsu_Stop(void);
 uint16 BridgeInsu_GetPositive(void);
 uint16 BridgeInsu_GetNegative(void);
