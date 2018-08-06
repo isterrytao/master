@@ -80,6 +80,7 @@ typedef struct{
     Diagnosis_LevelType disable_bal_ht_level; /**< 禁止均衡高温等级 */
     Diagnosis_LevelType disable_bal_lv_level; /**< 禁止均衡低压等级 */
     BalanceM_ReferenceTypeType reference; /**< 参考基准电压 */
+    uint16 current_max; /**< 均衡允许最大充放电电流 */
 }BalanceM_ConfigType;
 
 /**

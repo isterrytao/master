@@ -68,6 +68,15 @@ Current_CurrentType PowerM_GetCurrent(PowerM_CurrentTypeType Type);
 Current_CurrentType PowerM_GetCurrentWithoutDiag(PowerM_CurrentTypeType Type);
 
 /**
+ * \brief 获取没有经过降流步长的目标功率电流
+ * \note 根据功率电流类型获取对应的功率电流值
+ *
+ * \param Type 功率电流类型
+ * \return 功率电流值
+ */
+Current_CurrentType PowerM_GetDestCurrent(PowerM_CurrentTypeType Type);
+
+/**
  * \brief 获取充电总压
  * \note 根据充电电压类型获取对应的电压值
  *
