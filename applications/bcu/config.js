@@ -154,6 +154,7 @@ module.exports = {
         maxOnTimeForData: 60*5,
         minBatteryVolForWakeup: 10,
         chargeEndOTA: false,
+        userIsWakeup: {func:"", inc: ""},
         cpInvalidTimeFilter: 5,
         powerOffNotifiers: [
             {func:"Soc_PowerDownSaveCbk", inc: "Soc.h"},

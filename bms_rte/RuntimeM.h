@@ -103,6 +103,7 @@ typedef struct {
     uint16 maxOnTimeForOTA;  /**< DTU模式下, OTA最长的工作时间, 单位: 秒 */
     uint16 minBatteryVolForWakeup; /**< 运行唤醒进入DTU模块的最低低压供电电压, 单位:毫伏 */
     boolean chargeEndOtaSupport; /**< 充电末端的OTA支持 */
+    boolean (*userIsWakeup)(void); /**< 用户唤醒信号函数 */
     PduIdType dongleRxPduId;
     PduIdType dongleTxPduId;
 } RuntimeM_ConfigType;
