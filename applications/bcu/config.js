@@ -155,7 +155,7 @@ module.exports = {
         minBatteryVolForWakeup: 10,
         chargeEndOTA: false,
         userIsWakeup: {func:"", inc: ""},
-        cpInvalidTimeFilter: 5,
+        cpInvalidTimeFilter: 10*60,
         powerOffNotifiers: [
             {func:"Soc_PowerDownSaveCbk", inc: "Soc.h"},
             {func:"SaveM_PowerDownSaveCbk", inc: "SaveM.h"},
