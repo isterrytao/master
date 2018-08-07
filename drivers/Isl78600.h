@@ -25,6 +25,7 @@ typedef uint8 Isl_ReturnType;
 #define ISL_E_BUSY                6U
 #define ISL_E_UNREADY             7U
 #define ISL_E_COMM                8U
+#define ISL_E_REF                 9U
 #else
 typedef enum {
     kIslScanIndex_Voltage,
@@ -84,7 +85,7 @@ Isl_ReturnType Isl78600_Reset(const struct Isl78600 *dev, uint8 addr);
 Isl_ReturnType Isl78600_GetScanCount(const struct Isl78600 *dev, uint8 addr, uint16 *cnt);
 Isl_ReturnType Isl78600_SetCellMask(const struct Isl78600 *dev, uint8 addr, uint16 mask);
 Isl_ReturnType Isl78600_SetDeviceSetup(const struct Isl78600 *dev, uint8 addr, uint16 value);
-
+Isl_ReturnType Isl78600_CheckRef(const struct Isl78600 *dev, uint8 addr);
 extern const struct Isl78600 isl78600_dev;
 
 #endif

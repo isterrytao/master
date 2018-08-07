@@ -1,7 +1,7 @@
 #ifndef __ORDERQUEUE_H__
 #define __ORDERQUEUE_H__
 
-#define MAX_FIFO_LEN    6U
+#define MAX_FIFO_LEN    10U
 
 typedef unsigned short OrderQueueValueType;
 typedef unsigned char OrderQueueIndexType;
