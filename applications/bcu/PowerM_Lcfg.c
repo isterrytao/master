@@ -42,6 +42,7 @@ static const PowerM_ChargeEndConfigType dcDecreaseCurrent = {
     POWERM_CHARGE_END_DEC_CONSTVAL,
     CURRENT_100MA_FROM_A(10),
     CURRENT_100MA_FROM_A(10),
+    userDCCurrentGet,
 };
 
 static Std_ReturnType thisHvGet(uint16 *v) {
