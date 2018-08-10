@@ -26,6 +26,15 @@ static const PowerM_DiagnosisPercentMapType dcchgdiag[] = {
 };
 
 /*
+static Current_CurrentType userDCCurrentGet(Current_CurrentType power_current){
+    Current_CurrentType current;
+
+    current = power_current;
+    return current;
+}
+*/
+
+/*
 static const PowerM_ChargeEndConfigType dcDecreaseCurrent = {
     &dcDecreaseCurrent,
     4180,
