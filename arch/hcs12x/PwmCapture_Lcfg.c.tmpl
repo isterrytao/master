@@ -163,6 +163,14 @@ uint16 CP_GetDuty(void) {
     return PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
 }
 
+
+uint32 CP_GetLowTime(void) {
+    return PwmCapture_GetLowTime(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
+}
+
+uint32 CP_GetHighTime(void) {
+    return PwmCapture_GetHighTime(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
+}
 <% } %>
 
 

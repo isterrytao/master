@@ -93,6 +93,8 @@ uint32 PwmCapture_GetCycleTime(const PwmCapture_DataType *pwm_data);
 
 uint16 CP_GetFrequence(void);
 uint16 CP_GetDuty(void);
+uint32 CP_GetLowTime(void);
+uint32 CP_GetHighTime(void);
 
 
 #endif
