@@ -136,9 +136,6 @@ typedef struct {
 #define POWERM_CHARGE_END_DEC_CONSTVAL    0x01U //下降指定值
 #define POWERM_CHARGE_END_DEC_TO_CONSTVAL 0x02U //下降到指定值
 #define POWERM_CHARGE_END_DEC_TO_TABLE_PERCENT 0x03U //下降到查表的千分比
-#define POWERM_CHARGE_END_DEC_USER        0x04U //自定义下降值
-
-typedef Current_CurrentType (*PowerM_UserCurrentGetFunc)(Current_CurrentType power_current);
 
 typedef struct PowerM_ChargeEndConfig {
     const struct PowerM_ChargeEndConfig *next; /**/
@@ -147,7 +144,6 @@ typedef struct PowerM_ChargeEndConfig {
     uint8 decType; /**< 降流方式，POWERM_CHARGE_END_DEC_TO_XXX */
     uint16 decParam; /**< 降流参数，与decType相关 */
     uint16 minVal; /**< 该阶段最小值 */
-    PowerM_UserCurrentGetFunc userDecFunc; /** 自定义降流函数 */
 } PowerM_ChargeEndConfigType;
 
 #define POWERM_XAXIS_SUPPORT_L2R   0x01U //X轴支持变动方向：从左到右

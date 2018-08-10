@@ -26,15 +26,6 @@ static const PowerM_DiagnosisPercentMapType dcchgdiag[] = {
 };
 
 /*
-static Current_CurrentType userDCCurrentGet(Current_CurrentType power_current){
-    Current_CurrentType current;
-
-    current = power_current;
-    return current;
-}
-*/
-
-/*
 static const PowerM_ChargeEndConfigType dcDecreaseCurrent = {
     &dcDecreaseCurrent,
     4180,
@@ -42,7 +33,6 @@ static const PowerM_ChargeEndConfigType dcDecreaseCurrent = {
     POWERM_CHARGE_END_DEC_CONSTVAL,
     CURRENT_100MA_FROM_A(10),
     CURRENT_100MA_FROM_A(10),
-    userDCCurrentGet,
 };
 
 static Std_ReturnType thisHvGet(uint16 *v) {
