@@ -61,6 +61,7 @@ static const PowerM_ConfigParamType PowerMCurChgDcConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL /* &dcDecreaseCurrent */, /**< 降流链表 */
     NULL /* thisHvGet */,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 // 慢充充电电流表（无特殊说明，所有温度点必须有回滚）
@@ -102,6 +103,7 @@ static const PowerM_ConfigParamType PowerMCurChgAcConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 // 加热电流表
@@ -136,6 +138,7 @@ static const PowerM_ConfigParamType PowerMCurChgHeaterConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 
@@ -177,6 +180,7 @@ static const PowerM_ConfigParamType PowerMCurDchgContinueConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 
@@ -218,6 +222,7 @@ static const PowerM_ConfigParamType PowerMCurChgContinueConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 // 最大运行瞬时回馈功率表（无特殊说明，所有温度点必须有回滚）
@@ -258,6 +263,7 @@ static const PowerM_ConfigParamType PowerMCurDchgFeedbackConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 // 最大允许瞬时放电功率表（无特殊说明，所有温度点必须有回滚）
@@ -299,6 +305,7 @@ static const PowerM_ConfigParamType PowerMCurDchgPeakConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 static Std_ReturnType thisExtCurXGet(uint16 *v) {
@@ -338,6 +345,7 @@ static const PowerM_ConfigParamType PowerMCurExtCurConfigTable = {
     0U, /**< 充电末端X轴达到这个值时进入降流阶段 */
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
+    NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 };
 
 

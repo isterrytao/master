@@ -175,6 +175,7 @@ typedef struct {
     uint16 chargeEndVal; /**< 充电末端X轴达到这个值时进入降流阶段 */
     const PowerM_ChargeEndConfigType *chargeEndConfigs; /**< 降流链表 */
     Std_ReturnType (*getChargeEndCheckVal)(uint16 *v);  /**< 获取降流末端比较值函数 */
+    const PowerM_ChargeEndConfigType *(*getChargeEndTable)(void); /**< 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
 } PowerM_ConfigParamType;
 
 typedef struct {
