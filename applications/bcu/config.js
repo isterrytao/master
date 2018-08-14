@@ -178,7 +178,7 @@ module.exports = {
         hall1: {
             // 通道1
             notes:[
-                {section:"model", chs:"传感器型号", comments:'可选: "DHAB_S124_1"(DHAB_S124大量程), "DHAB_S124_2"(DHAB_S124小量程), DHAB_S118_1"(DHAB_S118大量程), "DHAB_S118_2"(DHAB_S118小量程), "FS300E2T"(飞轩FS300E2T,300A量程), "FS500E2T"(飞轩FS500E2T,500A量程), "FS600E2T"(飞轩FS600E2T,600A量程), "FS700E2T"(飞轩FS700E2T,700A量程), "WHK30_350DHAB5S2L_1"(启东双赢30/350A大量程), "WHK30_350DHAB5S2L_2"(启东双赢30/350A小量程), "EHMWX911C500"(松下EHMWX911C500,500A量程), "HAH1BVW_S03"(LEM 300A单量程),'
+                {section:"model", chs:"传感器型号", comments:'可选: "DHAB_S124_1"(DHAB_S124大量程), "DHAB_S124_2"(DHAB_S124小量程), DHAB_S118_1"(DHAB_S118大量程), "DHAB_S118_2"(DHAB_S118小量程), "FS300E2T"(飞轩FS300E2T,300A量程), "FS500E2T"(飞轩FS500E2T,500A量程), "FS600E2T"(飞轩FS600E2T,600A量程), "FS700E2T"(飞轩FS700E2T,700A量程), "WHK30_350DHAB5S2L_1"(启东双赢30/350A大量程), "WHK30_350DHAB5S2L_2"(启东双赢30/350A小量程), "EHMWX911C500"(松下EHMWX911C500,500A量程), "HAH1BVW_S03"(LEM 300A单量程), "HAH1BV_S02"(LEM 500A单量程),'
                                                                     +'"WHK20BS5S2"(启东双赢 20A单量程), "WHK50BS5S2"(启东双赢 50A单量程), "FS300BT"(飞轩300A单量程), "FS600BT"(飞轩600A单量程), "WHK300EA5S2S"(启东双赢300A单量程), "WHK500EA5S2S"(启东双赢500A单量程)'},
                 {section:"filterNum", chs:"滤波的采集次数"},
                 {section:"dropNum", chs:"极值丢弃的个数"},
@@ -292,7 +292,7 @@ module.exports = {
 
     Ntc: {
         //可选 "Shiheng_CWF4B_103F_3435B":时恒10K; "Soarwhale_10K3435B":由甲申田10K; "Kemit_CWF110KF3435":科敏10K; "Kemit_CWF110KF4150":科敏10K; Yonggui_YG691_51_00_50":永贵10K; "Shiheng_CWF4B_104F_3950":时恒100K; "MTG2_420F103H":MTG2_10K; "Kemit_CWF110KF3950":科敏10K; "BoDian_FW10K3950":铂电10K; "Soarwhale_SW_NTC_C4_103B1A1":由甲申田10K;
-        //     "Shiheng_CWF4B_103F_3950":时恒10K; "Microtherm_TR29_NTC_ALW600_D3_2L15":麦柯泰姆10K; "Microtherm_RT29_NTC_ALW500_D3_2L15":麦柯泰姆100K-3950; "YiDa_BLMF103F3435F":苏州怡达10K; "CATL_10K_SMD":CATL 10K; "XLB_SK103F4R0300ST": 新立本10K;
+        //     "Shiheng_CWF4B_103F_3950":时恒10K; "Microtherm_TR29_NTC_ALW600_D3_2L15":麦柯泰姆10K; "Microtherm_RT29_NTC_ALW500_D3_2L15":麦柯泰姆100K-3950; "YiDa_BLMF103F3435F":苏州怡达10K; "CATL_10K_SMD":CATL 10K; "XLB_SK103F4R0300ST": 新立本10K; "Soarwhale_SW_NTC_104F_3590": 由甲申田100K;
         cellTempType: "Shiheng_CWF4B_103F_3435B", // 电池温感型号
         chgSckTempType:'Shiheng_CWF4B_103F_3435B', // 充电插座温感信号
         chgSckTempMap: {
