@@ -38,6 +38,12 @@ extern const uint8 HvProcess_ProcessListNum;
  */
 void HvProcess_Init(uint8 taskPrio);
 
+/**
+ * \brief 获取高压流程异步事件
+ * \details 返回高压流程充放电流程的异常事件指针
+ * \return 异步事件
+ */
+Async_EventType *HvProcess_GetAsyncEvent(void);
 
 #endif
 

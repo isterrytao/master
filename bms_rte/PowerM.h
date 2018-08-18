@@ -155,6 +155,24 @@ typedef struct PowerM_ChargeEndConfig {
 #define POWERM_YAXIS_USE_MIN       0x03U //Y轴最高与最高温度取小
 
 typedef struct {
+    uint16 destWithoutDiag;
+    uint16 dest;
+    uint16 out;
+    uint32 outUpdateTick;
+    uint16 xv;
+    uint16 htvalue;
+    uint16 ltValue;
+    uint8 ht;
+    uint8 lt;
+    uint8 lastltindex;
+    uint8 lasthtindex;
+    boolean chargeEndFinished;
+    boolean chargeEndDecreasing;
+    const PowerM_ChargeEndConfigType *curEndCfg;
+    uint32 chargeEndTick;
+} PowerM_InnerChannelDataType;
+
+typedef struct {
     uint16 xAxisNum; /**< 功率控制表X轴分隔数量 */
     uint16 yAxisNum; /**< 功率控制表Y轴分隔数量 */
     const uint16 *xAxisValue; /**< 功率控制表X轴分隔表 */
@@ -176,25 +194,10 @@ typedef struct {
     const PowerM_ChargeEndConfigType *chargeEndConfigs; /**< 降流链表 */
     Std_ReturnType (*getChargeEndCheckVal)(uint16 *v);  /**< 获取降流末端比较值函数 */
     const PowerM_ChargeEndConfigType *(*getChargeEndTable)(void); /**< 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    void (*hook)(PowerM_InnerChannelDataType *itemData, uint16 current_map); /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    void (*hookReset)(PowerM_InnerChannelDataType *itemData); /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 } PowerM_ConfigParamType;
 
-typedef struct {
-    uint16 destWithoutDiag;
-    uint16 dest;
-    uint16 out;
-    uint32 outUpdateTick;
-    uint16 xv;
-    uint16 htvalue;
-    uint16 ltValue;
-    uint8 ht;
-    uint8 lt;
-    uint8 lastltindex;
-    uint8 lasthtindex;
-    boolean chargeEndFinished;
-    boolean chargeEndDecreasing;
-    const PowerM_ChargeEndConfigType *curEndCfg;
-    uint32 chargeEndTick;
-} PowerM_InnerChannelDataType;
 
 extern const PowerM_CurrentTypeType PowerMChannelNum;
 extern const PowerM_ConfigParamType *const PowerMConfigParamMaps[];

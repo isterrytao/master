@@ -86,5 +86,6 @@ void Boot_ResetToApp(uint8 extFlag);
 void Boot_ResetToFBL(void);
 void Boot_SetAppValidFlag(void);
 void Boot_SetFlashDriverFlag(boolean valid);
+void Boot_ResetToFBLDefaultSession(void);
 
 #endif

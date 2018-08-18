@@ -62,6 +62,8 @@ static const PowerM_ConfigParamType PowerMCurChgDcConfigTable = {
     NULL /* &dcDecreaseCurrent */, /**< 降流链表 */
     NULL /* thisHvGet */,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 // 慢充充电电流表（无特殊说明，所有温度点必须有回滚）
@@ -104,6 +106,8 @@ static const PowerM_ConfigParamType PowerMCurChgAcConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 // 加热电流表
@@ -139,6 +143,8 @@ static const PowerM_ConfigParamType PowerMCurChgHeaterConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 
@@ -181,6 +187,8 @@ static const PowerM_ConfigParamType PowerMCurDchgContinueConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 
@@ -223,6 +231,8 @@ static const PowerM_ConfigParamType PowerMCurChgContinueConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 // 最大运行瞬时回馈功率表（无特殊说明，所有温度点必须有回滚）
@@ -264,6 +274,8 @@ static const PowerM_ConfigParamType PowerMCurDchgFeedbackConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 // 最大允许瞬时放电功率表（无特殊说明，所有温度点必须有回滚）
@@ -306,6 +318,8 @@ static const PowerM_ConfigParamType PowerMCurDchgPeakConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 static Std_ReturnType thisExtCurXGet(uint16 *v) {
@@ -346,6 +360,8 @@ static const PowerM_ConfigParamType PowerMCurExtCurConfigTable = {
     NULL, /**< 降流链表 */
     NULL,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
+    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
 };
 
 
