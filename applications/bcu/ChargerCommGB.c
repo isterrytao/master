@@ -1407,7 +1407,8 @@ void ChargerCommGB_ReceiveCMLCbk(const uint8 *Buffer, uint16 Length)
 {
     uint8 flag = 1U;
     uint16 index = 0U;
-    Current_CurrentType current;
+    uint16 volt, volt_max;
+    Current_CurrentType current, current_max;
     VALIDATE_PTR(Buffer, CHARGERCOMMGB_API_ID_ReceiveCHMCbk);
 
     if (ChargerCommGB_innerData.startFlag == FALSE)
@@ -1429,16 +1430,26 @@ void ChargerCommGB_ReceiveCMLCbk(const uint8 *Buffer, uint16 Length)
     }
     if (flag != 0U && Length >= 6U)
     {
-        ChargerComm_SetChargerOutputHVMax(READ_LT_UINT16(Buffer, index));
-        ChargerComm_SetChargerOutputHVMin(READ_LT_UINT16(Buffer, index));
-        current = (Current_CurrentType)READ_LT_UINT16(Buffer, index);
-        current = ChargerCommGB_CurrentToBmsCurrent(current);
-        ChargerComm_SetChargerOutputCurrentMax(current);
+        volt_max = READ_LT_UINT16(Buffer, index);
+        ChargerComm_SetChargerOutputHVMax(volt_max);
+        volt = READ_LT_UINT16(Buffer, index);
+        if (volt > volt_max)
+        {
+            volt = 0U;
+        }
+        ChargerComm_SetChargerOutputHVMin(volt);
+        current_max = (Current_CurrentType)READ_LT_UINT16(Buffer, index);
+        current_max = ChargerCommGB_CurrentToBmsCurrent(current_max);
+        ChargerComm_SetChargerOutputCurrentMax(current_max);
         if (ChargerComm_GetProtocol() == CHARGERCOMM_PROTOCOL_GB2015 &&
             Length >= 8U)
         {
             current = (Current_CurrentType)READ_LT_UINT16(Buffer, index);
             current = ChargerCommGB_CurrentToBmsCurrent(current);
+            if (current > current_max)
+            {
+                current = 0;
+            }
             ChargerComm_SetChargerOutputCurrentMin(current);
         }
         ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CHARGE_READY;
