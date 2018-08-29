@@ -251,6 +251,17 @@ uint8 Ltc6804_1_StartStatus(const struct Ltc6804 *dev);
  */
 uint8 Ltc6804_1_StartAll(const struct Ltc6804 *dev);
 
+/**
+ * \brief      等待采集完成
+ *
+ * \param[in]  dev        设备对象
+ * \param[in]  ms         最大等待时间
+ * \param[in]  sleep_1ms  延时1ms的回调函数
+ *
+ * \retval 0:  等待超时
+ * \retval !0  转换完成
+ */
+uint8 Ltc6804_WaitAdc(const struct Ltc6804 *dev, uint8 ms, void (*sleep_1ms)(void));
 
 /**
  * 将12bit压缩的数据解压为16bit形式

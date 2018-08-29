@@ -638,11 +638,11 @@ void ChargerCommGB_GetBCLDataCbk(uint8 *Buffer, uint16 *Length)
         }
         CurrentMax = ChargerComm_GetChargerOutputCurrentMax();
         CurrentMin = ChargerComm_GetChargerOutputCurrentMin();
-        if(CurrentMax && Current > CurrentMax)
+        if(CurrentM_IsValidCurrent(CurrentMax) && CurrentMax > 0 && Current > CurrentMax)
         {
             Current = CurrentMax;
         }
-        else if(CurrentMin && Current < CurrentMin)
+        else if(CurrentM_IsValidCurrent(CurrentMin) && CurrentMin > 0 && Current < CurrentMin)
         {
             Current = CurrentMin;
         }
@@ -2295,17 +2295,30 @@ static Current_CurrentType ChargerCommGB_CurrentToBmsCurrent(Current_CurrentType
     if(cur >= 0)
     {
         cur = -1*(cur - (sint16)CHARGERCOMMGB_CURRENT_OFFSET);
+        if (cur < 0)
+        {
+            cur = (Current_CurrentType)CURRENT_INVALID_VALUE;
+        }
+    }
+    else
+    {
+        cur = (Current_CurrentType)CURRENT_INVALID_VALUE;
     }
     return cur;
 }
 
 static Current_CurrentType ChargerCommGB_CurrentFromBmsCurrent(Current_CurrentType cur)
 {
-    if(cur > (sint16)CHARGERCOMMGB_CURRENT_OFFSET)
+    if(cur > (Current_CurrentType)CHARGERCOMMGB_CURRENT_OFFSET)
     {
-        cur = (sint16)CHARGERCOMMGB_CURRENT_OFFSET;
+        cur = (Current_CurrentType)CHARGERCOMMGB_CURRENT_OFFSET;
     }
-    return -1*cur + (sint16)CHARGERCOMMGB_CURRENT_OFFSET;
+    cur = -1*cur + (Current_CurrentType)CHARGERCOMMGB_CURRENT_OFFSET;
+    if (cur < 0)
+    {
+        cur = 0;
+    }
+    return cur;
 }
 
 
