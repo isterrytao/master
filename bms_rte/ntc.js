@@ -110,9 +110,20 @@ module.exports = {
         if (temperatureSensors.findIndex(x=>x.id==cfgData.cellTempType) < 0) {
             throw "Unsupport cell temp sensor type: " + cfgData.cellTempType;
         }
-
-        if (temperatureSensors.findIndex(x=>x.id==cfgData.chgSckTempType) < 0) {
+        if (cfgData.hasOwnProperty('chgSckTempType')
+            && cfgData.chgSckTempType
+            && temperatureSensors.findIndex(x=>x.id==cfgData.chgSckTempType) < 0) {
             throw "Unsupport charge stack temp sensor type: " + cfgData.chgSckTempType;
+        }
+        if (cfgData.hasOwnProperty('acChgSckTempType')
+            && cfgData.acChgSckTempType
+            && temperatureSensors.findIndex(x=>x.id==cfgData.acChgSckTempType) < 0) {
+            throw "Unsupport charge stack temp sensor type: " + cfgData.acChgSckTempType;
+        }
+        if (cfgData.hasOwnProperty('dcChgSckTempType')
+            && cfgData.dcChgSckTempType
+            && temperatureSensors.findIndex(x=>x.id==cfgData.dcChgSckTempType) < 0) {
+            throw "Unsupport charge stack temp sensor type: " + cfgData.dcChgSckTempType;
         }
 
         var resToVolMapper = (res) => Math.round(4096.0 * res / (10 + res));
@@ -161,7 +172,8 @@ module.exports = {
 
         var mdata = {
             cellTempType: cfgData.cellTempType,
-            chgSckTempType: cfgData.chgSckTempType,
+            dcChgSckTempType: cfgData.dcChgSckTempType ? cfgData.dcChgSckTempType : cfgData.chgSckTempType,
+            acChgSckTempType: cfgData.acChgSckTempType ? cfgData.acChgSckTempType : cfgData.chgSckTempType,
             chgSckTempEnable: chgSckTempEnable,
             chgSckAdcToTempChannleMap: chgSckAdcToTempChannleMap,
             temperatureSensors: temperatureSensors,

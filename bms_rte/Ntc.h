@@ -11,7 +11,8 @@ typedef struct {
 } NTC_ConfigDataType;
 
 extern const NTC_ConfigDataType *const CellNTCConfigData;
-extern const NTC_ConfigDataType *const ChgSckNTCConfigData;
+extern const NTC_ConfigDataType *const DCChgSckNTCConfigData;
+extern const NTC_ConfigDataType *const ACChgSckNTCConfigData;
 extern const NTC_ConfigDataType *const OnboardNTCConfigData;
 
 /**
@@ -40,7 +41,8 @@ uint8 NTC_CellFromRef4096(uint16 vol);
  *
  * \return 温度值
  */
-uint8 NTC_ChgSckTemperatureFromTAB(uint16 vol);
+uint8 NTC_ACChgSckTemperatureFromTAB(uint16 vol);
+uint8 NTC_DCChgSckTemperatureFromTAB(uint16 vol);
 
 /**
  * \brief 把板载温感的电压转换成温度值.

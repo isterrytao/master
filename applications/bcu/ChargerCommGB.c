@@ -1448,7 +1448,7 @@ void ChargerCommGB_ReceiveCMLCbk(const uint8 *Buffer, uint16 Length)
             current = ChargerCommGB_CurrentToBmsCurrent(current);
             if (current > current_max)
             {
-                current = 0;
+                current = (Current_CurrentType)CURRENT_INVALID_VALUE;
             }
             ChargerComm_SetChargerOutputCurrentMin(current);
         }

@@ -32,7 +32,8 @@ const ChgSckTmpM_ConfigType ChgSckTmpM_ConfigInfo = {
 };
 
 const NTC_ConfigDataType *const CellNTCConfigData = &NTC_<%- cellTempType %>_ConfigData;
-const NTC_ConfigDataType *const ChgSckNTCConfigData = &NTC_<%- chgSckTempType %>_ConfigData;
+const NTC_ConfigDataType *const DCChgSckNTCConfigData = &NTC_<%- dcChgSckTempType %>_ConfigData;
+const NTC_ConfigDataType *const ACChgSckNTCConfigData = &NTC_<%- acChgSckTempType %>_ConfigData;
 const NTC_ConfigDataType *const OnboardNTCConfigData = &NTC_Shiheng_CWF4B_103F_3435B_ConfigData;
 
 /* <%- JSON.stringify(chgSckAdcToTempChannleMap) %> */
