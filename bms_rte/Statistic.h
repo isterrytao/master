@@ -141,6 +141,7 @@ typedef struct{
 	uint32 chargeTimeLast;
 	uint32 dischargeTimeLast;
 	App_Tv100mvType totalVoltage;
+	boolean isTotalVoltageReady;
 	uint32 totalVoltageTick;
 	boolean isSimulationHtLt; /**< 是否使用模拟高温低温值 */
 	App_TemperatureType simulationHt; /**< 模拟高温 */
