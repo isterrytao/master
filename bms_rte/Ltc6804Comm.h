@@ -63,6 +63,7 @@ uint8 Sample_GetBatteryVoltage(uint8 mod_index, uint16 *buf, uint8 buf_size);
 uint16 Sample_GetBatteryVoltageWireBreak(uint8 mod_index);
 boolean Sample_IsPowerWireBreak(uint16 flags);
 uint16 Sample_GetBatteryVoltageSuspicious(uint8 mod_index);
+uint8 Ltc6804Comm_GetModuleCommAbortCnt(uint8 module);
 
 #endif
 

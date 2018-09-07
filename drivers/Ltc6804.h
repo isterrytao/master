@@ -134,6 +134,20 @@ void Ltc6804_1_WriteCfg(const struct Ltc6804 *dev, struct Ltc6804CFG const *cfg,
 void Ltc6804_1_SendCmd(const struct Ltc6804 *dev, uint16 cmd);
 
 /**
+ * \brief      发送命令,并检查命令执行结果
+ *
+ * \param[in]  dev    设备对象
+ * \param[in]  cmd    命令字
+ * \param[in]  retry  重试次数
+ *
+ * \retval     0: 表示成功
+ * \retval    !0: 表示失败
+ * \note      向设备发采集命令,并查询状态,如果设备忙,则表明设备已经接收到命令了,以此判断命令的执行结果
+ *            本函数适用于耗时的采集命令
+ */
+uint8 Ltc6804_1_SendCmdEx(const struct Ltc6804 *dev, uint16 cmd, uint8 retry);
+
+/**
  * \brief 获取电池单元采集值(按分组方式)
  *
  * \param Ltc6804 设备对象

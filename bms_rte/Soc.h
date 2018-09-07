@@ -130,7 +130,7 @@ App_SocType Soc_Get(void);
  *
  * \param efficiency 充电因子, 分辨率：0.1%/bit
  */
-void Soc_SetChgEfficiency(uint16 efficiency);
+Std_ReturnType Soc_SetChgEfficiency(uint16 efficiency);
 
 /**
  * \brief 获取充电因子
@@ -144,7 +144,7 @@ uint16 Soc_GetChgEfficiency(void);
  *
  * \param efficiency 放电因子, 分辨率：0.1%/bit
  */
-void Soc_SetDchgEfficiency(uint16 efficiency);
+Std_ReturnType Soc_SetDchgEfficiency(uint16 efficiency);
 
 /**
  * \brief 获取放电因子
