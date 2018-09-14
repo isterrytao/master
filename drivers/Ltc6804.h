@@ -39,6 +39,8 @@
 #define LTC_MV_TO_100uV(v)    (((uint16)v) * 10UL)
 #define LTC_ITMP_TO_100uV(t)     (75UL * (((uint16)t) + 273UL))
 
+#define LTC6804_CRC16_REMAINDER 16U
+
 struct Ltc6804RegType {
     uint8 R[6];
 };
@@ -102,6 +104,17 @@ struct Ltc6804 {
  * \param Ltc6804 设备对象
  */
 void Ltc6804_Init(const struct Ltc6804 *dev);
+
+/**
+ * \brief Ltc6804按指定remainder计算校验值
+ *
+ * \param start_remainder 指定起始remainder
+ * \param data 待校验数据指针
+ * \param len 数据长度
+ *
+ * \return 校验值
+ */
+uint16 Ltc6804_CalcCheckNum(uint16 start_remainder, const uint8 *data, uint16 len);
 
 /**
  * \brief 读配置参数

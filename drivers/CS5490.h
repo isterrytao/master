@@ -49,6 +49,11 @@
 // 1 C4 C3  1 1 0   I & V
 // For calibration, C[2:0] specifies the channel(s).
 
+typedef struct {
+    uint8 page;
+    uint8 addr;
+    uint32 val;
+} CS5490_RegValueType;
 
 typedef struct {
     boolean useUart;
@@ -59,12 +64,15 @@ typedef struct {
     uint32 oscFreq;
     Dio_ChannelType resetPin;
     Dio_LevelType resetAssertLevel;
+    uint8 regNum;
+    const CS5490_RegValueType *regVals;
 } CS5490_PlatformType;
 
 typedef enum {
     CS5490_IGAIN_X10,
     CS5490_IGAIN_X50,
 } CS5490_IGainType;
+
 
 typedef struct cs5490 {
     const CS5490_PlatformType *platform;

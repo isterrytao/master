@@ -939,7 +939,7 @@ module.exports = {
                     {levels:[1,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
-                    timeout: 1000,
+                    timeout: 3000,
                     level: 1,
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
@@ -1218,7 +1218,7 @@ module.exports = {
                 name: "BMS初始化故障",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 5, 5]
+                    [1, 1, 2, 5]
                 ]
             }, {
                 name: "HVIL故障",

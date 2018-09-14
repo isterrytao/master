@@ -241,28 +241,28 @@ static void startHvSample(void) {
     if (ParameterM_EeepRead(PARAMETERM_EEEP_HVBPOS_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
         gainErr = 1000U;
     }
-    (void)HV_StartSample(HV_CHANNEL_BPOS, 20U, 4U, gainErr);
+    (void)HV_StartSample(HV_CHANNEL_BPOS, 4U, 1U, gainErr);
 
     if (ParameterM_EeepRead(PARAMETERM_EEEP_HV1_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
         gainErr = 1000U;
     }
-    (void)HV_StartSample(HV_CHANNEL_HV1, 20U, 4U, gainErr);
+    (void)HV_StartSample(HV_CHANNEL_HV1, 4U, 1U, gainErr);
     if (ParameterM_EeepRead(PARAMETERM_EEEP_HV2_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
         gainErr = 1000U;
     }
-    (void)HV_StartSample(HV_CHANNEL_HV2, 20U, 4U, gainErr);
+    (void)HV_StartSample(HV_CHANNEL_HV2, 4U, 1U, gainErr);
     if (ParameterM_EeepRead(PARAMETERM_EEEP_HV3_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
         gainErr = 1000U;
     }
-    (void)HV_StartSample(HV_CHANNEL_HV3, 20U, 4U, gainErr);
+    (void)HV_StartSample(HV_CHANNEL_HV3, 4U, 1U, gainErr);
     if (ParameterM_EeepRead(PARAMETERM_EEEP_HV4_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
         gainErr = 1000U;
     }
-    (void)HV_StartSample(HV_CHANNEL_HV4, 20U, 4U, gainErr);
+    (void)HV_StartSample(HV_CHANNEL_HV4, 4U, 1U, gainErr);
     if (ParameterM_EeepRead(PARAMETERM_EEEP_HV5_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
         gainErr = 1000U;
     }
-    (void)HV_StartSample(HV_CHANNEL_HV5, 20U, 4U, gainErr);
+    (void)HV_StartSample(HV_CHANNEL_HV5, 4U, 1U, gainErr);
 
 }
 
@@ -339,7 +339,6 @@ static void start_task(void *pdata) {
     }
 
     WatchdogM_Init();
-    HardwareSn_Init();
 
     DigitalInput_Init();
 
@@ -451,6 +450,7 @@ static void start_task(void *pdata) {
     UserStrategy_Init(&extLooper);
     LimitProtect_Init(&extLooper);
 
+    HardwareSn_Init();
     WatchdogM_Enable();
 
     if (mode == RUNTIMEM_RUNMODE_DATA) {

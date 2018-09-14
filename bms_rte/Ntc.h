@@ -10,10 +10,19 @@ typedef struct {
     const uint16 *tabV4096;
 } NTC_ConfigDataType;
 
+typedef struct {
+    uint16 crc;
+}NTC_InnerDataType;
+
 extern const NTC_ConfigDataType *const CellNTCConfigData;
 extern const NTC_ConfigDataType *const DCChgSckNTCConfigData;
 extern const NTC_ConfigDataType *const ACChgSckNTCConfigData;
 extern const NTC_ConfigDataType *const OnboardNTCConfigData;
+
+/**
+ * \brief 温感模块初始化
+ */
+void NTC_Init(void);
 
 /**
  * \brief 把温感电压根据温感表转换成温度值.
@@ -52,5 +61,13 @@ uint8 NTC_DCChgSckTemperatureFromTAB(uint16 vol);
  * \return 温度值
  */
 uint8 NTC_OnboardFromRef4096(uint16 vol);
+
+/**
+ * \brief 获取电池温感类型CRC校验值
+ * \details 校验包含NTC_ConfigDataType定义及温感数组
+ * \return 校验值
+ */
+uint16 NTC_GetCellCrc(void);
+
 
 #endif

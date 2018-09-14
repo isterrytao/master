@@ -41,6 +41,18 @@ typedef uint8 (*Uart_CopyTxData)(void *UserData, uint8 *buf, uint8 size);
  */
 Std_ReturnType Uart_Init(Uart_ChannelType channel, uint32 baud, Uart_RxIndication RxIndication, void *UserData);
 
+
+/**
+ * \brief 设置串口波特率
+ *
+ * \param channel Uart通道
+ * \param baud 波特率
+ *
+ * \retval E_OK 设置成功
+ * \retval E_NOT_OK 设置失败
+ */
+Std_ReturnType Uart_SetBaudrate(Uart_ChannelType channel, uint32 baud);
+
 /**
  * \brief 设置异步发送回调函数.
  * \details \link Uart_AsyncSendCompleteNotify \endlink, \link Uart_SendAsync \endlink.

@@ -29,6 +29,10 @@
 
 #define INTERNALCOMM_PENDING_DID_BUFF_SIZE              (100U)
 
+/**
+ * \brief 从机温感表配置失败重试次数
+ */
+#define INTERNALCOMM_TEMP_TYPE_CFG_RETRY_NUM            (5U)
 
 /**
  * \brief 发送会话状态
@@ -331,6 +335,8 @@ extern Async_EventType InternalComm_ScheduleItemEvent[INTERNALCOMM_SLAVE_DID_NUM
 extern InternalComm_DidTypes InternalComm_SlaveFirstDID;
 
 extern const InternalComm_ConfigInfoType InternalComm_ConfigInfo;
+
+extern uint8 InternalComm_TempTypeCfgCntBuff[];
 
 /**
  * \brief 内网通信初始化

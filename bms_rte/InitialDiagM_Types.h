@@ -26,6 +26,7 @@ typedef enum{
 typedef enum{
     INITIALDIAGM_ITEM_EEEPROM, /**< Eeeprom初始化诊断项 */
     INITIALDIAGM_ITEM_CAN, /**< CAN初始化诊断项 */
+    INITIALDIAGM_ITEM_SLAVE_TEMP_TYPE, /**< 从机温感配置诊断项 */
 
     INITIALDIAGM_ITEM_MAX
 }InitialDiagM_ItemType;
