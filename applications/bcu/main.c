@@ -417,14 +417,6 @@ static void start_task(void *pdata) {
         start_hvadc_task(hvadc_test_task);
     }
 
-    if (SystemConnection_ConfigInfo.DtuSupport) {
-        if (isNeedStartSampleTask()) {
-            GBRtMsg_Init(&driverLooper);
-            GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
-            start_dtu_task();
-        }
-    }
-
     BalanceM_Init(&BalanceM_ConfigInfo);
     if (isNeedStartSampleTask()) {
         BalanceM_RegisterLooper(&extLooper);
@@ -451,6 +443,14 @@ static void start_task(void *pdata) {
     LimitProtect_Init(&extLooper);
 
     HardwareSn_Init();
+    if (SystemConnection_ConfigInfo.DtuSupport) {
+        if (isNeedStartSampleTask()) {
+            GBRtMsg_Init(&driverLooper);
+            GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
+            start_dtu_task();
+        }
+    }
+
     WatchdogM_Enable();
 
     if (mode == RUNTIMEM_RUNMODE_DATA) {
