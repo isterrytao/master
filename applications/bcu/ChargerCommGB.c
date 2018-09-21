@@ -592,7 +592,7 @@ void ChargerCommGB_GetBCLDataCbk(uint8 *Buffer, uint16 *Length)
     uint16 index = 0U;
     uint16 Volt, VoltMax, VoltMin;
     uint32 address;
-    Current_CurrentType Current, CurrentMax, CurrentMin;
+    Current_CurrentType Current, CurrentMax/*, CurrentMin */;
 
     VALIDATE_PTR(Buffer, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
     VALIDATE_PTR(Length, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
@@ -637,18 +637,18 @@ void ChargerCommGB_GetBCLDataCbk(uint8 *Buffer, uint16 *Length)
             Current = 0;
         }
         CurrentMax = ChargerComm_GetChargerOutputCurrentMax();
-        CurrentMin = ChargerComm_GetChargerOutputCurrentMin();
+        // CurrentMin = ChargerComm_GetChargerOutputCurrentMin();
         if(CurrentM_IsValidCurrent(CurrentMax) && CurrentMax > 0 && Current > CurrentMax)
         {
             Current = CurrentMax;
         }
-        else if(CurrentM_IsValidCurrent(CurrentMin) && CurrentMin > 0 && Current < CurrentMin)
+        /*else if(CurrentM_IsValidCurrent(CurrentMin) && CurrentMin > 0 && Current < CurrentMin)
         {
             Current = CurrentMin;
         }
         else
         {
-        }
+        }*/
         CurrentMax = ChargeConnectM_GetChargeCurrentMax(ChargerCommGB_innerData.currentChargeType);
         if(Current > CurrentMax)
         {
