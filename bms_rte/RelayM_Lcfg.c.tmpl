@@ -8,11 +8,14 @@ const RelayM_CommonConfigType RelayMCommonConfigData = {
     50UL, /**< MinTimeSapce: 继电器最小闭合间隔 */
 };
 
+<%var relays_get_instance_vol_func = []%>
 <%
 for (var relay of relays) {
     if (relay.hvUserFunction) { %>
 extern sint16 <%- relay.hv %>(void);
-    <% } else if ('HV_CHANNEL_NONE' != relay.hv) { %>
+    <% } else if ('HV_CHANNEL_NONE' != relay.hv && !relays_get_instance_vol_func.includes(relay.hv)) {
+        relays_get_instance_vol_func.push(relay.hv)
+    %>
 static sint16 relay_<%- relay.hv %>_get_instance_vol(void) {
     return HV_GetInstantVoltage(<%- relay.hv %>);
 }
