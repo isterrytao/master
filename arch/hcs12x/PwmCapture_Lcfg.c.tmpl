@@ -74,13 +74,13 @@ const uint8 PwmCapture_ChannelNum = PWM_CAPTURE_CHANNEL_NUM;
 
 PwmCapture_DataType PwmCapture_DataList[PWM_CAPTURE_CHANNEL_NUM] = {
 <% if (channelEnabled('CP')) { %>
-    {(uint16 * near) &ECT_TC1, (uint8)((uint8)1U << 1), 1U, <%- getTriggerEdge('CP') %>, 0U, 0UL, 0UL, 0UL, 0U}, /**< CP PWM channel */
+    {(uint16 * near) &ECT_TC1, (uint8)((uint8)1U << 1), 1U, <%- getTriggerEdge('CP') %>, 0U, 0UL, 0UL, 0UL, 0U, 0U}, /**< CP PWM channel */
 <% } %>
 <% if (channelEnabled('SIGIN1')) { %>
-    {(uint16 * near) &ECT_TC2, (uint8)((uint8)1U << 2), 1U, <%- getTriggerEdge('SIGIN1') %>, 0U, 0UL, 0UL, 0UL, 0U}, /**< SIGIN1 */
+    {(uint16 * near) &ECT_TC2, (uint8)((uint8)1U << 2), 1U, <%- getTriggerEdge('SIGIN1') %>, 0U, 0UL, 0UL, 0UL, 0U, 0U}, /**< SIGIN1 */
 <% } %>
 <% if (channelEnabled('SIGIN2')) { %>
-    {(uint16 * near) &ECT_TC3, (uint8)((uint8)1U << 3), 1U, <%- getTriggerEdge('SIGIN2') %>, 0U, 0UL, 0UL, 0UL, 0U}, /**< SIGIN2 */
+    {(uint16 * near) &ECT_TC3, (uint8)((uint8)1U << 3), 1U, <%- getTriggerEdge('SIGIN2') %>, 0U, 0UL, 0UL, 0UL, 0U, 0U}, /**< SIGIN2 */
 <% } %>
 };
 
@@ -160,7 +160,36 @@ uint16 CP_GetFrequence(void) {
 }
 
 uint16 CP_GetDuty(void) {
-    return PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
+    uint16 duty = 0U;
+    boolean got;
+
+    do {
+        HCS12_SetSem(XGATE_PWM_SEM_CHL);
+    } while (!HCS12_IsSemSet(XGATE_PWM_SEM_CHL));
+
+    if (PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL].bitlevel) {
+        if (PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL].highLevelCounter >= PwmCapture_Clock) {
+            duty = 1000U;
+            got = TRUE;
+        } else {
+            got = FALSE;
+        }
+    } else {
+        if (PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL].lowLevelCounter >= PwmCapture_Clock) {
+            duty = 0U;
+            got = TRUE;
+        } else {
+            got = FALSE;
+        }
+    }
+
+    HCS12_ReleaseSem(XGATE_PWM_SEM_CHL);
+
+    if (!got) {
+        duty = PwmCapture_GetDuty(&PwmCapture_DataList[PWM_CAPTURE_CP_CHANNEL]);
+    }
+
+    return duty;
 }
 
 

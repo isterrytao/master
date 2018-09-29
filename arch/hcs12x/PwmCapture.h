@@ -16,6 +16,7 @@ typedef struct {
     uint32 lowLevelCounter;
     uint32 counter;
     uint16 last_capture;
+    uint8 bitlevel;
 } PwmCapture_DataType;
 
 #define PWM_TRIGGER_HCS12_RAISING 0x01U
@@ -26,6 +27,8 @@ typedef struct {
 #define PWM_RAISING_EDGE_TRIGGERED  0x04U
 
 #pragma pop
+
+extern uint32 PwmCapture_Clock;
 
 /**
  * \brief PWM捕获模块的初始化
