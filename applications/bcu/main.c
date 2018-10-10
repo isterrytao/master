@@ -269,6 +269,7 @@ static void startHvSample(void) {
 extern const Adc_ConfigType AdcConfigTestMode;
 
 static void run_test_mode(void) {
+    WatchdogM_Disable();
     Can_DeInit();
     Can_Init(&CanConfig_TestMode);
     (void)Can_SetControllerMode(0U, CAN_T_START);
