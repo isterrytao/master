@@ -140,7 +140,7 @@ typedef struct {
 typedef struct PowerM_ChargeEndConfig {
     const struct PowerM_ChargeEndConfig *next; /**/
     uint16 startVal; /**< 进入这个阶段的值 */
-    uint16 delayTime; /**< 这个阶段最小维持的时间 */
+    uint32 delayTime; /**< 这个阶段最小维持的时间 */
     uint8 decType; /**< 降流方式，POWERM_CHARGE_END_DEC_TO_XXX */
     uint16 decParam; /**< 降流参数，与decType相关 */
     uint16 minVal; /**< 该阶段最小值 */
