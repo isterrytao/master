@@ -470,6 +470,14 @@ uint16 InternalComm_SlaveIsNoComm(void);
  */
 boolean InternalComm_SlaveRequireIsAllow(void);
 
+/**
+ * \brief 从机通信中断标志bitmap
+ * \details 0-通信正常 1-通信中断 bit0-1号从机/一体机通信状态 bit1-2号从机通信状态 。。。
+ * \return 从机通信bitmap
+ */
+uint32 InternalComm_GetSlaveCommAbortBitMap(void);
+
+
 
 #endif
 
