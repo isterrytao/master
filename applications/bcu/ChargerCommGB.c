@@ -373,6 +373,10 @@ void ChargerCommGB_GetBHMDataCbk(uint8 *Buffer, uint16 *Length)
     VALIDATE_PTR(Length, CHARGERCOMMGB_API_ID_GetBHMDataCbk);
 
     volt = ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_CHG_HTV, 0U);
+    if (Statistic_TotalVoltageIsValid(volt))
+    {
+        volt += 100U;
+    }
     WRITE_LT_UINT16(Buffer, index, volt);//最高允许充电电压
     *Length = index;
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
@@ -509,7 +513,11 @@ void ChargerCommGB_GetBCPDataCbk(uint8 *Buffer, uint16 *Length)
         ChargerCommGB_CurrentFromBmsCurrent((Current_CurrentType)temp));//最高允许充电电流
     temp = (uint16)DIVISION((uint32)BatteryInfo_BaseConfigInfo.NominalCap * BatteryInfo_BaseConfigInfo.NominalTotalVolt, 10000UL);
     WRITE_LT_UINT16(Buffer, index, temp);//额定能量
-    volt = ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_CHG_HTV, 0U) + 100U;
+    volt = ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_CHG_HTV, 0U);
+    if (Statistic_TotalVoltageIsValid(volt))
+    {
+        volt += 100U;
+    }
     WRITE_LT_UINT16(Buffer, index, volt);//最高允许充电电压
     WRITE_LT_UINT8(Buffer, index, ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_CHG_HT, 0U));//最高允许充电温度
     WRITE_LT_UINT16(Buffer, index, Soc_Get());//当前SOC
