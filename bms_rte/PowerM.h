@@ -126,6 +126,14 @@ void PowerM_DumpDestWithoutDiagResult(void);
  */
 void PowerM_DumpDestWithDiagResult(void);
 
+/**
+ * \brief 获取故障降流百分比
+ *
+ * \param Type 功率类型
+ * \return 故障降流百分比 1%/bit
+ */
+uint16 PowerM_GetDiagnosisPercent(PowerM_CurrentTypeType Type);
+
 typedef struct {
     Diagnosis_ItemType diagItemType;
     uint8 percent[DIAGNOSIS_SUPPORT_LEVEL];
@@ -170,6 +178,7 @@ typedef struct {
     boolean chargeEndDecreasing;
     const PowerM_ChargeEndConfigType *curEndCfg;
     uint32 chargeEndTick;
+    uint16 percent; /**< 故障降流百分比 1%/bit */
 } PowerM_InnerChannelDataType;
 
 typedef struct {

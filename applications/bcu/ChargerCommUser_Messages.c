@@ -262,7 +262,7 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         current = 0;
     }
-    current_max = (Current_CurrentType)ChargerCommUser_GetGBSignalCurrentMax();
+    current_max = ChargerCommUser_GetGBSignalCurrentMax();
     if(current > current_max)
     {
         current = current_max;

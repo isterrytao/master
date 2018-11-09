@@ -520,7 +520,6 @@ void App_Programming(Dcm_MsgContextType *pMsgContext) {
     res = RuntimeM_RequestToProgram();
     if (GetSuppressPosResponseBit() == 0U && res == E_OK) { /* If positive response is supressed, dont' need make it */
         GBRtMsg_Cancel();
-        SaveM_Cancel();
 #if(RESPONSE_WITH_P2TIMER == STD_ON)
         pMsgContext->resData[DCM_INDEX_2] = (uint8)(gDcmDspSessionRow[DCM_INDEX_1].DcmDspSessionP2ServerMax >> 8U);
         pMsgContext->resData[DCM_INDEX_3] = (uint8)(gDcmDspSessionRow[DCM_INDEX_1].DcmDspSessionP2ServerMax);

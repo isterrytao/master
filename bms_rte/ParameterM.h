@@ -25,6 +25,7 @@
 #include "Soc.h"
 #include "SocDiagCalib.h"
 #include "Charge_Types.h"
+#include "RuntimeM.h"
 
 #define PARAMETERM_DEV_ERROR_DETECT         STD_OFF
 
@@ -244,6 +245,15 @@ uint16 ParameterM_PFlashDiagCalibRead(Diagnosis_ItemType index, uint8 level, uin
  * \param type 标定参数类型
  */
 void ParameterM_SetCalibParaPtr(ParameterM_CalibParaTypeType type);
+
+
+/**
+ * \brief 检查参数是否全部同步到DFLASH
+ *
+ * \retval TRUE 全部同步到DFLASH
+ * \retval FALSE 未全部同步到DFLASH
+ */
+boolean ParameterM_SyncFinished(RuntimeM_SignalType signal);
 
 #endif
 

@@ -21,15 +21,25 @@
 #include "Diagnosis.h"
 #include "Dio.h"
 
+#include "AppInfo.h"
+#include "HWDiagnosis.h"
+#include "DigitalInput_Cfg.h"
+#include "DigitalInput.h"
+#include "ChargeM.h"
+#include "DisChargeM.h"
+#include "SocDiagCalib.h"
+
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
-
 
 
 typedef struct {
     GB32960_RtMessageHeader GBRtHeader;
     union {
         struct {
+            uint16 messageLength;
+            uint8 releaseName[30];
+            uint8 SCID[40];
             uint16 customMsgVersion;
             uint8 fwAddrSpace;
             uint32 runTime;
@@ -41,6 +51,12 @@ typedef struct {
             uint8 deviceCnt;
         } deviceList;
         struct {
+            uint16 messageLength;
+            uint8 heardbeat;
+            uint16 supplyVoltage;
+            uint8 resetSourse;
+            uint16 dSoc;
+            uint16 integralRatio;
             uint16 soc;
             uint16 soh;
             uint16 insuResSys;
@@ -48,6 +64,28 @@ typedef struct {
             uint16 insuResNeg;
             uint8 runStatus;
             uint8 wakeSignal;
+            uint16 bcuTotalVoltage;
+            uint16 HVBPOS;
+            uint16 HV1;
+            uint16 HV2;
+            uint16 HV3;
+            uint16 HV4;
+            uint16 HV5;
+            uint8 DI1;
+            uint8 DI2;
+            uint8 SW1;
+            uint8 SW2;
+            uint8 chargeStartDiagFault;
+            uint8 chargeDiagFaultFlag;
+            uint8 chargeDiagFaultAction;
+            uint8 ChargerGBReadyFault;
+            uint8 chargeOtherFault;
+            uint8 dischargeStartDiagFault;
+            uint8 dischargeDiagFaultFlag;
+            uint8 dischargeFaultDiagFaultAction;
+            uint8 dischargeOtherFault;
+            uint8 SOCEmptyReason;
+            uint8 SOCFullReason;
             uint8 relayNum;
         } systemStatus;
         struct {
@@ -90,8 +128,11 @@ typedef struct {
         } dtuStatus;
 
         struct {
+            uint16 messageLength;
             uint8 connection;
             uint16 chargedTime;
+            uint16 requestChargeVoltMax;
+            sint16 requestChargeCurrentMax;
             uint16 outputVoltage;
             uint16 outputCurrent;
             uint32 errorStatus;
@@ -130,6 +171,12 @@ typedef struct {
     } dataHeader;
 } GB32960_PACKED GBRt_MsgBuffer;
 
+
+typedef struct {
+    uint8 heardbeat;
+    GBRt_MsgBuffer msgBuf;
+} GB32960_PACKED GBRt_MsgBufferWithHeartbeat;
+
 #define MSG_VERSION         0U
 
 #define MEMBER_SIZEOF_MSG_HEADER(_member_) sizeof(((GBRt_MsgBuffer *)0)->dataHeader._member_)
@@ -148,8 +195,11 @@ typedef struct {
 #define MSG_LENGTH_GB32960_SUPPORT_CMDID  (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId) + GB32960_SUPPORT_COMMAND_NUMBER)
 
 
-static GBRt_MsgBuffer headerBuffer;
+static GBRt_MsgBufferWithHeartbeat headerBufferWithHeartbeat;
 static void fillDeviceInfo(GBRt_MsgBuffer *msgHeader) {
+    msgHeader->dataHeader.deviceInfo.messageLength = sizeof(msgHeader->dataHeader.deviceInfo) - 2U;
+    (void)memcpy(msgHeader->dataHeader.deviceInfo.releaseName, AppInfoTag.ReleaseName, sizeof(msgHeader->dataHeader.deviceInfo.releaseName));
+    (void)memcpy(msgHeader->dataHeader.deviceInfo.SCID, AppInfoTag.SourceCommitId, sizeof(msgHeader->dataHeader.deviceInfo.SCID));
     msgHeader->dataHeader.deviceInfo.customMsgVersion = MSG_VERSION;
     msgHeader->dataHeader.deviceInfo.fwAddrSpace = AppInfoTag.FWAddrSpace;
     msgHeader->dataHeader.deviceInfo.runTime = OSTimeGet();
@@ -158,7 +208,7 @@ static void fillDeviceInfo(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copySegmentsDeviceInfo[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo), 1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U, PTR_TYPE_DATA, {AppInfoTag.FWID}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 32U, PTR_TYPE_DATA, {AppInfoTag.BurnID}},
 };
@@ -169,13 +219,52 @@ static void fillDeviceList(GBRt_MsgBuffer *msgHeader) {
 }
 
 const GB32960_CopySegmentType copySegmentsDeviceList[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList), 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, PTR_TYPE_GET_DATA, {HardwareSn_GetPtr}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, PTR_TYPE_DATA, {AppInfoTag.FWVersion}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * sizeof(DeviceInfo_DeviceInfoType), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
 };
 
 static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
+    uint32 validity_test;
+    GBRt_MsgBufferWithHeartbeat *msgHeaderWithHeartbeat = container_of(msgHeader, GBRt_MsgBufferWithHeartbeat, msgBuf);/*lint !e586 !e507 !e413*/
+    msgHeader->dataHeader.systemStatus.messageLength = sizeof(msgHeader->dataHeader.systemStatus) + RELAYM_FN_NUM - 2U;
+    msgHeader->dataHeader.systemStatus.heardbeat = msgHeaderWithHeartbeat->heardbeat++;
+    msgHeader->dataHeader.systemStatus.supplyVoltage = HWDiagnosis_GetBoardVoltage(HWDIAGNOSIS_BCU_VOLT_24V);
+    msgHeader->dataHeader.systemStatus.resetSourse = (uint8)RuntimeM_GetResetSouce();
+    validity_test = Statistic_GetBcuTotalVoltage();
+    if ( validity_test < 6553500UL) {
+        msgHeader->dataHeader.systemStatus.bcuTotalVoltage = (uint16)(validity_test / 100UL);
+    } else {
+        msgHeader->dataHeader.systemStatus.bcuTotalVoltage = 0U;
+    }
+    msgHeader->dataHeader.systemStatus.HVBPOS = HV_GetVoltage(HV_CHANNEL_BPOS);
+    msgHeader->dataHeader.systemStatus.HV1 = HV_GetVoltage(HV_CHANNEL_HV1);
+    msgHeader->dataHeader.systemStatus.HV2 = HV_GetVoltage(HV_CHANNEL_HV2);
+    msgHeader->dataHeader.systemStatus.HV3 = HV_GetVoltage(HV_CHANNEL_HV3);
+    msgHeader->dataHeader.systemStatus.HV4 = HV_GetVoltage(HV_CHANNEL_HV4);
+    msgHeader->dataHeader.systemStatus.HV5 = HV_GetVoltage(HV_CHANNEL_HV5);
+    msgHeader->dataHeader.systemStatus.DI1 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN1);
+    msgHeader->dataHeader.systemStatus.DI2 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN2);
+    msgHeader->dataHeader.systemStatus.SW1 = (uint8)DigitalInput_GetSwitchState(DIGITALINPUT_BCU_SW1);
+    msgHeader->dataHeader.systemStatus.SW2 = (uint8)DigitalInput_GetSwitchState(DIGITALINPUT_BCU_SW2);
+    msgHeader->dataHeader.systemStatus.chargeStartDiagFault = (uint8)ChargeM_GetStartDiagFault();
+    msgHeader->dataHeader.systemStatus.chargeDiagFaultFlag = (uint8)ChargeM_GetDiagFaultFlag();
+    msgHeader->dataHeader.systemStatus.chargeDiagFaultAction = (uint8)ChargeM_GetDiagFaultAction();
+    msgHeader->dataHeader.systemStatus.ChargerGBReadyFault = (uint8)ChargeM_GetChargerGBReadyFault();
+    msgHeader->dataHeader.systemStatus.chargeOtherFault = (uint8)ChargeM_GetOthersFault();
+    msgHeader->dataHeader.systemStatus.dischargeStartDiagFault = (uint8)DischargeM_GetStartDiagFault();
+    msgHeader->dataHeader.systemStatus.dischargeDiagFaultFlag = (uint8)DischargeM_GetDiagFaultFlag();
+    msgHeader->dataHeader.systemStatus.dischargeFaultDiagFaultAction = (uint8)DischargeM_GetDiagFaultAction();
+    msgHeader->dataHeader.systemStatus.dischargeOtherFault = (uint8)DischargeM_GetOthersFault();
+    msgHeader->dataHeader.systemStatus.SOCEmptyReason = (uint8)SocDiagCalib_GetEmptyReason();
+    msgHeader->dataHeader.systemStatus.SOCFullReason = (uint8)SocDiagCalib_GetFullReason();
+    msgHeader->dataHeader.systemStatus.dSoc = Soc_Get();
+    if (msgHeader->dataHeader.systemStatus.runStatus == 0X03U) {
+        msgHeader->dataHeader.systemStatus.integralRatio = Soc_GetChgEfficiency();
+    } else {
+        msgHeader->dataHeader.systemStatus.integralRatio = Soc_GetDchgEfficiency();
+    }
     msgHeader->dataHeader.systemStatus.soc = Soc_Get();
     msgHeader->dataHeader.systemStatus.soh = Soh_Get();
     msgHeader->dataHeader.systemStatus.insuResSys = Insu_GetSystem();
@@ -191,8 +280,22 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
 
 static uint16 copyRelayData(uint16 offset, uint8 *buf, uint16 len) {
     uint16 i;
+    uint8 dat;
+    uint8 state;
     for (i = 0U; i < len; i++) {
-        *buf++ =  RelayM_GetActualStatus((uint8)(offset + i)) == RELAYM_ACTUAL_ON ? 1U : 0U;
+        state = RelayM_GetDiagnosisStatus((uint8)(offset + i));
+        if (RELAYM_DIAGNOSIS_IS_DRIVER_ERR(state)) {
+            dat = 0x02U;
+        } else if (RELAYM_DIAGNOSIS_IS_ADHESIVE(state)) {
+            dat = 0x03U;
+        } else if (RELAYM_DIAGNOSIS_IS_OPEN(state)) {
+            dat = 0x04U;
+        } else if (RELAYM_DIAGNOSIS_IS_AUX_CONTACT_ERR(state)) {
+            dat = 0x05U;
+        } else {
+            dat = RelayM_GetActualStatus((uint8)(offset + i)) == RELAYM_ACTUAL_ON ? 1U : 0U;
+        }
+        *buf++ = dat;
     }
 
     return len;
@@ -200,7 +303,7 @@ static uint16 copyRelayData(uint16 offset, uint8 *buf, uint16 len) {
 
 
 static const GB32960_CopySegmentType copySegmentsSystemStatus[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus), 1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + RELAYM_FN_NUM, PTR_TYPE_COPY_DATA, {copyRelayData}}
 };
 
@@ -216,7 +319,7 @@ static void fillCellVoltage(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copySegmentsCellVoltage[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr}}
 };
 
@@ -241,7 +344,7 @@ static uint16 copyTempData(uint16 offset, uint8 *buf, uint16 len) {
 }
 
 static const GB32960_CopySegmentType copySegmentsCellTemperatures[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), 1U + MEMBER_SIZEOF_MSG_HEADER(cellTemperatures) + (uint16)(1UL * SYSTEM_TEMP_CELL_NUM), PTR_TYPE_COPY_DATA, {copyTempData}}
 };
 
@@ -262,7 +365,7 @@ static void fillCellPeakData(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copySegmentsCellPeakData[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellPeakData), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellPeakData), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
 };
 
 static void fillDtuStatus(GBRt_MsgBuffer *msgHeader) {
@@ -274,12 +377,14 @@ static void fillDtuStatus(GBRt_MsgBuffer *msgHeader) {
     DtuM35_GetLoc(&msgHeader->dataHeader.dtuStatus.longtitude);
 }
 static const GB32960_CopySegmentType copySegmentsDtuStatus[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(dtuStatus), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(dtuStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
 };
 
 static void fillChargerStatus(GBRt_MsgBuffer *msgHeader) {
     uint8 temp;
     uint32 temp32;
+
+    msgHeader->dataHeader.chargerStatus.messageLength = sizeof(msgHeader->dataHeader.chargerStatus) - 2U;
 
     msgHeader->dataHeader.chargerStatus.connection = ChargeConnectM_GetConnectType();
     temp32 = Statistic_GetEclipseChargeTime();
@@ -287,6 +392,10 @@ static void fillChargerStatus(GBRt_MsgBuffer *msgHeader) {
         temp32 = 0xFFFFU;
     }
     msgHeader->dataHeader.chargerStatus.chargedTime = (uint16)temp32;
+
+    msgHeader->dataHeader.chargerStatus.requestChargeVoltMax = ChargerComm_GetChargeVoltMax();
+    msgHeader->dataHeader.chargerStatus.requestChargeCurrentMax = ChargerComm_GetChargeCurrentMax();
+
     msgHeader->dataHeader.chargerStatus.outputVoltage = ChargerComm_GetChargerOutputHV();
     msgHeader->dataHeader.chargerStatus.outputCurrent = (uint16)ChargerComm_GetChargerOutputCurrent();
     msgHeader->dataHeader.chargerStatus.errorStatus = ChargerComm_GetChargerFaultBitmap();
@@ -332,7 +441,7 @@ static void fillChargerStatus(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copySegmentsChargerStatus[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(chargerStatus), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(chargerStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
 };
 
 static void fillBalanceStatus(GBRt_MsgBuffer *msgHeader) {
@@ -340,7 +449,7 @@ static void fillBalanceStatus(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copySegmentsBalanceStatus[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U, PTR_TYPE_GET_DATA, {BalanceM_GetBalanceStatusPtr}},
 };
 
@@ -361,8 +470,7 @@ static uint16 copyAlarmData(uint16 offset, uint8 *buf, uint16 len) {
     if (alarmCopyOffset >= (uint8)DIAGNOSIS_ITEM_MAX_NUM) {
         (void)memset(buf, (int)DIAGNOSIS_LEVEL_NONE, len);
         copyed = len;
-    }
-    else {
+    } else {
         while (len >= 2U && alarmCopyOffset < ARRAY_SIZE(alarms)) {
             if (alarms[alarmCopyOffset] != DIAGNOSIS_LEVEL_NONE) {
                 len -= 2U;
@@ -397,7 +505,7 @@ static void clearAlarmLength(void) {
 }
 
 static const GB32960_CopySegmentType copySegmentsAlarmStatus[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(alarmStatus), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(alarmStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(alarmStatus), 0xFFFEU, PTR_TYPE_COPY_DATA, {copyAlarmData}},
 };
 
@@ -407,32 +515,32 @@ static void fillGB32960CommandListNum(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copySupportCommandIDs[] = {
-    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId), PTR_TYPE_DATA, {&headerBuffer}},
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId), MSG_LENGTH_GB32960_SUPPORT_CMDID, PTR_TYPE_DATA, {GB32960_SupportCommandId}},
 };
 
 const GB32960_RTMessageItemType loginOnceData[] = {
-    {0x81U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copySegmentsDeviceInfo, (uint8)ARRAY_SIZE(copySegmentsDeviceInfo)},
+    {0x92U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copySegmentsDeviceInfo, (uint8)ARRAY_SIZE(copySegmentsDeviceInfo)},
     {0x82U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_LIST, NULL, (GB32960_FillMessageFuncType)fillDeviceList, copySegmentsDeviceList, (uint8)ARRAY_SIZE(copySegmentsDeviceList)},
     {0x91U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_GB32960_SUPPORT_CMDID, NULL, (GB32960_FillMessageFuncType)fillGB32960CommandListNum, copySupportCommandIDs, (uint8)ARRAY_SIZE(copySupportCommandIDs)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}
 };
 
 const GB32960_RTMessageItemType intervalData[] = {
-    {0x83U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copySegmentsSystemStatus, (uint8)ARRAY_SIZE(copySegmentsSystemStatus)},
+    {0x93U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copySegmentsSystemStatus, (uint8)ARRAY_SIZE(copySegmentsSystemStatus)},
     {0x08U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copySegmentsCellVoltage, (uint8)ARRAY_SIZE(copySegmentsCellVoltage)},
     {0x09U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copySegmentsCellTemperatures, (uint8)ARRAY_SIZE(copySegmentsCellTemperatures)},
     {0x06U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copySegmentsCellPeakData, (uint8)ARRAY_SIZE(copySegmentsCellPeakData)},
     {0x84U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copySegmentsDtuStatus, (uint8)ARRAY_SIZE(copySegmentsDtuStatus)},
     {0x86U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalanceStatus, (uint8)ARRAY_SIZE(copySegmentsBalanceStatus)},
-    {0x85U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copySegmentsChargerStatus, (uint8)ARRAY_SIZE(copySegmentsChargerStatus)},
+    {0x94U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copySegmentsChargerStatus, (uint8)ARRAY_SIZE(copySegmentsChargerStatus)},
     {0x87U, TRUE, LEN_TYPE_GET_LENGTH, 0U, getAlarmLength, (GB32960_FillMessageFuncType)fillAlarmStatus, copySegmentsAlarmStatus, (uint8)ARRAY_SIZE(copySegmentsAlarmStatus)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}
 };
 
 
 const GB32960_RtMessageConfigDataType GB32960RtMessageConfigData = {
-    &headerBuffer.GBRtHeader,
+    &headerBufferWithHeartbeat.msgBuf.GBRtHeader,
     loginOnceData,
     intervalData,
     clearAlarmLength,
@@ -441,7 +549,7 @@ const GB32960_RtMessageConfigDataType GB32960RtMessageConfigData = {
 
 #include "SaveM.h"
 
-static GBRt_MsgBuffer record_header;
+static GBRt_MsgBufferWithHeartbeat recordHeaderWithHeartbeat;
 
 /**
  * \brief      20170315: 经讨论决定,使用国标协议版本号低字节作为数据存储记录类型的版本标识
@@ -453,47 +561,47 @@ static GBRt_MsgBuffer record_header;
 #endif
 
 static const GB32960_CopySegmentType copyRecordSegmentsDeviceInfo[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(deviceInfo), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(deviceInfo), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceInfo), MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U, PTR_TYPE_DATA, {AppInfoTag.FWID}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U, MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 32U, PTR_TYPE_DATA, {AppInfoTag.BurnID}},
 };
 
 const GB32960_CopySegmentType copyRecordSegmentsDeviceList[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(deviceList), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(deviceList), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceList), MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, PTR_TYPE_GET_DATA, {HardwareSn_GetPtr}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, PTR_TYPE_DATA, {AppInfoTag.FWVersion}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * sizeof(DeviceInfo_DeviceInfoType), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsSystemStatus[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(systemStatus), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(systemStatus), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(systemStatus), MEMBER_SIZEOF_MSG_HEADER(systemStatus) + RELAYM_FN_NUM, PTR_TYPE_COPY_DATA, {copyRelayData}}
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsCellVoltage[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(cellVoltages), MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr}}
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsCellTemperatures[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), MEMBER_SIZEOF_MSG_HEADER(cellTemperatures) + (uint16)(1UL * SYSTEM_TEMP_CELL_NUM), PTR_TYPE_COPY_DATA, {copyTempData}}
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsCellPeakData[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(cellPeakData), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(cellPeakData), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsDtuStatus[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(dtuStatus), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(dtuStatus), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsChargerStatus[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(chargerStatus), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(chargerStatus), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsBalanceStatus[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(balanceStatus), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(balanceStatus), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(balanceStatus), MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U, PTR_TYPE_GET_DATA, {BalanceM_GetBalanceStatusPtr}},
 };
 
@@ -509,7 +617,7 @@ static void fillPowerInfoRecord(GBRt_MsgBuffer *msgHeader) {
 }
 
 static const GB32960_CopySegmentType copyRecordSegmentsPowerInfo[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(powerInfo), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(powerInfo), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
 };
 
 static Diagnosis_LevelType alarmsRecord[DIAGNOSIS_ITEM_MAX_NUM];
@@ -536,8 +644,7 @@ static uint16 copyAlarmDataRecord(uint16 offset, uint8 *buf, uint16 len) {
     if (alarmCopyOffsetRecord >= (uint8)DIAGNOSIS_ITEM_MAX_NUM) {
         (void)memset(buf, (int)DIAGNOSIS_LEVEL_NONE, len);
         copyed = len;
-    }
-    else {
+    } else {
         while (len >= 2U && alarmCopyOffsetRecord < ARRAY_SIZE(alarmsRecord)) {
             if (alarmsRecord[alarmCopyOffsetRecord] != DIAGNOSIS_LEVEL_NONE) {
                 len -= 2U;
@@ -556,7 +663,7 @@ static uint16 getAlarmLengthRecord(void) {
 }
 
 static const GB32960_CopySegmentType copyRecordSegmentsAlarmStatus[] = {
-    {0U, MEMBER_SIZEOF_MSG_HEADER(alarmStatus), PTR_TYPE_DATA, {&record_header.dataHeader}},
+    {0U, MEMBER_SIZEOF_MSG_HEADER(alarmStatus), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(alarmStatus), 0xFFFEU, PTR_TYPE_COPY_DATA,  {copyAlarmDataRecord}},
 };
 
@@ -569,7 +676,7 @@ static boolean is_valid_in_charging_mode(void) {
 }
 
 static const GB32960_RecordItemType onceDataList[] = {
-    {GB_TYPE_TO_RECORD_TYPE(0x81U), MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copyRecordSegmentsDeviceInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsDeviceInfo), NULL},
+    {GB_TYPE_TO_RECORD_TYPE(0x92U), MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copyRecordSegmentsDeviceInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsDeviceInfo), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x82U), MSG_LENGTH_DEVICE_LIST, NULL, (GB32960_FillMessageFuncType)fillDeviceList, copyRecordSegmentsDeviceList, (uint8)ARRAY_SIZE(copyRecordSegmentsDeviceList), NULL},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
 };
@@ -582,12 +689,12 @@ static const GB32960_RecordItemType fixedCycleDataList[] = {
 
 
 static const GB32960_RecordItemType unfixedCycleDataList[] = {
-    {GB_TYPE_TO_RECORD_TYPE(0x83U), MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copyRecordSegmentsSystemStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsSystemStatus), NULL},
+    {GB_TYPE_TO_RECORD_TYPE(0x93U), MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copyRecordSegmentsSystemStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsSystemStatus), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x08U), MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copyRecordSegmentsCellVoltage, (uint8)ARRAY_SIZE(copyRecordSegmentsCellVoltage), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x09U), MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copyRecordSegmentsCellTemperatures, (uint8)ARRAY_SIZE(copyRecordSegmentsCellTemperatures), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x06U), MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copyRecordSegmentsCellPeakData, (uint8)ARRAY_SIZE(copyRecordSegmentsCellPeakData), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x86U), MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copyRecordSegmentsBalanceStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsBalanceStatus), BalanceM_IsBalance},
-    {GB_TYPE_TO_RECORD_TYPE(0x85U), MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copyRecordSegmentsChargerStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsChargerStatus), is_valid_in_charging_mode},
+    {GB_TYPE_TO_RECORD_TYPE(0x94U), MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copyRecordSegmentsChargerStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsChargerStatus), is_valid_in_charging_mode},
     {GB_TYPE_TO_RECORD_TYPE(0x87U), 0U, getAlarmLengthRecord, (GB32960_FillMessageFuncType)fillAlarmStatusRecord, copyRecordSegmentsAlarmStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsAlarmStatus), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x89U), MSG_LENGTH_CUMU_INFO, NULL, (GB32960_FillMessageFuncType)fillPowerInfoRecord, copyRecordSegmentsPowerInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsPowerInfo), NULL},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
@@ -674,7 +781,7 @@ static uint32 unfixed_get_cycle(void) {
     Diagnosis_LevelType tmp;
     uint32 res;
 
-    for(i = 0U; i < ARRAY_SIZE(UnfixedAlarmList); i++) {
+    for (i = 0U; i < ARRAY_SIZE(UnfixedAlarmList); i++) {
         tmp = Diagnosis_GetLevel(UnfixedAlarmList[i]);
         if (tmp > lv) {
             lv = tmp;
@@ -705,7 +812,7 @@ uint16 GBRtMsg_GetRecordLength(const GB32960_RecordItemType *item) {
 }
 
 const SaveM_RecordConfigDataType SaveMRecordConfigData = {
-    /* GBRt_MsgBuffer *headerData; */ &record_header.GBRtHeader,
+    /* GBRt_MsgBuffer *headerData; */ &recordHeaderWithHeartbeat.msgBuf.GBRtHeader,
     /* onPowerUpOnceData = */ {
         0U,
         NULL,

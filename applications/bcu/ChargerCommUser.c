@@ -321,12 +321,16 @@ cleanup:
     return;
 }
 
-App_CurrentType ChargerCommUser_GetGBSignalCurrentMax(void)
+Current_CurrentType ChargerCommUser_GetGBSignalCurrentMax(void)
 {
-    App_CurrentType currentMax;
+    Current_CurrentType currentMax;
     uint8 type = ChargerCommUser_innerData.currentChargeType;
 
-    currentMax = (App_CurrentType)ChargeConnectM_GetChargeCurrentMax(type);
+    currentMax = ChargeConnectM_GetChargeCurrentMax(type);
+    if (currentMax < 0)
+    {
+        currentMax = 0x7FFF;
+    }
 
     return currentMax;
 }

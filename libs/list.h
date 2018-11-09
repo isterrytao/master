@@ -20,8 +20,7 @@ struct list_head {
     struct list_head *next;
 };
 
-
-#define container_of(ptr, type, member) ((type *(((char *ptr) - offsetof(type, member)))
+#define container_of(ptr, type, member) ((type *)((char *)((char *)(ptr) - offsetof(type, member))))
 
 /*
  * Simple doubly linked list implementation.

@@ -137,6 +137,13 @@ void Eeep_GetDiagnosisStatus(Eeep_ErrorStatusType* status);
  */
 Std_ReturnType Eeep_WaitIdle(void);
 
+/**
+ * \brief 检查Eeeprom是否全部同步到DFLASH
+ *
+ * \retval TRUE 全部同步到DFLASH
+ * \retval FALSE 未全部同步到DFLASH
+ */
+boolean Eeep_IsIdle(void);
 
 #endif
 

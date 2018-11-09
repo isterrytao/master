@@ -67,6 +67,7 @@ typedef enum {
 #define RELAYM_DIAGNOSIS_IS_ADHESIVE(diag)                 (((diag) & RELAYM_DIAGNOSIS_ADHESIVE_STATE_MASK) != 0U)
 #define RELAYM_DIAGNOSIS_IS_OPEN(diag)                     (((diag) & RELAYM_DIAGNOSIS_OPEN_STATE_MASK) != 0U)
 #define RELAYM_DIAGNOSIS_IS_AUX_CONTACT_ERR(diag)          (((diag) & RELAYM_DIAGNOSIS_AUX_CONTACT_MASK) != 0U)
+#define RELAYM_DIAGNOSIS_IS_DRIVER_ERR(diag)               (((diag) & RELAYM_DIAGNOSIS_DRIVER_STATE_MASK) != 0U)
 
 typedef uint8 RelayM_DiagnosisStatusType;
 

@@ -138,7 +138,7 @@ void ChargerCommUser_StartRecStageTimeout(uint8 channel, ChargerComm_StageType c
  * \brief 获取国标定义充电信号限制最大电流
  * \return 最大允许充电电流
  */
-App_CurrentType ChargerCommUser_GetGBSignalCurrentMax(void);
+Current_CurrentType ChargerCommUser_GetGBSignalCurrentMax(void);
 
 /**
  * \brief 自定义充电机通信启动
