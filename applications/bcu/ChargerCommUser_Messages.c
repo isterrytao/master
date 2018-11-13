@@ -94,7 +94,7 @@ static Std_ReturnType ChargerCommUser_TCRecConditionCheck(void)
     userType = ChargerCommUser_GetCurrentChargeType();
     if (ChargerConnectM_GetConnectMode(userType) == CHARGECONNECTM_CONNECT_COMMUNICATION)
     {
-        ChargerCommUser_ChargerEnable();
+        // ChargerCommUser_ChargerEnable();
         ChargerComm_SetCommunicationStatus(TRUE);
     }
     else
@@ -321,7 +321,7 @@ void ChargerCommUser_RecTCTimeoutCbk(void)
     ChargerComm_ClrChargerStatus();
     if (ChargerConnectM_GetConnectMode(ChargerCommUser_GetCurrentChargeType()) == CHARGECONNECTM_CONNECT_COMMUNICATION)
     {
-        ChargerCommUser_CommStop();
+        // ChargerCommUser_CommStop();
     }
     ChargerComm_SetCommunicationStatus(FALSE);
 }

@@ -316,7 +316,7 @@ static void ChargerCommGB_CommStopForRestart(void)
     if (ChargerConnectM_GetConnectMode(ChargerCommGB_GetCurrentChargeType()) == CHARGECONNECTM_CONNECT_COMMUNICATION ||
         ChargerCommGB_innerData.stopFlag == TRUE)
     {
-        ChargerCommGB_CommStop();
+        // ChargerCommGB_CommStop();
     }
     else
     {
@@ -1224,7 +1224,7 @@ void ChargerCommGB_ReceiveCHMCbk(const uint8 *Buffer, uint16 Length)
         ChargerCommGB_UpdateCurrentChargeType();
         if (ChargerConnectM_GetConnectMode(ChargerCommGB_innerData.currentChargeType) == CHARGECONNECTM_CONNECT_COMMUNICATION)
         {
-            ChargerCommGB_ChargerEnable();
+            // ChargerCommGB_ChargerEnable();
             ChargerCommGB_SetCommunication(TRUE);
         }
         else
@@ -1298,7 +1298,7 @@ void ChargerCommGB_ReceiveCRMCbk(const uint8 *Buffer, uint16 Length)
         ChargerCommGB_UpdateCurrentChargeType();
         if (ChargerConnectM_GetConnectMode(ChargerCommGB_innerData.currentChargeType) == CHARGECONNECTM_CONNECT_COMMUNICATION)
         {
-            ChargerCommGB_ChargerEnable();
+            // ChargerCommGB_ChargerEnable();
             ChargerCommGB_SetCommunication(TRUE);
         }
         else
