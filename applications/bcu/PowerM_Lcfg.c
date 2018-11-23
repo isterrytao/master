@@ -64,6 +64,7 @@ static const PowerM_ConfigParamType PowerMCurChgDcConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 // 慢充充电电流表（无特殊说明，所有温度点必须有回滚）
@@ -108,6 +109,7 @@ static const PowerM_ConfigParamType PowerMCurChgAcConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 // 加热电流表
@@ -145,6 +147,7 @@ static const PowerM_ConfigParamType PowerMCurChgHeaterConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 
@@ -189,6 +192,7 @@ static const PowerM_ConfigParamType PowerMCurDchgContinueConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 
@@ -233,6 +237,7 @@ static const PowerM_ConfigParamType PowerMCurChgContinueConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 // 最大运行瞬时回馈功率表（无特殊说明，所有温度点必须有回滚）
@@ -276,6 +281,7 @@ static const PowerM_ConfigParamType PowerMCurDchgFeedbackConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 // 最大允许瞬时放电功率表（无特殊说明，所有温度点必须有回滚）
@@ -320,6 +326,7 @@ static const PowerM_ConfigParamType PowerMCurDchgPeakConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 static Std_ReturnType thisExtCurXGet(uint16 *v) {
@@ -362,6 +369,7 @@ static const PowerM_ConfigParamType PowerMCurExtCurConfigTable = {
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
     NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
+    0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
 };
 
 

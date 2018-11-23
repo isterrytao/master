@@ -25,6 +25,7 @@
 #include "ChargeConnectM_Cfg.h"
 #include "Async_Looper.h"
 #include "Async_Event.h"
+#include "RuntimeM.h"
 
 /**
  * \brief 充电是否已连接
@@ -425,6 +426,13 @@ Current_CurrentType ChargeConnectM_GetCpChargeCurrentMax(void);
  * \return 0-正常 1-故障
  */
 uint16 ChargeConnectM_IsDoubleConnectFault(void);
+
+/**
+ * \brief 是否可以安全下电
+ *
+ * \return 返回TRUE时, 表示该任务已经关闭, 可以下电.
+ */
+boolean ChargeConnectM_SaftyOff(RuntimeM_SignalType signal);
 
 
 #endif
