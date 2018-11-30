@@ -289,6 +289,7 @@ module.exports = {
             lockFeedback_comments: "锁止时检查的DIO及状态",
             unlockFeedback:['EL_FEEDBACK', 'LOW'],
             unlockFeedback_comments: "解锁时检查的DIO及状态",
+            ctlMax: 3,
         }
     },
 
