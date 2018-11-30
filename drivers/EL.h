@@ -31,6 +31,7 @@ typedef struct {
     uint16 LockTimeDuration; /**< 驱动锁止的时间 */
     uint16 UnlockTimeDuration;  /**< 驱动解锁的时间 */
     uint16 CheckDelay;/**< 电子锁动作时间, 驱动完成之后检查反馈的延时时间 */
+    uint8 ctlMax;
 } EL_LockerConfigType;
 
 #define EL_FORCE_OFF     0U

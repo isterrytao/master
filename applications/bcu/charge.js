@@ -54,6 +54,7 @@ module.exports = {
         el.unlockTime = cfg.el.unlockTime;
         el.lockFeedback = cfg.el.lockFeedback;
         el.unlockFeedback = cfg.el.unlockFeedback;
+        el.ctlMax = cfg.el.ctlMax ? cfg.el.ctlMax : 1;
 
         var m = acmodemap.find(x=> x.mode == cfg.ac.mode);
         if (!m) {
