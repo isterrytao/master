@@ -10,7 +10,7 @@ module.exports = {
             ["APP_BATTERY_TYPE_LEAD_ACID", "铅酸", 3000, 1000, 63, 5000],
             ["APP_BATTERY_TYPE_NIMH", "镍氢", 1800, 700, 63, 5000],
             ["APP_BATTERY_TYPE_LIFEPO4", "磷酸铁锂", 3900, 2300, 63, 5000],
-            ["APP_BATTERY_TYPE_LIMN2O4", "锰酸锂", 4300, 2200, 63, 5000],
+            ["APP_BATTERY_TYPE_LIMN2O4", "锰酸锂", 4400, 2200, 63, 5000],
             ["APP_BATTERY_TYPE_LICOO2", "钴酸锂", 4300, 2200, 63, 5000],
             ["APP_BATTERY_TYPE_TERNARY", "三元材料", 4300, 2700, 63, 5000],
             ["APP_BATTERY_TYPE_POLYMER_LI_LON", "聚合物锂离子", 4300, 2700, 63, 5000],

@@ -290,6 +290,7 @@ module.exports = {
             unlockFeedback:['EL_FEEDBACK', 'LOW'],
             unlockFeedback_comments: "解锁时检查的DIO及状态",
             ctlMax: 3,
+            ctlMax_comments: "电子锁驱动最大驱动次数，大于1时驱动失败后会自动重试",
         }
     },
 
