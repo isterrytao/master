@@ -501,11 +501,11 @@ void ChargerCommGB_GetBCPDataCbk(uint8 *Buffer, uint16 *Length)
             MV_TO_10MV(temp));//最高允许充电单体电压
     if (ChargerCommGB_innerData.currentChargeType == CHARGE_TYPE_DC)
     {
-        temp = BatteryInfo_BaseConfigInfo.NominalDCCurrent + 20U;
+        temp = BatteryInfo_BaseConfigInfo.NominalDCCurrent + 100U;
     }
     else
     {
-        temp = BatteryInfo_BaseConfigInfo.NominalACCurrent + 20U;
+        temp = BatteryInfo_BaseConfigInfo.NominalACCurrent + 100U;
     }
     WRITE_LT_UINT16(
         Buffer,
@@ -519,7 +519,15 @@ void ChargerCommGB_GetBCPDataCbk(uint8 *Buffer, uint16 *Length)
         volt += 100U;
     }
     WRITE_LT_UINT16(Buffer, index, volt);//最高允许充电电压
-    WRITE_LT_UINT8(Buffer, index, ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_CHG_HT, 0U));//最高允许充电温度
+    temp = ChargeM_GetChargeDisableTriggerPara(DIAGNOSIS_ITEM_CHG_HT, 0U);
+    if (temp < CELL_TEMPERATURE_SHORT_CIRCUIT_VALUE)
+    {
+        if (temp < CELL_TEMPERATURE_SHORT_CIRCUIT_VALUE - 5U)
+        {
+            temp += 5U;
+        }
+    }
+    WRITE_LT_UINT8(Buffer, index, temp);//最高允许充电温度
     WRITE_LT_UINT16(Buffer, index, Soc_Get());//当前SOC
     WRITE_LT_UINT16(Buffer, index, Statistic_GetBcu100mvTotalVoltage());//当前总压
 
