@@ -56,8 +56,8 @@ typedef struct {
             uint16 supplyVoltage;
             uint8 resetSourse;
             uint16 dSoc;
-            uint16 integralRatio;
             uint16 soc;
+            uint16 integralRatio;
             uint16 soh;
             uint16 insuResSys;
             uint16 insuResPos;
@@ -261,9 +261,9 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.systemStatus.SOCFullReason = (uint8)SocDiagCalib_GetFullReason();
     msgHeader->dataHeader.systemStatus.dSoc = Soc_Get();
     if (msgHeader->dataHeader.systemStatus.runStatus == 0X03U) {
-        msgHeader->dataHeader.systemStatus.integralRatio = Soc_GetChgEfficiency();
+        msgHeader->dataHeader.systemStatus.integralRatio = (uint16)(Soc_GetChgEfficiency() / 10U);
     } else {
-        msgHeader->dataHeader.systemStatus.integralRatio = Soc_GetDchgEfficiency();
+        msgHeader->dataHeader.systemStatus.integralRatio = (uint16)(Soc_GetDchgEfficiency() / 10U);
     }
     msgHeader->dataHeader.systemStatus.soc = Soc_Get();
     msgHeader->dataHeader.systemStatus.soh = Soh_Get();
