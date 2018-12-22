@@ -142,6 +142,15 @@ typedef struct{
 typedef Std_ReturnType (*ChargeConnectM_ConnectFunPtr)(void);
 
 /**
+ * \brief 快充/慢充充电连接优先级配置类型
+ */
+typedef enum {
+    CHARGECONNECTM_PRIO_TYPE_AC_EQ_DC = 0, //相同优先级，同时连接时，认为不连接，可报多连接故障
+    CHARGECONNECTM_PRIO_TYPE_AC_GT_DC = 1, //慢充连接优先级高于快充连接
+    CHARGECONNECTM_PRIO_TYPE_AC_LT_DC = 2, //快充连接优先级高于慢充连接
+}ChargeConnectM_ConnectionPrioType;
+
+/**
  * \brief 充电连接通用配置类型
  */
 typedef struct{
@@ -167,6 +176,7 @@ typedef struct{
 typedef struct{
     boolean ConnectionIsDynamic; /**< 充电连接是否动态更新 */
     boolean DoS2MonitorsEL; /**< S2监控电子锁状态开关 */
+    ChargeConnectM_ConnectionPrioType ConnectionPrio; /**< 快慢充连接优先级 */
     ChargeConnectM_CommonConfigType AC_Para;
     ChargeConnectM_CommonConfigType DC_Para;
     ChargeConnectM_ValueAdcToPhyCalculateParamType AdcPara[CHARGECONNECTM_ADC_CHANNEL_MAX];

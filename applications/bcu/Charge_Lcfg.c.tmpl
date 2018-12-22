@@ -48,6 +48,7 @@ const ChargerComm_ConfigType ChargerComm_ConfigInfo = {
 const ChargeConnectM_ConfigType ChargeConnectM_ConfigInfo = {
     TRUE, /**<  ConnectionIsDynamic: 充电连接是否动态更新 */
     TRUE, /**< DoS2MonitorsEL: S2监控电子锁状态开关 */
+    CHARGECONNECTM_PRIO_TYPE_AC_EQ_DC, /**< ConnectionPrio: 快慢充连接优先级 */
     // AC_Para: 交流(慢充)
     {
         /* <%- JSON.stringify(ac) %> */
