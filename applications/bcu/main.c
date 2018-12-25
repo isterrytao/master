@@ -106,6 +106,7 @@ static const Dcm_ConfigType DcmConfigDtuTp = {
 };
 
 static OS_STK currentm_task_stack[400];
+static OS_STK heat_current_task_stack[300];
 static OS_STK start_task_stack[500];
 static OS_STK hvadc_task_stack[300];
 // static OS_STK shunt_task_stack[400];
@@ -372,6 +373,7 @@ static void start_task(void *pdata) {
         }
 #endif
         CurrentM_Init(&CurrentM_ConfigInfo, CURRENTM_TASK_PRI, currentm_task_stack, ARRAY_SIZE(currentm_task_stack));
+        CurrentM_HeatInit(&CurrentM_ConfigInfo, HEAT_CURRENT_TASK_PRI, heat_current_task_stack, ARRAY_SIZE(heat_current_task_stack));
         PowerM_Init(&extLooper);
     }
     if (HardWareIO_GetVersion() != 5U /*0b101*/) {

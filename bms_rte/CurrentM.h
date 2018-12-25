@@ -89,6 +89,7 @@ extern const CurrentM_ConfigType CurrentM_ConfigInfo;
  * \param cfg 初始化参数
  */
 void CurrentM_Init(const CurrentM_ConfigType *cfg, uint8 pri, OS_STK *stack, uint16 stackLen);
+void CurrentM_HeatInit(const CurrentM_ConfigType *cfg, uint8 pri, OS_STK *stack, uint16 stackLen);
 
 /**
  * \brief 读取某一路的电流值.

@@ -23,7 +23,7 @@
 #define LTC6804COMM_SAMPLE_TASK_PRI         (6U)
 #define DIAGNOSIS_TASK_PRI                  (7U)
 #define HVADC_TEST_TASK_PRI                 (8U)
-#define SHUNT_TEST_TASK_PRI                 (9U)
+#define HEAT_CURRENT_TASK_PRI               (9U)
 #define HVPROCESS_TASK_PRI                  (10U)
 #define CHARGERCOMM_TASK_PRI                (11U)
 #define SHELL_LOOPER_TASK_PRI               (12U)
