@@ -5,7 +5,8 @@
 #include "CellDataM.h"
 #include "statistic.h"
 #include "Hmi.h"
-
+#include "RelayM.h"
+#include "RelayM_Lcfg.h"
 
 static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
     uint16 rc;
@@ -73,6 +74,57 @@ static uint16 MDBSgetPoleTempNum(const Modbus_RegistersRegionType *p, uint16 add
     (void)p;
 
     return (uint16)SYSTEM_POLE_TEMP_NUM;
+}
+static uint16 MDBSgetDeltaVoltage(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    uint16 val16;
+    (void) p;
+    (void) addr;
+    val16 = Statistic_GetBcuDeltaVoltage();
+    return val16;
+}
+static uint16 MDBSgetDeltaTemperature(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    uint16 val16;
+    (void) p;
+    (void) addr;
+    val16 = (uint16)Statistic_GetBcuDeltaTemperature();
+    return val16;
+}
+static uint16 MDBSgetRelaystate(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    RelayM_FunctionType fn;
+    RelayM_DiagnosisStatusType diag;
+    RelayM_ForceControlType force;
+    uint16 val16 = 0U;
+    (void) p;
+    if (addr >= 0x1050U)
+    {
+        fn = (RelayM_FunctionType)(addr - 0x1050U);
+        if ((uint16)fn < RELAYM_FN_NUM)
+        {
+            diag = RelayM_GetDiagnosisStatus(fn);
+            if (RELAYM_DIAGNOSIS_IS_DRIVER_ERR(diag)) {
+                val16 = 0x04U;
+            } else if (RELAYM_DIAGNOSIS_IS_ADHESIVE(diag)) {
+                val16 = 0x05U;
+            } else if (RELAYM_DIAGNOSIS_IS_OPEN(diag)) {
+                val16 = 0x06U;
+            } else if (RELAYM_DIAGNOSIS_IS_AUX_CONTACT_ERR(diag)) {
+                val16 = 0x07U;
+            } else {
+                force = RelayM_GetForceControlStatus(fn);
+                if (force == RELAYM_FORCE_ON) {
+                    val16 = 0x02U;
+                } else if (force == RELAYM_FORCE_OFF) {
+                    val16 = 0x03U;
+                } else {
+                    val16 = RelayM_GetActualStatus(fn) == RELAYM_ACTUAL_ON ? 1U : 0U;
+                }
+            }
+        }
+    }
+    return val16;
 }
 
 /*2000-2399*/
@@ -177,6 +229,9 @@ static const Modbus_RegistersRegionType x04registerTable[] = {
     {1004U, 1004U, MDBSgetTempSensorNum},
     {1005U, 1005U, MDBSgetHeatSensorNum},
     {1006U, 1006U, MDBSgetPoleTempNum},
+    {1007U, 1007U, MDBSgetDeltaVoltage},
+    {1008U, 1008U, MDBSgetDeltaTemperature},
+    {1050U, 1080U, MDBSgetRelaystate},
 };
 
 
