@@ -95,12 +95,13 @@ static uint16 MDBSgetRelaystate(const Modbus_RegistersRegionType *p, uint16 addr
 {
     RelayM_FunctionType fn;
     RelayM_DiagnosisStatusType diag;
-    RelayM_ForceControlType force;
+    HLSS_ForceDriveType force;
+    HLSS_ChannelType hlss;
     uint16 val16 = 0U;
     (void) p;
-    if (addr >= 0x1050U)
+    if (addr >= 1050U)
     {
-        fn = (RelayM_FunctionType)(addr - 0x1050U);
+        fn = (RelayM_FunctionType)(addr - 1050U);
         if ((uint16)fn < RELAYM_FN_NUM)
         {
             diag = RelayM_GetDiagnosisStatus(fn);
@@ -113,13 +114,14 @@ static uint16 MDBSgetRelaystate(const Modbus_RegistersRegionType *p, uint16 addr
             } else if (RELAYM_DIAGNOSIS_IS_AUX_CONTACT_ERR(diag)) {
                 val16 = 0x07U;
             } else {
-                force = RelayM_GetForceControlStatus(fn);
-                if (force == RELAYM_FORCE_ON) {
+                hlss = RelayM_GetDriveHSSChannel(fn);
+                force = HLSS_GetForce(hlss);
+                if (force == HLSS_FORCE_ON) {
                     val16 = 0x02U;
-                } else if (force == RELAYM_FORCE_OFF) {
+                } else if (force == HLSS_FORCE_OFF) {
                     val16 = 0x03U;
                 } else {
-                    val16 = RelayM_GetActualStatus(fn) == RELAYM_ACTUAL_ON ? 1U : 0U;
+                    val16 = RelayM_GetActualStatus(fn) == RELAYM_ACTUAL_ON ? 0x01U : 0x00U;
                 }
             }
         }
