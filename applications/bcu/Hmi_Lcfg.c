@@ -85,11 +85,16 @@ static uint16 MDBSgetDeltaVoltage(const Modbus_RegistersRegionType *p, uint16 ad
 }
 static uint16 MDBSgetDeltaTemperature(const Modbus_RegistersRegionType *p, uint16 addr)
 {
-    uint16 val16;
+    sint16 rc;
     (void) p;
     (void) addr;
-    val16 = (uint16)Statistic_GetBcuDeltaTemperature();
-    return val16;
+    rc = (sint16)Statistic_GetBcuDeltaTemperature();
+    if ((rc >= 0) && (rc <= 175)) {
+        rc -= 50;
+    } else {
+
+    }
+    return (uint16)rc;
 }
 static uint16 MDBSgetRelaystate(const Modbus_RegistersRegionType *p, uint16 addr)
 {
