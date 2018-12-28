@@ -14,7 +14,9 @@ static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 ad
     (void)p;
 
     rc = Statistic_GetBcu100mvTotalVoltage();
-    rc = (rc + 5U) / 10U;
+    if (Statistic_TotalVoltageIsValid(rc)) {
+        rc = (rc + 5U) / 10U;
+    }
     return rc;
 }
 
@@ -25,7 +27,7 @@ static uint16 MDBSgetTotalCurrent(const Modbus_RegistersRegionType *p, uint16 ad
 
     rc =  (sint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
-    if (rc > (-32766L))	{
+    if (CurrentM_IsValidCurrent(rc)) {
         if (rc < 0) {
             rc = (rc - 5) / 10;
         } else {
@@ -89,7 +91,7 @@ static uint16 MDBSgetDeltaTemperature(const Modbus_RegistersRegionType *p, uint1
     (void) p;
     (void) addr;
     rc = (sint16)Statistic_GetBcuDeltaTemperature();
-    if ((rc >= 0) && (rc <= 175)) {
+    if (CellDataM_TemperatureIsValid((uint16)rc)) {
         rc -= 50;
     } else {
 
@@ -146,7 +148,7 @@ static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_RegistersRegionType 
     sint16 rc;
 
     rc = (sint16)CellDataM_GetTemperature(addr - p->startaddr);
-    if ((rc >= 0) && (rc <= 175)) {
+    if (CellDataM_TemperatureIsValid((uint16)rc)) {
         rc -= 50;
     } else {
 
@@ -159,7 +161,7 @@ static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_RegistersRegionT
     sint16 rc;
 
     rc = (sint16)CellDataM_GetHeatTemperature(addr - p->startaddr);
-    if ((rc >= 0) && (rc <= 175)) {
+    if (CellDataM_TemperatureIsValid((uint16)rc)) {
         rc -= 50;
     } else {
 
@@ -172,7 +174,7 @@ static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_RegistersRegion
     sint16 rc;
 
     rc = (sint16)CellDataM_GetPoleTemperature(addr - p->startaddr);
-    if ((rc >= 0) && (rc <= 175)) {
+    if (CellDataM_TemperatureIsValid((uint16)rc)) {
         rc -= 50;
     } else {
 

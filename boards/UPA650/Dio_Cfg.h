@@ -17,7 +17,7 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_GROUP_HasExtWakeupSignal()   (Dio_ReadChannelGroup(&DioGroupExtWakeupSignal) != 0x19U)
 
 #define DIO_GROUP_HW_INDENTIFY            (&DioGroupHwId) /**< 硬件版本标识DIO组 */
-#define DIO_CHANNEL_SUSPEND               DIO_CHANNEL(D, 0U) //DIO_CHANNEL(C, 4) /**< 休眠电压控制, 高电平开启板上所有电源 */
+#define DIO_CHANNEL_SUSPEND               DIO_CHANNEL(C, 4U) /**< 休眠电压控制, 高电平开启板上所有电源 */
 #define DIO_CHANNEL_SYSTEM_POWER_LATCH    DIO_CHANNEL(C, 5U) /**< 外部供电使能自锁, 高电平自锁电源 */
 #define DIO_CHANNEL_NAND_POWER_EN         DIO_CHANNEL(C, 7U) /**< NAND FLASH电源控制, 高电平或高阻态使能NAND FLASH的电源 */
 #define DIO_CHANNEL_LTC6820_EN            DIO_CHANNEL(K, 5U) /**< LTC6820使能控制 */
@@ -66,7 +66,7 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_CHANNEL_SHUNT_INT             DIO_CHANNEL(J, 7U) /**< 分流器中断输入 */
 #define DIO_CHANNEL_SHUNT_RESET           DIO_CHANNEL(J, 6U) /**< 分流器复位 */
 
-#define DIO_CHANNEL_CAN2_STB              DIO_CHANNEL_NONE /**< CAN2低功耗控制 */
+#define DIO_CHANNEL_CAN2_STB              DIO_CHANNEL(D, 6U) /**< CAN2低功耗控制 */
 #define DIO_CHANNEL_CAN2_EN               DIO_CHANNEL(AN_16_23, 6U) /**< CAN2使能控制 */
 #define DIO_CHANNEL_CAN2_ERR              DIO_CHANNEL(AN_16_23, 7U) /**< CAN2错误输入 */
 #define DIO_CHANNEL_CAN2_INH              DIO_CHANNEL(E, 0U) /**< CAN2使能控制 */
