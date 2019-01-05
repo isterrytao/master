@@ -56,6 +56,15 @@ module.exports = {
         el.unlockFeedback = cfg.el.unlockFeedback;
         el.ctlMax = cfg.el.ctlMax ? cfg.el.ctlMax : 1;
 
+		if (info.SystemConnection.PCBA == 'UPA640') {
+			if (el.enable) {
+            	throw 'A64X dose not support EL.';
+			}
+
+			el.lockFeedback = ['NONE', 'HIGH'];
+			el.unlockFeedback = ['NONE', 'HIGH'];
+		}
+
         var m = acmodemap.find(x=> x.mode == cfg.ac.mode);
         if (!m) {
             throw "Unsupport AC mode: " + cfg.ac.mode;

@@ -12,6 +12,6 @@
 #include "Statistic.h"
 
 const Statistic_ConfigInfoType Statistic_ConfigInfo = {
-    STATISTIC_TV_TYPE_CUMULATE_PRIO, /**< prior_tv_type: 优先使用总压类型 */
+    STATISTIC_TV_TYPE_CUMULATE_ONLY, /**< prior_tv_type: 优先使用总压类型 */
 };
 

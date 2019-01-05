@@ -19,7 +19,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo =
     1000U, /**< retryInternal: 预充失败后重试间隔(ms) */
     300U, /**< timeMin: 最小预充时间(ms) */
     3000U, /**< timeout: 预充超时时间(ms) */
-    V_TO_100MV(50U), /**< validVoltMin: 最低有效电压 */
+    V_TO_100MV(10U), /**< validVoltMin: 最低有效电压 */
     {
         PRECHARGEM_FINISH_TYPE_PERCENT, /**< type: 预充完成条件类型 */
         PERCENT_TO_THOUSAND(96U), /**< value: 预充完成值,若预充类型为延时，此值必须小于“预充超时时间” */

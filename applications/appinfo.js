@@ -71,6 +71,7 @@ module.exports = {
         const compatibleHWList = {
             'UPA650': ['V1.03'],
             'UPC6000': ['V1.03', 'V1.02_FOR_CHUHAN', 'V1.03_FOR_DIANKA'],
+            'UPA640': ['V1.03'],
         }
 
         const compatibleHwMap = {
@@ -85,6 +86,12 @@ module.exports = {
                 "V1.03": 1<<1,
                 "V1.02_FOR_CHUHAN": 1<<2,
                 "V1.03_FOR_DIANKA": 1<<3,
+            },
+			 'UPA640': {
+                "V1.00": 1<<2,
+                "V1.01": 1<<7,
+                "V1.02": 1<<7,
+                "V1.03": 1<<7,
             }
         }
         var pcba = info.SystemConnection.PCBA;

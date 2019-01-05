@@ -39,6 +39,8 @@ function checkBmuConnection(bmu) {
         A603: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
         A652: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
         A653: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        A640: [/^[10]{12}$/, /^[CPH0]{4}$/],
+        A641: [/^[10]{12}$/, /^[CPH0]{4}$/],
         // 从机
         M600: [/^[10]{12}_[10]{12}$/, /^[CPH0]{6}_[CPH0]{4}_[CPH0]{4}$/],
         M601: [/^[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{6}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
@@ -84,6 +86,8 @@ module.exports = {
             A651: {PCBA:'UPA650', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
             A652: {PCBA:'UPA650', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
             A653: {PCBA:'UPA650', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+			A640: {PCBA:'UPA640', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+			A641: {PCBA:'UPA640', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
         };
 
         const typeToNumTable = {
@@ -100,6 +104,8 @@ module.exports = {
             A651: {SlaveSampleBoardNum:2, SlaveCellNum:24, SlaveTempNum:8},
             A652: {SlaveSampleBoardNum:4, SlaveCellNum:48, SlaveTempNum:16},
             A653: {SlaveSampleBoardNum:4, SlaveCellNum:48, SlaveTempNum:16},
+			A640: {SlaveSampleBoardNum:1, SlaveCellNum:12, SlaveTempNum:4},
+			A641: {SlaveSampleBoardNum:1, SlaveCellNum:12, SlaveTempNum:4},
         };
 
         if (!bcus.hasOwnProperty(cfgData.bcu.type)) {

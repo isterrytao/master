@@ -22,9 +22,14 @@ static Async_EvnetCbkReturnType cbk(Async_EventType *event, uint8  byWhat) {
             (void)CanIf_Transmit(CANIF_TX_CANECHO_0, &info);
         } else if (byWhat == CANIF_RX_CANECHO_1) {
             (void)CanIf_Transmit(CANIF_TX_CANECHO_1, &info);
-        } else if (byWhat == CANIF_RX_CANECHO_2) {
+        }
+#if defined(UPA640)
+#else
+        else if (byWhat == CANIF_RX_CANECHO_2) {
             (void)CanIf_Transmit(CANIF_TX_CANECHO_2, &info);
-        } else {
+        }
+#endif
+        else {
         }
         busy = FALSE;
     }
@@ -44,9 +49,15 @@ void CanEcho_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr) {
         count[0]++;
     } else if (RxPduId == CANIF_RX_CANECHO_1) {
         count[1]++;
-    } else if (RxPduId == CANIF_RX_CANECHO_2) {
+    }
+#if defined(UPA640)
+#else
+    else if (RxPduId == CANIF_RX_CANECHO_2) {
         count[2]++;
-    } else {
+    }
+#endif
+
+    else {
         needRelay = FALSE;
     }
 
@@ -110,10 +121,15 @@ int shell_func_cantest(int argc, const char *const *argv) {
             } else if (index == 2U) {
                 arg_err = FALSE;
                 ret = (int)Async_EventTrigger(&thisEvent, CANIF_RX_CANECHO_1);
-            } else if (index == 3U) {
+            }
+#if defined(UPA640)
+#else
+            else if (index == 3U) {
                 arg_err = FALSE;
                 ret = (int)Async_EventTrigger(&thisEvent, CANIF_RX_CANECHO_2);
-            } else {
+            }
+#endif
+            else {
             }
         }
     } else {

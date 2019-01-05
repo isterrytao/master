@@ -13,6 +13,7 @@ SHELL_PROTYPE(hef4052);
 SHELL_PROTYPE(ldmhv_A650);
 #elif defined(A652) || defined(A653)
 SHELL_PROTYPE(ldmhv_A652);
+#elif defined(A640) || defined(A641)
 #else
 SHELL_PROTYPE(ldmhv);
 #endif
@@ -33,7 +34,14 @@ SHELL_PROTYPE(chtemp);
 #if defined(UPA650)
 SHELL_PROTYPE(chgtemp);
 #endif
+#if defined(UPA640)
+SHELL_PROTYPE(chgtemp);
+#endif
+
+#if defined(A640) || defined(A641)
+#else
 SHELL_PROTYPE(shunt);
+#endif
 SHELL_PROTYPE(cppwm);
 SHELL_PROTYPE(cantest);
 SHELL_PROTYPE(onboardt);
@@ -43,6 +51,9 @@ SHELL_PROTYPE(ltc);
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653)
 SHELL_PROTYPE(isl);
 SHELL_PROTYPE(rs485);
+#endif
+#if defined(A640) || defined(A641)
+SHELL_PROTYPE(isl);
 #endif
 SHELL_PROTYPE(dtustart);
 SHELL_PROTYPE(gb34014);
@@ -62,6 +73,7 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("ldmhv", ldmhv_A650),
 #elif defined(A652) || defined(A653)
     SHELL_COMMAND("ldmhv", ldmhv_A652),
+#elif defined(A640) || defined(A641)
 #else
     SHELL_COMMAND("ldmhv", ldmhv),
 #endif
@@ -78,7 +90,13 @@ const struct shell_command shell_commands[] = {
 #if defined(UPA650)
     SHELL_COMMAND("chgtemp", chgtemp),
 #endif
+#if defined(UPA640)
+        SHELL_COMMAND("chgtemp", chgtemp),
+#endif
+#if defined(A640) || defined(A641)
+#else
     SHELL_COMMAND("shunt", shunt),
+#endif
     SHELL_COMMAND("cppwm", cppwm),
     SHELL_COMMAND("cantest", cantest),
     SHELL_COMMAND("onboardt", onboardt),
@@ -88,6 +106,9 @@ const struct shell_command shell_commands[] = {
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653)
     SHELL_COMMAND("ltc", isl),
     SHELL_COMMAND("rs485", rs485),
+#endif
+#if defined(A640) || defined(A641)
+    SHELL_COMMAND("ltc", isl),
 #endif
 
 #endif

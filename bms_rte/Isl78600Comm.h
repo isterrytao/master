@@ -8,6 +8,9 @@
 #include "Async_Looper.h"
 #include "InnerTp.h"
 
+#define ISL78600SN_LEN 4U
+extern uint8 isl78600SN[ISL78600SN_LEN] ;
+
 Async_LooperType *Isl78600Comm_Init(uint8 pri, boolean istestmode);
 void Isl78600Comm_HandlerAllInOne(const InnerTp_RequestHandlerType* requestHandler, const PduInfoType *InfoPtr);
 

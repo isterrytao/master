@@ -49,7 +49,7 @@ module.exports = {
         },
         serialnum: 12,
         parallelnum: 5,
-        celltempnum: 8,
+        celltempnum: 4,
         heattempnum: 0,
         poletempnum: 0,
         initsoc: 80,
@@ -67,13 +67,14 @@ module.exports = {
                 {section:"battconn", chs:"电池连接", comments:"电池连接, 只有型号为A60X的时候有效, 长度与型号相关."},
                 {section:"tempconn", chs:"温感连接", comments:"只有型号为A60X的时候有效, 长度与型号相关; C标识电池单体温感,P表示电池极柱温感,H表示加热片温感,0表示没有链接温感."},
             ],
-            type:"C601",
-            battconn:"111000111000_111000111000",
-            tempconn:"CCCC_CCCC",
+            type:"A641",
+            battconn:"111111111111",
+            tempconn:"CCCC",
         },
 
+
         bmus:[
-            {
+           /* {
                 notes:[
                     {section:"type", chs:"BMU类型", comments:'可选:"M600", "M601", "M602", "M603".'},
                     {section:"battconn", chs:"电池连接", comments:"电池连接, 长度与型号相关."},
@@ -82,7 +83,7 @@ module.exports = {
                 type:"M600",
                 battconn:"111000111000_111000111000",
                 tempconn:"000000_CCCC_CCCC"
-            }/*,{
+            },{
                 type:"M601",
                 battconn:"110000110000_110000110000_110000110000",
                 tempconn:"00C000_CC00_CC00_C0CC"
@@ -185,7 +186,7 @@ module.exports = {
                 {section:"filterNum", chs:"滤波的采集次数"},
                 {section:"dropNum", chs:"极值丢弃的个数"},
             ],
-            model: "DHAB_S118_1",
+            model: "FS300BT",
             filterNum: 20,
             dropNum: 2,
             zeroFilterValue: 1,
@@ -217,7 +218,7 @@ module.exports = {
         // 主回路电流采集
         main: {
             // 可选 "hall1", "hall2", "shunt", "userdef1", "userdef2"
-            channel: "shunt", //注：若使用分流器，需要关闭电流的所有上电自检。
+            channel: "hall1", //注：若使用分流器，需要关闭电流的所有上电自检。
             // 可选 "hall1", "hall2", "shunt", "none", "userdef1", "userdef2" 但是不能与channel相同,
             redundant: "none"
 
@@ -1212,7 +1213,7 @@ module.exports = {
                 name: "预充失败",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 0, 0]
+                	[1, 1, 0, 0]
                 ]
             }, {
                 name: "电流异常",
@@ -1436,7 +1437,7 @@ module.exports = {
             ]
         }, {
             name:"Vcu",
-            hw:2,
+            hw:0,
             self:0x13,
             remote:0x14,
             pgs:[

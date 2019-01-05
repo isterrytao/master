@@ -8,6 +8,8 @@
 
 
 #if 1
+#define ISL78600ISERR_R_W 0U
+#define ISL78600ISERR_R 1U
 
 typedef uint8 IslScanModeType;
 #define kIslScanIndex_Voltage     0U
@@ -85,6 +87,8 @@ Isl_ReturnType Isl78600_Reset(const struct Isl78600 *dev, uint8 addr);
 Isl_ReturnType Isl78600_GetScanCount(const struct Isl78600 *dev, uint8 addr, uint16 *cnt);
 Isl_ReturnType Isl78600_SetCellMask(const struct Isl78600 *dev, uint8 addr, uint16 mask);
 Isl_ReturnType Isl78600_SetDeviceSetup(const struct Isl78600 *dev, uint8 addr, uint16 value);
+
+uint16 Isl78600IsErr(const struct Isl78600 *dev, uint8 flag);
 Isl_ReturnType Isl78600_CheckRef(const struct Isl78600 *dev, uint8 addr);
 extern const struct Isl78600 isl78600_dev;
 

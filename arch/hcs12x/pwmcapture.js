@@ -1,6 +1,6 @@
 module.exports = {
     process: function(cfgData, info) {
-        if (info.SystemConnection.PCBA == 'UPA650') {
+        if ((info.SystemConnection.PCBA == 'UPA650') || (info.SystemConnection.PCBA == 'UPA640')) {
             cfgData['SIGIN2'].enable = false;
         }
 

@@ -47,6 +47,19 @@ module.exports = {
         for (var v of cfg) {
             var hascm = false;
 
+            if (info.SystemConnection.PCBA == "UPA640" && (v.hw != 0 && v.hw != 1)) {
+                throw "UPA640 can hw must be 0 or 1 !"
+            }
+
+            if (info.SystemConnection.PCBA == "UPA650" && (v.hw != 0 && v.hw != 1 && v.hw != 2)) {
+                throw "UPA640 can hw must be 0,1 or 2!"
+            }
+
+            if (info.SystemConnection.PCBA == "UPC6000" && (v.hw != 0 && v.hw != 1 && v.hw != 2 && v.hw != 3)) {
+                throw "UPA640 can hw must be 0,1,2 or 3!"
+            }
+
+
             var thispgs = v.pgs.map(x=>({name:v.name, pgn:x.hasOwnProperty("pgn")? x.pgn : x.id, type:x.type, id: x.id}));
             var rxpgs = thispgs.filter(x=>x.type=="rx");
             var txpgs = thispgs.filter(x=>x.type=="tx");

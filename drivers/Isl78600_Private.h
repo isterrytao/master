@@ -84,6 +84,7 @@
 #define ISL_REG_COMMAND_RESET                   0x12U
 #define ISL_REG_COMMAND_CALC_CHECKSUM           0x13U
 #define ISL_REG_COMMAND_CHECK_CHECKSUM          0x14U
+#define ISL_REG_COMMAND_USER_REGISTER0          0x16U
 
 #define ISL_INVALID_REG                         0xFFU
 #define ISL_ALL_DEVICES_ADDRESS                 0x0FU

@@ -28,6 +28,22 @@
 #define USERSTRATEGY_E_PARAM_INVALID_PTR            0x00U
 
 /**
+ * \brief 实时OTA升级功能开关
+ * \details A641主机只能通过实时OTA升级
+ */
+#if defined(A641)
+#define USERSTRATEGY_RESET_TO_OTA_EN                STD_ON //对于A641主机 此项必须开启
+#else
+#define USERSTRATEGY_RESET_TO_OTA_EN                STD_OFF
+#endif
+
+#if defined(A641)
+#if USERSTRATEGY_RESET_TO_OTA_EN == STD_OFF
+    #error USERSTRATEGY_RESET_TO_OTA_EN must be STD_ON for A641!
+#endif
+#endif
+
+/**
  * \brief 用户自定义策略内部数据类型
  */
 typedef struct{

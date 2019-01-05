@@ -668,7 +668,13 @@ static const GB32960_CopySegmentType copyRecordSegmentsAlarmStatus[] = {
 };
 
 static boolean has_dtu_module(void) {
+#if defined(A640)
+    return FALSE;
+#elif defined(A641)
+    return TRUE;
+#else
     return DIO_CHANNEL_DTU_IS_PRESENT() ? TRUE : FALSE;
+#endif
 }
 
 static boolean is_valid_in_charging_mode(void) {

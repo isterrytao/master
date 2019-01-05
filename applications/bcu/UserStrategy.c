@@ -37,6 +37,10 @@ UserStrategy_InnerDataType UserStrategy_innerData;
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat);
 static void safeCurrentCheck(void);
+#if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
+static void UserStrategy_ResetToOTA(void);
+#endif
+
 
 void UserStrategy_Init(Async_LooperType *looper)
 {
@@ -56,6 +60,9 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
     (void)event;
     (void)byWhat;
 
+#if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
+    UserStrategy_ResetToOTA();
+#endif
     safeCurrentCheck();
 
     return ASYNC_EVENT_CBK_RETURN_OK;
@@ -219,3 +226,32 @@ void UserStrategy_FullChargeReleaseHook(void)
     ChargeM_DiagnosisCtlEnableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_DEASSERT);
 }
 
+#if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
+static void UserStrategy_ResetToOTA(void)
+{
+    boolean flag = FALSE;
+    Current_CurrentType current;
+    uint32 nowTime = OSTimeGet();
+    static uint32 lastTime = 0U;
+
+    if (RuntimeM_HasOtaRequest())
+    {
+        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+        if (CurrentM_IsValidCurrent(current))
+        {
+            if (abs(current) < CURRENT_S_100MA_FROM_A(5))
+            {
+                flag = TRUE;
+                if (MS_GET_INTERNAL(lastTime, nowTime) >= 2000U)
+                {
+                    (void)RuntimeM_RequestToDtuMode();
+                }
+            }
+        }
+    }
+    if (!flag)
+    {
+        lastTime = nowTime;
+    }
+}
+#endif

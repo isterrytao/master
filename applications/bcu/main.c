@@ -108,7 +108,10 @@ static const Dcm_ConfigType DcmConfigDtuTp = {
 static OS_STK currentm_task_stack[400];
 static OS_STK heat_current_task_stack[300];
 static OS_STK start_task_stack[500];
+#if defined(A640) || defined(A641)
+#else
 static OS_STK hvadc_task_stack[300];
+#endif
 // static OS_STK shunt_task_stack[400];
 
 static void start_dtu_task(void) {
@@ -185,7 +188,8 @@ static void start_looper_tasks(void) {
     }
 }
 
-
+#if defined(A640) || defined(A641)
+#else
 static void start_hvadc_task(void(*task_func)(void *param)) {
     (void)OSTaskCreateExt(
         (void(*)(void *param))task_func,
@@ -198,7 +202,7 @@ static void start_hvadc_task(void(*task_func)(void *param)) {
         NULL,
         OS_TASK_OPT_NONE);
 }
-
+#endif
 #if 0
 extern void shunt_test_task(void *pdata);
 static void start_shunt_task(void) {
@@ -276,8 +280,16 @@ static void run_test_mode(void) {
     if (HardWareIO_GetVersion() != 5U /*0b101*/) {
         (void)Can_SetControllerMode(1U, CAN_T_START);
     }
+
+#if defined(A640) || defined(A641)
+#else
     (void)Can_SetControllerMode(2U, CAN_T_START);
     (void)Can_SetControllerMode(3U, CAN_T_START);
+#endif
+
+#if defined(A640) || defined(A641)
+    IICBus_Init();
+#endif
 
     HardwareSn_Init();
     Adc_Init(&AdcConfigTestMode);
@@ -286,14 +298,25 @@ static void run_test_mode(void) {
     OSTimeDly(2U);
     HC12XIrq_InstallVector(IRQ_ATD0, ADT0_Isr, 0U);
     Adc_StartGroupConversion(ADC_GROUP_ADT0);
+#if defined(A640) || defined(A641)
+#else
     start_hvadc_task(hvadc_test_task_testmode);
+#endif
     nand_init();
     CanEcho_Init(&extLooper);
     PwmCapture_Init();
     PwmCapture_Start();
+#if defined(A640) || defined(A641)
+#else
     Shunt_Init(&shuntLooper, 1000U);
+#endif
     (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, TRUE);
-    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
+#if defined(A640)||defined(A641)
+        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_LOW);
+//        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_HIGH);
+#else
+        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
+#endif
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653)
     (void)UartShell_Init((const UartShell_ConfigType *)UartShellConfigType, 0U);
 #endif
@@ -323,8 +346,12 @@ static void start_task(void *pdata) {
 #ifdef UPC6000
     }
 #endif
+
+#if defined(A640) || defined(A641)
+#else
     (void)Can_SetControllerMode(2U, CAN_T_START);
     (void)Can_SetControllerMode(3U, CAN_T_START);
+#endif
 
     HC12XIrq_InstallVector(IRQ_IIC1, IIC1_Isr, 0U);
     HC12XIrq_InstallVector(IRQ_SCI1, SCI1_Isr, 0U);
@@ -338,7 +365,6 @@ static void start_task(void *pdata) {
     if (RuntimeM_GetMode() == RUNTIMEM_RUNMODE_TEST) {
         run_test_mode();
     }
-
     WatchdogM_Init();
 
     DigitalInput_Init();
@@ -359,16 +385,22 @@ static void start_task(void *pdata) {
 
     ParameterM_Init();
     if (isNeedStartSampleTask()) {
+#if defined(A640) || defined(A641)
+#else
         uint16 gainErr;
+#endif
         PwmCapture_Init();
         PwmCapture_Start();
 #ifdef UPC6000
         if (HardWareIO_GetVersion() != 5U /*0b101*/) {
 #endif
+#if defined(A640) || defined(A641)
+#else
             if (ParameterM_EeepRead(PARAMETERM_EEEP_SHUNT_GAIN_ERROR_INDEX, &gainErr) != E_OK) {
                 gainErr = 1000U;
             }
             Shunt_Init(&shuntLooper, gainErr);
+#endif
 #ifdef UPC6000
         }
 #endif
@@ -394,7 +426,10 @@ static void start_task(void *pdata) {
         InternalComm_Init(INTERNALCOMM_TX_TASK_PRI);
         (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, FALSE);
     }
-
+#if defined(A640) || defined(A641)
+    IICBus_Init();
+#endif
+    HardwareSn_Init();
     async_test(&extLooper);
     DatetimeM_Init(&extLooper);
     if (HardWareIO_GetVersion() != 5U /*0b101*/) {
@@ -406,17 +441,24 @@ static void start_task(void *pdata) {
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A650);
 #elif defined(A652) || defined(A653)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
+#elif defined(A640)||defined(A641)
+//    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A640);
 #else
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData);
 #endif
 
+#if defined(A640)||defined(A641)
+#else
     if (isNeedStartSampleTask()) {
         BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
     }
-
+#endif
     if (isNeedStartSampleTask()) {
         startHvSample();
+#if defined(A640) || defined(A641)
+#else
         start_hvadc_task(hvadc_test_task);
+#endif
     }
 
     BalanceM_Init(&BalanceM_ConfigInfo);
@@ -479,11 +521,18 @@ void main(void) {
     Mcu_Init(&MCU_DEFAULT_CONFIG);
     (void)Mcu_InitClock(MCU_DEFAULT_CONFIG.McuDefaultClockSettings);
     Port_Init(&PortConfigData);
+#if defined(A640)||defined(A641)
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_LOW);
+#else
     Dio_WriteChannel(DIO_CHANNEL_SUSPEND, STD_HIGH);
     Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_LOW);
+#endif
     Dio_WriteChannel(DIO_CHANNEL_8V_HALL_EN, STD_LOW);
+#if defined(A640)||defined(A641)
+#else
     Dio_WriteChannel(DIO_CHANNEL_CAN2_EN, STD_HIGH);
-
+#endif
     OSInit();
 
     (void)OSTaskCreateExt(
