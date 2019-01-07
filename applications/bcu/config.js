@@ -154,7 +154,7 @@ module.exports = {
         maxOnTimeForOTA: 60*60,
         maxOnTimeForData: 60*5,
         minBatteryVolForWakeup: 10,
-        chargeEndOTA: false,
+        chargeEndOTA: true,
         userIsWakeup: {func:"", inc: ""},
         cpInvalidTimeFilter: 10*60,
         powerOffNotifiers: [

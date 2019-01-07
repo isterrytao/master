@@ -24,6 +24,6 @@ typedef unsigned long Datetime_SecondType;
 
 Std_ReturnType Datetime_FromSecond(Datetime_DatetimeType *datetime, Datetime_SecondType second);
 Std_ReturnType Datetime_ToSecond(const Datetime_DatetimeType *datetime, Datetime_SecondType *seconds);
-boolean Datetime_IsValid(const Datetime_DatetimeType *datetime, char need_check_weekday);
+boolean Datetime_IsValid(const Datetime_DatetimeType *datetime, boolean need_check_weekday);
 
 #endif

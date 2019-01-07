@@ -16,10 +16,13 @@
 #include "DigitalInput_Cfg.h"
 #include "ChargerComm.h"
 #include "EL.h"
-#include "RelayM_Lcfg.h"
 #include "RuntimeM.h"
 #include "ChargeCC_Cfg.h"
-
+<% if (ac.relay == "RELAYM_FN_NONE" && dc.relay == "RELAYM_FN_NONE") {%>
+#include "RelayM_Cfg.h"
+<%} else {%>
+#include "RelayM_Lcfg.h"
+<%}%>
 /*
 
 <%-JSON.stringify(ac)%>
