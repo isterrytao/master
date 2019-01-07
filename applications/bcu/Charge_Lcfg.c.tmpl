@@ -18,9 +18,10 @@
 #include "EL.h"
 #include "RuntimeM.h"
 #include "ChargeCC_Cfg.h"
-<% if (ac.relay == "RELAYM_FN_NONE" && dc.relay == "RELAYM_FN_NONE") {%>
+<% if (ac.relay == "RELAYM_FN_NONE" || dc.relay == "RELAYM_FN_NONE") {%>
 #include "RelayM_Cfg.h"
-<%} else {%>
+<%}%>
+<% if (ac.relay != "RELAYM_FN_NONE" || dc.relay != "RELAYM_FN_NONE") {%>
 #include "RelayM_Lcfg.h"
 <%}%>
 /*
