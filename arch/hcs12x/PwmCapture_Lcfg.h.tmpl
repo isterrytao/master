@@ -1,3 +1,8 @@
+<%
+if ((globalInfo.SystemConnection.PCBA == 'UPA650') || (globalInfo.SystemConnection.PCBA == 'UPA640')) {
+    cfg['SIGIN2'].enable = false;
+}
+%>
 #ifndef PWM_CAPTURE_LCFG_H
 #define PWM_CAPTURE_LCFG_H
 
@@ -5,13 +10,13 @@
 
 
 /*
-<%- JSON.stringify(mdata, null, '  ') %>
+<%- JSON.stringify(cfg, null, '  ') %>
 */
 
 <%
 var i = 0;
 for(var ch of ['CP', 'SIGIN1', 'SIGIN2']) {
-    if (mdata.hasOwnProperty(ch) && mdata[ch].enable) {
+    if (cfg.hasOwnProperty(ch) && cfg[ch].enable) {
 %>
 
 #define PWM_CAPTURE_<%-ch%>_CHANNEL    <%- i %>U

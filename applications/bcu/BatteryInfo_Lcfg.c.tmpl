@@ -1,33 +1,76 @@
-/**
- * \file BatteryInfo_Lcfg.c
- * \copyright UDAN Co.,Ltd. *
- *
- * \brief 电池信息文件.
- *
- * * \par 修订历史:
- * | 版本号 | 修订日志 | 修改人 | 修订时间 |
- * | :--- | :--- | :--- | :--- |
- * | 0.1 | 初始版本, 完成讨论部分的定义. | UD00004 | 20161221 |
- */
+<%
+var typeToDescMap = [
+    // [电池类型宏，电池类型，极限保护高压，极限保护低压，极限保护高温，极限保护延时]
+    ["APP_BATTERY_TYPE_LEAD_ACID", "铅酸", 3000, 1000, 63, 5000],
+    ["APP_BATTERY_TYPE_NIMH", "镍氢", 1800, 700, 63, 5000],
+    ["APP_BATTERY_TYPE_LIFEPO4", "磷酸铁锂", 3900, 2300, 63, 5000],
+    ["APP_BATTERY_TYPE_LIMN2O4", "锰酸锂", 4400, 2200, 63, 5000],
+    ["APP_BATTERY_TYPE_LICOO2", "钴酸锂", 4300, 2200, 63, 5000],
+    ["APP_BATTERY_TYPE_TERNARY", "三元材料", 4300, 2700, 63, 5000],
+    ["APP_BATTERY_TYPE_POLYMER_LI_LON", "聚合物锂离子", 4300, 2700, 63, 5000],
+    ["APP_BATTERY_TYPE_LI4O4TI", "钛酸锂", 3000, 1500, 65, 5000],
+    ["APP_BATTERY_TYPE_OTHERS", "其他", 0xffff, 0xffff, 0xff, 5000],
+];
+
+var desc = ["APP_BATTERY_TYPE_UNKNOWN", "未知", 0xffff, 0xffff, 0xff, 0xffff];
+for (var t of typeToDescMap) {
+    if (t[1] == cfg.type) {
+        desc = t
+        break;
+    }
+}
+
+if (cfg.serialnum > 400) {
+    throw "Dose not support serialnum > 400";
+}
+
+if (cfg.celltempnum + cfg.heattempnum + cfg.poletempnum > 200) {
+    throw "Dose not support celltempnum + heattempnum + poletempnum > 200";
+}
+
+var batttype =  desc[0];
+var highVoltLimit = desc[2];
+var lowVoltLimit = desc[3];
+var highTempLimit = desc[4];
+var limitProtectDelay = desc[5];
+
+
+globalInfo.setReturn({
+        battnum: cfg.serialnum,
+        celltempnum: cfg.celltempnum,
+        heattempnum: cfg.heattempnum,
+        poletempnum: cfg.poletempnum,
+        totalCap: cfg.nominal.cap,
+        initCap: cfg.nominal.cap * cfg.initsoc / 100,
+        acchargecurrent: cfg.nominal.acchargecurrent,
+        dcchargecurrent: cfg.nominal.dcchargecurrent
+    });
+
+delete cfg.notes;
+delete cfg.nominal.notes;
+
+%>
 
 #include "BatteryInfo.h"
-
+/*
+<%- JSON.stringify(cfg, null, '    ') %>
+*/
 const BatteryInfo_BaseConfigType BatteryInfo_BaseConfigInfo = {
-    (uint8)<%-batttype%>, /**< Type: 电池类型 */
-    <%-capAH * 10%>U, /**< NominalCap: 额定容量 */
-    <%-dischargecurrent * 10%>U, /**< NominalDischargeCurrent: 额定放电电流 */
-    <%-totalvoltage * 10%>U, /**< NominalTotalVolt: 额定总压 */
-    <%-dcchargecurrent * 10%>U, /**< NominalDCCurrent: 快充额定电流 */
-    <%-acchargecurrent * 10%>U, /**< NominalACCurrent: 慢充额定电流 */
-    <%-serialnum%>U, /**< SeriesNum: 电池串数 */
-    <%-parallelnum%>U, /**< ParallelNum: 电池并数 */
-    <%-celltempnum%>U, /**< CellTemperatureNum: 温感数 */
-    <%-initsoc * 10%>U, /**< InitialSOC: 初始SOC */
-    <%-initsoh * 10%>U, /**< InitialSOH: 初始SOH */
-    <%-poletempnum%>U, /**< 极柱温感数*/
-    <%-heattempnum%>U, /**< 加热温感数*/
-    <%-highVoltLimit%>U, /**< 单体电压高极限保护 */
-    <%-lowVoltLimit%>U, /**< 单体电压低极限保护 */
-    <% if (highTempLimit != 0xff) { %>(App_TemperatureType)TEMPERATURE_FROM_C(<%-highTempLimit%>), /**< 单体温度高极限保护 */<% } else { %>0xFFU, /**< 单体温度高极限保护 */<% } %>
-    <%-limitProtectDelay%>UL, /**< 极限保护延时 */
+    (uint8)<%- desc[0] %>, /**< Type: 电池类型 */
+    <%- cfg.nominal.cap * 10 %>U, /**< NominalCap: 额定容量 */
+    <%- cfg.nominal.dischargecurrent * 10 %>U, /**< NominalDischargeCurrent: 额定放电电流 */
+    <%- cfg.nominal.totalvoltage * 10 %>U, /**< NominalTotalVolt: 额定总压 */
+    <%- cfg.nominal.dcchargecurrent * 10 %>U, /**< NominalDCCurrent: 快充额定电流 */
+    <%- cfg.nominal.acchargecurrent * 10 %>U, /**< NominalACCurrent: 慢充额定电流 */
+    <%- cfg.serialnum %>U, /**< SeriesNum: 电池串数 */
+    <%- cfg.parallelnum %>U, /**< ParallelNum: 电池并数 */
+    <%- cfg.celltempnum %>U, /**< CellTemperatureNum: 温感数 */
+    <%- cfg.initsoc * 10 %>U, /**< InitialSOC: 初始SOC */
+    <%- cfg.initsoh * 10 %>U, /**< InitialSOH: 初始SOH */
+    <%- cfg.poletempnum %>U, /**< 极柱温感数*/
+    <%- cfg.heattempnum %>U, /**< 加热温感数*/
+    <%- highVoltLimit %>U, /**< 单体电压高极限保护 */
+    <%- lowVoltLimit %>U, /**< 单体电压低极限保护 */
+    <% if (highTempLimit != 0xff) { %>(App_TemperatureType)TEMPERATURE_FROM_C(<%- highTempLimit %>), /**< 单体温度高极限保护 */<% } else { %>0xFFU, /**< 单体温度高极限保护 */<% } %>
+    <%- limitProtectDelay %>UL, /**< 极限保护延时 */
 };

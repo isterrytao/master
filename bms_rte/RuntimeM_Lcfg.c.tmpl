@@ -1,20 +1,24 @@
+<%
+var processedcfg = globalInfo.RuntimeM.processedcfg;
+%>
+
 /*
-<%- JSON.stringify(dat, null, " ") %>
+<%- JSON.stringify(processedcfg, null, " ") %>
 */
 
 #include "RuntimeM.h"<%
-for (var v of dat.powerOffNotifiers) {%>
+for (var v of processedcfg.powerOffNotifiers) {%>
 #include "<%- v.inc %>"<%
 }%>
 #include "CanIf_Lcfg.h"
 
-<% if (dat.userIsWakeup.inc) { %>
-#include "<%- dat.userIsWakeup.inc %>"
+<% if (processedcfg.userIsWakeup.inc) { %>
+#include "<%- processedcfg.userIsWakeup.inc %>"
 <% } %>
 
 static const RuntimeM_TaskNotifyType notifies[] = {<%
 var i = 1;
-for (var v of dat.powerOffNotifiers) {%>
+for (var v of processedcfg.powerOffNotifiers) {%>
     { 1UL << <%- i %> /*uint32 bit*/, <%- v.func %> /*boolean (*kill)(RuntimeM_SignalType)*/},<%
     i++;
 }%>
@@ -22,18 +26,18 @@ for (var v of dat.powerOffNotifiers) {%>
 };
 
 const RuntimeM_ConfigType RuntimeM_ConfigData = {
-    <%- dat.maxTimeForWaitTaskPowerdown %>U, /**< 等待低压下电的最大时间, 单位:毫秒 */
+    <%- processedcfg.maxTimeForWaitTaskPowerdown %>U, /**< 等待低压下电的最大时间, 单位:毫秒 */
     notifies, /**< 需要等待的任务列表, */
-    <%- dat.timeOrDelayToWakeupForData %>, /**< 唤醒进行数据传输的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX*/
-    <%- dat.timeOrDelayToWakeupForOTA %>, /**< 唤醒进行OTA的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX */
-    <%- dat.wakeupTimeForData %>UL, /**< 下电多少秒之后(或什么时刻)唤醒进行数据传输 */
-    <%- dat.wakeupTimeForOTA %>UL, /**< 有OTA请求时, 下电多少秒之后(或什么时刻)唤醒进行程序OTA */
-    <%- dat.cpInvalidTimeFilter * 1000 %>UL, /**< CP无效的过滤时间， 单位ms */
-    <%- dat.maxOnTimeForData %>U, /**< DTU模式下, 数据传输最长的工作时间, 单位: 秒 */
-    <%- dat.maxOnTimeForOTA %>U, /**< DTU模式下, OTA最长的工作时间, 单位: 秒 */
-    <%- Math.round(dat.minBatteryVolForWakeup * 1000) %>U, /**< 运行唤醒进入DTU模块的最低低压供电电压, 单位:毫伏 */
-    <%- dat.chargeEndOTA ? "TRUE":"FALSE" %>,
-    <%- dat.userIsWakeup.func %>,
+    <%- processedcfg.timeOrDelayToWakeupForData %>, /**< 唤醒进行数据传输的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX*/
+    <%- processedcfg.timeOrDelayToWakeupForOTA %>, /**< 唤醒进行OTA的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX */
+    <%- processedcfg.wakeupTimeForData %>UL, /**< 下电多少秒之后(或什么时刻)唤醒进行数据传输 */
+    <%- processedcfg.wakeupTimeForOTA %>UL, /**< 有OTA请求时, 下电多少秒之后(或什么时刻)唤醒进行程序OTA */
+    <%- processedcfg.cpInvalidTimeFilter * 1000 %>UL, /**< CP无效的过滤时间， 单位ms */
+    <%- processedcfg.maxOnTimeForData %>U, /**< DTU模式下, 数据传输最长的工作时间, 单位: 秒 */
+    <%- processedcfg.maxOnTimeForOTA %>U, /**< DTU模式下, OTA最长的工作时间, 单位: 秒 */
+    <%- Math.round(processedcfg.minBatteryVolForWakeup * 1000) %>U, /**< 运行唤醒进入DTU模块的最低低压供电电压, 单位:毫伏 */
+    <%- processedcfg.chargeEndOTA ? "TRUE":"FALSE" %>,
+    <%- processedcfg.userIsWakeup.func %>,
     CANIF_RX_RUNTIMEM, /**< dongleRxPduId */
     CANIF_TX_RUNTIMEM, /**< dongleTxPduId */
 };

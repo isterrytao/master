@@ -267,9 +267,15 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
     }
     msgHeader->dataHeader.systemStatus.soc = Soc_Get();
     msgHeader->dataHeader.systemStatus.soh = Soh_Get();
+#if defined(A640)||defined(A641)
+    msgHeader->dataHeader.systemStatus.insuResSys = 0xFFFFU;
+    msgHeader->dataHeader.systemStatus.insuResPos = 0xFFFFU;
+    msgHeader->dataHeader.systemStatus.insuResNeg = 0xFFFFU;
+#else
     msgHeader->dataHeader.systemStatus.insuResSys = Insu_GetSystem();
     msgHeader->dataHeader.systemStatus.insuResPos = Insu_GetPositive();
     msgHeader->dataHeader.systemStatus.insuResNeg = Insu_GetNegative();
+#endif
     msgHeader->dataHeader.systemStatus.runStatus = (ChargeConnectM_GetConnectType() != CHARGE_TYPE_NONE) ? 3U : 2U;
     msgHeader->dataHeader.systemStatus.wakeSignal = RuntimeM_GetWakeSignal();
     msgHeader->dataHeader.systemStatus.relayNum = RELAYM_FN_NUM;
@@ -404,7 +410,11 @@ static void fillChargerStatus(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.chargerStatus.cc2Resistor = ChargerConnectM_GetCCxResistanceStatus(CHARGECONNECTM_ADC_CC2_CHANNEL);
     msgHeader->dataHeader.chargerStatus.cpFreq = CP_GetFrequence();
     msgHeader->dataHeader.chargerStatus.cpDuty = CP_GetDuty();
+#if defined(A640)||defined(A641)
+    msgHeader->dataHeader.chargerStatus.elStatus = (uint8)EL_Diagnosis_Disabled;
+#else
     msgHeader->dataHeader.chargerStatus.elStatus = (uint8)EL_GetDiagnosisStatus(0U);
+#endif
     if (msgHeader->dataHeader.chargerStatus.connection == CHARGE_TYPE_AC) {
         temp = ChgSckTmpM_GetTemperature(CHGSCKTMPM_TEMPERATURE_AC_AL);
         if (temp >= 10U && temp <= 250U) {

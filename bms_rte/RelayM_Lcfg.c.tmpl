@@ -1,3 +1,7 @@
+<%
+var processedcfg = globalInfo.RelayM.processedcfg;
+%>
+
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
 #include "Hv.h" /*lint !e537*/
@@ -10,7 +14,7 @@ const RelayM_CommonConfigType RelayMCommonConfigData = {
 
 <%var relays_get_instance_vol_func = []%>
 <%
-for (var relay of relays) {
+for (var relay of processedcfg.relays) {
     if (relay.hvUserFunction) { %>
 extern sint16 <%- relay.hv %>(void);
     <% } else if ('HV_CHANNEL_NONE' != relay.hv && !relays_get_instance_vol_func.includes(relay.hv)) {
@@ -25,9 +29,11 @@ static sint16 relay_<%- relay.hv %>_get_instance_vol(void) {
 #define relay_HV_CHANNEL_NONE_get_instance_vol NULL
 
 const RelayM_ConfigType RelayMConfigData[RELAYM_FN_NUM] = {<%
-for (var relay of relays) {%>
+for (var relay of processedcfg.relays) {%>
     {
-        /* <%- JSON.stringify(relay) %> */
+/*
+<%- JSON.stringify(relay, null, '    ') %>
+*/
         "<%- relay.name %>", /**<继电器名称*/
         <%- relay.model.onDelay %>U, /**< 闭合机械延时 */
         <%- relay.model.offDelay %>U, /**< 断开机械延时 */

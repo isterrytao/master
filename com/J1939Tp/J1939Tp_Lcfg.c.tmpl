@@ -1,44 +1,35 @@
-/**
- * \file J1939Tp_LCfg.c
- * \copyright UDAN Co.,Ltd. *
- *
- * \brief J1939Tp链接配置文件.
- *
- * * \par 修订历史:
- * | 版本号 | 修订日志 | 修改人 | 修订时间 |
- * | :--- | :--- | :--- | :--- |
- * | 0.1 | 初版本, 完成讨论部分的定义. | UD00004 | 20170224 |
- */
-
+<%
+var processedcfg = globalInfo.J1939Tp.processedcfg;
+%>
 #include "J1939Tp.h"
 #include "J1939Tp_Lcfg.h"
 #include "CanIf_Lcfg.h"
 
-const J1939Tp_PgType J1939Tp_Pgs[<%-pgs.length%>];
+const J1939Tp_PgType J1939Tp_Pgs[<%- processedcfg.pgs.length %>];
 
 <%
 var i = 0;
-for (var ch of channels) {%>
-static const J1939Tp_PgType* pgsForChannel<%-i%>[] = {<%
+for (var ch of processedcfg.channels) {%>
+static const J1939Tp_PgType* pgsForChannel<%- i %>[] = {<%
     for (var pgid of ch.pgs) {%>
-    &J1939Tp_Pgs[<%-pgid%>],<%
+    &J1939Tp_Pgs[<%- pgid %>],<%
     }%>
 };<%
     i++;
 }
 %>
 
-static const J1939Tp_ChannelType J1939Tp_Channels[<%-channels.length%>] = {<%
+static const J1939Tp_ChannelType J1939Tp_Channels[<%- processedcfg.channels.length %>] = {<%
 var i = 0;
-for (var ch of channels) {%>
+for (var ch of processedcfg.channels) {%>
     {/*<%- JSON.stringify(ch) %>*/
-        /* .ChannelIndex = */ <%-i%>U,
+        /* .ChannelIndex = */ <%- i %>U,
         /* .Protocol = */ J1939TP_PROTOCOL_CMDT,
-        /* .DtNPdu = */ <%-ch.dtnpdu%>,
-        /* .CmNPdu = */ <%-ch.cmnpdu%>,
-        /* .FcNPdu = */ <%-ch.fcnpdu%>,
-        /* .Direction = */ <%-ch.direction%>,
-        /* .PgCount = */ <%-ch.pgs.length%>U,
+        /* .DtNPdu = */ <%- ch.dtnpdu %>,
+        /* .CmNPdu = */ <%- ch.cmnpdu %>,
+        /* .FcNPdu = */ <%- ch.fcnpdu %>,
+        /* .Direction = */ <%- ch.direction %>,
+        /* .PgCount = */ <%- ch.pgs.length %>U,
         /* .Pgs = */ pgsForChannel<%-i%>,
         /* .CmNPdu_MetaDataLength = */ 0U,
         /* .DtNPdu_MetaDataLength = */ 0U,
@@ -49,17 +40,17 @@ for (var ch of channels) {%>
 %>
 };
 
-const J1939Tp_PgType J1939Tp_Pgs[<%-pgs.length%>] = { /*lint !e31*/
+const J1939Tp_PgType J1939Tp_Pgs[<%- processedcfg.pgs.length %>] = { /*lint !e31*/
 <%
 var i = 0;
-for (var pg of pgs) {%>
+for (var pg of processedcfg.pgs) {%>
     {/*<%-i%>  <%- JSON.stringify(pg) %>*/
-        /* .PgIndex = */ <%-i%>U,
+        /* .PgIndex = */ <%- i %>U,
         /* .DynLength = */ FALSE,
-        /* .Pgn = */ 0x<%-pg.pgn.toString(16)%>U,
-        /* .DirectNPdu = */ <%-pg.npdu%>,
-        /* .NSdu = */ <%-pg.nsdu%>,
-        /* .Channel = */ &J1939Tp_Channels[<%-pg.channel%>],
+        /* .Pgn = */ 0x<%- pg.pgn.toString(16) %>U,
+        /* .DirectNPdu = */ <%- pg.npdu %>,
+        /* .NSdu = */ <%- pg.nsdu %>,
+        /* .Channel = */ &J1939Tp_Channels[<%- pg.channel %>],
         /* .NSdu_MetaDataLength = */ 0U,
     },<%
     i++;
@@ -67,33 +58,33 @@ for (var pg of pgs) {%>
 %>
 };
 
-static const J1939Tp_RxPduInfoType J1939Tp_RxPdus[<%-rxpdus.length%>] = {<%
+static const J1939Tp_RxPduInfoType J1939Tp_RxPdus[<%- processedcfg.rxpdus.length %>] = {<%
 var i = 0;
-for (var rxpdu of rxpdus) {%>
+for (var rxpdu of processedcfg.rxpdus) {%>
     {/*<%-i%>  <%- JSON.stringify(rxpdu) %>*/
-        /* .PacketType = */ J1939TP_<%-rxpdu.type%>,
-        /* .ChannelIndex = */ <%-rxpdu.channel%>U,
-        /* .PgPtr = */ <%-rxpdu.hasOwnProperty("pg")? "&J1939Tp_Pgs[" + rxpdu.pg + "]," : "NULL,"%>
+        /* .PacketType = */ J1939TP_<%- rxpdu.type %>,
+        /* .ChannelIndex = */ <%- rxpdu.channel %>U,
+        /* .PgPtr = */ <%- rxpdu.hasOwnProperty("pg")? "&J1939Tp_Pgs[" + rxpdu.pg + "]," : "NULL," %>
     },<%
     i++;
 }%>
 };
 
 <%
-for (var relation of rxpduRelations) {%>
-static const J1939Tp_RxPduInfoType *RxPduRelations_PDUR_RX_<%-relation.name%>_<%-relation.type%>[] = {<%
+for (var relation of processedcfg.rxpduRelations) {%>
+static const J1939Tp_RxPduInfoType *RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %>[] = {<%
     for(var rxpdu of relation.rxpdus){%>
-    &J1939Tp_RxPdus[<%-rxpdu%>],<%
+    &J1939Tp_RxPdus[<%- rxpdu %>],<%
         }%>
 };<%
 }%>
 
 static const J1939Tp_RxPduInfoRelationsType J1939Tp_RxPduRelations[] = {<%
 var i = 0;
-for (var relation of rxpduRelations) {%>
+for (var relation of processedcfg.rxpduRelations) {%>
     {/*<%-i%>  <%- JSON.stringify(relation) %>*/
-        /* .RxPdus = */ RxPduRelations_PDUR_RX_<%-relation.name%>_<%-relation.type%>,
-        /* .RxPduCount = */ <%-relation.rxpdus.length%>U,
+        /* .RxPdus = */ RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %>,
+        /* .RxPduCount = */ <%- relation.rxpdus.length %>U,
     },<%
     i++;
 }%>
@@ -108,7 +99,7 @@ const J1939Tp_ConfigType J1939Tp_Config = {
 <%
 var rnum = 0;
 var tnum = 0;
-for (var v of channels) {
+for (var v of processedcfg.channels) {
     if (v.direction == "J1939TP_RX") {
         rnum++;
     }
@@ -118,13 +109,13 @@ for (var v of channels) {
 }%>
 
 
-J1939Tp_Internal_ChannelInfoType   J1939InternalChannelInfos   [<%-channels.length%>];
-J1939Tp_Internal_TxChannelInfoType J1939InternalTxChannelInfos [<%-tnum%>];
-J1939Tp_Internal_RxChannelInfoType J1939InternalRxChannelInfos [<%-rnum%>];
-J1939Tp_Internal_PgInfoType        J1939InternalPgInfos        [<%-pgs.length%>];
+J1939Tp_Internal_ChannelInfoType   J1939InternalChannelInfos   [<%- processedcfg.channels.length %>];
+J1939Tp_Internal_TxChannelInfoType J1939InternalTxChannelInfos [<%- tnum %>];
+J1939Tp_Internal_RxChannelInfoType J1939InternalRxChannelInfos [<%- rnum %>];
+J1939Tp_Internal_PgInfoType        J1939InternalPgInfos        [<%- processedcfg.pgs.length %>];
 
 const uint8 J1939InternalChannelInfosSize     = (uint8)ARRAY_SIZE(J1939InternalChannelInfos);
 const uint8 J1939InternalTxChannelInfosSize   = (uint8)ARRAY_SIZE(J1939InternalTxChannelInfos);
 const uint8 J1939InternalRxChannelInfosSize   = (uint8)ARRAY_SIZE(J1939InternalRxChannelInfos);
 const uint8 J1939InternalPgInfosSize          = (uint8)ARRAY_SIZE(J1939InternalPgInfos);
-const uint8 J1939InternalRxPduCount           = <%-rxpdus.length%>U;
+const uint8 J1939InternalRxPduCount           = <%- processedcfg.rxpdus.length %>U;

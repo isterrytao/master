@@ -1,17 +1,85 @@
-/**
- * \addtogroup RelayM
- * \{
- */
+<%
+
+var relayparams = {
+    UNKNOWN: {name:'未知', onDelay: 30,  offDelay: 30, resistor: 'RELAYM_INVALID_RESISTOR', comments: '未知继电器' },
+};
+
+for (var r of cfg) {
+    if (!relayparams.hasOwnProperty(r.model)) {
+        throw 'Unsupport relay model: ' + r.model;
+    }
+}
+
+var relays = [];
+
+for (var r of cfg) {
+    var hv = 'HV_CHANNEL_NONE';
+    var hv_user_function = false;
+    var isPositive = true;
+    var totalDecPercent = 40;
+    var continueDecPercent = 20;
+    var checkInterval = 20;
+    var checkTimeout = 2000;
+    var isSafeToOff = 'NULL';
+    var auxContactDio = 'DIO_CHANNEL_NONE';
+    var ioLevelOfAuxContactWhenOn = 'STD_HIGH';
+
+    if (r.hasOwnProperty('hv')) hv = 'HV_CHANNEL_' + r.hv.toUpperCase();
+
+    if (hv.endsWith ('()')) {
+        hv = r.hv.slice(0,-2);
+        hv_user_function = true;
+    }
+
+    if (r.hasOwnProperty('isPositive')) isPositive = r.isPositive
+    if (r.hasOwnProperty('totalDecPercent')) totalDecPercent = r.totalDecPercent;
+    if (r.hasOwnProperty('continueDecPercent')) continueDecPercent = r.continueDecPercent;
+    if (r.hasOwnProperty('checkInterval')) checkInterval = r.checkInterval;
+    if (r.hasOwnProperty('checkTimeout')) checkTimeout = r.checkTimeout;
+    if (r.hasOwnProperty('isSafeToOff')) isSafeToOff = r.isSafeToOff;
+    if (r.hasOwnProperty('auxContactDio') && r.auxContactDio != "") auxContactDio ='DIO_CHANNEL_' + r.auxContactDio;
+    if (auxContactDio != 'DIO_CHANNEL_NONE') {
+        if (!r.hasOwnProperty('ioLevelOfAuxContactWhenOn')) throw "You must define ioLevelOfAuxContactWhenOn";
+        ioLevelOfAuxContactWhenOn = "STD_" + r.ioLevelOfAuxContactWhenOn.toUpperCase();
+    }
+
+
+    relays.push({
+        name: r.name,
+        def: 'RELAYM_FN_' + r.def,
+        model: relayparams[r.model],
+        hlss: r.hlss ? r.hlss : 'HLSS_CHANNEL_NONE',
+        isSafeToOff: isSafeToOff,
+        hv: hv,
+        hvUserFunction: hv_user_function,
+        isPositive: isPositive,
+        totalDecPercent: totalDecPercent,
+        continueDecPercent: continueDecPercent,
+        checkInterval: checkInterval,
+        checkTimeout: checkTimeout,
+        auxContactDio: auxContactDio,
+        ioLevelOfAuxContactWhenOn: ioLevelOfAuxContactWhenOn,
+    });
+};
+
+var processedcfg = {relays: relays};
+
+globalInfo.setReturn({relays:relays.map(x=>{return {name: x.name, def: x.def}}), processedcfg:processedcfg});
+
+%>
 #ifndef RELAYM_LCFG_H_
 #define RELAYM_LCFG_H_
 
-#define RELAYM_FN_NUM   <%- relays.length %>U
+#define RELAYM_FN_NUM   <%- processedcfg.relays.length %>U
 
 <%
 var i = 0;
-for (var relay of relays) {%>
-/** <%- JSON.stringify(relay) %> */
+for (var relay of processedcfg.relays) {%>
+/*
+<%- JSON.stringify(relay, null, '    ') %>
+*/
 #define <%- relay.def %> <%- i %>U
+
 <%
     i++;
 }%>

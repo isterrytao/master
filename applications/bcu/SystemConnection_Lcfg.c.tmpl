@@ -1,3 +1,6 @@
+<%
+var processedcfg = globalInfo.SystemConnection.processedcfg;
+%>
 #include "SystemConnection.h"
 #include "SystemConnection_Lcfg.h"
 #include "CellDataM.h"
@@ -16,9 +19,9 @@
 
 const SystemConnection_ConfigInfoType SystemConnection_ConfigInfo = {
     SYSTEM_BMU_NUM, /**<  App_SlaveIdType SlaveNum; 从机个数 */
-    <%- BcuSupportDtu %>U, /**< boolean DtuSupport; 是否支持内置DTU */
-    <%- BcuIsAllInOne %>U, /**< boolean BcuIsAllInOne; 是否为一体机 */
-    DEVICE_TYPE_<%-Bcu-%>, /**< DeviceInfo_DeviceTypeType BcuType; 主机类型 */
+    <%- processedcfg.BcuSupportDtu %>U, /**< boolean DtuSupport; 是否支持内置DTU */
+    <%- processedcfg.BcuIsAllInOne %>U, /**< boolean BcuIsAllInOne; 是否为一体机 */
+    DEVICE_TYPE_<%- processedcfg.Bcu -%>, /**< DeviceInfo_DeviceTypeType BcuType; 主机类型 */
     SYSTEM_HEAT_TEMPERATURE_SENSOR_EN, /**< heatTemperatureEnable: 加热温感使能 */
     SYSTEM_POLE_TEMPERATURE_SENSOR_EN, /**< poleTemperatureEnable: 极柱温感使能 */
     SYSTEM_BATTERY_CELL_NUM, /**< voltageNum: 电池电压个数 */
@@ -32,74 +35,74 @@ const SystemConnection_ConfigInfoType SystemConnection_ConfigInfo = {
 };
 
 const DeviceInfo_DeviceTypeType SystemConnection_SlaveTypesTable[] = {
-    <%for (var v of Bmus){%>DEVICE_TYPE_<%-v%>,<%}%>
+    <%for (var v of processedcfg.Bmus){%>DEVICE_TYPE_<%-v%>,<%}%>
 };
 
 const uint16 CellDataM_BmuVoltageLogicIdMax[SYSTEM_BMU_NUM] = {
-    <% a = BmuBatt.LogicIdMax.map(x=>x.toString()+'U') %><%-
+    <% a = processedcfg.BmuBatt.LogicIdMax.map(x=>x.toString()+'U') %><%-
     a%>
 };
 
-<% if (NeedDaisyChainBatConnInfo) {%>
+<% if (processedcfg.NeedDaisyChainBatConnInfo) {%>
 const uint16 CellDataM_CellsSetup[SYSTEM_SAMPLE_BOARD_NUM_ON_DAISY_CHAIN]={
-    <%for (var v of BmuBatt.CellsSetup){%><%- Number('0b' + v) %>U,<%}%>
+    <%for (var v of processedcfg.BmuBatt.CellsSetup){%><%- Number('0b' + v) %>U,<%}%>
 };
 <% } %>
 
 const uint8 CellDataM_BmuBoardVoltageLogicIdMax[SYSTEM_BATTERY_SAMPLE_BOARD_NUM] ={
-    <%-BmuBatt.BoardLogicIdMax%>
+    <%- processedcfg.BmuBatt.BoardLogicIdMax%>
 };
 
 const uint8 CellDataM_VoltageLogicIdToPhysicalIdMap[SYSTEM_BATTERY_CELL_NUM] = {
-    <%for (var v of BmuBatt.LogicToPhyIdMap) {%><%-v%><%}%>
+    <%for (var v of processedcfg.BmuBatt.LogicToPhyIdMap) {%><%- v %><%}%>
 };
 
 const uint16 CellDataM_BmuTemperatureLogicIdMax[SYSTEM_BMU_NUM] = {
-    <% a = BmuCellTemp.LogicIdMax.map(x=>x.toString()+'U') %><%-
+    <% a = processedcfg.BmuCellTemp.LogicIdMax.map(x=>x.toString()+'U') %><%-
     a%>
 };
 
 const uint8 CellDataM_BmuBoardTemperatureLogicIdMax[SYSTEM_TEMP_SAMPLE_BOARD_NUM] = {
-    <%-BmuCellTemp.BoardLogicIdMax%>
+    <%- processedcfg.BmuCellTemp.BoardLogicIdMax %>
 };
 
 #if SYSTEM_TEMP_CELL_NUM != 0U
 const uint8 CellDataM_TemperatureLogicIdToPhysicalIdMap[SYSTEM_TEMP_CELL_NUM] = {
-    <%for (var v of BmuCellTemp.LogicToPhyIdMap) {%><%-v%><%}%>
+    <%for (var v of processedcfg.BmuCellTemp.LogicToPhyIdMap) {%><%-v%><%}%>
 };
 #else
 const uint8 CellDataM_TemperatureLogicIdToPhysicalIdMap[1];
 #endif
 
 const uint16 CellDataM_BmuHeatTemperatureLogicIdMax[SYSTEM_BMU_NUM] = {
-    <% a = BmuHeatTemp.LogicIdMax.map(x=>x.toString()+'U') %><%-
+    <% a = processedcfg.BmuHeatTemp.LogicIdMax.map(x=>x.toString()+'U') %><%-
     a%>
 };
 
 const uint8 CellDataM_BmuBoardHeatTemperatureLogicIdMax[SYSTEM_TEMP_SAMPLE_BOARD_NUM] = {
-    <%-BmuHeatTemp.BoardLogicIdMax%>
+    <%- processedcfg.BmuHeatTemp.BoardLogicIdMax %>
 };
 
 #if SYSTEM_HEAT_TEMP_NUM != 0U
 const uint8 CellDataM_HeatTemperatureLogicIdToPhysicalIdMap[SYSTEM_HEAT_TEMP_NUM] = {
-    <%for (var v of BmuHeatTemp.LogicToPhyIdMap) {%><%-v%><%}%>
+    <%for (var v of processedcfg.BmuHeatTemp.LogicToPhyIdMap) {%><%-v%><%}%>
 };
 #else
 const uint8 CellDataM_HeatTemperatureLogicIdToPhysicalIdMap[1];
 #endif
 
 const uint16 CellDataM_BmuPoleTemperatureLogicIdMax[SYSTEM_BMU_NUM] = {
-    <% a = BmuPoleTemp.LogicIdMax.map(x=>x.toString()+'U') %><%-
+    <% a = processedcfg.BmuPoleTemp.LogicIdMax.map(x=>x.toString()+'U') %><%-
     a%>
 };
 
 const uint8 CellDataM_BmuBoardPoleTemperatureLogicIdMax[SYSTEM_TEMP_SAMPLE_BOARD_NUM] = {
-    <%-BmuPoleTemp.BoardLogicIdMax%>
+    <%- processedcfg.BmuPoleTemp.BoardLogicIdMax %>
 };
 
 #if SYSTEM_POLE_TEMP_NUM != 0U
 const uint8 CellDataM_PoleTemperatureLogicIdToPhysicalIdMap[SYSTEM_POLE_TEMP_NUM] = {
-    <%for (var v of BmuPoleTemp.LogicToPhyIdMap) {%><%-v%><%}%>
+    <%for (var v of processedcfg.BmuPoleTemp.LogicToPhyIdMap) {%><%- v %><%}%>
 };
 #else
 const uint8 CellDataM_PoleTemperatureLogicIdToPhysicalIdMap[1];
@@ -139,12 +142,12 @@ App_TemperatureType CellDataM_LogicPoleTemperatureBuffer[SYSTEM_POLE_TEMP_NUM];
 App_TemperatureType CellDataM_LogicPoleTemperatureBuffer[1U];
 #endif
 
-const uint8 SystemConnection_SlaveSampleBoardNumTable[] = { <%- mdata.SlaveSampleBoardNum %>};
+const uint8 SystemConnection_SlaveSampleBoardNumTable[] = { <%- processedcfg.SlaveSampleBoardNum %>};
 
 #pragma pop
 
-const uint8 SystemConnection_SlaveCellNumTable[] = { <%- mdata.SlaveCellNum %>};
-const uint8 SystemConnection_SlaveTempNumTable[] = { <%- mdata.SlaveTempNum %>};
+const uint8 SystemConnection_SlaveCellNumTable[] = { <%- processedcfg.SlaveCellNum %>};
+const uint8 SystemConnection_SlaveTempNumTable[] = { <%- processedcfg.SlaveTempNum %>};
 
 /**
  * \brief 实际从机类型缓存定义

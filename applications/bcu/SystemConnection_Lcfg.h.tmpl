@@ -1,3 +1,192 @@
+<%
+String.prototype.countOfChar = function (c) { return this.match(/./g).filter(v => v == c).length; };
+
+function checkBmuConnection(bmu) {
+    const condition_bmu = {
+        //一体机
+        A600: [/^[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}$/],
+        A601: [/^[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}$/],
+        A650: [/^[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}$/],
+        A651: [/^[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}$/],
+        A602: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        A603: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        A652: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        A653: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        A640: [/^[10]{12}$/, /^[CPH0]{4}$/],
+        A641: [/^[10]{12}$/, /^[CPH0]{4}$/],
+
+        // 从机
+        M600: [/^[10]{12}_[10]{12}$/, /^[CPH0]{6}_[CPH0]{4}_[CPH0]{4}$/],
+        M601: [/^[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{6}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        M602: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{6}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        M603: [/^[10]{12}_[10]{12}_[10]{12}_[10]{12}_[10]{12}$/, /^[CPH0]{6}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}_[CPH0]{4}$/],
+        M630: [/^[10]{12}$/, /[CPH0]{4}$/]
+    }
+    var cond = condition_bmu[bmu.type];
+    if (cond == undefined) throw "Wrong BMU type " + bmu.type;
+    if (!cond[0].test(bmu.battconn)) throw bmu.type + " has wrong BMU battconn " + bmu.battconn;
+    if (!cond[1].test(bmu.tempconn)) throw bmu.type + " has wrong BMU tempconn " + bmu.tempconn;
+}
+
+function processConn(dat, conn, tstr) {
+    var sum = dat.LogicIdMax.length == 0 ? 0 : dat.LogicIdMax.slice(-1)[0];
+    dat.CellsSetup = conn.split('_').map(x => x.split('').reverse().join(''))
+    dat.LogicIdMax.push(conn.countOfChar(tstr) + sum);
+    dat.BoardLogicIdMax = dat.BoardLogicIdMax.concat(conn.split('_').map(x => x.countOfChar(tstr).toString() + 'U'));
+    dat.LogicToPhyIdMap = dat.LogicToPhyIdMap.concat(conn.replace(/_/g, '').match(/./g).map((x, i) => x == tstr ? "" + i + "U," : "/*" + i + "U,*/"));
+}
+
+function processBmuData(mdata, bmu) {
+    mdata.Bmus.push(bmu.type);
+    processConn(mdata.BmuBatt, bmu.battconn, '1');
+    processConn(mdata.BmuCellTemp, bmu.tempconn, 'C');
+    processConn(mdata.BmuHeatTemp, bmu.tempconn, 'H');
+    processConn(mdata.BmuPoleTemp, bmu.tempconn, 'P');
+}
+
+const bcus = {
+    C600: { PCBA: 'UPC6000', DtuSupport: 0, AllInOne: 0, MaxBmu: 16, M630Support: 0, NeedDaisyChainBatConnInfo: false },
+    C601: { PCBA: 'UPC6000', DtuSupport: 1, AllInOne: 0, MaxBmu: 16, M630Support: 0, NeedDaisyChainBatConnInfo: false },
+    C602: { PCBA: 'UPC6000', DtuSupport: 0, AllInOne: 0, MaxBmu: 10, M630Support: 1, NeedDaisyChainBatConnInfo: false },
+    C603: { PCBA: 'UPC6000', DtuSupport: 1, AllInOne: 0, MaxBmu: 10, M630Support: 1, NeedDaisyChainBatConnInfo: false },
+    A600: { PCBA: 'UPC6000', DtuSupport: 0, AllInOne: 1, MaxBmu: 15, M630Support: 0, NeedDaisyChainBatConnInfo: false },
+    A601: { PCBA: 'UPC6000', DtuSupport: 1, AllInOne: 1, MaxBmu: 15, M630Support: 0, NeedDaisyChainBatConnInfo: false },
+    A602: { PCBA: 'UPC6000', DtuSupport: 0, AllInOne: 1, MaxBmu: 15, M630Support: 0, NeedDaisyChainBatConnInfo: false },
+    A603: { PCBA: 'UPC6000', DtuSupport: 1, AllInOne: 1, MaxBmu: 15, M630Support: 0, NeedDaisyChainBatConnInfo: false },
+    A650: { PCBA: 'UPA650', DtuSupport: 0, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
+    A651: { PCBA: 'UPA650', DtuSupport: 1, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
+    A652: { PCBA: 'UPA650', DtuSupport: 0, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
+    A653: { PCBA: 'UPA650', DtuSupport: 1, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
+    A640: { PCBA:'UPA640', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+    A641: { PCBA:'UPA640', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+
+};
+
+const typeToNumTable = {
+    A600: { SlaveSampleBoardNum: 2, SlaveCellNum: 24, SlaveTempNum: 8 },
+    A601: { SlaveSampleBoardNum: 2, SlaveCellNum: 24, SlaveTempNum: 8 },
+    A602: { SlaveSampleBoardNum: 4, SlaveCellNum: 48, SlaveTempNum: 16 },
+    A603: { SlaveSampleBoardNum: 4, SlaveCellNum: 48, SlaveTempNum: 16 },
+    M600: { SlaveSampleBoardNum: 2, SlaveCellNum: 24, SlaveTempNum: 14 },
+    M601: { SlaveSampleBoardNum: 3, SlaveCellNum: 36, SlaveTempNum: 18 },
+    M602: { SlaveSampleBoardNum: 4, SlaveCellNum: 48, SlaveTempNum: 22 },
+    M603: { SlaveSampleBoardNum: 5, SlaveCellNum: 60, SlaveTempNum: 26 },
+    M630: { SlaveSampleBoardNum: 1, SlaveCellNum: 12, SlaveTempNum: 8 },
+    A650: { SlaveSampleBoardNum: 2, SlaveCellNum: 24, SlaveTempNum: 8 },
+    A651: { SlaveSampleBoardNum: 2, SlaveCellNum: 24, SlaveTempNum: 8 },
+    A652: { SlaveSampleBoardNum: 4, SlaveCellNum: 48, SlaveTempNum: 16 },
+    A653: { SlaveSampleBoardNum: 4, SlaveCellNum: 48, SlaveTempNum: 16 },
+    A640: { SlaveSampleBoardNum:1, SlaveCellNum:12, SlaveTempNum:4},
+    A641: { SlaveSampleBoardNum:1, SlaveCellNum:12, SlaveTempNum:4},
+
+};
+
+if (!bcus.hasOwnProperty(cfg.bcu.type)) {
+    throw util.format("Wrong bcutype %s", cfg.bcu.type);
+}
+if (cfg.bmus.length > bcus[cfg.bcu.type].MaxBmu) {
+    throw util.format("BMU to many, %d > MaxBmu(%d)", cfg.bmus.length, bcus[cfg.bcu.type].MaxBmu)
+}
+
+var BcuSupportDtu = bcus[cfg.bcu.type].DtuSupport;
+var BcuIsAllInOne = bcus[cfg.bcu.type].AllInOne;
+var NeedDaisyChainBatConnInfo = bcus[cfg.bcu.type].NeedDaisyChainBatConnInfo;
+var BcuAllInOneModuleNum = BcuIsAllInOne ? typeToNumTable[cfg.bcu.type].SlaveSampleBoardNum : 0;
+
+var m630Num = cfg.bmus.reduce((sum, val) => val.type == 'M630' ? sum + 1 : sum, 0);
+if (m630Num != 0 && m630Num != cfg.bmus.length) {
+    throw "mix M630 and other BMU not support."
+}
+
+if (m630Num != 0 && !bcus[cfg.bcu.type].M630Support) {
+    throw util.format("%s does not support M630", cfg.bcu.type);
+}
+
+if (m630Num == 0 && bcus[cfg.bcu.type].M630Support) {
+    throw util.format("%s does not support M630", cfg.bcu.type);
+}
+
+
+var processedcfg = {
+    Bcu: cfg.bcu.type,
+    BcuSupportDtu: BcuSupportDtu,
+    BcuIsAllInOne: BcuIsAllInOne,
+    M630Num: m630Num,
+    SampleBoardNumOnDaisyChain: BcuIsAllInOne ? BcuAllInOneModuleNum : m630Num,
+    NeedDaisyChainBatConnInfo: NeedDaisyChainBatConnInfo,
+    Bmus: [],
+    SlaveSampleBoardNum: [],
+    SlaveCellNum: [],
+    SlaveTempNum: [],
+    BmuBatt: {
+        LogicIdMax: [],
+        BoardLogicIdMax: [],
+        LogicToPhyIdMap: [],
+    },
+    BmuCellTemp: {
+        LogicIdMax: [],
+        BoardLogicIdMax: [],
+        LogicToPhyIdMap: [],
+    },
+    BmuHeatTemp: {
+        LogicIdMax: [],
+        BoardLogicIdMax: [],
+        LogicToPhyIdMap: [],
+    },
+    BmuPoleTemp: {
+        LogicIdMax: [],
+        BoardLogicIdMax: [],
+        LogicToPhyIdMap: [],
+    }
+}
+
+if (BcuIsAllInOne) {
+    checkBmuConnection(cfg.bcu);
+    processBmuData(processedcfg, cfg.bcu);
+    processedcfg.Bmus[0] = "UNKNOWN";
+    processedcfg.SlaveSampleBoardNum.push(typeToNumTable[cfg.bcu.type].SlaveSampleBoardNum + 'U');
+    processedcfg.SlaveCellNum.push(typeToNumTable[cfg.bcu.type].SlaveCellNum + 'U');
+    processedcfg.SlaveTempNum.push(typeToNumTable[cfg.bcu.type].SlaveTempNum + 'U');
+}
+
+for (var bmu of cfg.bmus) {
+    checkBmuConnection(bmu);
+    if (bmu.type.startsWith("M60")) {
+        var xx = bmu.tempconn.match(/([0CPH]{6})_([0CPH_]*)/);
+        bmu.tempconn = xx[2] + "_" + xx[1];
+    }
+    processBmuData(processedcfg, bmu);
+    processedcfg.SlaveSampleBoardNum.push(typeToNumTable[bmu.type].SlaveSampleBoardNum + 'U');
+    processedcfg.SlaveCellNum.push(typeToNumTable[bmu.type].SlaveCellNum + 'U');
+    processedcfg.SlaveTempNum.push(typeToNumTable[bmu.type].SlaveTempNum + 'U');
+}
+
+if (processedcfg.BmuBatt.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.battnum) {
+    throw util.format("Battery Cell number(%d) !=  BatteryInfo.battnum(%d)", processedcfg.BmuBatt.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.battnum);
+}
+
+if (processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.celltempnum) {
+    throw util.format("Cell temperature number(%d) !=  BatteryInfo.celltempnum(%d)", processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.celltempnum);
+}
+
+if (processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.poletempnum) {
+    throw util.format("Pole temperature number(%d) !=  BatteryInfo.poletempnum(%d)", processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.poletempnum);
+}
+
+if (processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.heattempnum) {
+    throw util.format("Heat temperature number(%d) !=  BatteryInfo.heattempnum(%d)", processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.heattempnum);
+}
+
+globalInfo.setReturn({
+        BcuType: cfg.bcu.type,
+        BcuIsAllInOne: BcuIsAllInOne,
+        M36Num: m630Num,
+        BcuAllInOneModuleNum: BcuIsAllInOne ? BcuAllInOneModuleNum : m630Num,
+        BmuNum: processedcfg.Bmus.length,
+        PCBA: bcus[cfg.bcu.type].PCBA,
+        processedcfg:processedcfg
+    });
+%>
 #ifndef SYSTEMCONNECTION_LCFG_H_
 #define SYSTEMCONNECTION_LCFG_H_
 
@@ -6,21 +195,21 @@
 /**
  * \brief 实际从机个数定义
  */
-#define SYSTEM_BMU_NUM                    <%-Bmus.length%>U
-#define SYSTEM_BATTERY_CELL_NUM           <%-BmuBatt.LogicIdMax.slice(-1)[0]%>U
-#define SYSTEM_BATTERY_SAMPLE_BOARD_NUM   <%-BmuBatt.BoardLogicIdMax.length%>U
-#define SYSTEM_SAMPLE_BOARD_NUM_ON_DAISY_CHAIN <%- SampleBoardNumOnDaisyChain %>U
-#define SYSTEM_TEMP_CELL_NUM              <%-BmuCellTemp.LogicIdMax.slice(-1)[0]%>U
-#define SYSTEM_HEAT_TEMP_NUM              <%-BmuHeatTemp.LogicIdMax.slice(-1)[0]%>U
-#define SYSTEM_POLE_TEMP_NUM              <%-BmuPoleTemp.LogicIdMax.slice(-1)[0]%>U
-#define SYSTEM_TEMP_SAMPLE_BOARD_NUM      <%-BmuCellTemp.BoardLogicIdMax.length%>U
+#define SYSTEM_BMU_NUM                    <%- processedcfg.Bmus.length %>U
+#define SYSTEM_BATTERY_CELL_NUM           <%- processedcfg.BmuBatt.LogicIdMax.slice(-1)[0] %>U
+#define SYSTEM_BATTERY_SAMPLE_BOARD_NUM   <%- processedcfg.BmuBatt.BoardLogicIdMax.length %>U
+#define SYSTEM_SAMPLE_BOARD_NUM_ON_DAISY_CHAIN <%- processedcfg.SampleBoardNumOnDaisyChain  %>U
+#define SYSTEM_TEMP_CELL_NUM              <%- processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0] %>U
+#define SYSTEM_HEAT_TEMP_NUM              <%- processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0] %>U
+#define SYSTEM_POLE_TEMP_NUM              <%- processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0] %>U
+#define SYSTEM_TEMP_SAMPLE_BOARD_NUM      <%- processedcfg.BmuCellTemp.BoardLogicIdMax.length %>U
 
-#define SYSTEM_BCU_SUPPORT_DTU            <%-BcuSupportDtu%>U
-#define SYSTEM_BCU_IS_ALL_IN_ONE          <%-BcuIsAllInOne%>U
+#define SYSTEM_BCU_SUPPORT_DTU            <%- processedcfg.BcuSupportDtu %>U
+#define SYSTEM_BCU_IS_ALL_IN_ONE          <%- processedcfg.BcuIsAllInOne %>U
 
-#define SYSTEM_CELL_TEMPERATURE_SENSOR_EN <%-BmuCellTemp.LogicIdMax.slice(-1)[0] > 0 ? "STD_ON" : "STD_OFF"%>
-#define SYSTEM_HEAT_TEMPERATURE_SENSOR_EN <%-BmuHeatTemp.LogicIdMax.slice(-1)[0] > 0 ? "STD_ON" : "STD_OFF"%>
-#define SYSTEM_POLE_TEMPERATURE_SENSOR_EN <%-BmuPoleTemp.LogicIdMax.slice(-1)[0] > 0 ? "STD_ON" : "STD_OFF"%>
+#define SYSTEM_CELL_TEMPERATURE_SENSOR_EN <%- processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0] > 0 ? "STD_ON" : "STD_OFF" %>
+#define SYSTEM_HEAT_TEMPERATURE_SENSOR_EN <%- processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0] > 0 ? "STD_ON" : "STD_OFF" %>
+#define SYSTEM_POLE_TEMPERATURE_SENSOR_EN <%- processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0] > 0 ? "STD_ON" : "STD_OFF" %>
 
 
 #endif

@@ -1,14 +1,20 @@
+<%
+if (globalInfo.SystemConnection.PCBA == 'UPA650') {
+    cfg['SIGIN2'].enable = false;
+}
+%>
+
 #include "xgate.h"
 #include "Cpu.h"
 #include "PwmCapture_Lcfg.h"
 
 /*
-<%- JSON.stringify(mdata, null, '  ') %>
+<%- JSON.stringify(cfg, null, '  ') %>
 */
 
 <%
-if (mdata.hasOwnProperty('funcIncude')) {
-    for(var ch of mdata['funcIncude']) {
+if (cfg.hasOwnProperty('funcIncude')) {
+    for(var ch of cfg['funcIncude']) {
 %>
 #include "<%- ch %>"
 <%
@@ -24,17 +30,17 @@ if (mdata.hasOwnProperty('funcIncude')) {
 <%
 
 function channelEnabled(ch) {
-    return mdata.hasOwnProperty(ch) && mdata[ch].enable
+    return cfg.hasOwnProperty(ch) && cfg[ch].enable
 }
 
 function getTriggerEdge(ch) {
     var edge = 'PWM_TRIGGER_HCS12_NONE';
     if (channelEnabled(ch)) {
-        if (mdata[ch].risingFunc) {
+        if (cfg[ch].risingFunc) {
             edge = edge + ' | PWM_TRIGGER_HCS12_RAISING';
         }
 
-        if (mdata[ch].fallingFunc) {
+        if (cfg[ch].fallingFunc) {
             edge = edge + ' | PWM_TRIGGER_HCS12_FALLING';
         }
     }
@@ -49,11 +55,11 @@ const handleAll = handleRising + handleFalling;
 function getFunctionHandleType(ch) {
     var handle = handleNone;
     if (channelEnabled(ch)) {
-        if (mdata[ch].risingFunc) {
+        if (cfg[ch].risingFunc) {
             handle += handleRising;
         }
 
-        if (mdata[ch].fallingFunc && mdata[ch].fallingFunc != mdata[ch].risingFunc) {
+        if (cfg[ch].fallingFunc && cfg[ch].fallingFunc != cfg[ch].risingFunc) {
             handle += handleFalling;
         }
     }
@@ -93,16 +99,16 @@ XGATE_ISR_PROTYPE(PwmXgate_EdgeIsr);
 <% if (channelEnabled(x.ch)) {%>
 static void on<%- x.ch %>Edge(void) {
     <% if (handle == handleRising) { %>
-    <%- mdata[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
+    <%- cfg[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
     <% } %>
     <% if (handle == handleFalling) { %>
-    <%- mdata[x.ch].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
+    <%- cfg[x.ch].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
     <% } %>
     <% if (handle == handleAll) { %>
     if (PwmCapture_IsTriggerRising(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL])) {
-        <%- mdata[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
+        <%- cfg[x.ch].risingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
     } else {
-        <%- mdata[x.ch].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
+        <%- cfg[x.ch].fallingFunc %>(&PwmCapture_DataList[PWM_CAPTURE_<%- x.ch %>_CHANNEL]);
     }
     <% } %>
     HCS12_ClearGIF(IRQ_LOGIC_NUM_TO_PYH(<%- x.irq %>));

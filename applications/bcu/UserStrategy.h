@@ -31,6 +31,10 @@
  * \brief 实时OTA升级功能开关
  * \details A641主机只能通过实时OTA升级
  */
+#define KEY_TYPE_IS_SELFLOCK 0
+#define KEY_TYPE_IS_SELFRESET 1
+#define KEY_TYPE KEY_TYPE_IS_SELFRESET//KEY_TYPE_IS_SELFRESET
+
 #if defined(A641)
 #define USERSTRATEGY_RESET_TO_OTA_EN                STD_ON //对于A641主机 此项必须开启
 #else
@@ -140,6 +144,7 @@ Std_ReturnType UserStrategy_DCConnected(void);
  */
 void UserStrategy_FullChargeHook(void);
 void UserStrategy_FullChargeReleaseHook(void);
+boolean UserStrategy_Wakeup(void);
 
 
 #endif

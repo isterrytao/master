@@ -4,9 +4,6 @@
  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
-/**
- * \addtogroup Diagnosis
- */
 
 #ifndef DIAGNOSIS_CFG_H_
 #define DIAGNOSIS_CFG_H_

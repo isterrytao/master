@@ -1,18 +1,20 @@
 #include "CanIf_Lcfg.h"
 
 <%
-var cbks = txsduids.reduce((xx, d) => {
+var cfg = globalInfo.CanIf.processedcfg;
+
+var cbks = cfg.txsduids.reduce((xx, d) => {
     if (xx.indexOf(d.from) < 0) xx.push(d.from);
     return xx;
 }, []);
 
-cbks = rxsduids.reduce((xx, d) => {
+cbks = cfg.rxsduids.reduce((xx, d) => {
     if (xx.indexOf(d.to) < 0) xx.push(d.to);
     return xx;
 }, cbks);
 
 for (var cbk of cbks) {
-%>#include "<%-cbk%>_Cbk.h"
+%>#include "<%- cbk %>_Cbk.h"
 <%}%>
 
 #if (STD_ON == CANIF_RX_PDU_RANGE_CANID)
@@ -70,16 +72,16 @@ const CanIf_RxPduConfigType/*CANIF_CONFIG_CONST*/
 CanIfRxPduConfig[] = {
 <%
 var i = 0;
-for (var v of rxsduids) {
+for (var v of cfg.rxsduids) {
 %>  {
 #if (STD_ON == CANIF_UPPER_LAYER_HANDLE)
-        <%-v.name%>,
+        <%- v.name %>,
 #endif
-        0x<%-v.id.toString(16)%>U, /* CanId*/
-        <%-v.extended?"EXTENDED_CAN":"STANDARD_CAN"%>, /* CanIdType */
-        <%-v.hoh%>U, /* CanIfRxPduHrhIdRef */
+        0x<%- v.id.toString(16) %>U, /* CanId*/
+        <%- v.extended?"EXTENDED_CAN":"STANDARD_CAN" %>, /* CanIdType */
+        <%- v.hoh %>U, /* CanIfRxPduHrhIdRef */
         8U, /* CanIfRxPduDlc */
-        <%-v.to%>_RxIndication, /* CanIfRxPduUserRxIndicationName */
+        <%- v.to %>_RxIndication, /* CanIfRxPduUserRxIndicationName */
 #if(STD_ON == CANIF_PUBLIC_READRXPDU_NOTIFY_STATUS_API)
         FALSE, /* CanIfRxPduReadNotifyStatus */
 #endif
@@ -101,7 +103,7 @@ for (var v of rxsduids) {
 #if(CANIF_FILTER_TYPE_INDEX == CANIF_PRIVATE_SOFTWARE_FILTER_TYPE)
 const Can_HwHandleType/*CANIF_CONFIG_CONST*/
 CanIfHrhFirstRxPduID[CANIF_CFG_TOTAL_HRH] = {
-    <%-hrhFirstRxPduID%>
+    <%- cfg.hrhFirstRxPduID %>
 };
 #endif
 
@@ -117,17 +119,17 @@ const CanIf_TxPduConfigType/*CANIF_CONFIG_CONST*/
 CanIfTxPduConfig[] = {
 <%
 var i = 0;
-for (var v of txsduids) {
+for (var v of cfg.txsduids) {
 %>  {
     /* <%-i%>  <%-JSON.stringify(v)%>*/
 #if (STD_ON == CANIF_UPPER_LAYER_HANDLE)
-        <%-v.hasOwnProperty("define") ? v.define.toString() + 'U' : v.name%>,
+        <%- v.hasOwnProperty("define") ? v.define.toString() + 'U' : v.name %>,
 #endif
-        0x<%-v.id.toString(16)%>U, /* CanId*/
-        <%-v.extended?"EXTENDED_CAN":"STANDARD_CAN"%>, /* CanIdType */
-        <%-v.hoh%>U, /* CanIfTxPduHthIdRef */
+        0x<%- v.id.toString(16) %>U, /* CanId*/
+        <%- v.extended?"EXTENDED_CAN":"STANDARD_CAN" %>, /* CanIdType */
+        <%- v.hoh %>U, /* CanIfTxPduHthIdRef */
         8U, /* CanIfTxPduDlc */
-        <%-v.from%>_TxConfirmation, /* CanIfTxPduUserTxConfirmationUL */
+        <%- v.from %>_TxConfirmation, /* CanIfTxPduUserTxConfirmationUL */
 #if(STD_ON == CANIF_PUBLIC_SETDYNAMICTXID_API)
         FALSE, /* CanIfTxPduType */
 #endif
@@ -140,14 +142,14 @@ for (var v of txsduids) {
 };
 
 <%
-for (var v of rxsduids) {%>
-const PduIdType PduId_<%-v.name%> = <%-v.name%>;<%
+for (var v of cfg.rxsduids) {%>
+const PduIdType PduId_<%- v.name %> = <%- v.name %>;<%
 }%>
 
 <%
 var i = 0;
-for (var v of txsduids) {%>
-const PduIdType PduId_<%-v.name%> = <%-v.name%>;<%
+for (var v of cfg.txsduids) {%>
+const PduIdType PduId_<%- v.name %> = <%- v.name %>;<%
     i++;
 }%>
 

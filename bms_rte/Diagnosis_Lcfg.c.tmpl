@@ -1,3 +1,4 @@
+<% if (!globalInfo.Diagnosis.makelib) { %>
 #include "Diagnosis.h"
 #include "Statistic.h"
 #include "CurrentM.h"
@@ -26,7 +27,7 @@ extern Diagnosis_LevelsStatusType Diagnosis_LevelsStatus[];
 /*lint -save*/
 /*lint -e778*/
 
-<%for (var cfg of infoconfig) {%>
+<%for (var cfg of globalInfo.Diagnosis.processedcfg) {%>
 /* <%- cfg.name %> */<%
     if (!cfg.events || cfg.events.length == 0) {%>
 #define Diagnosis_<%- cfg.itemDef %>DefaultEventConfig NULL
@@ -48,7 +49,7 @@ static const Diagnosis_DefaultEventCbkItemType Diagnosis_<%- cfg.itemDef %>Defau
 
 const Diagnosis_DiagInfoType Diagnosis_DiagInfoConfig[] = {<%
 var i = 0;
-for (var cfg of infoconfig) {%>
+for (var cfg of globalInfo.Diagnosis.processedcfg) {%>
     {/*<%- i %> <%- cfg.name %> */
         <%-cfg.cycle%>U, /**< cycle: 更新周期 */
         DIAGNOSIS_CONDITION_<%-cfg.conditionFlag%>_MASK, /**< conditionFlag: 诊断条件 */
@@ -71,7 +72,7 @@ for (var cfg of infoconfig) {%>
 
 
 
-<%for (var cfg of infoconfig) {%>
+<%for (var cfg of globalInfo.Diagnosis.processedcfg) {%>
 /* <%- cfg.name %> */<%
     if (!cfg.startDiagnosis.events || cfg.startDiagnosis.events.length == 0) {%>
 #define Diagnosis_StartDiag_<%- cfg.itemDef %>DefaultEventConfig NULL
@@ -95,7 +96,7 @@ static const Diagnosis_DefaultEventCbkItemType Diagnosis_StartDiag_<%- cfg.itemD
 
 
 const Diagnosis_StartDiagInfoType Diagnosis_StartDiagInfo[] = {<%
-for (var cfg of infoconfig) {%>
+for (var cfg of globalInfo.Diagnosis.processedcfg) {%>
     {/* <%-cfg.name%> */
         <%-cfg.startDiagnosis.timeout%>UL, /**< timeout: 自检超时时间 */
         0x<%-cfg.startDiagnosis.enableFlag.toString(16)%>U, /**< enableFlag: 诊断使能 */
@@ -108,3 +109,5 @@ for (var cfg of infoconfig) {%>
 };
 
 /*lint -restore*/
+
+<%}%>

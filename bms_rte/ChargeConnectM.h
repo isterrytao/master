@@ -154,6 +154,7 @@ typedef enum {
  * \brief 充电连接通用配置类型
  */
 typedef struct{
+    uint8 Wakeup; /**< 唤醒信号 */
     ChargeConnectM_ConnectType type;
     ChargeConnectM_DinParaType DinPara;
     ChargeConnectM_ConnectFunPtr FuncPtr;
@@ -176,6 +177,7 @@ typedef struct{
 typedef struct{
     boolean ConnectionIsDynamic; /**< 充电连接是否动态更新 */
     boolean DoS2MonitorsEL; /**< S2监控电子锁状态开关 */
+    uint16 S2OffDelayMin; /**< S2最小断开延时 */
     ChargeConnectM_ConnectionPrioType ConnectionPrio; /**< 快慢充连接优先级 */
     ChargeConnectM_CommonConfigType AC_Para;
     ChargeConnectM_CommonConfigType DC_Para;

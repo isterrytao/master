@@ -1,3 +1,28 @@
+<%
+
+var rxsduids = [];
+var txsduids = [];
+
+if (globalInfo.SystemConnection.BcuIsAllInOne) {
+    rxsduids.push("BMU_0");
+    txsduids.push("BMU_0");
+} else if (globalInfo.SystemConnection.M36Num > 0) {
+    for (var i=0; i<info.SystemConnection.M36Num; i++) {
+        rxsduids.push("BMU_" + i);
+        txsduids.push("BMU_" + i);
+    }
+} else {
+    rxsduids.push("BMU_0");
+    txsduids.push("BMU_0");
+}
+
+var UseLtcAllInOne = (globalInfo.SystemConnection.BcuIsAllInOne || globalInfo.SystemConnection.M36Num) && (globalInfo.SystemConnection.PCBA == 'UPC6000');
+var UseIslAllInOne = globalInfo.SystemConnection.BcuIsAllInOne && (globalInfo.SystemConnection.PCBA == 'UPA650' || globalInfo.SystemConnection.PCBA == 'UPA640');
+var M36Num = globalInfo.SystemConnection.M36Num;
+
+globalInfo.setReturn({rxsduids:rxsduids, txsduids:txsduids});
+%>
+
 #include "InnerTp_Lcfg.h"
 #include "AllInOneComm.h"
 

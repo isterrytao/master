@@ -1,3 +1,89 @@
+<%
+var cref = 0;
+var crefToHw = [];
+var hwToCref = [];
+var hohs = [];
+var hwcfgs = [];
+
+var idToRegisterValue = (id) => {
+    var ret;
+    if (id & 0x80000000) {
+        id = id & (~0x80000000);
+        ret = (id << 3) & 0xFFE00000;
+        ret |= 0x00180000;
+        ret |= (id << 1) & 0x7FFFE;
+        return [ret, ret, 0xFFFFFFFF, 0x00000000];
+
+    }
+    ret = (id & 0x7FF) << 21;
+    return [0xFFFFFFFF, 0x00000000, ret, ret];
+};
+
+var idFilterReduce = (result, id) => {
+    if (!result) {
+        result = [0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000];
+    }
+
+    reg = idToRegisterValue(id);
+    result[0] = result[0] & reg[0];
+    result[1] = result[1] | reg[1];
+    result[2] = result[2] & reg[2];
+    result[3] = result[3] | reg[3];
+    return result;
+};
+
+
+var oneZeroToAcceptMask = (oneZero) => {
+    return {
+        mask0: (oneZero[0] ^ oneZero[1]) | (0x01 << 20),
+        accept0: oneZero[0] & oneZero[1],
+        mask1: (oneZero[2] ^ oneZero[3]) | (0x07 << 16),
+        accept1: oneZero[2] & oneZero[3],
+    }
+}
+
+
+for (var i = 0; i < globalInfo.CanIf.canhohs.length; i++) {
+    hoh = globalInfo.CanIf.canhohs[i];
+    var eol = i >= globalInfo.CanIf.canhohs.length - 1 || hoh.hw != globalInfo.CanIf.canhohs[i + 1].hw;
+    hohs.push({
+        index: i,
+        controllerRef: cref,
+        CanObjectType: hoh.dir == 'tx' ? 'CAN_OBJECT_TYPE_TRANSMIT' : 'CAN_OBJECT_TYPE_RECEIVE',
+        Can_EOL: eol ? 1 : 0,
+    });
+
+    if (hwcfgs.findIndex(cfg => cfg.hw == hoh.hw) < 0) {
+        for (var x of cfg) {
+            if (hoh.hw == x.hw) {
+                hwcfgs.push({
+                    hw: x.hw,
+                    hohOffset: i,
+                    baud: (x.hasOwnProperty('baud')) ? x.baud : 250000,
+                });
+                break;
+            }
+        }
+
+    }
+
+    if (hoh.dir == "rx") {
+        var hwcfg = hwcfgs.find(x => x.hw == hoh.hw)
+        var oneZero = hoh.ids.reduce(idFilterReduce, null);
+        var acceptMask = oneZeroToAcceptMask(oneZero);
+        //console.log("oneZero:" + uint32.toHex(oneZero.allOne)+","+uint32.toHex(oneZero.allZero));
+        //console.log("acceptMask:" + uint32.toHex(acceptMask.accept)+","+uint32.toHex(acceptMask.mask));
+        hwcfg.filter = oneZeroToAcceptMask(oneZero);
+    }
+
+    if (eol) {
+        crefToHw[cref] = 'CAN_CTRL_' + hoh.hw;
+        hwToCref[hoh.hw] = cref;
+        cref++;
+    }
+}
+%>
+
 #include <stdlib.h>
 #include "CanIf_Cbk.h"
 

@@ -155,7 +155,7 @@ module.exports = {
         maxOnTimeForData: 60*5,
         minBatteryVolForWakeup: 10,
         chargeEndOTA: true,
-        userIsWakeup: {func:"", inc: ""},
+        userIsWakeup: {func:"UserStrategy_Wakeup", inc: "UserStrategy.h"},
         cpInvalidTimeFilter: 10*60,
         powerOffNotifiers: [
             {func:"Soc_PowerDownSaveCbk", inc: "Soc.h"},
@@ -248,12 +248,14 @@ module.exports = {
     Charge: {
         dc: {
             notes:[
+                {section:"wakeup", chs:"唤醒信号", comments:'可选:"NONE", "ON", "DCC"'},
                 {section:"protocol", chs:"协议", comments:'可选:"NONE", "USER", "GB2015"'},
                 {section:"mode", chs:"连接模式", comments:'可选:"NONE", "USER", "COMM", "DIN", "CURRENT", "GB_DC"'},
                 {section:"dintype", chs:"数字输入类型", comments:'只有mode为"DIN"时可用, 可选:"LEVEL", "SW", "WAKEUP_SIGNAL"'},
                 {section:"dinChannel", chs:"数字输入通道", comments:'可选:"BCU_DIN1", "BCU_DIN2", "BCU_SW1", "BCU_SW2", "OBC", "DCC"'},
                 {section:"userModeFunction", chs:"自定义充电连接", comments:'当mode为"USER"时，提供一个获取连接模式的头文件和函数'}
             ],
+            wakeup: "DCC",
             protocol: "GB2015",
             mode: "GB_DC",
             dintype: "LEVEL",
@@ -264,12 +266,14 @@ module.exports = {
 
         ac: {
             notes:[
+                {section:"wakeup", chs:"唤醒信号", comments:'可选:"NONE", "ON", "CP", "OBC"'},
                 {section:"protocol", chs:"协议", comments:'可选:"NONE", "USER", "GB2015"'},
                 {section:"mode", chs:"连接模式", comments:'可选:"NONE", "USER", COMM", "DIN", "CURRENT", "GB_MODE1_CONNECT_B", "GB_MODE2_CONNECT_B", "GB_MODE3_CONNECT_A", "GB_MODE3_CONNECT_B", "GB_MODE3_CONNECT_C"'},
                 {section:"dintype", chs:"数字输入类型", comments:'只有mode为"DIN"时可用, 可选:"LEVEL", "SW", "WAKEUP_SIGNAL"'},
                 {section:"dinChannel", chs:"数字输入通道", comments:'可选:"BCU_DIN1", "BCU_DIN2", "BCU_SW1", "BCU_SW2", "OBC", "DCC"'},
                 {section:"userModeFunction", chs:"自定义充电连接", comments:'当mode为"USER"时，提供一个获取连接模式的函数'}
             ],
+            wakeup: "OBC",
             protocol: "USER",
             mode: "GB_MODE1_CONNECT_B",
             dintype: "LEVEL",

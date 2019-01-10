@@ -1,17 +1,26 @@
+<%
+var processedcfg = globalInfo.PduR.processedcfg;
+var includes = [];
+
+for (var module of processedcfg.uppers) {
+    processedcfg[module].txs.forEach(function(tx) {
+        if (tx.name != "None") {
+            includes.pushIfNotExist(tx.name);
+        }
+    });
+}
+%>
+
 #include "ComStack_Types.h"
 #include "PduR_Lcfg.h"
+<% for (var x of includes) { %>
+#include "<%- x %>.h"
+<% } %>
 
 <%
-var incs = txs.reduce((acc, x)=>{
-    if (acc.indexOf(x.name)<0) acc.push(x.name);
-    return acc;
-}, []);
-
-for(var x of incs) {
-    if (x != "None") {%>
-#include "<%-x%>.h"<%
-    }
-}%>
+for (var module of processedcfg.uppers) {
+    var txmiddles = processedcfg[module].txmiddles;
+%>
 
 Std_ReturnType PduR_<%-module%>Transmit(PduIdType PduId, const PduInfoType* PduInfoPtr)
 {
@@ -32,3 +41,4 @@ Std_ReturnType PduR_<%-module%>Transmit(PduIdType PduId, const PduInfoType* PduI
     }
     return res;
 }
+<% } %>

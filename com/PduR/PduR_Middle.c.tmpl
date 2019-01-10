@@ -1,24 +1,41 @@
+
+<%
+var processedcfg = globalInfo.PduR.processedcfg;
+var includes = [];
+
+for (var module of processedcfg.middles) {
+    processedcfg[module].txs.forEach(function(tx) {
+        if (tx.name != "None") {
+            includes.pushIfNotExist(tx.name);
+        }
+    });
+
+    processedcfg[module].rxs.forEach(function(rx) {
+        if (rx.name != "None") {
+            includes.pushIfNotExist(rx.name);
+        }
+    });
+}
+%>
+
 #include "PduR.h"
 #include "PduR_Lcfg.h"
 
+<% for (var x of includes) { %>
+#include "<%- x %>_Cbk.h"
+<% } %>
+
 <%
-var incs = txs.reduce((acc, x)=>{
-    if (acc.indexOf(x.name)<0) acc.push(x.name);
-    return acc;
-}, []);
+for (var module of processedcfg.middles) {
+    var txuppers = processedcfg[module].txuppers;
+    var rxuppers = processedcfg[module].rxuppers;
+%>
 
-incs = rxs.reduce((acc, x)=>{
-    if (acc.indexOf(x.name)<0) acc.push(x.name);
-    return acc;
-}, incs);
-
-for(var x of incs) {
-    if (x != "None") {%>
-#include "<%-x%>_Cbk.h"<%
-    }
-}%>
-
-
+/*
+====================================================================
+<%- module %>
+====================================================================
+*/
 
 BufReq_ReturnType PduR_<%-module%>CopyTxData(const PduIdType  PduId,
                                         const PduInfoType *const PduInfoPtr,
@@ -152,3 +169,5 @@ void PduR_<%-module%>RxIndication(const PduIdType PduId, const NotifResultType R
     (void)Result;
 <% } %>
 }
+
+<% } %>

@@ -4,19 +4,25 @@ const BalanceM_ConfigType BalanceM_ConfigInfo = {
     BALANCEM_BALANCE_PASSTIVE, /**< type */
     /**< 充电均衡配置参数 */
     {
-        <%- Charging.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
-        <%- Charging.startVoltage %>U, /**< start_voltage */
-        <%- Charging.minVoltage %>U, /**< voltage_min */
-        <%- Charging.minDiffVoltage %>U, /**< delta_volt_min */
-        <%- Charging.maxDiffVoltage %>U, /**< delta_volt_max */
+/*
+<%- JSON.stringify(cfg.Charging, null, '    ') %>
+*/
+        <%- cfg.Charging.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
+        <%- cfg.Charging.startVoltage %>U, /**< start_voltage */
+        <%- cfg.Charging.minVoltage %>U, /**< voltage_min */
+        <%- cfg.Charging.minDiffVoltage %>U, /**< delta_volt_min */
+        <%- cfg.Charging.maxDiffVoltage %>U, /**< delta_volt_max */
     },
     /**< 静态均衡配置参数 */
     {
-        <%- Static.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
-        <%- Static.startVoltage %>U, /**< start_voltage */
-        <%- Static.minVoltage %>U, /**< voltage_min */
-        <%- Static.minDiffVoltage %>U, /**< delta_volt_min */
-        <%- Static.maxDiffVoltage %>U, /**< delta_volt_max */
+/*
+<%- JSON.stringify(cfg.Static, null, '    ') %>
+*/
+        <%- cfg.Static.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
+        <%- cfg.Static.startVoltage %>U, /**< start_voltage */
+        <%- cfg.Static.minVoltage %>U, /**< voltage_min */
+        <%- cfg.Static.minDiffVoltage %>U, /**< delta_volt_min */
+        <%- cfg.Static.maxDiffVoltage %>U, /**< delta_volt_max */
     },
     DIAGNOSIS_LEVEL_THIRD, /**< disable_bal_ht_level */
     DIAGNOSIS_LEVEL_THIRD, /**< disable_bal_lv_level */

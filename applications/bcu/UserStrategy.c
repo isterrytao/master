@@ -55,13 +55,33 @@ void UserStrategy_Init(Async_LooperType *looper)
     }
 }
 
+#if defined(A640)||defined(A641)
+static void pollPowerKeyState() {
+    uint32 now = OSTimeGet();
+    static uint32 tick = 0U;
+
+    if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW) {
+        if (now - tick > 4000U) {
+            RuntimeM_RequestPowerDown();
+        }
+    } else {
+        tick = now;
+    }
+}
+#endif
+
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)
 {
     (void)event;
     (void)byWhat;
-
 #if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
     UserStrategy_ResetToOTA();
+#endif
+
+#if defined(A640)||defined(A641)
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+    pollPowerKeyState();
+#endif
 #endif
     safeCurrentCheck();
 
@@ -254,4 +274,14 @@ static void UserStrategy_ResetToOTA(void)
         lastTime = nowTime;
     }
 }
+
 #endif
+
+boolean UserStrategy_Wakeup(void){
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+    return TRUE;
+#else
+    return FALSE;
+#endif
+}
+
