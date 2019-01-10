@@ -24,6 +24,7 @@
 #include "Diagnosis.h"
 #include "ComStack_Types.h"
 
+#define RUNTIMEM_WAKEUP_SIGNAL_BIT_NONE             0x00U
 #define RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON           0x01U
 #define RUNTIMEM_WAKEUP_SIGNAL_BIT_OBC_POWER        0x02U
 #define RUNTIMEM_WAKEUP_SIGNAL_BIT_CHARGER_READY    0x04U
