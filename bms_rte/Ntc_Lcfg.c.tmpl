@@ -43,7 +43,7 @@ const NTC_ConfigDataType *const OnboardNTCConfigData = &NTC_Shiheng_CWF4B_103F_3
 const uint8 ChgSckTmpM_AdcToTempChannelMap[] = { <%
 for (var x of ['FCH_T1', 'FCH_T2', 'SCH_T1', 'SCH_T2', 'SCH_T3']) { %><%
     if (processedcfg.chgSckAdcToTempChannleMap.hasOwnProperty(x)) { %>
-    CHGSCKTMPM_TEMPERATURE_<%- chgSckAdcToTempChannleMap[x] %>,   /* <%- x %> */ <%
+    CHGSCKTMPM_TEMPERATURE_<%- processedcfg.chgSckAdcToTempChannleMap[x] %>,   /* <%- x %> */ <%
     } else { %>
     CHGSCKTMPM_TEMPERATURE_CHANEL_NUM,   /* <%- x %> */<%
     } %><%
