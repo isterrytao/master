@@ -278,7 +278,7 @@ static void UserStrategy_ResetToOTA(void)
 #endif
 
 boolean UserStrategy_Wakeup(void){
-#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A640)||defined(A641))
     return TRUE;
 #else
     return FALSE;
