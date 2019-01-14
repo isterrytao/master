@@ -245,9 +245,17 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.systemStatus.HV4 = HV_GetVoltage(HV_CHANNEL_HV4);
     msgHeader->dataHeader.systemStatus.HV5 = HV_GetVoltage(HV_CHANNEL_HV5);
     msgHeader->dataHeader.systemStatus.DI1 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN1);
+
+#if defined(A640)||defined(A641)
+    msgHeader->dataHeader.systemStatus.DI2 = 0U;
+    msgHeader->dataHeader.systemStatus.SW1 = 0U;
+    msgHeader->dataHeader.systemStatus.SW2 = 0U;
+#else
     msgHeader->dataHeader.systemStatus.DI2 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN2);
     msgHeader->dataHeader.systemStatus.SW1 = (uint8)DigitalInput_GetSwitchState(DIGITALINPUT_BCU_SW1);
     msgHeader->dataHeader.systemStatus.SW2 = (uint8)DigitalInput_GetSwitchState(DIGITALINPUT_BCU_SW2);
+#endif
+
     msgHeader->dataHeader.systemStatus.chargeStartDiagFault = (uint8)ChargeM_GetStartDiagFault();
     msgHeader->dataHeader.systemStatus.chargeDiagFaultFlag = (uint8)ChargeM_GetDiagFaultFlag();
     msgHeader->dataHeader.systemStatus.chargeDiagFaultAction = (uint8)ChargeM_GetDiagFaultAction();
