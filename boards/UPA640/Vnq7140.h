@@ -10,11 +10,12 @@
 #define VNQ7140CHANNEL3    5U
 #define VNQ7140MAXCHANNEL  6U
 
-#define R_SENSE 1000U /*MultiSense脚对地电阻，单位欧姆*/
-#define K0 550U
-#define K1 520U
-#define K2 475U
-#define K3 470U
+#define HSSVCCOFFSET 480U /*理论+实验得出的偏移值*/
+#define R_SENSE 680U /*MultiSense脚对地电阻，单位欧姆*/
+#define K0 500U
+#define K1 500U
+#define K2 500U
+#define K3 500U
 
 
 void dealHLSSVnq7140Data(uint16 adc_value);

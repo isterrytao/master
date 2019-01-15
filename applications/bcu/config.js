@@ -231,19 +231,233 @@ module.exports = {
         },
     },
 
-    RelayM: [
-        {name: "主正", def: "POSITIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS1", isSafeToOff: "NULL", hv: "HV1", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000, auxContactDio: "", ioLevelOfAuxContactWhenOn: "HIGH"},
-        {name: "预充", def: "PRECHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 2000,  auxContactDio: "", ioLevelOfAuxContactWhenOn: "HIGH"},
-        {name: "快充正", def: "POSITIVE_DC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV3", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000},
-        {name: "慢充正", def: "POSITIVE_AC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS4", isSafeToOff: "NULL", hv: "HVE1", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000},
-        // {name: "主负", def: "NEGTIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5", isSafeToOff: "NULL", hv: "HVE2", isPositive:false, totalDecPercent: 20, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
-        // {name: "加热", def: "HEATER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
-        // {name: "预留", def: "RESERVE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS7"},
-        //{name: "放电正", def: "POSITIVE_DISCHRGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS1", hv: "BPOS"},
-        //{name: "放电负", def: "NEGTIVE_DISCHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5"},
-        //{name: "充电负", def: "NEGTIVE_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
-        // {name: "制冷", def: "COOLER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS7"},
-    ],
+    RelayM: {
+        enable: "STD_ON",
+        relaym: [
+            {name: "主正", def: "POSITIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS1", isSafeToOff: "NULL", hv: "HV1", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000, auxContactDio: "", ioLevelOfAuxContactWhenOn: "HIGH"},
+            {name: "预充", def: "PRECHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 2000,  auxContactDio: "", ioLevelOfAuxContactWhenOn: "HIGH"},
+            {name: "快充正", def: "POSITIVE_DC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV3", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000},
+            {name: "慢充正", def: "POSITIVE_AC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS4", isSafeToOff: "NULL", hv: "HVE1", isPositive:true, totalDecPercent: 40, continueDecPercent: 20, checkInterval: 20, checkTimeout: 1000},
+            // {name: "主负", def: "NEGTIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5", isSafeToOff: "NULL", hv: "HVE2", isPositive:false, totalDecPercent: 20, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
+            // {name: "加热", def: "HEATER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
+            // {name: "预留", def: "RESERVE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS7"},
+            //{name: "放电正", def: "POSITIVE_DISCHRGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS1", hv: "BPOS"},
+            //{name: "放电负", def: "NEGTIVE_DISCHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5"},
+            //{name: "充电负", def: "NEGTIVE_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
+            // {name: "制冷", def: "COOLER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS7"},
+        ],
+    },
+
+    BridgeInsu: {
+        notes: [
+            {section:"type", chs:"绝缘检测方式", comments:'"OFF", "BY_VOL", "ALWAYS_ON", "ON_WHEN_DETECT"'}
+        ],
+        type: "BY_VOL"
+    },
+
+    CommProcotol: {
+        notes: [
+            {section:"type", chs: "通讯协议类型", comments: '"XX1", "XX2", "XX3"'},
+        ],
+        type: "XX1",
+    },
+
+    HVProcess: {
+        notes: [
+            {section:"type", chs: "高压流程类型", comments: '"XX1", "XX2", "XX3"'},
+        ],
+        type: "XX1",
+    },
+
+    PrechargeM: {
+        notes: [
+            {section:"enable", chs: "预充功能使能", comments: '"STD_ON", "STD_OFF"'},
+            {section:"finishCond", chs: "预充完成条件{}"},
+            {section:"retryNum", chs: "重试次数"},
+            {section:"timeout", chs: "预充超时时间(ms)"},
+            {section:"otherparm", chs: "预充超时时间(ms)"},   //选填
+        ],
+        enable: "STD_ON",
+        finishCond: {
+            notes:[
+                {section:"type", chs:"预充完成条件类型", comments:'"DELTA_VOLT", "PERCENT", "DELAY"'},
+                {section:"value", chs:"预充完成值,若预充类型为延时，此值必须小于“预充超时时间"},
+            ],
+            type: "PERCENT",
+            value: 96,
+        },
+        retryNum: 2,
+        timeout: 3000,
+        otherparm: {
+            notes: [
+                {section:"retryInternal", chs: "预充失败后重试间隔(ms)"},
+                {section:"timeMin", chs: "最小预充时间(ms)"},
+                {section:"validVoltMin", chs: "最低有效电压"},
+                {section:"continuousTime", chs: "预充完成持续时间(ms)"},
+                {section:"relayOffDelay", chs: "预充继电器断开延时，用于放电闭合后预充延时断开(ms)"},
+            ],
+            retryInternal: 1000,
+            timeMin: 300,
+            validVoltMin: 10,
+            continuousTime: 200,
+            relayOffDelay: 500,
+        },
+    },
+
+    SocOcvCalib: {
+        notes: [
+            {section:"enable", chs: "OCV-SOC 使能", comments: '"STD_ON", "STD_OFF"'},
+            {section:"temp", chs: "OCV-SOC温度表"},
+            {section:"soc", chs: "OCV-SOC soc表"},
+            {section:"vol", chs: "OCV-SOC 电压表"},
+            {section:"calibCycle", chs: "OCV-SOC校准周期(单位h)"},
+            {section:"longCycle", chs: "OCV-SOC校准周期(单位h)"},
+        ],
+        enable: "STD_ON",
+        temp: [-40, 125],
+        soc: [5, 10, 15, 20, 25, 30, 50, 70, 75, 80, 85, 90, 95, 100],
+        vol: [3020, 3130, 3180, 3205, 3213, 3222, 3255, 3288, 3296, 3310, 3320, 3330, 3346, 3410, 3025, 3135, 3185, 3210, 3218, 3227, 3260, 3293, 3301, 3315, 3325, 3335, 3350, 3415],
+        calibCycle: 12,
+        longCycle: 120,
+    },
+
+   UserStrategy: {
+        notes: [
+            {section:"ota_tpye", chs: "OTA升级功能", comments: '"OTA_OFF", "USERSTRATEGY_REALTIME_OTA", "CHARGE_END_OTA", "ON_TIME_OTA"'},
+            {section:"buzzer_alarm", chs: "蜂鸣器报警功能"},
+            {section:"auto_power_down", chs: "自动休眠功能"},
+            {section:"manual_power_down", chs: "手动休眠功能"},
+            {section:"oc_type", chs: "过流配置类型定义", comments: '"CURRENT", "CURRENT_OFFSET", "PERCENT "'},
+        ],
+        ota_tpye: "USERSTRATEGY_REALTIME_OTA",
+        buzzer_alarm: {
+            en: "STD_ON",
+            level1_on_time: 2000,
+            level1_off_time: 10000,
+            level2_on_time: 1000,
+            level2_off_time: 1000,
+        },
+        auto_power_down: {
+            en: "STD_ON",
+            current: 3,
+            time: (30*60*1000),
+        },
+        manual_power_down: {
+            notes: [
+                {section:"en", chs: "手动休眠功能使能开关", comments: '"STD_OFF", "STD_ON"'},
+                {section:"type", chs: "通道", comments: '"DIN1", "DIN2", "SW1", "SW2"'},
+                {section:"delay", chs: "延时时间(ms)"},
+            ],
+            en: "STD_ON",
+            type: "DIN1",
+            delay: 3000,
+        },
+        oc_type: {
+            ac_chg_oc_type: "CURRENT_OFFSET",
+            dc_chg_oc_type: "CURRENT_OFFSET",
+            dchg_oc_type: "CURRENT",
+        },
+    },
+
+    FullCharge: {
+        notes: [
+            {section:"Flag", chs: "充电降流末端检查标志"},
+            {section:"Delay", chs: "满充延时"},
+            {section:"RelDelay", chs: "满充释放延时"},
+            {section:"Volt", chs: "满充单体电压"},
+        ],
+        Flag: "TRUE",
+        Delay: 5000,
+        RelDelay: 5000,
+        Volt: "CELL_VOLTAGE_INVALID_VALUE",
+    },
+
+    PowerM: {
+        // notes: [
+        //     {section:"dchgcontinues", chs: "持续放电电流表"},
+        //     {section:"dchgpeak", chs: "脉冲放电电流表"},
+        //     {section:"dchgfb", chs: "脉冲充电电流表"},
+        //     {section:"chgcontinues", chs: "持续充电电流表"},
+        //     {section:"dcchg", chs: "快充充电电流表"},
+        //     {section:"acchg", chs: "慢充充电电流表"},
+        // ],
+        dchgcontinues: {
+            notes:[
+                {section:"soc", chs:"soc列表(x轴)"},
+                {section:"temp", chs:"温度列表(y轴)"},
+                {section:"current", chs:"电流表"},
+                {section:"diag", chs:"诊断故障功率百分比表", comments:'type: "DCHG_LV", "DCHG_HV", "DCHG_HT", "DCHG_LT".....,'},
+                {section:"decrease", chs:"末端降流表", comments:'type: "TO_PERCENT", "TO_LAST_PERCENT", "CONSTVAL", "TO_CONSTVAL", "TO_TABLE_PERCENT",'},  //decrease需要则定义,不需要不定义
+            ],
+            soc: [9.9, 29.9, 59.9, 104],
+            temp: [-21, -10, 0, 10, 60],
+            current: [0, 0, 0, 0, 20, 50, 80, 80, 40, 80, 100, 100, 80, 100, 100, 100, 100, 100, 100, 100],
+            diag: [
+                {type: "DCHG_LV", percent: [60, 50, 10, 0]},
+                {type: "DCHG_HT", percent: [60, 50, 10, 0]},
+                {type: "DCHG_LT", percent: [60, 50, 10, 0]},
+            ],
+        },
+        dchgpeak: {
+            soc: [9.9, 29.9, 59.9, 104],
+            temp: [-21, -10, 0, 10, 20, 30, 60],
+            current: [0, 0, 0, 0, 30, 60, 90, 100, 50, 90, 120, 150, 100, 150, 200, 250, 150, 200, 300, 300, 200, 300, 300, 300, 300, 300, 300, 300],
+            diag: [
+                {type: "DCHG_LV", percent: [60, 50, 10, 0]},
+                {type: "DCHG_HT", percent: [60, 50, 10, 0]},
+                {type: "DCHG_LT", percent: [60, 50, 10, 0]},
+            ],
+        },
+        dchgfb: {
+            soc: [9.9, 29.9, 59.9, 104],
+            temp: [-10, 0, 10, 20, 30, 50],
+            current: [0, 0, 0, 0, 10, 10, 10, 10, 150, 150, 100, 30, 200, 200, 150, 50, 200, 200, 100, 80, 200, 200, 300, 100],
+            diag: [
+                {type: "DCHG_HV", percent: [60, 50, 10, 0]},
+                {type: "DCHG_HT", percent: [60, 50, 10, 0]},
+                {type: "DCHG_LT", percent: [60, 50, 10, 0]},
+            ],
+        },
+        chgcontinues: {
+            soc: [9.9, 29.9, 59.9, 104],
+            temp: [-10, 0, 10, 20, 50],
+            current: [0, 0, 0, 0, 10, 10, 10, 10, 20, 20, 20, 20, 30, 30, 30, 30, 50, 50, 50, 50],
+            diag: [
+                {type: "CHG_HV", percent: [60, 50, 10, 0]},
+                {type: "CHG_HT", percent: [60, 50, 10, 0]},
+                {type: "CHG_LT", percent: [60, 50, 10, 0]},
+            ],
+        },
+        dcchg: {
+            soc: [50, 80, 90, 104],
+            temp: [-11, 0, 15, 40, 45, 50],
+            current: [0, 0, 0, 0, 10, 10, 10, 10, 30, 30, 30, 10, 50, 30, 20, 10, 20, 20, 10, 10, 10, 10, 10, 10],
+            diag: [
+                {type: "CHG_HV", percent: [60, 50, 10, 0]},
+                {type: "CHG_HT", percent: [60, 50, 10, 0]},
+                {type: "CHG_LT", percent: [60, 50, 10, 0]},
+            ],
+            decrease: [
+                {startval: 3500, delaytime: 10000, type: "TO_PERCENT", param: 75, minval: 3,},
+                {startval: 3600, delaytime: 10000, type: "TO_PERCENT", param: 75, minval: 3,},
+            ],
+        },
+        acchg: {
+            soc: [50, 80, 90, 104],
+            temp: [-11, 0, 15, 40, 45, 50],
+            current: [0, 0, 0, 0, 10, 10, 10, 10, 30, 30, 30, 10, 50, 30, 20, 10, 20, 20, 10, 10, 10, 10, 10, 10],
+            diag: [
+                {type: "CHG_HV", percent: [60, 50, 10, 0]},
+                {type: "CHG_HT", percent: [60, 50, 10, 0]},
+                {type: "CHG_LT", percent: [60, 50, 10, 0]},
+            ],
+            decrease: [
+                {startval: 3500, delaytime: 10000, type: "CONSTVAL", param: 50, minval: 5,},
+                {startval: 3550, delaytime: 10000, type: "CONSTVAL", param: 25, minval: 5,},
+                {startval: 3600, delaytime: 10000, type: "CONSTVAL", param: 5, minval: 5,},
+            ],
+        },
+    },
 
     Charge: {
         dc: {

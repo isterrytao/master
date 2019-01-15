@@ -1,0 +1,45 @@
+<%
+var processedcfg = globalInfo.PrechargeM.processedcfg.mdata;
+
+if (processedcfg.finishCond_type == "DELAY") {
+    if (processedcfg.finishCond_value >= processedcfg.timeout) {
+        throw "预充完成值,若预充类型为延时，此值必须小于“预充超时时间";
+    }
+}
+%>
+#include "PrechargeM.h"
+#include "RelayM_Lcfg.h"
+#include "UserStrategy.h"
+#include "Hv.h"
+
+static App_Tv100mvType UserStrategy_GetMcuVoltage_POSITIVE_MAIN(void) {
+    return HV_GetVoltage(HV_POSITIVE_MAIN_CHANNEL);
+}
+
+const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo =
+{
+    <%- processedcfg.retryNum%>U, /**< retryNum: 重试次数 */
+    <%- processedcfg.retryInternal%>U, /**< retryInternal: 预充失败后重试间隔(ms) */
+    <%- processedcfg.timeMin%>U, /**< timeMin: 最小预充时间(ms) */
+    <%- processedcfg.timeout%>U, /**< timeout: 预充超时时间(ms) */
+    V_TO_100MV(<%- processedcfg.validVoltMin%>U), /**< validVoltMin: 最低有效电压 */
+    {
+        PRECHARGEM_FINISH_TYPE_<%- processedcfg.finishCond_type%>, /**< type: 预充完成条件类型 */<%if (processedcfg.finishCond_type == "PERCENT") {%>
+        PERCENT_TO_THOUSAND(<%- processedcfg.finishCond_value%>U), /**< value: 预充完成值,若预充类型为延时，此值必须小于“预充超时时间” */<%} else if (processedcfg.finishCond_type == "DELTA_VOLT"){%>
+        <%- processedcfg.finishCond_value%>U, /**< value: 预充完成值,若预充类型为延时，此值必须小于“预充超时时间” */<%} else if (processedcfg.finishCond_type == "DELAY") {%>
+        <%- processedcfg.finishCond_value%>U, /**< value: 预充完成值,若预充类型为延时，此值必须小于“预充超时时间” */
+<%} else {
+    throw "预充完成种类不在范围内"
+}%>
+        (Current_CurrentType)<%- processedcfg.finishCond_current%>, /**< current: 完成电流值(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
+    },
+    <%- processedcfg.getMcuVoltFunc%>, /**< getMcuVoltFunc: 获取MCU总压接口 */
+    <%- processedcfg.continuousTime%>U, /**< continuousTime: 预充完成持续时间(ms),当finishCond.type为PRECHARGEM_FINISH_TYPE_DELAY时，此值不启作用 */
+    <%- processedcfg.relayOnTimeout%>U, /**< relayOnTimeout: 预充继电器闭合超时(ms) */
+    <%- processedcfg.relayOffDelay%>U, /**< relayOffDelay: 预充继电器断开延时，用于放电闭合后预充延时断开(ms) */
+    <%- processedcfg.dchgRelayOnTimeout%>U, /**< dchgRelayOnTimeout: 放电继电器闭合超时(ms) */
+    <%- processedcfg.prechargeRelayChannel%>, /**< prechargeRelayChannel: 预充继电器通道号 */
+    <%- processedcfg.dchgRelayChannel%>, /**< dchgRelayChannel: 放电继电器通道号 */
+    (Current_CurrentType)<%- processedcfg.currentMax%>, /**< currentMax: 预充最大安全电流(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
+    <%- processedcfg.overCurTime%>UL, /**< overCurTime: 允许超预充最大电流最大时间(ms) */
+};

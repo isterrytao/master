@@ -1,0 +1,110 @@
+<%
+if (cfg.ota_tpye == "USERSTRATEGY_REALTIME_OTA") {
+    reset_to_ota_en = "STD_ON";
+} else {
+    reset_to_ota_en = "STD_OFF";
+}
+
+var mdata = {
+    ota_tpye: cfg.ota_tpye,
+    buzzer_alarm_en: cfg.buzzer_alarm.en,
+    buzzer_level1_on_time: cfg.buzzer_alarm.level1_on_time,
+    buzzer_level1_off_time: cfg.buzzer_alarm.level1_off_time,
+    buzzer_level2_on_time: cfg.buzzer_alarm.level2_on_time,
+    buzzer_level2_off_time: cfg.buzzer_alarm.level2_off_time,
+    auto_power_down_en: cfg.auto_power_down.en,
+    auto_power_down_current: cfg.auto_power_down.current,
+    auto_power_down_time: cfg.auto_power_down.time,
+    manual_power_down_en: cfg.manual_power_down.en,
+    manual_power_down_type: cfg.manual_power_down.type,
+    manual_power_down_delay: cfg.manual_power_down.delay,
+    ac_chg_oc_type: cfg.oc_type.ac_chg_oc_type,
+    dc_chg_oc_type: cfg.oc_type.dc_chg_oc_type,
+    dchg_oc_type: cfg.oc_type.dchg_oc_type,
+};
+
+var processedcfg = {mdata: mdata};
+
+globalInfo.setReturn({processedcfg:processedcfg});
+%>
+#ifndef USER_STRATEGY_CFG_H_
+#define USER_STRATEGY_CFG_H_
+
+#include "App_Types.h"
+#include "DigitalInput.h"
+
+
+/**
+ * \brief 实时OTA升级功能开关
+ * \details A641主机只能通过实时OTA升级
+ */
+#define KEY_TYPE_IS_SELFLOCK 0
+#define KEY_TYPE_IS_SELFRESET 1
+#define KEY_TYPE KEY_TYPE_IS_SELFRESET//KEY_TYPE_IS_SELFRESET
+
+#if defined(A641)
+#define USERSTRATEGY_RESET_TO_OTA_EN                STD_ON //对于A641主机 此项必须开启
+#else
+#define USERSTRATEGY_RESET_TO_OTA_EN                <%- reset_to_ota_en%>
+#endif
+
+#if defined(A641)
+#if USERSTRATEGY_RESET_TO_OTA_EN == STD_OFF
+    #error USERSTRATEGY_RESET_TO_OTA_EN must be STD_ON for A641!
+#endif
+#endif
+
+/**
+ * \brief 蜂鸣器报警功能开关
+ */
+#define USERSTRATEGY_BUZZER_ALARM_EN                <%- mdata.buzzer_alarm_en%>
+
+/**
+ * \brief 蜂鸣器报警等级延时时间定义
+ */
+#define USERSTRATEGY_BUZZER_LEVEL1_ON_TIME          <%- mdata.buzzer_level1_on_time%>U
+#define USERSTRATEGY_BUZZER_LEVEL1_OFF_TIME         <%- mdata.buzzer_level1_off_time%>U
+#define USERSTRATEGY_BUZZER_LEVEL2_ON_TIME          <%- mdata.buzzer_level2_on_time%>U
+#define USERSTRATEGY_BUZZER_LEVEL2_OFF_TIME         <%- mdata.buzzer_level2_off_time%>U
+
+/**
+ * \brief 自动休眠功能开关
+ */
+#define USERSTRATEGY_AUTO_POWER_DOWN_EN             <%- mdata.auto_power_down_en%>
+#define USERSTRATEGY_AUTO_POWER_DOWN_TIME           (<%- mdata.auto_power_down_time%>UL)
+#define USERSTRATEGY_AUTO_POWER_DOWN_CURRENT        (<%- mdata.auto_power_down_current%>U)
+
+/**
+ * \brief 手动休眠功能开关
+ */
+#define USERSTRATEGY_MANUAL_POWER_DOWN_EN           <%- mdata.manual_power_down_en%>
+#define USERSTRATEGY_MANUAL_POWER_DOWN_DELAY        (<%- mdata.manual_power_down_delay%>U)
+/**
+ * \brief 手动下电条件是否成立
+ * \details 可选项(默认为DIN1)：
+ *            DIN1: (DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN1) == STD_HIGH)
+ *            DIN2: (DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN2) == STD_HIGH)
+ *            SW1:  (DigitalInput_GetSwitchState(DIGITALINPUT_BCU_SW1) == DIGITALINPUT_SW_ON)
+ *            SW2:  (DigitalInput_GetSwitchState(DIGITALINPUT_BCU_SW2) == DIGITALINPUT_SW_ON)
+ */
+<% if ((mdata.manual_power_down_type == "DIN1") || (mdata.manual_power_down_type == "DIN2")) {%>
+#define USERSTRATEGY_IS_MANUAL_POWER_DOWN()         (DigitalInput_GetDinLevel(DIGITALINPUT_BCU_<%- mdata.manual_power_down_type%>) == STD_HIGH)
+<%}%>
+<% if ((mdata.manual_power_down_type == "SW1") || (mdata.manual_power_down_type == "SW2")) {%>
+#define USERSTRATEGY_IS_MANUAL_POWER_DOWN()         (DigitalInput_GetSwitchState(DIGITALINPUT_BCU_<%- mdata.manual_power_down_type%>) == DIGITALINPUT_SW_ON)
+<%}%>
+
+/**
+ * \brief 过流配置类型定义
+ */
+#define USERSTRATEGY_OC_TYPE_CURRENT                0U //固定过流值
+#define USERSTRATEGY_OC_TYPE_CURRENT_OFFSET         1U //电流偏移
+#define USERSTRATEGY_OC_TYPE_PERCENT                2U //电流百分比
+
+#define USERSTRATEGH_AC_CHG_OC_TYPE                 USERSTRATEGY_OC_TYPE_<%- mdata.ac_chg_oc_type%> //慢充过流配置类型
+#define USERSTRATEGH_DC_CHG_OC_TYPE                 USERSTRATEGY_OC_TYPE_<%- mdata.dc_chg_oc_type%> //快充过流配置类型
+#define USERSTRATEGH_DCHG_OC_TYPE                   USERSTRATEGY_OC_TYPE_<%- mdata.dchg_oc_type%> //放电过流配置类型
+
+
+
+#endif

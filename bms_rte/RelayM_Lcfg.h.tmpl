@@ -4,7 +4,7 @@ var relayparams = {
     UNKNOWN: {name:'未知', onDelay: 30,  offDelay: 30, resistor: 'RELAYM_INVALID_RESISTOR', comments: '未知继电器' },
 };
 
-for (var r of cfg) {
+for (var r of cfg.relaym) {
     if (!relayparams.hasOwnProperty(r.model)) {
         throw 'Unsupport relay model: ' + r.model;
     }
@@ -12,7 +12,7 @@ for (var r of cfg) {
 
 var relays = [];
 
-for (var r of cfg) {
+for (var r of cfg.relaym) {
     var hv = 'HV_CHANNEL_NONE';
     var hv_user_function = false;
     var isPositive = true;
@@ -62,13 +62,26 @@ for (var r of cfg) {
     });
 };
 
-var processedcfg = {relays: relays};
+var processedcfg = {relays: relays, relaym_dev_detect_en: cfg.enable};
 
 globalInfo.setReturn({relays:relays.map(x=>{return {name: x.name, def: x.def}}), processedcfg:processedcfg});
 
 %>
 #ifndef RELAYM_LCFG_H_
 #define RELAYM_LCFG_H_
+
+#include "Std_Types.h"
+
+
+#define RELAYM_DETECT_EN    <%- processedcfg.relaym_dev_detect_en%>
+
+<%
+var i = 0;
+for (var relay of processedcfg.relays) {%>
+#define HV_<%- relay.def.slice(10) %>_CHANNEL   <%- relay.hv%><%
+    i++;
+}%>
+
 
 #define RELAYM_FN_NUM   <%- processedcfg.relays.length %>U
 

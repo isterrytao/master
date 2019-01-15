@@ -1,0 +1,22 @@
+<%
+var mdata = {
+    currentDecreaseEndFlag: cfg.Flag,
+    fullChargeDelay: cfg.Delay,
+    fullChargeRelDelay: cfg.RelDelay,
+    fullChargeVolt: cfg.Volt,
+    fullHook: "UserStrategy_FullChargeHook",
+    fullRelHook: "UserStrategy_FullChargeReleaseHook",
+};
+%>
+#include "FullCharge.h"
+#include "UserStrategy.h"
+#include "CellDataM.h"
+
+const FullCharge_ConfigInfoType FullCharge_ConfigInfo = {
+    <%- mdata.currentDecreaseEndFlag%>, /**< currentDecreaseEndFlag: 充电降流末端检查标志 */
+    <%- mdata.fullChargeDelay%>UL, /**< fullChargeDelay: 满充延时 */
+    <%- mdata.fullChargeRelDelay%>UL, /**< fullChargeRelDelay: 满充释放延时 */
+    <%- mdata.fullChargeVolt%>, /**< fullChargeVolt: 满充单体电压 */
+    <%- mdata.fullHook%>, /**< fullHook: 满充钩子函数 */
+    <%- mdata.fullRelHook%>, /**< fullRelHook: 满充释放钩子函数 */
+};
