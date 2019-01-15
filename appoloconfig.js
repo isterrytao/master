@@ -104,36 +104,6 @@ modules = [
         templates: ['RelayM_Lcfg.h.tmpl', 'RelayM_Lcfg.c.tmpl']
     },
     {
-        name: 'BridgeInsu',
-        dir: './applications/bcu',
-        templates: ['BridgeInsu_Tmpl.h.tmpl']
-    },
-    {
-        name: 'PrechargeM',
-        dir: './applications/bcu',
-        templates: ['PrechargeM_Lcfg.h.tmpl', 'PrechargeM_Lcfg.c.tmpl']
-    },
-    {
-        name: 'SocOcvCalib',
-        dir: './applications/bcu',
-        templates: ['SocOcvCalib_Lcfg.h.tmpl', 'SocOcvCalib_Lcfg.c.tmpl']
-    },
-    {
-        name: 'UserStrategy',
-        dir: './applications/bcu',
-        templates: ['UserStrategy_Cfg.h.tmpl']
-    },
-    {
-        name: 'FullCharge',
-        dir: './applications/bcu',
-        templates: ['FullCharge_Lcfg.c.tmpl']
-    },
-    {
-        name: 'PowerM',
-        dir: './applications/bcu',
-        templates: ['PowerM_Lcfg.c.tmpl']
-    },
-    {
         name: 'Charge',
         dir: './applications/bcu',
         templates: ['Charge_Lcfg.c.tmpl']

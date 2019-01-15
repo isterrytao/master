@@ -69,10 +69,6 @@
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653)
 #include "Rs485Shell.h"
 #endif
-#if defined(A640)||defined(A641)
-#else
-#include "BridgeInsu_Tmpl.h"
-#endif
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
 
@@ -453,9 +449,7 @@ static void start_task(void *pdata) {
 #if defined(A640)||defined(A641)
 #else
     if (isNeedStartSampleTask()) {
-#if (BRIDGEINSU_TYPE != BRIDGEINSU_MOS_OFF)
-        BridgeInsu_Start(BRIDGEINSU_TYPE);
-#endif
+        BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
     }
 #endif
     if (isNeedStartSampleTask()) {
