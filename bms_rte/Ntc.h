@@ -7,6 +7,7 @@ typedef struct {
     uint16 dataId;
     sint8 offset;
     uint8 length;
+    uint8 isPtOrder;
     const uint16 *tabV4096;
 } NTC_ConfigDataType;
 

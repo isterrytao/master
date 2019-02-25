@@ -19,6 +19,7 @@ const NTC_ConfigDataType NTC_<%- sensor.id %>_ConfigData = {
     NTC_<%- sensor.id %>,
     <%- sensor.start %>,
     (uint8)ARRAY_SIZE(NTC_<%- sensor.id %>_V4096),
+    <%- sensor.isPtOrder ? 1 : 0%>U,
     NTC_<%- sensor.id %>_V4096
 };
 <% } %>
