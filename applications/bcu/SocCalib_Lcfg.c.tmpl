@@ -1,0 +1,9 @@
+<%
+var processedcfg = globalInfo.SocOcvCalib.processedcfg.mdata;
+%>
+#include "SocCalib.h"
+
+const SocCalib_CofnigType SocCalib_ConfigInfo = {
+    <%- cfg.enable%>, /**< OcvSocEnable: OCV-SOC校准使能控制 */
+};
+

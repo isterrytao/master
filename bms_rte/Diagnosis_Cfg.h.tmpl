@@ -57,7 +57,7 @@ var diagnosisitems = [
     {name:"持续放电过流", diagnosisType:"HIGH", condition:"DCHG", def:"DCHG_OC", getval:"CurrentM_GetMainDiagDchgCurrent", validate:"CurrentM_DiagIsValidCurrent"},
     {name:"瞬时放电过流", diagnosisType:"HIGH", condition:"DCHG", def:"SP_OC",altdef:["CURRENT_STOP"], getval:"CurrentM_GetMainDiagDchgCurrent", validate:"CurrentM_DiagIsValidCurrent"},
     {name:"SOC过高", diagnosisType:"HIGH", condition:"ALL", def:"HSOC", altdef:["SOC_START"], getval:"Soc_Get", validate:"Soc_SocIsValid"},
-    {name:"SOC过低", diagnosisType:"LOW", condition:"ALL", def:"LSOC",altdef:["SOC_STOP"], getval:"Soc_Get", validate:"Soc_SocIsValid"},
+    {name:"SOC过低", diagnosisType:"LOW", condition:"DCHG", def:"LSOC",altdef:["SOC_STOP"], getval:"Soc_Get", validate:"Soc_SocIsValid"},
     {name:"绝缘漏电", diagnosisType:"LOW", condition:"ALL", def:"LEAK", getval:"Insu_GetLeak", validate:"Insu_LeakIsValid", valueReady:"Insu_IsCalculated"},
     {name:"充电加热高温", diagnosisType:"HIGH", condition:"CHG", def:"CHG_HEAT_HT", getval:"TemperatureM_GetChgHeatTemperatureMax", validate:"CellDataM_TemperatureIsValid", valueReady:"CellDataM_AllSlaveTemperatureIsValid"},
     {name:"放电加热高温", diagnosisType:"HIGH", condition:"DCHG", def:"DCHG_HEAT_HT", getval:"TemperatureM_GetDchgHeatTemperatureMax", validate:"CellDataM_TemperatureIsValid", valueReady:"CellDataM_AllSlaveTemperatureIsValid"},

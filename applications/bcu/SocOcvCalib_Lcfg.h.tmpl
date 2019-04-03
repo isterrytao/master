@@ -1,0 +1,33 @@
+<%
+var mdata = {
+    en: cfg.enable,
+    temp: cfg.temp,
+    soc: cfg.soc,
+    vol: cfg.vol,
+    calibCycle: cfg.calibCycle,
+    longCycle: cfg.longCycle,
+
+    allowedCurrent: cfg.allowedCurrent,
+    powerOnDelay: cfg.powerOnDelay,
+    checkCycle: cfg.checkCycle,
+    diffSocMin: cfg.diffSocMin,
+    calibStep: cfg.calibStep,
+    linear_calib: cfg.linear_calib,
+    isAllowFuncPtr: cfg.isAllowFuncPtr,
+    temperature_linear: cfg.temperature_linear,
+};
+
+var processedcfg = {mdata: mdata};
+
+globalInfo.setReturn({processedcfg:processedcfg});
+%>
+#ifndef SOCOCVCALIB_LCFG_H
+#define SOCOCVCALIB_LCFG_H
+
+
+#define SOCOCVCALIB_EN      <%- mdata.en%>
+
+
+
+
+#endif

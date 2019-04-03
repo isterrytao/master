@@ -76,7 +76,7 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_CHANNEL_HSS_1                 DIO_CHANNEL(D, 1U) /**< 高边开关1输出控制 */
 #define DIO_CHANNEL_HSS_2                 DIO_CHANNEL(D, 0U) /**< 高边开关2输出控制 */
 #define DIO_CHANNEL_HSS_3                 DIO_CHANNEL(A, 0U) /**< 高边开关3输出控制 */
-#define DIO_CHANNEL_HSS_4                 DIO_CHANNEL(E, 3U) /**< 高边开关4输出控制 */
+#define DIO_CHANNEL_HSS_4                 DIO_CHANNEL(C, 6U) /**< 高边开关4输出控制 */
 //#define DIO_CHANNEL_HSS_5                 0xFFU /**< 高边开关5输出控制 */
 //#define DIO_CHANNEL_HSS_6                 0xFFU /**< 高边开关6输出控制 */
 //#define DIO_CHANNEL_HSS_7                 0xFFU /**< 高边开关7输出控制 */

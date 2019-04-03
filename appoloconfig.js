@@ -52,6 +52,11 @@ modules = [
         templates: ['InnerTp_Lcfg.c.tmpl']
     },
     {
+        name: 'CommProtocol',
+        dir: './applications/bcu',
+        templates: ['CommProtocol.h.tmpl']
+    },
+    {
         name: 'J1939Tp',
         dir: './com/J1939Tp',
         templates: ['J1939Tp_Lcfg.h.tmpl', 'J1939Tp_Lcfg.c.tmpl']
@@ -104,6 +109,36 @@ modules = [
         templates: ['RelayM_Lcfg.h.tmpl', 'RelayM_Lcfg.c.tmpl']
     },
     {
+        name: 'BridgeInsu',
+        dir: './applications/bcu',
+        templates: ['BridgeInsu_Cfg.h.tmpl']
+    },
+    {
+        name: 'PrechargeM',
+        dir: './applications/bcu',
+        templates: ['PrechargeM_Lcfg.h.tmpl', 'PrechargeM_Lcfg.c.tmpl']
+    },
+    {
+        name: 'SocOcvCalib',
+        dir: './applications/bcu',
+        templates: ['SocOcvCalib_Lcfg.h.tmpl', 'SocOcvCalib_Lcfg.c.tmpl', 'SocCalib_Lcfg.c.tmpl']
+    },
+    {
+        name: 'UserStrategy',
+        dir: './applications/bcu',
+        templates: ['UserStrategy_Cfg.h.tmpl']
+    },
+    {
+        name: 'FullCharge',
+        dir: './applications/bcu',
+        templates: ['FullCharge_Lcfg.c.tmpl']
+    },
+    {
+        name: 'PowerM',
+        dir: './applications/bcu',
+        templates: ['PowerM_Lcfg.c.tmpl']
+    },
+    {
         name: 'Charge',
         dir: './applications/bcu',
         templates: ['Charge_Lcfg.c.tmpl']
@@ -117,7 +152,10 @@ modules = [
         name: 'Ntc',
         dir: './bms_rte',
         templates: ['Ntc_Lcfg.h.tmpl', 'Ntc_Lcfg.c.tmpl']
-     },
+    },
+    {
+        name: 'HVProcess'
+    },
 ];
 
 // 导入使用到的模块
@@ -187,7 +225,7 @@ if (process.env.hasOwnProperty('MAKELIB') && process.env.MAKELIB != '0') {
 }else {
     var info = codeg.generate(modules, config, program.outdir)
     // 输出生成项目的名称, 使用的PCBA和BCU的类型
-    console.log(info.AppInfo.releaseFileName + ';' + info.SystemConnection.PCBA + ';' + info.SystemConnection.BcuType);
+    console.log(info.AppInfo.releaseFileName + ';' + info.SystemConnection.PCBA + ';' + info.SystemConnection.BcuType + ";" + info.HVProcess.chg + ";" + info.HVProcess.dchg + ";" + info.CommProtocol.chg + ";" + info.CommProtocol.vcu + ";");
 }
 
 

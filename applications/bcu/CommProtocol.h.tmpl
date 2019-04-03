@@ -1,0 +1,115 @@
+<%
+
+
+var ChargerMsg = {
+    Default: {
+        tx: [{id: 0x9806E5F4, def: "USER_TC"},{id: 0x9800FFF4, def: "USER_TC1"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}],
+    },
+    UDAN: {
+        tx: [{id: 0x9806E5F4, def: "USER_TC"},{id: 0x9800FFF4, def: "USER_TC1"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}],
+    },
+    "DongYaoV2.0": {
+        tx: [{id:0x00000272, def:"USER_TC"}],
+        rx: [{id:0x00000227, def:"USER_TC"}],
+    },
+    ShiNeng: {
+        tx: [{id: 0x111, def: "USER_TC"}, {id:0x115, def:"USER_TC1"}],
+        rx: [{id: 0x112, def: "USER_TC"}],
+    },
+    "UDAN_KaiYuan_DongYaoV1.0": {
+        tx: [{id: 0x9806E5F4, def: "USER_TC"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}],
+    },
+    UDAN_ShiNeng: {
+        tx: [{id: 0x9806E5F4, def: "USER_TC"},{id: 0x9800FFF4, def: "USER_TC1"}, {id:0x111, def:"USER_SN"}, {id:0x115, def:"USER_SN1"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}, {id: 0x112, def: "USER_SN"}],
+    },
+};
+
+var VcuMsg = {
+    Default: {
+        tx: [0x2F4, 0x4F4, 0x5F4, 0x7F4],
+        rx: [0x12345678],
+    },
+    UDAN: {
+        tx: [0x1E1, 0x1E4, 0x1F3, 0x1F5, 0x360, 0x361, 0x208, 0x351, 0x358, 0x352, 0x353, 0x354, 0x355, 0x3F6, 0x211, 0x1F4, 0x356, 0x357, 0x3F3, 0x3F4, 0x3F5, 0x3FF, 0x201, 0x202, 0x205, 0x206, 0x207, 0x203, 0x204],
+        rx: [0x12345678],
+    },
+    QianTuo_CAN20A_125K: {
+        tx: [0x2F4, 0x4F4, 0x5F4, 0x7F4],
+        rx: [0x12345678],
+    },
+    QianTuo_CAN20B_250K: {
+        tx: [0x98FFA2F4, 0x98FFA4F4, 0x98FFA5F4, 0x98FFAFF4],
+        rx: [0x12345678],
+    },
+};
+
+if (!ChargerMsg.hasOwnProperty(cfg.chg)) {
+    throw "Can not find Charger support for " + cfg.chg;
+}
+
+if (!VcuMsg.hasOwnProperty(cfg.vcu)) {
+    throw "Can not find VCU support for " + cfg.chg;
+}
+
+var chgpgs = [];
+var vcupgs = [];
+
+var rxpdus = [];
+var txpdus = [];
+
+
+for (var x of ChargerMsg[cfg.chg].tx) {
+    chgpgs.push({id:x.id, type:"stx"});
+    var sid = "00000000" + x.id.toString(16).toUpperCase();
+    sid = sid.slice(-8);
+    txpdus.push({upper:["ChargerComm", x.def], middle:["J1939Tp", "Charger_ID_" + sid]})
+}
+
+for (var x of ChargerMsg[cfg.chg].rx) {
+    chgpgs.push({id:x.id, type:"srx"});
+    var sid = "00000000" + x.id.toString(16).toUpperCase();
+    sid = sid.slice(-8);
+    rxpdus.push({upper:["ChargerComm", x.def], middle:["J1939Tp", "Charger_ID_" + sid]})
+}
+
+
+for (var x of VcuMsg[cfg.vcu].tx) {
+    vcupgs.push({id:x, type:"stx"});
+    var sid = "00000000" + x.toString(16).toUpperCase();
+    sid = sid.slice(-8);
+    txpdus.push({upper:["VcuComm", sid], middle:["J1939Tp", "Vcu_ID_" + sid]})
+}
+
+for (var x of VcuMsg[cfg.vcu].rx) {
+    vcupgs.push({id:x, type:"srx"});
+    var sid = "00000000" + x.toString(16).toUpperCase();
+    sid = sid.slice(-8);
+    rxpdus.push({upper:["VcuComm", sid], middle:["J1939Tp", "Vcu_ID_" + sid]})
+}
+
+
+globalInfo.setReturn({
+    chg:cfg.chg,
+    vcu:cfg.vcu,
+    J1939: {
+        chgpgs: chgpgs,
+        vcupgs: vcupgs,
+    },
+
+    PduR: {
+        rxpdus: rxpdus,
+        txpdus: txpdus,
+    }
+});
+%>
+/*
+
+chgpgs: <%- JSON.stringify(chgpgs) %>
+vcupgs: <%- JSON.stringify(vcupgs) %>
+rxpdus: <%- JSON.stringify(rxpdus) %>
+txpdus: <%- JSON.stringify(txpdus) %>
+*/

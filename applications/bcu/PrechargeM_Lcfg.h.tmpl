@@ -1,0 +1,40 @@
+<%
+var mdata = {
+    enable:cfg.enable,
+    retryNum: cfg.retryNum,
+    retryInternal: cfg.retryInternal,
+    timeMin: cfg.timeMin,
+    timeout: cfg.timeout,
+    validVoltMin: cfg.validVoltMin,
+    finishCond_type: cfg.finishCond.type,
+    finishCond_value: cfg.finishCond.value,
+    finishCond_current: cfg.finishCond.current,
+    volChannel: 'HV_CHANNEL_' + cfg.volChannel.toUpperCase(),
+    continuousTime: cfg.continuousTime,
+    relayOnTimeout: cfg.relayOnTimeout,
+    relayOffDelay: cfg.relayOffDelay,
+    dchgRelayOnTimeout: cfg.dchgRelayOnTimeout,
+    prechargeRelayChannel: cfg.prechargeRelayChannel,
+    dchgRelayChannel: cfg.dchgRelayChannel,
+    currentMax: cfg.currentMax,
+    overCurTime: cfg.overCurTime,
+};
+
+var processedcfg = {mdata: mdata};
+
+globalInfo.setReturn({processedcfg:processedcfg});
+%>
+#ifndef PRECHARGEM_CFG_H_
+#define PRECHARGEM_CFG_H_
+
+
+#define PRECHARGE_EN    <%- mdata.enable%>
+
+#define GETMCUVOLTAGE_CHANNEL   <%- mdata.volChannel%>
+
+
+
+
+
+
+#endif

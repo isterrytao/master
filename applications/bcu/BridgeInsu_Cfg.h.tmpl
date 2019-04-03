@@ -1,0 +1,20 @@
+<%
+
+var mdata = {
+    type: cfg.type,
+};
+
+
+var processedcfg = {mdata: mdata};
+
+globalInfo.setReturn({processedcfg: processedcfg});
+%>
+#ifndef BRIDGEINSU_CFG_H
+#define BRIDGEINSU_CFG_H
+
+#include "BridgeInsu.h"
+
+
+#define BRIDGEINSU_TYPE     BRIDGEINSU_MOS_<%- mdata.type%>
+
+#endif

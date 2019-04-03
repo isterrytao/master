@@ -71,7 +71,10 @@
 #endif
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
-
+#if defined(A640)||defined(A641)
+#else
+#include "BridgeInsu_Cfg.h"
+#endif
 
 static boolean DcmOnCanTp_RxPduIdIsValid(PduIdType RxPduId) {
     boolean ret;
@@ -449,7 +452,7 @@ static void start_task(void *pdata) {
 #if defined(A640)||defined(A641)
 #else
     if (isNeedStartSampleTask()) {
-        BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
+        BridgeInsu_Start(BRIDGEINSU_TYPE);
     }
 #endif
     if (isNeedStartSampleTask()) {

@@ -120,6 +120,16 @@ typedef enum{
     PARAMETERM_EEEP_DCHG_OLV_CNT_STATE_INDEX = 33, /**< 电池过放电计数状态变化，用于记录需掉电保存的状态 */
     PARAMETERM_EEEP_DCHG_OLV_CNT_INDEX = 34, /**< 电池过放电计数 */
 
+    PARAMETERM_EEEP_LOWER_INDEX_END = 34, /**< 低段参数索引结束(不单独占用一个索引)， 注：处于PARAMETERM_EEEP_LOWER_INDEX_END和PARAMETERM_EEEP_HIGHER_INDEX_START之间的参数不进行存储有效性校验 */
+
+    PARAMETERM_EEEP_HIGHER_INDEX_START = 122, /**< 高段参数索引起始(不单独占用一个索引) */
+
+    PARAMETERM_EEEP_CUMULATIVE_CHG_TIME_L_INDEX = 122, /**< 累计充电时间低字 精度：1S/bit */
+    PARAMETERM_EEEP_CUMULATIVE_CHG_TIME_H_INDEX = 123, /**< 累计充电时间高字 精度：1S/bit */
+    PARAMETERM_EEEP_CUMULATIVE_DCHG_TIME_L_INDEX = 124, /**< 累计放电时间低字 精度：1S/bit */
+    PARAMETERM_EEEP_CUMULATIVE_DCHG_TIME_H_INDEX = 125, /**< 累计放电时间高字 精度：1S/bit */
+    PARAMETERM_EEEP_CHARGE_INTEGRAL_EFFICIENCY = 126, /**< 充电效率因子 精度：0.1% */
+    PARAMETERM_EEEP_DCHARGE_INTEGRAL_EFFICIENCY = 127, /**< 放电效率因子 精度：0.1% */
 }ParameterM_EeepParaIndexType;
 
 /**
@@ -133,9 +143,18 @@ typedef struct{
     Charge_CalibConfigInfoType ChargePara; /**< 充电参数 */
 }ParameterM_CalibParaType;
 
+/**
+ * \brief 参数管理模块配置信息类型定义
+ */
+typedef struct{
+    ParameterM_EeepParaIndexType eeepLowerEndIndex; /**< 低段参数索引结束(不单独占用一个索引) */
+    ParameterM_EeepParaIndexType eeepHigherStartIndex; /**< 高段参数索引起始(不单独占用一个索引) */
+}ParameterM_ConfigInfoType;
+
 extern const Diagnosis_ParaType ParameterM_NoneCalibrateDiagConfig[];
 extern const ParameterM_DataType ParameterM_EeepParaDefault[];
 extern const ParameterM_EeepParaIndexType ParameterM_EeepParaNum;
+extern const ParameterM_ConfigInfoType ParameterM_ConfigInfo;
 extern const ParameterM_CalibParaType *const ParameterM_PFlashCalibParaPtr;
 extern const ParameterM_CalibParaType *ParameterM_CurrentCalibParaPtr;
 extern const ParameterM_CalibParaType *const ParameterM_DFlashCalibParaPtr;

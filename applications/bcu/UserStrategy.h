@@ -19,6 +19,7 @@
 #include "Async_Looper.h"
 #include "Async_Event.h"
 #include "RuntimeM.h"
+#include "UserStrategy_Cfg.h"
 
 /**
  * \brief Error detect define
@@ -28,24 +29,12 @@
 #define USERSTRATEGY_E_PARAM_INVALID_PTR            0x00U
 
 /**
- * \brief 实时OTA升级功能开关
- * \details A641主机只能通过实时OTA升级
+ * \brief 蜂鸣器报警类型定义
  */
-#define KEY_TYPE_IS_SELFLOCK 0
-#define KEY_TYPE_IS_SELFRESET 1
-#define KEY_TYPE KEY_TYPE_IS_SELFRESET//KEY_TYPE_IS_SELFRESET
-
-#if defined(A641)
-#define USERSTRATEGY_RESET_TO_OTA_EN                STD_ON //对于A641主机 此项必须开启
-#else
-#define USERSTRATEGY_RESET_TO_OTA_EN                STD_OFF
-#endif
-
-#if defined(A641)
-#if USERSTRATEGY_RESET_TO_OTA_EN == STD_OFF
-    #error USERSTRATEGY_RESET_TO_OTA_EN must be STD_ON for A641!
-#endif
-#endif
+typedef struct {
+    Diagnosis_ItemType diagItem;
+    Diagnosis_LevelType level;
+} UserStrategy_BuzzerAlarmType;
 
 /**
  * \brief 用户自定义策略内部数据类型
@@ -145,6 +134,67 @@ Std_ReturnType UserStrategy_DCConnected(void);
 void UserStrategy_FullChargeHook(void);
 void UserStrategy_FullChargeReleaseHook(void);
 boolean UserStrategy_Wakeup(void);
+
+/**
+ * \brief 慢充交流充电继电器是否闭合就绪
+ * \details 用于慢充继电器闭合后，再请求充电电压和充电电流
+ * \return TRUE-已闭合 FALSE-未闭合
+ */
+boolean UserStartegy_AcChargeRelayIsReady(void);
+
+/**
+ * \brief 慢充过流报警阈值获取函数
+ *
+ * \param level 报警等级
+ * \param para 获取到的参数保存位置指针
+ */
+void UserStrategy_ChgAcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
+
+/**
+ * \brief 快充过流报警阈值获取函数
+ *
+ * \param level 报警等级
+ * \param para 获取到的参数保存位置指针
+ */
+void UserStrategy_ChgDcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
+
+/**
+ * \brief 放电过流报警阈值获取函数
+ *
+ * \param level 报警等级
+ * \param para 获取到的参数保存位置指针
+ */
+void UserStrategy_DchgOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
+
+/**
+ * \brief 放电高压流程启动相关继电器粘连检测接口函数
+ */
+void UserStrategy_DchgHvProcessAdhesiveDetect(void);
+
+/**
+ * \brief 放电高压流程检查相关继电器是否检测完成并正常
+ * \return TURE-正常 FALSE-不正常or未检测完成
+ */
+boolean UserStrategy_DchgHvProcessRelayIsNormal(void);
+
+/**
+ * \brief 充电高压流程启动相关继电器粘连检测接口函数
+ */
+void UserStrategy_ChgHvProcessAdhesiveDetect(void);
+
+/**
+ * \brief 充电高压流程检查相关继电器是否检测完成并正常
+ * \return TURE-正常 FALSE-不正常or未检测完成
+ */
+boolean UserStrategy_ChgHvProcessRelayIsNormal(void);
+
+/**
+ * \brief 放电是否准备就绪
+ * \details 放电高压回路闭合后返回TRUE
+ * \return FALSE-未就绪  TRUE-已就绪
+ */
+boolean UserStrategy_DchgIsReady(void);
+
 
 
 #endif

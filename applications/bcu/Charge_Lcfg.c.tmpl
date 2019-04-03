@@ -281,10 +281,10 @@ const ChargeConnectM_ConfigType ChargeConnectM_ConfigInfo = {
     },
     // CurConnectPara 充电电流连接参数
     {
-        CURRENT_S_100MA_FROM_A(2), /**< cur_min：最小充电连接电流 */
-        CURRENT_S_100MA_FROM_A(-2), /**< rel_cur_min：最小充电连接释放电流 */
-        2000UL, /**< connect_delay：连接延时 */
-        3000UL, /**< unconnect_delay：连接释放延时 */
+        CURRENT_S_100MA_FROM_A(<%- cfg.CurConnectPara.cur_min %>), /**< cur_min：最小充电连接电流 */
+        CURRENT_S_100MA_FROM_A(<%- cfg.CurConnectPara.rel_cur_min %>), /**< rel_cur_min：最小充电连接释放电流 */
+        <%- cfg.CurConnectPara.connect_delay %>UL, /**< connect_delay：连接延时 */
+        <%- cfg.CurConnectPara.unconnect_delay %>UL, /**< unconnect_delay：连接释放延时 */
     },
     // StartConnectPara 上电充电连接参数
     {

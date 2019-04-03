@@ -25,9 +25,13 @@
 #include "ChargerComm_LCfg.h"
 #include "TemperatureM.h"
 #include "BridgeInsu.h"
+#ifdef RELAYM_FN_HEATER
+#include "HvProcess_Chg.h"
+#endif
 #if ( CHARGERCOMMGB_DEV_ERROR_DETECT == STD_ON )
 #include "Modules.h"
 #endif
+#include "BridgeInsu_Cfg.h"
 
 #define CHARGERCOMMGB_E_PARAM_INVALID_PTR           0U
 #define CHARGERCOMMGB_E_PARAM_INVALID_CHARGE_TYPE   1U
@@ -572,7 +576,7 @@ void ChargerCommGB_GetBRODataCbk(uint8 *Buffer, uint16 *Length)
         {
             if (ChargerCommGB_innerData.insuIsStop)
             {
-                BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
+                BridgeInsu_Start(BRIDGEINSU_TYPE);
                 ChargerCommGB_innerData.insuIsStop = FALSE;
             }
             ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CRO);
@@ -710,6 +714,12 @@ void ChargerCommGB_GetBCLDataCbk(uint8 *Buffer, uint16 *Length)
     {
         Volt = 0x02U; //恒流模式
     }
+#ifdef RELAYM_FN_HEATER
+    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    {
+        Volt = 0x01U; //恒压模式
+    }
+#endif
     WRITE_LT_UINT8(Buffer, index, (uint8)Volt);
 
     *Length = index;
@@ -1199,7 +1209,7 @@ static void ChargerCommGB_ClearChargerStatusCarefully(void)
     ChargerComm_SetChargerOutputCurrentMin(0);
     if (ChargerCommGB_innerData.insuIsStop)
     {
-        BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
+        BridgeInsu_Start(BRIDGEINSU_TYPE);
         ChargerCommGB_innerData.insuIsStop = FALSE;
     }
 }

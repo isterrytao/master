@@ -3,6 +3,9 @@
 
 #include "BridgeInsu.h"
 
-extern const BridgeInsu_ConfigType BridgeInsuConfigData_A640;
+#define BRIDGEINSU_DEV_ERROR_DETECT   STD_ON
+#define BRIDGEINSU_FILTER_NUM         20U
+#define BRIDGEINSU_FILTER_DROP        3U
+
 
 #endif

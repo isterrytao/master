@@ -1,4 +1,31 @@
 <%
+/*
+增加由CommProtocol引入的充电机所需J1939
+*/
+var chargerIndex = cfg.findIndex( val => val.name=="Charger" );
+if (chargerIndex >= 0) {
+    for (var x of globalInfo.CommProtocol.J1939.chgpgs) {
+        cfg[chargerIndex].pgs.push(x);
+    }
+}
+
+/*
+增加由CommProtocol引入的VCU所需J1939 PG
+*/
+var vcuIndex = cfg.findIndex( val => val.name=="Vcu" );
+if (vcuIndex >= 0) {
+    for (var x of globalInfo.CommProtocol.J1939.vcupgs) {
+        cfg[vcuIndex].pgs.push(x);
+    }
+}
+%>
+/*
+globalInfo.CommProtocol.J1939.chgpgs: <%- JSON.stringify(globalInfo.CommProtocol.J1939.chgpgs) %>
+globalInfo.CommProtocol.J1939.vcupgs: <%- JSON.stringify(globalInfo.CommProtocol.J1939.vcupgs) %>
+*/
+
+<%
+
 var rxsduids = [];
 var txsduids = [];
 
@@ -9,6 +36,7 @@ var channels = [];
 var pgs = [];
 var rxpdus = [];
 var rxpduRelations = [];
+
 
 // 生成所有的可以传给上层的SDUID
 cfg.forEach(v => {

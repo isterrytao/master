@@ -71,12 +71,17 @@ for (var rxpdu of processedcfg.rxpdus) {%>
 };
 
 <%
-for (var relation of processedcfg.rxpduRelations) {%>
+for (var relation of processedcfg.rxpduRelations) {
+    if (relation.rxpdus.length > 0) {%>
 static const J1939Tp_RxPduInfoType *RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %>[] = {<%
-    for(var rxpdu of relation.rxpdus){%>
+        for(var rxpdu of relation.rxpdus){%>
     &J1939Tp_RxPdus[<%- rxpdu %>],<%
         }%>
+
 };<%
+    } else {%>
+#define RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %> NULL
+ <% }
 }%>
 
 static const J1939Tp_RxPduInfoRelationsType J1939Tp_RxPduRelations[] = {<%

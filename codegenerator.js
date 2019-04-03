@@ -52,6 +52,7 @@ module.exports = {
         var fs = require('fs');
         var mkdir = require('mkdir-recursive');
         var path = require('path');
+        var util = require('util');
         var child_process = require("child_process");
 
         var header = '/*\r\n' +
@@ -63,6 +64,7 @@ module.exports = {
         var globalInfo = {
             requires: {
                 'child_process': child_process,
+                'util': util,
             }
         }
 
@@ -92,16 +94,17 @@ module.exports = {
 
                     var tmplContent = fs.readFileSync(path.join(mod.dir, tmpl)).toString();
                     try {
-                    var content = ejs.render(tmplContent, { globalInfo: globalInfo, cfg: cfg });
+                        var content = ejs.render(tmplContent, { globalInfo: globalInfo, cfg: cfg });
                     } catch (e) {
+                        var err = "Render " + path.join(mod.dir, tmpl) + " error:" + e;
                         // console.error("==================================================================");
-                        console.error("Render " + path.join(mod.dir, tmpl) + " error:" + e.toString());
+                        console.error(err);
                         // console.error("------------------------------------------------------------------");
                         // console.error("GlobalInfo: " + JSON.stringify(globalInfo, null, "  "))
                         // console.error("------------------------------------------------------------------");
                         // console.error("Config: " + JSON.stringify(cfg, null, "  "))
                         // console.error("==================================================================");
-                        throw(e);
+                        throw(err);
                     }
                     dest = path.join(outdir, dest);
                     mkdir.mkdirSync(path.dirname(dest));

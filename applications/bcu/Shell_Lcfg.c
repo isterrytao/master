@@ -62,7 +62,10 @@ const struct shell_command shell_commands[] = {
 #ifdef __HC12__
     SHELL_COMMAND("io", io),
     SHELL_COMMAND("ai", analogi),
+#if defined(A640) || defined(A641)
+#else
     SHELL_COMMAND("volmux", cd4051),
+#endif
     SHELL_COMMAND("adc", adc),
     SHELL_COMMAND("port", port),
 #if defined(UPC6000)

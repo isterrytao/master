@@ -21,6 +21,7 @@
 #include "SystemConnection.h"
 #include "Async_Looper.h"
 #include "Async_Event.h"
+#include "RuntimeM.h"
 
 #define STATISTIC_TIME_INVALID_VALUE		0xFFFFFFFFUL
 
@@ -132,6 +133,8 @@ typedef enum{
 
 typedef struct{
 	Statistic_TvTypeType prior_tv_type; /**< 优先使用总压类型 */
+	uint8 cumuChgTimeEnable; /**< 累计充电时间使能 */
+	uint8 cumuDchgTimeEnable; /**< 累计放电时间使能 */
 }Statistic_ConfigInfoType;
 
 #pragma pop
@@ -146,6 +149,10 @@ typedef struct{
 	boolean isSimulationHtLt; /**< 是否使用模拟高温低温值 */
 	App_TemperatureType simulationHt; /**< 模拟高温 */
 	App_TemperatureType simulationLt; /**< 模拟低温 */
+	uint32 cumuChgTime;
+	uint32 cumuChgTimeCnt;
+	uint32 cumuDchgTime;
+	uint32 cumuDchgTimeCnt;
 }Statistic_innerDataType;
 
 
@@ -832,6 +839,71 @@ void Statistic_SetSimulationLt(App_TemperatureType lt);
  * \brief 获取模拟最低温度值
  */
 App_TemperatureType Statistic_GetSimulationLt(void);
+
+/**
+ * \brief 获取累计充电时间 单位:S
+ * \details 时间溢出后自动清零
+ *
+ * \return 累计充电时间
+ */
+uint32 Statistic_GetCumuChgTime(void);
+
+/**
+ * \brief 设置累计充电时间
+ * \details 时间溢出后自动清零
+ *
+ * \param time 充电时间
+ */
+void Statistic_SetCumuChgTime(uint32 time);
+
+/**
+ * \brief 保存累计充电时间
+ * \details 将当前累计充电时间存储在NVM中,时间溢出后自动清零
+ *
+ * \param time 充电时间
+ * \return E_OK: 成功 E_NOT_OK: 失败
+ */
+Std_ReturnType Statistic_SaveCumuChgTime(uint32 time);
+
+/**
+ * \brief 获取累计放电时间 单位:S
+ * \details 时间溢出后自动清零
+ *
+ * \return 累计放电时间
+ */
+uint32 Statistic_GetCumuDchgTime(void);
+
+/**
+ * \brief 设置累计放电时间
+ * \details 时间溢出后自动清零
+ *
+ * \param time 放电时间
+ */
+void Statistic_SetCumuDchgTime(uint32 time);
+
+/**
+ * \brief 保存累计放电时间
+ * \details 将当前累计放电时间存储在NVM中,时间溢出后自动清零
+ *
+ * \param time 放电时间
+ * \return E_OK: 成功 E_NOT_OK: 失败
+ */
+Std_ReturnType Statistic_SaveCumuDchgTime(uint32 time);
+
+/**
+ * \brief 获取累计运行时间 单位:S
+ * \details 时间溢出后自动清零
+ *
+ * \return 累计放电时间
+ */
+uint32 Statistic_GetCumuTime(void);
+
+/**
+ * \brief 延时下电保存当前统计信息回调函数
+ *
+ * \param signal 触发信号
+ */
+boolean Statistic_PowerDownSaveCbk(RuntimeM_SignalType signal);
 
 
 

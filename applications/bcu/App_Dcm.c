@@ -42,6 +42,7 @@
 #include "GBRtMsg.h"
 #include "SocOcvCalib.h"
 #include "BridgeInsu.h"
+#include "BridgeInsu_Cfg.h"
 
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "Logger.h"
@@ -354,6 +355,7 @@ uint8 gDTCSwitch;
 #define RoutineHandle_0xF007    (7u)
 #define RoutineHandle_0xF008    (8u)
 #define RoutineHandle_0xF009    (9u)
+#define RoutineHandle_0xF00A    (10u)
 
 /*******************************************************************************
 * Global variables(Scope:local)
@@ -394,7 +396,6 @@ uint8 DATA_0xF18A[6];
 uint8 DATA_0xF18B[4];
 uint8 DATA_0xF18C[16];
 uint8 DATA_0xF18E[16];
-uint8 DATA_0xF190[17];
 uint8 DATA_0xF193[16];
 uint8 DATA_0xF195[16];
 uint8 DATA_0xF197[8];
@@ -1816,6 +1817,10 @@ void App_Read0x2801(Dcm_MsgContextType *pMsgContext) {
     (void)DatetimeM_GetDatetime(&temp);
     WRITE_BT_UINT32(pMsgContext->resData, length, temp);
     WRITE_BT_UINT32(pMsgContext->resData, length, DIVISION(OSTimeGet(), 1000U));
+    temp = Statistic_GetCumuChgTime();
+    WRITE_BT_UINT32(pMsgContext->resData, length, temp);
+    temp = Statistic_GetCumuDchgTime();
+    WRITE_BT_UINT32(pMsgContext->resData, length, temp);
 
 #if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
     DsdInternal_DidProcessingDone();
@@ -3861,10 +3866,23 @@ void App_Read0xF18E(Dcm_MsgContextType *pMsgContext) {
 }
 
 void App_Read0xF190(Dcm_MsgContextType *pMsgContext) {
-    uint8 i;
-    uint16 index = DCM_INDEX_2;
-    for (i = 0U; i < gDcmDsdSubService_22[ReadHandle_0xF190].DcmDspDataSize; i++) {
-        pMsgContext->resData[index++] = DATA_0xF190[i];
+    uint8 i, size;
+    uint16 index = DCM_INDEX_2, vin;
+    size = (uint8)((gDcmDsdSubService_22[ReadHandle_0xF190].DcmDspDataSize + 1U) / 2U);
+    for (i = 0U; i < size; i++) {
+        if (i < 9U) {
+            if (E_OK != ParameterM_EeepRead((ParameterM_EeepParaIndexType)((uint8)PARAMETERM_EEEP_VIN1_INDEX + i), &vin)) {
+                vin = 0U;
+            }
+        } else {
+            vin = 0U;
+        }
+        if ((i == size - 1U) && (size % 2U)) {
+            pMsgContext->resData[index++] = (uint8)vin;
+        } else {
+            pMsgContext->resData[index++] = (uint8)(vin >> 8);
+            pMsgContext->resData[index++] = (uint8)vin;
+        }
     }
 #if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
     DsdInternal_DidProcessingDone();
@@ -4645,13 +4663,29 @@ void App_Write0xF112(Dcm_MsgContextType *pMsgContext) {
 *
 ******************************************************************************/
 void App_Write0xF190(Dcm_MsgContextType *pMsgContext) {
-    uint8 i;
-    for (i = 0U; i < gDcmDsdSubService_2E[WriteHandle_0xF190].DcmDspDataSize; i++) {
-        /* Add your codes here to write data. Below codes can be removed */
-        DATA_0xF190[i] = pMsgContext->resData[2U + i];
+    uint8 i, size;
+    uint16 index = 3U, vin;
+    size = (uint8)((gDcmDsdSubService_2E[WriteHandle_0xF190].DcmDspDataSize + 1U) / 2U);
+    if (size > 9U) {
+        size = 9U;
     }
-    gMsgContextType.resDataLen = 3U;
-    DsdInternal_ProcessingDone(pMsgContext);
+    for (i = 0U; i < size; i++) {
+        /* Add your codes here to write data. Below codes can be removed */
+        if ((i == size - 1U) && (size % 2U)) {
+            vin = READ_BT_UINT8(pMsgContext->reqData, index);
+        } else {
+            vin = READ_BT_UINT16(pMsgContext->reqData, index);
+        }
+        if (E_OK != ParameterM_EeepWrite((ParameterM_EeepParaIndexType)((uint8)PARAMETERM_EEEP_VIN1_INDEX + i), vin)) {
+            break;
+        }
+    }
+    if (i == size) {
+        gMsgContextType.resDataLen = 3U;
+        DsdInternal_ProcessingDone(pMsgContext);
+    } else {
+        DsdInternal_SetNegResponse(pMsgContext, DCM_E_GENERALPROGRAMMINGFAILURE);
+    }
 }
 /******************************************************************************
 * Name         :App_Write0xF197
@@ -5370,7 +5404,7 @@ void App_StartRoutine0xF007(Dcm_MsgContextType *pMsgContext) {
 void App_StartRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
     uint16 length = 4U;
     DsdInternal_RoutineStarted();
-    BridgeInsu_Start(BRIDGEINSU_MOS_BY_VOL);
+    BridgeInsu_Start(BRIDGEINSU_TYPE);
     pMsgContext->resDataLen = length;
     DsdInternal_ProcessingDone(pMsgContext);
 }
@@ -5413,6 +5447,43 @@ void APP_RequestResultsRoutine0xF009(Dcm_MsgContextType *pMsgContext) {
     uint16 length = 4U;
     WRITE_BT_UINT8(pMsgContext->resData, length, Statistic_GetSimulationHt());
     WRITE_BT_UINT8(pMsgContext->resData, length, Statistic_GetSimulationLt());
+    pMsgContext->resDataLen = length;
+    DsdInternal_RequestRoutineResults();
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+
+void App_StartRoutine0xF00A(Dcm_MsgContextType *pMsgContext) {
+    uint8 command;
+    uint16 length = 4U;
+    DsdInternal_RoutineStarted();
+    if (pMsgContext->reqDataLen >= 4U)
+    {
+        command = pMsgContext->reqData[4];
+        if (command & 0x01U)
+        {
+            Statistic_SetCumuChgTime(0UL);
+            (void)Statistic_SaveCumuChgTime(0UL);
+        }
+        if (command & 0x02U)
+        {
+            Statistic_SetCumuDchgTime(0UL);
+            (void)Statistic_SaveCumuDchgTime(0UL);
+        }
+    }
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void App_StopRoutine0xF00A(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    DsdInternal_RoutineStopped();
+
+    pMsgContext->resDataLen = length;
+    DsdInternal_ProcessingDone(pMsgContext);
+}
+void APP_RequestResultsRoutine0xF00A(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = 4U;
+    WRITE_BT_UINT32(pMsgContext->resData, length, Statistic_GetCumuChgTime());
+    WRITE_BT_UINT32(pMsgContext->resData, length, Statistic_GetCumuDchgTime());
     pMsgContext->resDataLen = length;
     DsdInternal_RequestRoutineResults();
     DsdInternal_ProcessingDone(pMsgContext);

@@ -187,12 +187,106 @@ const ParameterM_DataType ParameterM_EeepParaDefault[] = {
     1000U, /**< PARAMETERM_EEEP_HV6_GAIN_ERROR_INDEX: HV6增益误差 */
     0U, /**< PARAMETERM_EEEP_DCHG_OLV_CNT_STATE_INDEX: 电池过放电计数状态变化，用于记录需掉电保存的状态 */
     0U, /**< PARAMETERM_EEEP_DCHG_OLV_CNT_INDEX: 电池过放电计数 */
+    0U, /**< 35: 保留 */
+    0U, /**< 36: 保留 */
+    0U, /**< 37: 保留 */
+    0U, /**< 38: 保留 */
+    0U, /**< 39: 保留 */
+    0U, /**< 40: 保留 */
+    0U, /**< 41: 保留 */
+    0U, /**< 42: 保留 */
+    0U, /**< 43: 保留 */
+    0U, /**< 44: 保留 */
+    0U, /**< 45: 保留 */
+    0U, /**< 46: 保留 */
+    0U, /**< 47: 保留 */
+    0U, /**< 48: 保留 */
+    0U, /**< 49: 保留 */
+    0U, /**< 50: 保留 */
+    0U, /**< 51: 保留 */
+    0U, /**< 52: 保留 */
+    0U, /**< 53: 保留 */
+    0U, /**< 54: 保留 */
+    0U, /**< 55: 保留 */
+    0U, /**< 56: 保留 */
+    0U, /**< 57: 保留 */
+    0U, /**< 58: 保留 */
+    0U, /**< 59: 保留 */
+    0U, /**< 60: 保留 */
+    0U, /**< 61: 保留 */
+    0U, /**< 62: 保留 */
+    0U, /**< 63: 保留 */
+    0U, /**< 64: 保留 */
+    0U, /**< 65: 保留 */
+    0U, /**< 66: 保留 */
+    0U, /**< 67: 保留 */
+    0U, /**< 68: 保留 */
+    0U, /**< 69: 保留 */
+    0U, /**< 70: 保留 */
+    0U, /**< 71: 保留 */
+    0U, /**< 72: 保留 */
+    0U, /**< 73: 保留 */
+    0U, /**< 74: 保留 */
+    0U, /**< 75: 保留 */
+    0U, /**< 76: 保留 */
+    0U, /**< 77: 保留 */
+    0U, /**< 78: 保留 */
+    0U, /**< 79: 保留 */
+    0U, /**< 80: 保留 */
+    0U, /**< 81: 保留 */
+    0U, /**< 82: 保留 */
+    0U, /**< 83: 保留 */
+    0U, /**< 84: 保留 */
+    0U, /**< 85: 保留 */
+    0U, /**< 86: 保留 */
+    0U, /**< 87: 保留 */
+    0U, /**< 88: 保留 */
+    0U, /**< 89: 保留 */
+    0U, /**< 90: 保留 */
+    0U, /**< 91: 保留 */
+    0U, /**< 92: 保留 */
+    0U, /**< 93: 保留 */
+    0U, /**< 94: 保留 */
+    0U, /**< 95: 保留 */
+    0U, /**< 96: 保留 */
+    0U, /**< 97: 保留 */
+    0U, /**< 98: 保留 */
+    0U, /**< 99: 保留 */
+    0U, /**< 100: 保留 */
+    0U, /**< 101: 保留 */
+    0U, /**< 102: 保留 */
+    0U, /**< 103: 保留 */
+    0U, /**< 104: 保留 */
+    0U, /**< 105: 保留 */
+    0U, /**< 106: 保留 */
+    0U, /**< 107: 保留 */
+    0U, /**< 108: 保留 */
+    0U, /**< 109: 保留 */
+    0U, /**< 110: 保留 */
+    0U, /**< 111: 保留 */
+    0U, /**< 112: 保留 */
+    0U, /**< 113: 保留 */
+    0U, /**< 114: 保留 */
+    0U, /**< 115: 保留 */
+    0U, /**< 116: 保留 */
+    0U, /**< 117: 保留 */
+    0U, /**< 118: 保留 */
+    0U, /**< 119: 保留 */
+    0U, /**< 120: 保留 */
+    0U, /**< 121: 保留 */
+    0U, /**< PARAMETERM_EEEP_CUMULATIVE_CHG_TIME_L_INDEX: 累计充电时间低字 精度：1S/bit */
+    0U, /**< PARAMETERM_EEEP_CUMULATIVE_CHG_TIME_H_INDEX: 累计充电时间高字 精度：1S/bit */
+    0U, /**< PARAMETERM_EEEP_CUMULATIVE_DCHG_TIME_L_INDEX: 累计放电时间低字 精度：1S/bit */
+    0U, /**< PARAMETERM_EEEP_CUMULATIVE_DCHG_TIME_H_INDEX: 累计放电时间高字 精度：1S/bit */
+    <%- SocEfficiency.chargeIntegralEfficiency * 10 %>U, /**< PARAMETERM_EEEP_CHARGE_INTEGRAL_EFFICIENCY: 充电效率因子 精度：0.1% */
+    <%- SocEfficiency.dischargeIntegralEfficiency * 10 %>U, /**< PARAMETERM_EEEP_DCHARGE_INTEGRAL_EFFICIENCY: 放电效率因子 精度：0.1% */
 };
 
 const ParameterM_EeepParaIndexType ParameterM_EeepParaNum = (ParameterM_EeepParaIndexType)(ARRAY_SIZE(ParameterM_EeepParaDefault));
-//const ParameterM_InnerStructType ParameterM_InnerStructData = {
-//    &App_BatteryBaseConfigInfo,
-//};
+const ParameterM_ConfigInfoType ParameterM_ConfigInfo = {
+    PARAMETERM_EEEP_LOWER_INDEX_END, /**< 低段参数索引结束(不单独占用一个索引) */
+    PARAMETERM_EEEP_HIGHER_INDEX_START, /**< 高段参数索引起始(不单独占用一个索引) */
+};
 
 static const AppParameterM_CalibParaType AppParameterM_CalibParaConfigInfo = {
 {
@@ -215,8 +309,8 @@ static const AppParameterM_CalibParaType AppParameterM_CalibParaConfigInfo = {
     %>
     }},
     { /* <%- JSON.stringify(SocEfficiency) %> */
-        <%- SocEfficiency.chargeIntegralEfficiency * 10 %>U, /**< ChargeIntegralEfficiency: 充电效率因子 精度：0.1% */
-        <%- SocEfficiency.dischargeIntegralEfficiency * 10 %>U, /**< DischargeIntegralEfficiency: 放电效率因子 精度：0.1% */
+        <%- SocEfficiency.chargeIntegralEfficiency * 10 %>U, /**< ChargeIntegralEfficiency: 充电效率因子(弃用) 精度：0.1% */
+        <%- SocEfficiency.dischargeIntegralEfficiency * 10 %>U, /**< DischargeIntegralEfficiency: 放电效率因子(弃用) 精度：0.1% */
     },
 
     { /* <%- JSON.stringify(SocCalibParam) %> */

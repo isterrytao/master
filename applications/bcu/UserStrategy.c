@@ -21,6 +21,16 @@
 #include "ChargeConnectM.h"
 #include "SocCalib_Cbk.h"
 #include "ChargeM.h"
+#include "DischargeM.h"
+#include "DigitalInput.h"
+#include "RelayM_Lcfg.h"
+#include "ChargerComm.h"
+#include "ParameterM.h"
+#include "HvProcess_Chg.h"
+#include "HvProcess_Dchg.h"
+#include "ChargeM_Cfg.h"
+#include "DischargeM_Cfg.h"
+#include "PrechargeM_Lcfg.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -41,6 +51,82 @@ static void safeCurrentCheck(void);
 static void UserStrategy_ResetToOTA(void);
 #endif
 
+#ifdef RELAYM_FN_SELF_LOCK
+static void UserStrategy_SelfLockRelayControl(void);
+#endif
+
+#if USERSTRATEGY_AUTO_POWER_DOWN_EN == STD_ON
+static void UserStrategy_AutoLostPower(void);
+#endif
+
+#if USERSTRATEGY_MANUAL_POWER_DOWN_EN == STD_ON
+static void UserStrategy_ManualPowerDownCheck(void);
+#endif
+
+#if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
+static void UserStrategy_BuzzerControl(void);
+#endif
+
+#if USERSTRATEGY_DCHG_LV_PROTECT_WITH_CURRENT_EN == STD_ON
+static void dchgLvProtectForCurrentCheck(void);
+#endif
+
+#if USERSTRATEGY_DCHG_LTV_PROTECT_WITH_CURRENT_EN == STD_ON
+static void dchgLtvProtectForCurrentCheck(void);
+#endif
+
+#if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
+static const UserStrategy_BuzzerAlarmType alarmLevel1Cfg[] = {
+    {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_LV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_HTV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_HV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_DV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_HT, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_LT, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_DT, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_SP_OC, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_DCHG_OC, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_CHG_LTV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_CHG_LV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_CHG_DV, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_CHG_HT, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_CHG_DT, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_AC_CHG_OC, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_TEMP_LINE, DIAGNOSIS_LEVEL_FIRST},
+    {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_FIRST},
+};
+static const UserStrategy_BuzzerAlarmType alarmLevel2Cfg[] = {
+    {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_LV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_HTV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_HV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_DV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_HT, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_LT, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_DT, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_SP_OC, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_OC, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_HTV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_HV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_LTV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_LV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_DV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_HT, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_LT, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CHG_DT, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_AC_CHG_OC, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_BMS_INIT_FAILURE, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_TEMP_LINE, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_RELAY_ABNORMAL, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CURRENT_ABNORMAL, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_SECOND},
+};
+#endif
 
 void UserStrategy_Init(Async_LooperType *looper)
 {
@@ -56,16 +142,37 @@ void UserStrategy_Init(Async_LooperType *looper)
 }
 
 #if defined(A640)||defined(A641)
-static void pollPowerKeyState() {
-    uint32 now = OSTimeGet();
-    static uint32 tick = 0U;
+static void pollPowerKeyState(void)
+{
+    static uint32 lastTime = 0U;
+    static boolean is_manual = FALSE;
+    uint32 nowTime = OSTimeGet();
 
-    if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW) {
-        if (now - tick > 4000U) {
-            RuntimeM_RequestPowerDown();
+    if (nowTime >= 10000U)
+    {
+        if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+        {
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= 4000U)
+            {
+                is_manual = TRUE;
+                lastTime = nowTime;
+            }
         }
-    } else {
-        tick = now;
+        else
+        {
+            if (is_manual)
+            {
+                RuntimeM_RequestPowerDown();
+            }
+            else
+            {
+                lastTime = nowTime;
+            }
+        }
+    }
+    else
+    {
+        lastTime = nowTime;
     }
 }
 #endif
@@ -84,6 +191,30 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 #endif
 #endif
     safeCurrentCheck();
+
+#ifdef RELAYM_FN_SELF_LOCK
+    UserStrategy_SelfLockRelayControl();
+#endif
+
+#if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
+    UserStrategy_BuzzerControl();
+#endif
+
+#if USERSTRATEGY_AUTO_POWER_DOWN_EN == STD_ON
+    UserStrategy_AutoLostPower();
+#endif
+
+#if USERSTRATEGY_MANUAL_POWER_DOWN_EN == STD_ON
+    UserStrategy_ManualPowerDownCheck();
+#endif
+
+#if USERSTRATEGY_DCHG_LV_PROTECT_WITH_CURRENT_EN == STD_ON
+    dchgLvProtectForCurrentCheck();
+#endif
+
+#if USERSTRATEGY_DCHG_LTV_PROTECT_WITH_CURRENT_EN == STD_ON
+    dchgLtvProtectForCurrentCheck();
+#endif
 
     return ASYNC_EVENT_CBK_RETURN_OK;
 }
@@ -132,7 +263,13 @@ boolean UserStrategy_IsSafeToOff(void) {
 
 boolean UserStartegy_ChargeIsAllow(void)
 {
-    return TRUE;
+    boolean res = FALSE;
+
+    if (Diagnosis_StartDiagIsFinish())
+    {
+        res = TRUE;
+    }
+    return res;
 }
 
 App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
@@ -141,7 +278,23 @@ App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
 
     volt = PowerM_GetChargeVoltage(type);
-
+#ifdef RELAYM_FN_HEATER
+    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    {
+        if (HvProcess_HeatIsJump() == TRUE)
+        {
+            volt = Statistic_GetBcu100mvTotalVoltage();
+            if (Statistic_TotalVoltageIsValid(volt))
+            {
+                volt += V_TO_100MV(5U);
+            }
+        }
+    }
+#endif
+    if (!Statistic_TotalVoltageIsValid(volt))
+    {
+        volt = 0U;
+    }
     return volt;
 }
 
@@ -149,7 +302,20 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
 {
     Current_CurrentType current;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
-
+#ifdef RELAYM_FN_HEATER
+    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    {
+        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    }
+    else if (type == CHARGE_TYPE_DC)
+    {
+        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
+    }
+    else
+    {
+        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+    }
+#else
     if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
     {
         current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
@@ -162,6 +328,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     {
         current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
     }
+#endif
     return current;
 }
 
@@ -189,7 +356,7 @@ boolean UserStartegy_GBChargeRelayIsReady(RelayM_FunctionType relayType)
 
 App_Tv100mvType UserStrategy_GetMcuVoltage(void)
 {
-    return HV_GetVoltage(HV_CHANNEL_HV1);
+    return HV_GetVoltage(GETMCUVOLTAGE_CHANNEL);
 }
 
 uint16 UserStrategy_IsDiagHvilAbnormal(void)
@@ -285,3 +452,651 @@ boolean UserStrategy_Wakeup(void){
 #endif
 }
 
+boolean UserStartegy_AcChargeRelayIsReady(void)
+{
+    boolean res = FALSE;
+    RelayM_FunctionType relayType = ChargerComm_ConfigInfo.AC_RelayType;
+
+    if (relayType == RELAYM_FN_NONE)
+    {
+        res = TRUE;
+    }
+    else if (RelayM_FunctionRelayIsEnable(relayType) == E_NOT_OK)
+    {
+        if (OSTimeGet() >= 1000U)
+        {
+            res = TRUE;
+        }
+    }
+    else if (RelayM_GetActualStatus(relayType) == RELAYM_ACTUAL_ON)
+    {
+        res = TRUE;
+    }
+    else
+    {
+    }
+    return res;
+}
+
+#ifdef RELAYM_FN_SELF_LOCK
+static void UserStrategy_SelfLockRelayControl(void)
+{
+#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON || USERSTRATEGY_DC_CHG_SELF_LOCK_EN == STD_ON || USERSTRATEGY_DCHG_SELF_LOCK_EN == STD_ON
+    static boolean is_on = FALSE;
+#endif
+    Charge_ChargeType type = ChargeConnectM_GetConnectType();
+    if (OSTimeGet() >= 300U)
+    {
+        if (type == CHARGE_TYPE_AC)
+        {
+#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON
+            if (!is_on)
+            {
+                is_on = TRUE;
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
+            }
+#elif !defined(A640) && !defined(A641)
+            if (Dio_ReadChannel(DIO_CHANNEL_OBC_POWER) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+            else if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+            else
+            {}
+#else
+            if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+#endif
+        }
+        else if (type == CHARGE_TYPE_DC)
+        {
+#if USERSTRATEGY_DC_CHG_SELF_LOCK_EN == STD_ON
+            if (!is_on)
+            {
+                is_on = TRUE;
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
+            }
+#elif !defined(A640) && !defined(A641)
+            if (Dio_ReadChannel(DIO_CHANNEL_CHARGER_READY) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+            else if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+            else
+            {}
+#else
+            if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+#endif
+        }
+        else
+        {
+#if USERSTRATEGY_DCHG_SELF_LOCK_EN == STD_ON
+            if (!is_on)
+            {
+                is_on = TRUE;
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
+            }
+#else
+            if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+            {
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+            }
+#endif
+        }
+    }
+}
+#endif
+
+/**
+ * \brief OTA实时升级
+ * \details [long description]
+ */
+#if USERSTRATEGY_MANUAL_POWER_DOWN_EN == STD_ON
+static void UserStrategy_ManualPowerDownCheck(void)
+{
+    static uint32 lastTime = 0U;
+    static boolean is_manual = FALSE;
+    uint32 nowTime = OSTimeGet();
+
+    if (nowTime >= 10000U)
+    {
+        if (USERSTRATEGY_IS_MANUAL_POWER_DOWN())
+        {
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= USERSTRATEGY_MANUAL_POWER_DOWN_DELAY)
+            {
+                is_manual = TRUE;
+                lastTime = nowTime;
+                ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
+                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+            }
+        }
+        else
+        {
+            if (is_manual)
+            {
+#ifdef RELAYM_FN_SELF_LOCK
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+                RuntimeM_RequestPowerDown();
+#else
+                RuntimeM_RequestPowerDown();
+#endif
+            }
+            else
+            {
+                lastTime = nowTime;
+            }
+        }
+    }
+    else
+    {
+        lastTime = nowTime;
+    }
+}
+#endif
+
+#if USERSTRATEGY_AUTO_POWER_DOWN_EN == STD_ON
+static void UserStrategy_AutoLostPower(void)
+{
+    Current_CurrentType current;
+    RuntimeM_RunModeType mode;
+    static uint32 lastTime = 0U;
+    uint32 nowTime = OSTimeGet();
+    uint32 delay = USERSTRATEGY_AUTO_POWER_DOWN_TIME;
+
+    mode = RuntimeM_GetMode();
+    if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
+    {
+        current = abs(CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN));
+        if (CurrentM_IsValidCurrent(current) && current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+        {
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+            {
+                lastTime = nowTime;
+                ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
+                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+#ifdef RELAYM_FN_SELF_LOCK
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
+                RuntimeM_RequestPowerDown();
+#else
+                RuntimeM_RequestPowerDown();
+#endif
+            }
+        }
+        else
+        {
+            lastTime = nowTime;
+        }
+    }
+    else
+    {
+        lastTime = nowTime;
+    }
+}
+#endif
+
+#if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
+static void UserStrategy_BuzzerControl(void)
+{
+#ifdef RELAYM_FN_BUZZER
+    uint8 AlarmLevel = 0U;
+    uint32 nowTime = OSTimeGet();
+    static uint32 onTime = 0U, offTime = 0U;
+    static uint32 lastTime = 0U;
+    static boolean is_on = FALSE;
+    uint8 i;
+    for (i = 0U; i < (uint8)ARRAY_SIZE(alarmLevel2Cfg); i ++)
+    {
+        if (Diagnosis_GetLevel(alarmLevel2Cfg[i].diagItem) >= alarmLevel2Cfg[i].level)
+        {
+            AlarmLevel = 2U;
+            break;
+        }
+    }
+    if (AlarmLevel == 0U)
+    {
+        for (i = 0U; i < (uint8)ARRAY_SIZE(alarmLevel1Cfg); i ++)
+        {
+            if (Diagnosis_GetLevel(alarmLevel1Cfg[i].diagItem) >= alarmLevel1Cfg[i].level)
+            {
+                AlarmLevel = 1U;
+                break;
+            }
+        }
+    }
+    if (AlarmLevel != 0U)
+    {
+        if (is_on)
+        {
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= onTime)
+            {
+                is_on = FALSE;
+                lastTime = nowTime;
+                (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+            }
+        }
+        else
+        {
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= offTime)
+            {
+                is_on = TRUE;
+                lastTime = nowTime;
+                (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_ON);
+            }
+        }
+        if (AlarmLevel == 1U)
+        {
+            onTime = USERSTRATEGY_BUZZER_LEVEL1_ON_TIME;
+            offTime = USERSTRATEGY_BUZZER_LEVEL1_OFF_TIME;
+        }
+        else if (AlarmLevel == 2U)
+        {
+            onTime = USERSTRATEGY_BUZZER_LEVEL2_ON_TIME;
+            offTime = USERSTRATEGY_BUZZER_LEVEL2_OFF_TIME;
+        }
+        else
+        {}
+    }
+    else
+    {
+        is_on = FALSE;
+        lastTime = nowTime;
+        onTime = 0U;
+        offTime = 0U;
+        (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+    }
+#endif
+}
+#endif
+
+void UserStrategy_ChgAcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+{
+#if USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+    uint32 temp;
+#endif
+    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
+    Current_CurrentType current;
+
+    current = ChargerComm_GetChargeCurrentMax();
+    if (para != NULL)
+    {
+        if (CurrentM_IsValidCurrent(current))
+        {
+            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 0U);
+            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 1U);
+
+#if USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
+            triggerThreshold += (uint16)current;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                releaseThreshold += (uint16)current;
+            }
+            else
+            {
+                releaseThreshold = 0U;
+            }
+#elif USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+            temp = (uint16)current;
+            temp = temp * triggerThreshold;
+            temp = DIVISION(temp, 1000U);
+            if (temp > 0x7FFFU)
+            {
+                temp = 0x7FFFU;
+            }
+            if (temp == 0U)
+            {
+                temp = CURRENT_100MA_FROM_A(2U);
+            }
+            triggerThreshold = (uint16)temp;
+
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                temp = (uint16)current;
+                temp = temp * releaseThreshold;
+                temp = DIVISION(temp, 1000U);
+                if (temp > 0x7FFFU)
+                {
+                    temp = 0x7FFFU;
+                }
+                if (temp == 0U)
+                {
+                    temp = CURRENT_100MA_FROM_A(2U);
+                }
+            }
+            else
+            {
+                temp = 0U;
+            }
+            releaseThreshold = (uint16)temp;
+#else
+            // do nothing
+#endif
+        }
+        para->triggerThreshold = triggerThreshold;
+        para->releaseThreshold = releaseThreshold;
+        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 2U);
+        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 3U);
+    }
+}
+
+void UserStrategy_ChgDcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+{
+#if USERSTRATEGH_DC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+    uint32 temp;
+#endif
+    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
+    Current_CurrentType current;
+
+    current = ChargerComm_GetChargeCurrentMax();
+    if (para != NULL)
+    {
+        if (CurrentM_IsValidCurrent(current))
+        {
+            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DC_CHG_OC, level, 0U);
+            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DC_CHG_OC, level, 1U);
+
+#if USERSTRATEGH_DC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
+            triggerThreshold += (uint16)current;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                releaseThreshold += (uint16)current;
+            }
+            else
+            {
+                releaseThreshold = 0U;
+            }
+#elif USERSTRATEGH_DC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+            temp = (uint16)current;
+            temp = temp * triggerThreshold;
+            temp = DIVISION(temp, 1000U);
+            if (temp > 0x7FFFU)
+            {
+                temp = 0x7FFFU;
+            }
+            if (temp == 0U)
+            {
+                temp = CURRENT_100MA_FROM_A(2U);
+            }
+            triggerThreshold = (uint16)temp;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                temp = (uint16)current;
+                temp = temp * releaseThreshold;
+                temp = DIVISION(temp, 1000U);
+                if (temp > 0x7FFFU)
+                {
+                    temp = 0x7FFFU;
+                }
+                if (temp == 0U)
+                {
+                    temp = CURRENT_100MA_FROM_A(2U);
+                }
+            }
+            else
+            {
+                temp = 0U;
+            }
+            releaseThreshold = (uint16)temp;
+#else
+            // do nothing
+#endif
+        }
+        para->triggerThreshold = triggerThreshold;
+        para->releaseThreshold = releaseThreshold;
+        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DC_CHG_OC, level, 2U);
+        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DC_CHG_OC, level, 3U);
+    }
+}
+
+void UserStrategy_DchgOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+{
+#if USERSTRATEGH_DCHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+    uint32 temp;
+#endif
+    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
+    Current_CurrentType current;
+
+    current = PowerM_GetCurrent(POWERM_CUR_DCHARGE_CONTINUE);
+    if (para != NULL)
+    {
+        if (CurrentM_IsValidCurrent(current))
+        {
+            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DCHG_OC, level, 0U);
+            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DCHG_OC, level, 1U);
+
+#if USERSTRATEGH_DCHG_OC_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
+            triggerThreshold += (uint16)current;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                releaseThreshold += (uint16)current;
+            }
+            else
+            {
+                releaseThreshold = 0U;
+            }
+#elif USERSTRATEGH_DCHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+            temp = (uint16)current;
+            temp = temp * triggerThreshold;
+            temp = DIVISION(temp, 1000U);
+            if (temp > 0x7FFFU)
+            {
+                temp = 0x7FFFU;
+            }
+            if (temp == 0U)
+            {
+                temp = CURRENT_100MA_FROM_A(2U);
+            }
+            triggerThreshold = (uint16)temp;
+
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                temp = (uint16)current;
+                temp = temp * releaseThreshold;
+                temp = DIVISION(temp, 1000U);
+                if (temp > 0x7FFFU)
+                {
+                    temp = 0x7FFFU;
+                }
+                if (temp == 0U)
+                {
+                    temp = CURRENT_100MA_FROM_A(2U);
+                }
+            }
+            else
+            {
+                temp = 0U;
+            }
+            releaseThreshold = (uint16)temp;
+#else
+            // do nothing
+#endif
+        }
+        para->triggerThreshold = triggerThreshold;
+        para->releaseThreshold = releaseThreshold;
+        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DCHG_OC, level, 2U);
+        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_DCHG_OC, level, 3U);
+    }
+}
+
+void UserStrategy_DchgHvProcessAdhesiveDetect(void)
+{
+    if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
+    {
+        if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_MAIN) == RELAYM_CONTROL_OFF)
+        {
+            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_MAIN) == RELAYM_ACTUAL_OFF)
+            {
+                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_MAIN, NULL);
+            }
+        }
+    }
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+    if (RelayMConfigData[RELAYM_FN_POSITIVE_AC_CHARGE].GetInstantVoltage != NULL)
+    {
+        if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_CONTROL_OFF)
+        {
+            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_ACTUAL_OFF)
+            {
+                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_AC_CHARGE, NULL);
+            }
+        }
+    }
+#endif
+#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+    if (RelayMConfigData[RELAYM_FN_POSITIVE_DC_CHARGE].GetInstantVoltage != NULL)
+    {
+        if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_CONTROL_OFF)
+        {
+            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_ACTUAL_OFF)
+            {
+                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_DC_CHARGE, NULL);
+            }
+        }
+    }
+#endif
+#ifdef RELAYM_FN_CHARGE
+    if (RelayMConfigData[RELAYM_FN_CHARGE].GetInstantVoltage != NULL)
+    {
+        if (RelayM_GetControlStatus(RELAYM_FN_CHARGE) == RELAYM_CONTROL_OFF)
+        {
+            if (RelayM_GetActualStatus(RELAYM_FN_CHARGE) == RELAYM_ACTUAL_OFF)
+            {
+                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_CHARGE, NULL);
+            }
+        }
+    }
+#endif
+}
+
+boolean UserStrategy_DchgHvProcessRelayIsNormal(void)
+{
+    boolean res = TRUE;
+
+    if (!RELAYM_DIAGNOSIS_IS_NORMAL(RelayM_GetDiagnosisStatus(RELAYM_FN_POSITIVE_MAIN)))
+    {
+        res = FALSE;
+    }
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+    else if (!RELAYM_DIAGNOSIS_IS_NORMAL(RelayM_GetDiagnosisStatus(RELAYM_FN_POSITIVE_AC_CHARGE)))
+    {
+        res = FALSE;
+    }
+#endif
+#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+    else if (!RELAYM_DIAGNOSIS_IS_NORMAL(RelayM_GetDiagnosisStatus(RELAYM_FN_POSITIVE_DC_CHARGE)))
+    {
+        res = FALSE;
+    }
+#endif
+#ifdef RELAYM_FN_CHARGE
+    else if (!RELAYM_DIAGNOSIS_IS_NORMAL(RelayM_GetDiagnosisStatus(RELAYM_FN_CHARGE)))
+    {
+        res = FALSE;
+    }
+#endif
+    else
+    {
+    }
+    return res;
+}
+
+void UserStrategy_ChgHvProcessAdhesiveDetect(void)
+{
+    UserStrategy_DchgHvProcessAdhesiveDetect();
+}
+
+boolean UserStrategy_ChgHvProcessRelayIsNormal(void)
+{
+    return UserStrategy_DchgHvProcessRelayIsNormal();
+}
+
+#if USERSTRATEGY_DCHG_LV_PROTECT_WITH_CURRENT_EN == STD_ON
+static void dchgLvProtectForCurrentCheck(void)
+{
+    Current_CurrentType current;
+    uint32 nowTime = OSTimeGet();
+    Diagnosis_LevelType level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV);
+    static uint32 lastTime = 0U;
+
+    if (level >= USERSTRATEGY_DCHG_LV_PROTECT_LEVEL)
+    {
+        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+        if (!CurrentM_IsValidCurrent(current) || current < CURRENT_S_100MA_FROM_A(-5))
+        {
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
+            {
+                lastTime = nowTime;
+                DischargeM_SetDiagnosisDchargeCtl(DIAGNOSIS_ITEM_DCHG_LV, DISCHARGEM_DISCHARGE_DISABLE);
+            }
+        }
+        else
+        {
+            lastTime = nowTime;
+        }
+    }
+    else
+    {
+        lastTime = nowTime;
+    }
+}
+#endif
+
+#if USERSTRATEGY_DCHG_LTV_PROTECT_WITH_CURRENT_EN == STD_ON
+static void dchgLtvProtectForCurrentCheck(void)
+{
+    Current_CurrentType current;
+    uint32 nowTime = OSTimeGet();
+    Diagnosis_LevelType level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV);
+    static uint32 lastTime = 0U;
+
+    if (level >= USERSTRATEGY_DCHG_LTV_PROTECT_LEVEL)
+    {
+        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+        if (!CurrentM_IsValidCurrent(current) || current < CURRENT_S_100MA_FROM_A(-5))
+        {
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
+            {
+                lastTime = nowTime;
+                DischargeM_SetDiagnosisDchargeCtl(DIAGNOSIS_ITEM_DCHG_LTV, DISCHARGEM_DISCHARGE_DISABLE);
+            }
+        }
+        else
+        {
+            lastTime = nowTime;
+        }
+    }
+    else
+    {
+        lastTime = nowTime;
+    }
+}
+#endif
+
+boolean UserStrategy_DchgIsReady(void)
+{
+    boolean res = FALSE;
+
+    if (HvProcess_GetDchgState() == HVPROCESS_DCHG_HV_ON)
+    {
+        res = TRUE;
+    }
+    return res;
+}

@@ -57,8 +57,8 @@ const bcus = {
     A651: { PCBA: 'UPA650', DtuSupport: 1, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
     A652: { PCBA: 'UPA650', DtuSupport: 0, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
     A653: { PCBA: 'UPA650', DtuSupport: 1, AllInOne: 1, MaxBmu: 0, M630Support: 0, NeedDaisyChainBatConnInfo: true },
-    A640: { PCBA:'UPA640', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
-    A641: { PCBA:'UPA640', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+    A640: { PCBA: 'UPA640', DtuSupport:0, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
+    A641: { PCBA: 'UPA640', DtuSupport:1, AllInOne:1, MaxBmu:0, M630Support:0, NeedDaisyChainBatConnInfo:true},
 
 };
 
@@ -82,10 +82,10 @@ const typeToNumTable = {
 };
 
 if (!bcus.hasOwnProperty(cfg.bcu.type)) {
-    throw util.format("Wrong bcutype %s", cfg.bcu.type);
+    throw globalInfo.requires.util.format("Wrong bcutype %s", cfg.bcu.type);
 }
 if (cfg.bmus.length > bcus[cfg.bcu.type].MaxBmu) {
-    throw util.format("BMU to many, %d > MaxBmu(%d)", cfg.bmus.length, bcus[cfg.bcu.type].MaxBmu)
+    throw globalInfo.requires.util.format("BMU to many, %d > MaxBmu(%d)", cfg.bmus.length, bcus[cfg.bcu.type].MaxBmu)
 }
 
 var BcuSupportDtu = bcus[cfg.bcu.type].DtuSupport;
@@ -99,11 +99,11 @@ if (m630Num != 0 && m630Num != cfg.bmus.length) {
 }
 
 if (m630Num != 0 && !bcus[cfg.bcu.type].M630Support) {
-    throw util.format("%s does not support M630", cfg.bcu.type);
+    throw globalInfo.requires.util.format("%s does not support M630", cfg.bcu.type);
 }
 
 if (m630Num == 0 && bcus[cfg.bcu.type].M630Support) {
-    throw util.format("%s does not support M630", cfg.bcu.type);
+    throw globalInfo.requires.util.format("%s does not support M630", cfg.bcu.type);
 }
 
 
@@ -162,19 +162,19 @@ for (var bmu of cfg.bmus) {
 }
 
 if (processedcfg.BmuBatt.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.battnum) {
-    throw util.format("Battery Cell number(%d) !=  BatteryInfo.battnum(%d)", processedcfg.BmuBatt.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.battnum);
+    throw globalInfo.requires.util.format("Battery Cell number(%d) !=  BatteryInfo.battnum(%d)", processedcfg.BmuBatt.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.battnum);
 }
 
 if (processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.celltempnum) {
-    throw util.format("Cell temperature number(%d) !=  BatteryInfo.celltempnum(%d)", processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.celltempnum);
+    throw globalInfo.requires.util.format("Cell temperature number(%d) !=  BatteryInfo.celltempnum(%d)", processedcfg.BmuCellTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.celltempnum);
 }
 
 if (processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.poletempnum) {
-    throw util.format("Pole temperature number(%d) !=  BatteryInfo.poletempnum(%d)", processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.poletempnum);
+    throw globalInfo.requires.util.format("Pole temperature number(%d) !=  BatteryInfo.poletempnum(%d)", processedcfg.BmuPoleTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.poletempnum);
 }
 
 if (processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0] != globalInfo.BatteryInfo.heattempnum) {
-    throw util.format("Heat temperature number(%d) !=  BatteryInfo.heattempnum(%d)", processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.heattempnum);
+    throw globalInfo.requires.util.format("Heat temperature number(%d) !=  BatteryInfo.heattempnum(%d)", processedcfg.BmuHeatTemp.LogicIdMax.slice(-1)[0], globalInfo.BatteryInfo.heattempnum);
 }
 
 globalInfo.setReturn({

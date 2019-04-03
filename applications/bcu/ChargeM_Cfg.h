@@ -18,7 +18,8 @@
 #ifndef CHARGEM_CFG_H_
 #define CHARGEM_CFG_H_
 
-#define CHARGEM_OTHERS_FAULT_MAX 0U
+#define CHARGEM_OTHERS_FAULT_POWER_OFF  0U
+#define CHARGEM_OTHERS_FAULT_MAX        1U
 
 #endif
 

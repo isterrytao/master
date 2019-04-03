@@ -797,10 +797,13 @@ extern void App_StartRoutine0xF008(Dcm_MsgContextType *pMsgContext);
 extern void App_StopRoutine0xF008(Dcm_MsgContextType *pMsgContext);
 extern void App_StartRoutine0xF009(Dcm_MsgContextType *pMsgContext);
 extern void App_StopRoutine0xF009(Dcm_MsgContextType *pMsgContext);
+extern void App_StartRoutine0xF00A(Dcm_MsgContextType *pMsgContext);
+extern void App_StopRoutine0xF00A(Dcm_MsgContextType *pMsgContext);
 
 extern void APP_RequestResultsRoutine0xF006(Dcm_MsgContextType *pMsgContext);
 extern void APP_RequestResultsRoutine0xF008(Dcm_MsgContextType *pMsgContext);
 extern void APP_RequestResultsRoutine0xF009(Dcm_MsgContextType *pMsgContext);
+extern void APP_RequestResultsRoutine0xF00A(Dcm_MsgContextType *pMsgContext);
 /* 34 */
 extern void App_RequestDownload(void);
 /* 35 */

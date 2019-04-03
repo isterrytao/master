@@ -1,4 +1,20 @@
+
 <%
+/*
+增加由CommProtocol引入的VCU所需PDUR
+*/
+for (var x of globalInfo.CommProtocol.PduR.rxpdus) {
+    cfg.rx.push(x);
+}
+for (var x of globalInfo.CommProtocol.PduR.txpdus) {
+    cfg.tx.push(x);
+}
+
+%>
+
+
+<%
+
 Array.prototype.pushToUndefined = function(index, e) {
     while (this.length < index) {
         this.push(undefined);
@@ -23,7 +39,6 @@ Array.prototype.pushIfNotExist = function(e) {
     this.push(e);
     return true;
 }
-
 
 
 var rxs = cfg.rx;
@@ -60,7 +75,7 @@ txs.forEach(x=>x.middle[2] = globalInfo[x.middle[0]].txsduids.indexOf(x.middle[1
 
 var addmodule = function(x) {
     if (processedcfg.uppers.pushIfNotExist(x.upper[0])){
-        processedcfg[x.upper[0]] = {module: x.upper[0], txs:[], txmiddles:[]};
+        processedcfg[x.upper[0]] = {module: x.upper[0], txs:[], rxs:[], txmiddles:[]};
     }
     if (processedcfg.middles.pushIfNotExist(x.middle[0])) {
         processedcfg[x.middle[0]] = {module: x.middle[0], rxs:[], txs:[], rxuppers:[], txuppers:[],};
@@ -117,9 +132,13 @@ for (var upper of processedcfg.uppers) {
 
 for (var upper of processedcfg.uppers) {
     var thistxs = txs.filter(x=>x.upper[0] == upper);
+    var thisrxs = rxs.filter(x=>x.upper[0] == upper);
     thistxs.forEach(x=>processedcfg[upper].txs.pushToUndefined(x.upper[1], {name:x.middle[0], id:x.middle[2]}));
+    thisrxs.forEach(x=>processedcfg[upper].rxs.pushToUndefined(x.upper[1], {name:x.middle[0], id:x.middle[2]}));
     thistxs.forEach(x=>processedcfg[upper].txmiddles.pushIfNotExist(x.middle[0]));
     processedcfg[upper].txs.fillUndefinedWith({name:"None", id: 0})
+    processedcfg[upper].rxs.fillUndefinedWith({name:"None", id: 0})
+
 }
 
 for (var middle of processedcfg.middles) {
@@ -146,7 +165,8 @@ globalInfo.setReturn({processedcfg:processedcfg});
 
 /*<%-JSON.stringify(processedcfg.uppers)%>*/
 <%for (var v of processedcfg.uppers) {%>
-#define PDUR_CFG_<%- v.toUpperCase() %>_PDUID_NUM   <%- processedcfg[v].txs.length %>U
+#define PDUR_CFG_<%- v.toUpperCase() %>_TX_PDUID_NUM   <%- processedcfg[v].txs.length %>U
+#define PDUR_CFG_<%- v.toUpperCase() %>_RX_PDUID_NUM   <%- processedcfg[v].rxs.length %>U
 <%}
 for (var v of processedcfg.middles) {%>
 /*<%-JSON.stringify(cfg[v])%>*/

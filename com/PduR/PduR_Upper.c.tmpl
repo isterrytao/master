@@ -26,7 +26,7 @@ Std_ReturnType PduR_<%-module%>Transmit(PduIdType PduId, const PduInfoType* PduI
 {
     Std_ReturnType res = E_NOT_OK;
 
-    if (PduId < PDUR_CFG_<%-module.toUpperCase()%>_PDUID_NUM)
+    if (PduId < PDUR_CFG_<%-module.toUpperCase()%>_TX_PDUID_NUM)
     {
         switch(PduR_Config-><%-module%>PduIdConfig[PduId].Module)
         {<%
