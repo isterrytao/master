@@ -815,6 +815,14 @@ module.exports = {
                     {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
                     {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
                 ],
+                startDiagnosis: {
+                    timeout: 1000,
+                    level: 3,
+                    events:[
+                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+                    ],
+                },
             }, {
                 name: "放电单体电压低",
                 levels: [1,2,3],
@@ -825,6 +833,14 @@ module.exports = {
                     {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
                     {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
+                startDiagnosis: {
+                    timeout: 1000,
+                    level: 3,
+                    events:[
+                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
+                    ],
+                },
             }, {
                 name: "充电总压高",
                 levels: [1,2,3],
@@ -867,6 +883,14 @@ module.exports = {
                     {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
                     {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
                 ],
+                startDiagnosis: {
+                    timeout: 1000,
+                    level: 3,
+                    events:[
+                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+                    ],
+                },
             }, {
                 name: "放电总压低",
                 levels: [1,2,3],
@@ -875,6 +899,14 @@ module.exports = {
                     {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
                     {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
+                startDiagnosis: {
+                    timeout: 1000,
+                    level: 3,
+                    events:[
+                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
+                    ],
+                },
             }, {
                 name: "充电单体压差",
                 levels: [1,2,3],
