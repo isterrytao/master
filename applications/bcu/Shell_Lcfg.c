@@ -4,7 +4,11 @@ const char *const shell_wellcome_message = "Hello, this is a shell.";
 const char *const shell_prompt = "Shell> ";
 
 SHELL_PROTYPE(appinfo);
+#if defined(A640) || defined(A641)
+
+#else
 SHELL_PROTYPE(cd4051);
+#endif
 #if defined(UPC6000)
 SHELL_PROTYPE(hef4052);
 #endif

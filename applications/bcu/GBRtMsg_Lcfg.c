@@ -168,6 +168,12 @@ typedef struct {
             uint16 num;
         } gb32960SupportCmdId;
 
+        struct {
+            uint16 messageLength;
+            uint32 chargedTime;
+            uint32 dischargedTime;
+        } chargeDischargeTime;
+
     } dataHeader;
 } GB32960_PACKED GBRt_MsgBuffer;
 
@@ -193,6 +199,7 @@ typedef struct {
 #define MSG_LENGTH_CHARGER_STATUS      (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(chargerStatus))
 #define MSG_LENGTH_CUMU_INFO           (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(powerInfo))
 #define MSG_LENGTH_GB32960_SUPPORT_CMDID  (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId) + GB32960_SUPPORT_COMMAND_NUMBER)
+#define MSG_LENGTH_DEVICE_CHADISCHATIME   (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(chargeDischargeTime))
 
 
 static GBRt_MsgBufferWithHeartbeat headerBufferWithHeartbeat;
@@ -224,6 +231,12 @@ const GB32960_CopySegmentType copySegmentsDeviceList[] = {
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, PTR_TYPE_DATA, {AppInfoTag.FWVersion}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * sizeof(DeviceInfo_DeviceInfoType), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
 };
+
+static void fillCharDisTime(GBRt_MsgBuffer *msgHeader) {
+    msgHeader->dataHeader.chargeDischargeTime.messageLength = sizeof(msgHeader->dataHeader.chargeDischargeTime) - 2U;
+    msgHeader->dataHeader.chargeDischargeTime.chargedTime = Statistic_GetCumuChgTime();
+    msgHeader->dataHeader.chargeDischargeTime.dischargedTime = Statistic_GetCumuDchgTime();
+}
 
 static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
     uint32 validity_test;
@@ -314,6 +327,10 @@ static uint16 copyRelayData(uint16 offset, uint8 *buf, uint16 len) {
 
     return len;
 }
+
+static const GB32960_CopySegmentType copySegmentschargeDischargeTime[] = {
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(chargeDischargeTime), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
+};
 
 
 static const GB32960_CopySegmentType copySegmentsSystemStatus[] = {
@@ -545,6 +562,7 @@ const GB32960_RTMessageItemType loginOnceData[] = {
 };
 
 const GB32960_RTMessageItemType intervalData[] = {
+    {0x95U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_CHADISCHATIME, NULL, (GB32960_FillMessageFuncType)fillCharDisTime, copySegmentschargeDischargeTime, (uint8)ARRAY_SIZE(copySegmentschargeDischargeTime)},
     {0x93U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copySegmentsSystemStatus, (uint8)ARRAY_SIZE(copySegmentsSystemStatus)},
     {0x08U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copySegmentsCellVoltage, (uint8)ARRAY_SIZE(copySegmentsCellVoltage)},
     {0x09U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copySegmentsCellTemperatures, (uint8)ARRAY_SIZE(copySegmentsCellTemperatures)},
@@ -577,6 +595,10 @@ static GBRt_MsgBufferWithHeartbeat recordHeaderWithHeartbeat;
 #else
 #define GB_TYPE_TO_RECORD_TYPE(type)    (type)
 #endif
+
+static const GB32960_CopySegmentType copyRecordSegmentschargeDischargeTime[] = {
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(chargeDischargeTime), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
+};
 
 static const GB32960_CopySegmentType copyRecordSegmentsDeviceInfo[] = {
     {0U, MEMBER_SIZEOF_MSG_HEADER(deviceInfo), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
@@ -713,6 +735,7 @@ static const GB32960_RecordItemType fixedCycleDataList[] = {
 
 
 static const GB32960_RecordItemType unfixedCycleDataList[] = {
+    {GB_TYPE_TO_RECORD_TYPE(0x95U), MSG_LENGTH_DEVICE_CHADISCHATIME, NULL, (GB32960_FillMessageFuncType)fillCharDisTime, copyRecordSegmentschargeDischargeTime, (uint8)ARRAY_SIZE(copyRecordSegmentschargeDischargeTime), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x93U), MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copyRecordSegmentsSystemStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsSystemStatus), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x08U), MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copyRecordSegmentsCellVoltage, (uint8)ARRAY_SIZE(copyRecordSegmentsCellVoltage), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x09U), MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copyRecordSegmentsCellTemperatures, (uint8)ARRAY_SIZE(copyRecordSegmentsCellTemperatures), NULL},

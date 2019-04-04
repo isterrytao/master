@@ -140,6 +140,7 @@ typedef struct{
 #pragma pop
 
 typedef struct{
+	boolean start;
 	Async_EventType asyncEvent;
 	uint32 chargeTimeLast;
 	uint32 dischargeTimeLast;

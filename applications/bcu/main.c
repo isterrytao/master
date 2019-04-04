@@ -420,9 +420,14 @@ static void start_task(void *pdata) {
     OSTimeDly(2U);
     HC12XIrq_InstallVector(IRQ_ATD0, ADT0_Isr, 0U);
     Adc_StartGroupConversion(ADC_GROUP_ADT0);
-    Dcm_Init(RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? &DcmConfigDtuTp : &DcmConfigCanTp);
+    mode = RuntimeM_GetMode();
+    Dcm_Init(mode == RUNTIMEM_RUNMODE_DTU ? &DcmConfigDtuTp : &DcmConfigCanTp);
     Det_Start();
-    Statistic_Init(&extLooper);
+    if (mode == RUNTIMEM_RUNMODE_NORMAL ||
+            mode == RUNTIMEM_RUNMODE_CALIBRATE ||
+            mode == RUNTIMEM_RUNMODE_DTU) {
+        Statistic_Init(&extLooper);
+    }
     CellDataM_Init();
     if (isNeedStartSampleTask()) {
         InternalComm_Init(INTERNALCOMM_TX_TASK_PRI);
@@ -471,7 +476,6 @@ static void start_task(void *pdata) {
     Diagnosis_Init(&ParameterM_CurrentCalibParaPtr->diagnosisPara, DIAGNOSIS_TASK_PRI);
 
     ChgSckTmpM_Init();
-    mode = RuntimeM_GetMode();
     if (mode == RUNTIMEM_RUNMODE_CALIBRATE ||
             mode == RUNTIMEM_RUNMODE_NORMAL) {
         SocCalib_Init(&extLooper);
