@@ -61,8 +61,6 @@ static boolean WakeupSignalIsOk(void)
     boolean res = TRUE;
 #if defined(A640)||defined(A641)
 #else
-    uint32 nowTime = OSTimeGet();
-    static uint32 lastTime = 0U;
     boolean flag = FALSE;
     uint8 wakeup;
 
@@ -91,18 +89,7 @@ static boolean WakeupSignalIsOk(void)
     }
     if (flag)
     {
-        if (lastTime == 0U)
-        {
-            lastTime = nowTime;
-        }
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 2000U)
-        {
-            res = FALSE;
-        }
-    }
-    else
-    {
-        lastTime = 0U;
+        res = FALSE;
     }
 #endif
     return res;
@@ -114,21 +101,25 @@ static boolean waitChgCommIsOkForPowerOn(void)
 
     if (ChargerComm_ConfigInfo.AC_Protocol != CHARGERCOMM_PROTOCOL_NONE)
     {
-        if (ChargeConnectM_ConfigInfo.AC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION)
+        if (ChargeConnectM_ConfigInfo.AC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION &&
+            ChargeConnectM_ConfigInfo.AC_Para.Wakeup != RUNTIMEM_WAKEUP_SIGNAL_BIT_NONE &&
+            ChargeConnectM_ConfigInfo.AC_Para.Wakeup != RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
         {
             flag = TRUE;
         }
     }
     if (ChargerComm_ConfigInfo.DC_Protocol != CHARGERCOMM_PROTOCOL_NONE)
     {
-        if (ChargeConnectM_ConfigInfo.DC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION)
+        if (ChargeConnectM_ConfigInfo.DC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION &&
+            ChargeConnectM_ConfigInfo.DC_Para.Wakeup != RUNTIMEM_WAKEUP_SIGNAL_BIT_NONE &&
+            ChargeConnectM_ConfigInfo.DC_Para.Wakeup != RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
         {
             flag = TRUE;
         }
     }
     if (flag)
     {
-        if (OSTimeGet() < 1200U)
+        if (OSTimeGet() < 1500U)
         {
             res = FALSE;
         }
@@ -180,17 +171,34 @@ void HvProcess_DchgStateStartAction(void)
 boolean HvProcess_DchgChargeConnectionCond(void)
 {
     boolean res = FALSE;
+    uint32 nowTime = OSTimeGet();
+    static uint32 lastTime = 0UL,monitorTime = 0U;
 
+    if (MS_GET_INTERNAL(monitorTime, nowTime) > 500UL)
+    {
+        lastTime = 0UL;
+    }
+    monitorTime = nowTime;
     if (!WakeupSignalIsOk())
     {
-        res = TRUE;
+        if (lastTime == 0UL)
+        {
+            lastTime = nowTime;
+        }
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 500U)
+        {
+            lastTime = 0UL;
+            res = TRUE;
+        }
     }
     else if (CHARGECONNECTM_IS_CONNECT())
     {
+        lastTime = 0UL;
         res = TRUE;
     }
     else
     {
+        lastTime = 0UL;
     }
     return res;
 }
