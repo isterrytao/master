@@ -442,7 +442,7 @@ static void start_task(void *pdata) {
 #elif defined(A652) || defined(A653)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
 #elif defined(A640)||defined(A641)
-//    BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A640);
+    BridgeInsu_Init(&driverLooper, NULL);
 #else
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData);
 #endif

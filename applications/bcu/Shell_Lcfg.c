@@ -31,7 +31,10 @@ SHELL_PROTYPE(adc);
 SHELL_PROTYPE(analogi);
 SHELL_PROTYPE(flag);
 SHELL_PROTYPE(reset);
+#if defined(A640)
+#else
 SHELL_PROTYPE(dtu);
+#endif
 #if defined(UPC6000)
 SHELL_PROTYPE(chtemp);
 #endif
@@ -59,7 +62,10 @@ SHELL_PROTYPE(rs485);
 #if defined(A640) || defined(A641)
 SHELL_PROTYPE(isl);
 #endif
+#if defined(A640)
+#else
 SHELL_PROTYPE(dtustart);
+#endif
 SHELL_PROTYPE(gb34014);
 
 const struct shell_command shell_commands[] = {
@@ -90,7 +96,12 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("flag", flag),
     SHELL_COMMAND("rtc", rtc),
     SHELL_COMMAND("reset", reset),
+
+#if defined(A640)
+#else
     SHELL_COMMAND("dtu", dtu),
+#endif
+
 #if defined(UPC6000)
     SHELL_COMMAND("chtemp", chtemp),
 #endif
@@ -120,7 +131,10 @@ const struct shell_command shell_commands[] = {
 
 #endif
     SHELL_COMMAND("dmem", dmem),
+#if defined(A640)
+#else
     SHELL_COMMAND("dtustart", dtustart),
+#endif
     SHELL_COMMAND("gb34014", gb34014),
     SHELL_COMMAND("help", help),
     SHELL_COMMAND_END(),
