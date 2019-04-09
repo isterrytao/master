@@ -289,10 +289,6 @@ static void run_test_mode(void) {
     (void)Can_SetControllerMode(3U, CAN_T_START);
 #endif
 
-#if defined(A640) || defined(A641)
-    IICBus_Init();
-#endif
-
     HardwareSn_Init();
     Adc_Init(&AdcConfigTestMode);
     HC12XIrq_InstallVector(IRQ_ATD1, ADT1_Isr, 0U);
@@ -433,9 +429,6 @@ static void start_task(void *pdata) {
         InternalComm_Init(INTERNALCOMM_TX_TASK_PRI);
         (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, FALSE);
     }
-#if defined(A640) || defined(A641)
-    IICBus_Init();
-#endif
     HardwareSn_Init();
     async_test(&extLooper);
     DatetimeM_Init(&extLooper);

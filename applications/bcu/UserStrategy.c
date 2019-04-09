@@ -189,7 +189,9 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 
 #if defined(A640)||defined(A641)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
-    pollPowerKeyState();
+    if (RuntimeM_GetMode() == RUNTIMEM_RUNMODE_TEST) {
+        pollPowerKeyState();
+    }
 #endif
 #endif
     safeCurrentCheck();
