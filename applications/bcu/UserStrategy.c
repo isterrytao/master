@@ -144,39 +144,52 @@ void UserStrategy_Init(Async_LooperType *looper)
 }
 
 #if defined(A640)||defined(A641)
-static void pollPowerKeyState(void)
+static void pollPowerKeyState()
 {
-    static uint32 lastTime = 0U;
-    static boolean is_manual = FALSE;
-    uint32 nowTime = OSTimeGet();
+    uint32 now = OSTimeGet();
+    static uint32 tick = 0U;
+    static uint8 status = 0U;
+    Dio_LevelType keyStatus = Dio_ReadChannel(DIO_CHANNEL_KEY_ON);
 
-    if (nowTime >= 10000U)
+    if (status == 0U && now > 10000U)
     {
-        if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
+        if (keyStatus == STD_LOW)
         {
-            if (MS_GET_INTERNAL(lastTime, nowTime) >= 4000U)
+            if (now - tick >= 3000U)
             {
-                is_manual = TRUE;
-                lastTime = nowTime;
+                status = 1U;
+                tick = now;
             }
         }
         else
         {
-            if (is_manual)
-            {
-                RuntimeM_RequestPowerDown();
-            }
-            else
-            {
-                lastTime = nowTime;
-            }
+            tick = now;
         }
     }
-    else
+    else if (status == 1U)
     {
-        lastTime = nowTime;
+        if (keyStatus == STD_HIGH)
+        {
+            if (now - tick >= 1000U)
+            {
+                status = 2U;
+                tick = now;
+            }
+        }
+        else
+        {
+            tick = now;
+        }
     }
+    else if (status == 2U)
+    {
+        status = 0U;
+        RuntimeM_RequestPowerDown();
+    }
+    else
+    {}
 }
+
 #endif
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)
