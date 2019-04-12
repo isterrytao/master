@@ -478,7 +478,7 @@ void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length)
 
 void ChargerCommUser_RecTCTimeoutCbk(void)
 {
-    if (ChargerCommUser_MsgInnerData.tcHaveRecved == TRUE)
+    if (ChargerCommUser_MsgInnerData.tcHaveRecved == TRUE || ChargerCommUser_MsgInnerData.snHaveRecved == FALSE)
     {
         ChargerCommUser_RecTimeoutCbk();
     }
