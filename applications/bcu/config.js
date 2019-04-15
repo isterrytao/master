@@ -1877,10 +1877,9 @@ module.exports = {
                 define:0,
             },
             {name:"CANIF_RX_RUNTIMEM", to:"RuntimeM", id:0x7fd, hw:0, define:0},
-            {name:"CANIF_RX_CANECHO_0", to:"CanEcho", id:0x7f0, hw:0, define:0},
-            {name:"CANIF_RX_CANECHO_1", to:"CanEcho", id:0x7f1, hw:1, define:1},
-            {name:"CANIF_RX_CANECHO_2", to:"CanEcho", id:0x7f2, hw:2, define:2},
-            {name:"CANIF_RX_CANECHO_3", to:"CanEcho", id:0x7f3, hw:3, define:3},
+            {name:"CANIF_RX_CANECHO_0", to:"CanEcho", id:0x7f0, hw:1, define:0},
+            {name:"CANIF_RX_CANECHO_1", to:"CanEcho", id:0x7f1, hw:2, define:1},
+            {name:"CANIF_RX_CANECHO_2", to:"CanEcho", id:0x7f2, hw:3, define:2},
             //{name:"CANIF_RX_USERCURRENTSENSOR_1", to:"UserCurrentSensor", id:0x3c0, hw:3, define:0},
             //{name:"CANIF_RX_USERCURRENTSENSOR_2", to:"UserCurrentSensor", id:0x3c1, hw:3, define:1},
         ],
@@ -1898,10 +1897,9 @@ module.exports = {
                 hw:0
             },
             {name:"CANIF_TX_RUNTIMEM", from:"RuntimeM", id:0x7fd, hw:0},
-            {name:"CANIF_TX_CANECHO_0", from:"CanEcho", id:0x7f0, hw:0},
-            {name:"CANIF_TX_CANECHO_1", from:"CanEcho", id:0x7f1, hw:1},
-            {name:"CANIF_TX_CANECHO_2", from:"CanEcho", id:0x7f2, hw:2},
-            {name:"CANIF_TX_CANECHO_3", from:"CanEcho", id:0x7f3, hw:3},
+            {name:"CANIF_TX_CANECHO_0", from:"CanEcho", id:0x7f0, hw:1},
+            {name:"CANIF_TX_CANECHO_1", from:"CanEcho", id:0x7f1, hw:2},
+            {name:"CANIF_TX_CANECHO_2", from:"CanEcho", id:0x7f2, hw:3},
         ]
     },
 
