@@ -310,10 +310,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 0);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 0);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 0);
+    // }
     else
     {
 
@@ -333,10 +333,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 2);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 2);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 2);
+    // }
     else
     {
 
@@ -361,10 +361,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 4);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 4);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 4);
+    // }
     else
     {
 
@@ -384,10 +384,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 6);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 6);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 6);
+    // }
     else
     {
 
@@ -409,10 +409,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 0);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 0);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 0);
+    // }
     else
     {
 
@@ -432,10 +432,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 2);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 2);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 2);
+    // }
     else
     {
 
@@ -450,10 +450,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 4);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 4);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 4);
+    // }
     else
     {
 
@@ -468,10 +468,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 6);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 6);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 6);
+    // }
     else
     {
 
@@ -490,10 +490,10 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         temp |= ((uint16)2U << 4);
     }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 4);
-    }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 4);
+    // }
     else
     {
 

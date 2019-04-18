@@ -38,6 +38,7 @@ typedef struct{
     App_VoltageType LowVoltLimit; /**< 单体电压低极限保护 */
     App_VoltageType HighTempLimit; /**< 单体温度高极限保护 */
     uint32 LimitProtectDelay; /**< 极限保护延时 */
+    App_CapType DisplayCap; /**< 显示容量 */
 }BatteryInfo_BaseConfigType;
 
 /**

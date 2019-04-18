@@ -76,32 +76,9 @@ static void dchgLtvProtectForCurrentCheck(void);
 #endif
 
 #if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
-static const UserStrategy_BuzzerAlarmType alarmLevel1Cfg[] = {
+static const UserStrategy_BuzzerAlarmType Alarm_type_Lever1[] = {
     {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_FIRST},
     {DIAGNOSIS_ITEM_DCHG_LV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_HTV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_HV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_DV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_HT, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_LT, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_DT, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_SP_OC, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_DCHG_OC, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_CHG_LTV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_CHG_LV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_CHG_DV, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_CHG_HT, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_CHG_DT, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_AC_CHG_OC, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_TEMP_LINE, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_FIRST},
-    {DIAGNOSIS_ITEM_LEAK, DIAGNOSIS_LEVEL_FIRST},
-};
-static const UserStrategy_BuzzerAlarmType alarmLevel2Cfg[] = {
-    {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_DCHG_LV, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_DCHG_HTV, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_DCHG_HV, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_DCHG_DV, DIAGNOSIS_LEVEL_SECOND},
@@ -110,29 +87,53 @@ static const UserStrategy_BuzzerAlarmType alarmLevel2Cfg[] = {
     {DIAGNOSIS_ITEM_DCHG_DT, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_SP_OC, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_DCHG_OC, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_HTV, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_HV, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_LTV, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_LV, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_DV, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_HT, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_LT, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CHG_DT, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_AC_CHG_OC, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_BMS_INIT_FAILURE, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_FIRST},
     {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_TEMP_LINE, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_RELAY_ABNORMAL, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_CURRENT_ABNORMAL, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_SECOND},
-    {DIAGNOSIS_ITEM_LEAK, DIAGNOSIS_LEVEL_SECOND},
+};
+
+static const UserStrategy_BuzzerAlarmType Alarm_type_Lever2[] = {
+    {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_DCHG_LV, DIAGNOSIS_LEVEL_SECOND},
+};
+
+static const UserStrategy_BuzzerAlarmType Alarm_type_Lever3[] = {
+    {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_LV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_HTV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_HV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_DV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_HT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_LT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_DT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_SP_OC, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DCHG_OC, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_CHG_LTV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_CHG_LV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_CHG_DV, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_CHG_HT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_CHG_LT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_CHG_DT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_AC_CHG_OC, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DC_CHG_OC, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_BMS_INIT_FAILURE, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_TEMP_LINE, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_RELAY_ABNORMAL, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_CURRENT_ABNORMAL, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_DOUBLE_CHG_CONNECT_FAULT, DIAGNOSIS_LEVEL_THIRD},
 };
 #endif
 
 void UserStrategy_Init(Async_LooperType *looper)
 {
     UserStrategy_innerData.currentIsAllowToPowerOff = TRUE;
+    #ifdef RELAYM_FN_HMI
+        (void)RelayM_Control(RELAYM_FN_HMI, RELAYM_CONTROL_ON);
+    #endif
     if (looper != NULL)
     {
         UserCurrentSensor_Init(looper);
@@ -672,26 +673,38 @@ static void UserStrategy_BuzzerControl(void)
     static uint32 lastTime = 0U;
     static boolean is_on = FALSE;
     uint8 i;
-    for (i = 0U; i < (uint8)ARRAY_SIZE(alarmLevel2Cfg); i ++)
+
+    for (i = 0U; i < (uint8)ARRAY_SIZE(Alarm_type_Lever3); i ++)
     {
-        if (Diagnosis_GetLevel(alarmLevel2Cfg[i].diagItem) >= alarmLevel2Cfg[i].level)
+        if (Diagnosis_GetLevel(Alarm_type_Lever3[i].diagItem) >= Alarm_type_Lever3[i].level)
         {
-            AlarmLevel = 2U;
+            AlarmLevel = 3U;
             break;
         }
     }
-    if (AlarmLevel == 0U)
+    if (!AlarmLevel)
     {
-        for (i = 0U; i < (uint8)ARRAY_SIZE(alarmLevel1Cfg); i ++)
+        for (i = 0U; i < (uint8)ARRAY_SIZE(Alarm_type_Lever2); i ++)
         {
-            if (Diagnosis_GetLevel(alarmLevel1Cfg[i].diagItem) >= alarmLevel1Cfg[i].level)
+            if (Diagnosis_GetLevel(Alarm_type_Lever2[i].diagItem) >= Alarm_type_Lever2[i].level)
+            {
+                AlarmLevel = 2U;
+                break;
+            }
+        }
+    }
+    if (!AlarmLevel)
+    {
+        for (i = 0U; i < (uint8)ARRAY_SIZE(Alarm_type_Lever1); i ++)
+        {
+            if (Diagnosis_GetLevel(Alarm_type_Lever1[i].diagItem) >= Alarm_type_Lever1[i].level)
             {
                 AlarmLevel = 1U;
                 break;
             }
         }
     }
-    if (AlarmLevel != 0U)
+    if (AlarmLevel)
     {
         if (is_on)
         {
@@ -720,6 +733,11 @@ static void UserStrategy_BuzzerControl(void)
         {
             onTime = USERSTRATEGY_BUZZER_LEVEL2_ON_TIME;
             offTime = USERSTRATEGY_BUZZER_LEVEL2_OFF_TIME;
+        }
+        else if (AlarmLevel == 3U)
+        {
+            onTime = USERSTRATEGY_BUZZER_LEVEL3_ON_TIME;
+            offTime = USERSTRATEGY_BUZZER_LEVEL3_OFF_TIME;
         }
         else
         {}

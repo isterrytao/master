@@ -12,6 +12,8 @@ var mdata = {
     buzzer_level1_off_time: cfg.buzzer_alarm.level1_off_time,
     buzzer_level2_on_time: cfg.buzzer_alarm.level2_on_time,
     buzzer_level2_off_time: cfg.buzzer_alarm.level2_off_time,
+    buzzer_level3_on_time: cfg.buzzer_alarm.level3_on_time,
+    buzzer_level3_off_time: cfg.buzzer_alarm.level3_off_time,
     self_lock_ac_chg_en: cfg.power_down_control.self_lock.ac_chg_en,
     self_lock_dc_chg_en: cfg.power_down_control.self_lock.dc_chg_en,
     self_lock_dchg_en: cfg.power_down_control.self_lock.dchg_en,
@@ -73,6 +75,8 @@ globalInfo.setReturn({processedcfg:processedcfg});
 #define USERSTRATEGY_BUZZER_LEVEL1_OFF_TIME         <%- mdata.buzzer_level1_off_time%>U
 #define USERSTRATEGY_BUZZER_LEVEL2_ON_TIME          <%- mdata.buzzer_level2_on_time%>U
 #define USERSTRATEGY_BUZZER_LEVEL2_OFF_TIME         <%- mdata.buzzer_level2_off_time%>U
+#define USERSTRATEGY_BUZZER_LEVEL3_ON_TIME          <%- mdata.buzzer_level3_on_time%>U
+#define USERSTRATEGY_BUZZER_LEVEL3_OFF_TIME         <%- mdata.buzzer_level3_off_time%>U
 
 /**
  * \brief 自动休眠功能开关

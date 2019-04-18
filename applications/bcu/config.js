@@ -37,11 +37,13 @@ module.exports = {
         nominal: {
             notes:[
                 {section:"cap", chs:"额定容量, 单位Ah"},
+                {section:"displaycap", chs:"显示容量,单位Ah"},
                 {section:"dischargecurrent", chs:"额定放电电流, 单位A"},
                 {section:"dcchargecurrent", chs:"额定快充电流, 单位A"},
                 {section:"acchargecurrent", chs:"额定慢充电流, 单位A"},
             ],
             cap: 300.0,
+            displaycap: 300.0,
             dischargecurrent: 150.0,
             totalvoltage: 25.6,
             dcchargecurrent: 50.0,
@@ -254,7 +256,7 @@ module.exports = {
 
     CommProtocol: {
         notes: [
-            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng"'},
+            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0"'},
             {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K"'},
         ],
         chg: "UDAN",
@@ -365,8 +367,10 @@ module.exports = {
             en: "STD_ON",
             level1_on_time: 2000,
             level1_off_time: 10000,
-            level2_on_time: 1000,
-            level2_off_time: 1000,
+            level2_on_time: 2000,
+            level2_off_time: 2000,
+            level3_on_time: 1000,
+            level3_off_time: 1000,
         },
         power_down_control: {
             notes: [
@@ -563,9 +567,9 @@ module.exports = {
                 yAxisIncUseAlt: 0,
                 xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
                 xAxisIsLinear: 0,
-                increaseTime: 500,
-                increaseStep: 50,
-                decreaseTime: 500,
+                increaseTime: 1000,
+                increaseStep: 20,
+                decreaseTime: 1000,
                 decreaseStep: 10,
             },
             notes:[
@@ -593,9 +597,9 @@ module.exports = {
                 yAxisIncUseAlt: 0,
                 xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
                 xAxisIsLinear: 0,
-                increaseTime: 500,
-                increaseStep: 50,
-                decreaseTime: 500,
+                increaseTime: 1000,
+                increaseStep: 20,
+                decreaseTime: 1000,
                 decreaseStep: 10,
             },
             decrease: [

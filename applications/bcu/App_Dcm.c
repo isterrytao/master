@@ -718,6 +718,8 @@ void App_ClearDiagnosticInformation(Dcm_MsgContextType *pMsgContext) {
 #if(DCM_SERVICE_22_ENABLED == STD_ON)
 void App_Read0x0100(Dcm_MsgContextType *pMsgContext) {
     uint16 length = DCM_INDEX_2;
+    BatteryInfo_BaseConfigType BatteryConfigInfo = BatteryInfo_BaseConfigInfo;
+    BatteryConfigInfo.NominalCap = BatteryConfigInfo.DisplayCap;
 
     (void)memcpy(&pMsgContext->resData[length], &BatteryInfo_BaseConfigInfo, sizeof(BatteryInfo_BaseConfigType));
     length += sizeof(BatteryInfo_BaseConfigType);
@@ -3086,11 +3088,16 @@ void App_Read0x30D3(Dcm_MsgContextType *pMsgContext) {
 
 void App_Read0x30E0(Dcm_MsgContextType *pMsgContext) {
     uint16 index = DCM_INDEX_2, temp = 0U;
+    uint32 temp2;
 
     (void)ParameterM_EeepRead(PARAMETERM_EEEP_TOTAL_CAP_INDEX, &temp);
-    WRITE_BT_UINT16(pMsgContext->resData, index, temp);
+    temp2 = (uint32)temp * BatteryInfo_BaseConfigInfo.DisplayCap;
+    temp2 = DIVISION(temp2, BatteryInfo_BaseConfigInfo.NominalCap);
+    WRITE_BT_UINT16(pMsgContext->resData, index, (uint16)temp2);
     temp = Soc_GetHighPrecisionLeftCap();
-    WRITE_BT_UINT16(pMsgContext->resData, index, temp);
+    temp2 = (uint32)temp * BatteryInfo_BaseConfigInfo.DisplayCap;
+    temp2 = DIVISION(temp2, BatteryInfo_BaseConfigInfo.NominalCap);
+    WRITE_BT_UINT16(pMsgContext->resData, index, (uint16)temp2);
 
 #if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
     DsdInternal_DidProcessingDone();
@@ -4450,10 +4457,17 @@ void App_Write0x30D2(Dcm_MsgContextType *pMsgContext) {
 void App_Write0x30E0(Dcm_MsgContextType *pMsgContext) {
     Std_ReturnType res;
     uint16 index = 3U;
+    uint32 temp;
 
-    res = Soc_ConfigTotalCap(READ_BT_UINT16(pMsgContext->reqData, index));
+    temp = (uint32)READ_BT_UINT16(pMsgContext->reqData, index);
+    temp *= BatteryInfo_BaseConfigInfo.NominalCap;
+    temp = DIVISION(temp, BatteryInfo_BaseConfigInfo.DisplayCap);
+    res = Soc_ConfigTotalCap((uint16)temp);
     if (res == E_OK) {
-        res = Soc_ConfigLeftCap(READ_BT_UINT16(pMsgContext->reqData, index));
+        temp = (uint32)READ_BT_UINT16(pMsgContext->reqData, index);
+        temp *= BatteryInfo_BaseConfigInfo.NominalCap;
+        temp = DIVISION(temp, BatteryInfo_BaseConfigInfo.DisplayCap);
+        res = Soc_ConfigLeftCap((uint16)temp);
     }
     if (res == E_OK) {
         gMsgContextType.resDataLen = 3U;

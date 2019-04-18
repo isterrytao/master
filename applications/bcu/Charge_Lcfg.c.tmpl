@@ -178,11 +178,14 @@ if (dc.type == 'CHARGECONNECTM_CONNECT_SELF_DEFINE') {
     dc.userModeFunction = cfg.dc.userModeFunction;
 }
 
-
 var protocol = {
     ac: "CHARGERCOMM_PROTOCOL_" + cfg.ac.protocol,
     dc: "CHARGERCOMM_PROTOCOL_" + cfg.dc.protocol,
 };
+
+if (cfg.ac.protocol == "NONE" && cfg.dc.protocol == "NONE")  {
+    protocol.ac = "CHARGERCOMM_PROTOCOL_USER";
+}
 
 %>
 
@@ -217,6 +220,9 @@ var protocol = {
 #include "<%- dc.userModeFunction[0] %>"
 <%}%>
 
+<% if (cfg.ac.protocol == "NONE" && cfg.dc.protocol == "NONE") {%>
+#define CHARGE_BLIND_FLAG           1U;//盲充标志
+<%}%>
 
 const ChargerComm_ConfigType ChargerComm_ConfigInfo = {
     <%- protocol.ac %>, /**< AC_Protocol：交流充电协议 */
