@@ -259,7 +259,7 @@ module.exports = {
             {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0"'},
             {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K"'},
         ],
-        chg: "YiJiaTongV2.0",
+        chg: "UDAN",
         vcu: "UDAN",
     },
 
@@ -829,18 +829,20 @@ module.exports = {
                 },
             }, {
                 name: "放电单体电压低",
-                levels: [1,2,3],
+                levels: [1,2,3,4],
                 cycle:100,
                 events:[
                     {levels:[3,], event: "assert", action: "SocDiagCalib_EmptyCalibCbk"},
                     {levels:[1,], event: "deassert", action: "SocDiagCalib_EmptyCalibRelCbk"},
                     {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[3,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+                    {levels:[4,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 3,
-                    events:[
+                    level: 4,
+                    events: [
                         {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
@@ -897,16 +899,18 @@ module.exports = {
                 },
             }, {
                 name: "放电总压低",
-                levels: [1,2,3],
+                levels: [1,2,3,4],
                 cycle:100,
                 events:[
                     {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[3,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+                    {levels:[4,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 3,
-                    events:[
+                    level: 4,
+                    events: [
                         {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],

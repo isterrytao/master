@@ -71,16 +71,8 @@ boolean HvProcess_ChgStateStartCond(void)
         {
             if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 500UL)
             {
-                if (ChargerComm_ConfigInfo.AC_Blind_En == STD_ON ||
-                    ChargerComm_ConfigInfo.DC_Blind_En == STD_ON)
-                {
-                    HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
-                }
-                else
-                {
-                    HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
-                    UserStrategy_ChgHvProcessAdhesiveDetect();
-                }
+                HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
+                UserStrategy_ChgHvProcessAdhesiveDetect();
             }
             if (HvProcess_ChgInnerData.RelayAdhesCheckFlag)
             {
@@ -99,22 +91,25 @@ boolean HvProcess_ChgStateStartCond(void)
 
 void HvProcess_ChgStateStartAction(void)
 {
-   #ifdef RELAYM_FN_NEGATIVE_MAIN
+#ifdef RELAYM_FN_NEGATIVE_MAIN
     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_ON);
 #endif
 #ifdef RELAYM_FN_CHARGE
         (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_ON);
+        HvProcess_ChgInnerData.OnChgRly = RELAYM_FN_CHARGE;
 #endif
     if (ChargerComm_GetChargeType() == CHARGE_TYPE_AC)
     {
 #ifdef RELAYM_FN_POSITIVE_AC_CHARGE
         (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_ON);
+        HvProcess_ChgInnerData.OnChgRly = RELAYM_FN_POSITIVE_AC_CHARGE;
 #endif
     }
     else
     {
 #ifdef RELAYM_FN_POSITIVE_DC_CHARGE
         (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_ON);
+        HvProcess_ChgInnerData.OnChgRly = RELAYM_FN_POSITIVE_DC_CHARGE;
 #endif
     }
 }
@@ -179,14 +174,11 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
     uint32 delay = 5000U;
     Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
-    if (ChargerCommUser_ChargerStop())
+    if(CURRENT_IS_VALID(current))
     {
-        if(CURRENT_IS_VALID(current))
+        if((uint16)abs(current) < CURRENT_100MA_FROM_A(3U))
         {
-            if((uint16)abs(current) < CURRENT_100MA_FROM_A(3U))
-            {
-                delay = 0UL;
-            }
+            delay = 0UL;
         }
     }
     if (MS_GET_INTERNAL(HvProcess_ChgInnerData.RelayOffTick, nowTime) >= delay)
@@ -230,8 +222,9 @@ void HvProcess_ChgRelayOffDelayAction(void)
 boolean HvProcess_ChgRestartAllowedCond(void)
 {
     boolean res = FALSE;
-    App_Tv100mvType bat_tv, hv1;
+    App_Tv100mvType bat_tv, hv1, hv2 = 0U;
     uint32 delay = 30000UL, nowTime = OSTimeGet();
+    Charge_ChargeType type = ChargeConnectM_GetConnectType();
     static uint32 lastTime = 0UL;
 
     if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
@@ -241,16 +234,27 @@ boolean HvProcess_ChgRestartAllowedCond(void)
 #else
         bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
 #endif
-        hv1 = HV_GetVoltage(HV_CHANNEL_HV1);
+        hv1 = RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage();
+        if (RelayMConfigData[HvProcess_ChgInnerData.OnChgRly].GetInstantVoltage != NULL)
+        {
+            if ((type == CHARGE_TYPE_DC && ChargerComm_ConfigInfo.DC_Blind_En == STD_OFF) ||
+                (type == CHARGE_TYPE_AC && ChargerComm_ConfigInfo.AC_Blind_En == STD_OFF))
+            {
+                hv2 = RelayMConfigData[HvProcess_ChgInnerData.OnChgRly].GetInstantVoltage();
+            }
+        }
         if (Statistic_TotalVoltageIsValid(bat_tv))
         {
             if (Statistic_TotalVoltageIsValid(hv1))
             {
-                 bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
-                 if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
-                 {
-                     delay = 0U;
-                 }
+                if (Statistic_TotalVoltageIsValid(hv2))
+                {
+                    bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+                    if (hv1 <= bat_tv && hv2 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
+                    {
+                        delay = 0U;
+                    }
+                }
             }
         }
     }

@@ -236,10 +236,17 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     Current_CurrentType current;
 
     flag = ChargerCommUser_ChargeIsAllowed();
+#if defined(A640)||defined(A641)
+    if (status >= HVPROCESS_CHG_RELAY_OFF_DELAY)
+    {
+        flag = E_NOT_OK;
+    }
+#else
     if (RuntimeM_GetWakeSignal() == 0U || status >= HVPROCESS_CHG_RELAY_OFF_DELAY)
     {
         flag = E_NOT_OK;
     }
+#endif
     if (flag == E_OK)
     {
         if (ChargeConnectM_ELIsNeeding())

@@ -31,6 +31,7 @@
 #include "ChargeM_Cfg.h"
 #include "DischargeM_Cfg.h"
 #include "PrechargeM_Lcfg.h"
+#include "ChargerComm_LCfg.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -47,6 +48,7 @@ UserStrategy_InnerDataType UserStrategy_innerData;
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat);
 static void safeCurrentCheck(void);
+static void UserStrategy_AllRlyOff(void);
 #if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
 static void UserStrategy_ResetToOTA(void);
 #endif
@@ -586,8 +588,9 @@ static void UserStrategy_ManualPowerDownCheck(void)
     static uint32 lastTime = 0U;
     static boolean is_manual = FALSE;
     uint32 nowTime = OSTimeGet();
+    RuntimeM_RunModeType mode = RuntimeM_GetMode();
 
-    if (nowTime >= 10000U)
+    if (nowTime >= 10000U && (mode == RUNTIMEM_RUNMODE_CALIBRATE && mode == RUNTIMEM_RUNMODE_NORMAL))
     {
         if (USERSTRATEGY_IS_MANUAL_POWER_DOWN())
         {
@@ -597,6 +600,7 @@ static void UserStrategy_ManualPowerDownCheck(void)
                 lastTime = nowTime;
                 ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
                 DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+                UserStrategy_AllRlyOff();
             }
         }
         else
@@ -643,6 +647,7 @@ static void UserStrategy_AutoLostPower(void)
                 lastTime = nowTime;
                 ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
                 DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+                UserStrategy_AllRlyOff();
 #ifdef RELAYM_FN_SELF_LOCK
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
                 RuntimeM_RequestPowerDown();
@@ -965,6 +970,7 @@ void UserStrategy_DchgOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *p
 
 void UserStrategy_DchgHvProcessAdhesiveDetect(void)
 {
+    Charge_ChargeType type = ChargeConnectM_GetConnectType();
     if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
     {
         if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_MAIN) == RELAYM_CONTROL_OFF)
@@ -978,11 +984,14 @@ void UserStrategy_DchgHvProcessAdhesiveDetect(void)
 #ifdef RELAYM_FN_POSITIVE_AC_CHARGE
     if (RelayMConfigData[RELAYM_FN_POSITIVE_AC_CHARGE].GetInstantVoltage != NULL)
     {
-        if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_CONTROL_OFF)
+        if (ChargerComm_ConfigInfo.AC_Blind_En != STD_ON)
         {
-            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_ACTUAL_OFF)
+            if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_CONTROL_OFF)
             {
-                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_AC_CHARGE, NULL);
+                if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_ACTUAL_OFF)
+                {
+                    (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_AC_CHARGE, NULL);
+                }
             }
         }
     }
@@ -990,11 +999,14 @@ void UserStrategy_DchgHvProcessAdhesiveDetect(void)
 #ifdef RELAYM_FN_POSITIVE_DC_CHARGE
     if (RelayMConfigData[RELAYM_FN_POSITIVE_DC_CHARGE].GetInstantVoltage != NULL)
     {
-        if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_CONTROL_OFF)
+        if (ChargerComm_ConfigInfo.DC_Blind_En != STD_ON)
         {
-            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_ACTUAL_OFF)
+            if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_CONTROL_OFF)
             {
-                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_DC_CHARGE, NULL);
+                if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_ACTUAL_OFF)
+                {
+                    (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_DC_CHARGE, NULL);
+                }
             }
         }
     }
@@ -1002,12 +1014,31 @@ void UserStrategy_DchgHvProcessAdhesiveDetect(void)
 #ifdef RELAYM_FN_CHARGE
     if (RelayMConfigData[RELAYM_FN_CHARGE].GetInstantVoltage != NULL)
     {
-        if (RelayM_GetControlStatus(RELAYM_FN_CHARGE) == RELAYM_CONTROL_OFF)
+        if (type == CHARGE_TYPE_DC &&
+            ChargerComm_ConfigInfo.DC_Blind_En != STD_ON)
         {
-            if (RelayM_GetActualStatus(RELAYM_FN_CHARGE) == RELAYM_ACTUAL_OFF)
+            if (RelayM_GetControlStatus(RELAYM_FN_CHARGE) == RELAYM_CONTROL_OFF)
             {
-                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_CHARGE, NULL);
+                if (RelayM_GetActualStatus(RELAYM_FN_CHARGE) == RELAYM_ACTUAL_OFF)
+                {
+                    (void)RelayM_StartAdhesiveDetect(RELAYM_FN_CHARGE, NULL);
+                }
             }
+        }
+        else if (type == CHARGE_TYPE_AC &&
+            ChargerComm_ConfigInfo.AC_Blind_En != STD_ON)
+        {
+            if (RelayM_GetControlStatus(RELAYM_FN_CHARGE) == RELAYM_CONTROL_OFF)
+            {
+                if (RelayM_GetActualStatus(RELAYM_FN_CHARGE) == RELAYM_ACTUAL_OFF)
+                {
+                    (void)RelayM_StartAdhesiveDetect(RELAYM_FN_CHARGE, NULL);
+                }
+            }
+        }
+        else
+        {
+
         }
     }
 #endif
@@ -1134,4 +1165,22 @@ boolean UserStrategy_DchgIsReady(void)
         res = TRUE;
     }
     return res;
+}
+
+static void UserStrategy_AllRlyOff(void)
+{
+    uint8 i = 0U;
+
+    for (i; i < RELAYM_FN_NUM; i++)
+    {
+        (void)RelayM_Control(i, RELAYM_CONTROL_OFF);
+    }
+}
+
+void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event)
+{
+    if (Diagnosis_GetLevel(item) < DIAGNOSIS_LEVEL_FOURTH)
+    {
+        DischargeM_DiagnosisCtlEnableEventCbk(item, level, event);
+    }
 }

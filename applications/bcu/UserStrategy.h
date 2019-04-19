@@ -195,6 +195,6 @@ boolean UserStrategy_ChgHvProcessRelayIsNormal(void);
  */
 boolean UserStrategy_DchgIsReady(void);
 
-
+void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event);
 
 #endif

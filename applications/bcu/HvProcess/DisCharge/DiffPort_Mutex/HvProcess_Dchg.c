@@ -233,7 +233,7 @@ void HvProcess_DchgRelayOffDelayAction(void)
 boolean HvProcess_DchgRestartAllowedCond(void)
 {
     boolean res = FALSE;
-    App_Tv100mvType bat_tv = Statistic_GetBcu100mvTotalVoltage(), hv1 = HV_GetVoltage(HV_CHANNEL_HV1), hv2 = HV_GetVoltage(HV_CHANNEL_HV2);
+    App_Tv100mvType bat_tv = Statistic_GetBcu100mvTotalVoltage(), hv1 = HV_GetVoltage(HV_CHANNEL_HV1);
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
@@ -241,13 +241,10 @@ boolean HvProcess_DchgRestartAllowedCond(void)
     {
         if (Statistic_TotalVoltageIsValid(hv1))
         {
-            if (Statistic_TotalVoltageIsValid(hv2))
+            bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+            if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
             {
-                 bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
-                 if (hv1 <= bat_tv && hv2 <= bat_tv)  // 判断HV1和HV2是否低于粘连检测阈值
-                 {
-                     delay = 0U;
-                 }
+                delay = 0U;
             }
         }
     }
