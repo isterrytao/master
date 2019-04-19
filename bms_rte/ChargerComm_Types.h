@@ -111,6 +111,8 @@ typedef struct{
     uint8 DC_RelayType; /**< 直流充电继电器 */
     uint8 SendRetryNum; /**< 发送重试次数 */
     App_VoltageType CellDeltaVoltMinForCV; /**< 满足恒压时单体电芯最小压差设定值 */
+    Std_ReturnType AC_Blind_En; /**< 慢充盲充标志 */
+    Std_ReturnType DC_Blind_En; /**< 快充盲充标志 */
 }ChargerComm_ConfigType;
 
 

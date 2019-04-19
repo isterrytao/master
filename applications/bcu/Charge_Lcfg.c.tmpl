@@ -181,10 +181,18 @@ if (dc.type == 'CHARGECONNECTM_CONNECT_SELF_DEFINE') {
 var protocol = {
     ac: "CHARGERCOMM_PROTOCOL_" + cfg.ac.protocol,
     dc: "CHARGERCOMM_PROTOCOL_" + cfg.dc.protocol,
+    ac_blind_en: "STD_OFF",
+    dc_blind_en: "STD_OFF",
 };
 
-if (cfg.ac.protocol == "NONE" && cfg.dc.protocol == "NONE")  {
+if (cfg.ac.protocol == "NONE" && cfg.ac.mode != "NONE")  {
     protocol.ac = "CHARGERCOMM_PROTOCOL_USER";
+    protocol.ac_blind_en = "STD_ON";
+}
+
+if (cfg.dc.protocol == "NONE" && cfg.dc.mode != "NONE") {
+    protocol.dc = "CHARGERCOMM_PROTOCOL_USER";
+    protocol.dc_blind_en = "STD_ON";
 }
 
 %>
@@ -220,9 +228,9 @@ if (cfg.ac.protocol == "NONE" && cfg.dc.protocol == "NONE")  {
 #include "<%- dc.userModeFunction[0] %>"
 <%}%>
 
-<% if (cfg.ac.protocol == "NONE" && cfg.dc.protocol == "NONE") {%>
-#define CHARGE_BLIND_FLAG           1U;//盲充标志
-<%}%>
+//<% if (cfg.ac.protocol == "NONE" && cfg.dc.protocol == "NONE") {%>
+//#define CHARGE_BLIND_FLAG           1U;//盲充标志
+//<%}%>
 
 const ChargerComm_ConfigType ChargerComm_ConfigInfo = {
     <%- protocol.ac %>, /**< AC_Protocol：交流充电协议 */
@@ -231,6 +239,8 @@ const ChargerComm_ConfigType ChargerComm_ConfigInfo = {
     <%- dc.relay %>, /**< DC_RelayType: 直流充电继电器 */
     1U, /**< SendRetryNum: 发送重试次数 */
     5U, /**< CellDeltaVoltMinForCV: 满足恒压时单体电芯最小压差设定值 */
+    <%- protocol.ac_blind_en %>, /**< AC_Blind_En：慢充盲充标志 */
+    <%- protocol.dc_blind_en %>, /**< DC_Blind_En：快充盲充标志 */
 };
 
 const ChargeConnectM_ConfigType ChargeConnectM_ConfigInfo = {
