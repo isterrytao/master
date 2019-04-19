@@ -37,14 +37,14 @@ const HvProcess_StateInfoType HvProcess_DchgRelayOffDelayInfoConfig[] = {
     {
         HvProcess_DchgRelayOffDelayCond, /**< Cond: 条件函数指针 */
         HvProcess_DchgRelayOffDelayAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_RESTART_JUDGE, /**< Next: 下一状态 */
+        (uint16)HVPROCESS_DCHG_RESTART_ALLOW, /**< Next: 下一状态 */
     },
 };
 
-const HvProcess_StateInfoType HvProcess_DchgReStartJudgeInfoConfig[] = {
+const HvProcess_StateInfoType HvProcess_DchgRestartInfoConfig[] = {
     {
-        HvProcess_DchgReStartJudgeCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgReStartJudgeAction, /**< Action: 动作函数指针 */
+        HvProcess_DchgRestartAllowedCond, /**< Cond: 条件函数指针 */
+        NULL, /**< Action: 动作函数指针 */
         (uint16)HVPROCESS_DCHG_START, /**< Next: 下一状态 */
     },
 };
@@ -63,8 +63,8 @@ const HvProcess_StateConfigType HvProcess_DchgStateConfig[HVPROCESS_DCHG_STATE_M
         HvProcess_DchgRelayOffDelayInfoConfig, /**< State: 状态信息指针 */
     },
     {
-        (uint8)ARRAY_SIZE(HvProcess_DchgReStartJudgeInfoConfig), /**< Num: 状态配置个数 */
-        HvProcess_DchgReStartJudgeInfoConfig, /**< State: 状态信息指针 */
+        (uint8)ARRAY_SIZE(HvProcess_DchgRestartInfoConfig), /**< Num: 状态配置个数 */
+        HvProcess_DchgRestartInfoConfig, /**< State: 状态信息指针 */
     },
 };
 

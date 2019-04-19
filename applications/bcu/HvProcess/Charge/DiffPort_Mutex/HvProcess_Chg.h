@@ -29,7 +29,7 @@ typedef enum{
     HVPROCESS_CHG_START = 0, /**< 启动状态 */
     HVPROCESS_CHG_HV_ON = 1, /**< 高压上电状态 */
     HVPROCESS_CHG_RELAY_OFF_DELAY = 2, /**< 继电器断开延时状态 */
-    HVPROCESS_CHG_RESTART_JUDGE = 3, /**< 重启判断 */
+    HVPROCESS_CHG_RESTART = 3, /**< 重新启动状态 */
     HVPROCESS_CHG_STATE_MAX = 4, /**< 充电高压流程控制状态最大值 */
 }HvProcess_ChgStateType;
 
@@ -127,11 +127,11 @@ boolean HvProcess_ChgRelayOffDelayCond(void);
  */
 void HvProcess_ChgRelayOffDelayAction(void);
 
-boolean HvProcess_ChgReStartJudgeCond(void);
-void HvProcess_ChgReStartJudgeAction(void);
+boolean HvProcess_ChgRestartAllowedCond(void);
 
 boolean HvProcess_ChargerIsHeadMode(void);
 boolean HvProcess_HeatIsJump(void);
+
 #endif
 
 /**

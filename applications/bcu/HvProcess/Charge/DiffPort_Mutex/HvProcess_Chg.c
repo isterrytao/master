@@ -9,21 +9,24 @@
  * | :--- | :--- | :--- | :--- |
  * | 0.1 | 初始版本, 完成讨论部分的定义. | UD00004 | 20170320 |
  */
+#include "stdlib.h"
 #include "Cpu.h"
 #include "HvProcess_Dchg.h"
 #include "HvProcess_Chg.h"
 #include "ChargeConnectM.h"
 #include "ChargeM.h"
+#include "Statistic.h"
 #include "DischargeM.h"
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
 #include "ChargerComm.h"
 #include "RuntimeM.h"
-#include "Stdlib.h"
+#include "ChargerCommUser_Messages.h"
+#include "ChargerComm_LCfg.h"
 #include "UserStrategy.h"
-#include "Statistic.h"
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
+
 
 void HvProcess_ChgInit(Async_LooperType *looper)
 {
@@ -60,28 +63,34 @@ void HvProcess_ChgPoll(void)
 boolean HvProcess_ChgStateStartCond(void)
 {
     boolean res = FALSE;
-    uint8 chargerIsComm;
-    Std_ReturnType chargeReady;
-    uint32 nowtime = OSTimeGet();
-    HvProcess_DchgStateType dchgState;
+    uint32 nowTime = OSTimeGet();
 
-    dchgState = HvProcess_GetDchgState();
-    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= 300U)
+    if (CHARGECONNECTM_IS_CONNECT())
     {
-        if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag)
+        if (HvProcess_GetDchgState() == HVPROCESS_DCHG_START)
         {
-            HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
-            UserStrategy_ChgHvProcessAdhesiveDetect();
-        }
-        else
-        {
-            chargeReady = ChargeM_ChargeIsReady();
-            chargerIsComm = ChargerComm_GetCommunicationStatus();
-            if (UserStrategy_ChgHvProcessRelayIsNormal() &&
-                chargeReady == E_OK &&
-                chargerIsComm)
+            if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 500UL)
             {
-                res = TRUE;
+                if (ChargerComm_ConfigInfo.AC_Blind_En == STD_ON ||
+                    ChargerComm_ConfigInfo.DC_Blind_En == STD_ON)
+                {
+                    HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
+                }
+                else
+                {
+                    HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
+                    UserStrategy_ChgHvProcessAdhesiveDetect();
+                }
+            }
+            if (HvProcess_ChgInnerData.RelayAdhesCheckFlag)
+            {
+                if (UserStrategy_ChgHvProcessRelayIsNormal())
+                {
+                    if (ChargeM_ChargeIsAllowed() == E_OK)
+                    {
+                        res = TRUE;
+                    }
+                }
             }
         }
     }
@@ -90,7 +99,7 @@ boolean HvProcess_ChgStateStartCond(void)
 
 void HvProcess_ChgStateStartAction(void)
 {
-#ifdef RELAYM_FN_NEGATIVE_MAIN
+   #ifdef RELAYM_FN_NEGATIVE_MAIN
     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_ON);
 #endif
 #ifdef RELAYM_FN_CHARGE
@@ -167,16 +176,17 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
-    uint32 delay = S_TO_MS(2U);
-    Current_CurrentType current;
+    uint32 delay = 5000U;
+    Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
-    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-
-    if (CurrentM_IsValidCurrent(current))
+    if (ChargerCommUser_ChargerStop())
     {
-        if (abs(current) <= CURRENT_S_100MA_FROM_A(3))
+        if(CURRENT_IS_VALID(current))
         {
-            delay = 0U;
+            if((uint16)abs(current) < CURRENT_100MA_FROM_A(3U))
+            {
+                delay = 0UL;
+            }
         }
     }
     if (MS_GET_INTERNAL(HvProcess_ChgInnerData.RelayOffTick, nowTime) >= delay)
@@ -214,9 +224,10 @@ void HvProcess_ChgRelayOffDelayAction(void)
         }
 #endif
     }
+    HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
 }
 
-boolean HvProcess_ChgReStartJudgeCond(void)
+boolean HvProcess_ChgRestartAllowedCond(void)
 {
     boolean res = FALSE;
     App_Tv100mvType bat_tv, hv1;
@@ -257,11 +268,6 @@ boolean HvProcess_ChgReStartJudgeCond(void)
         res = TRUE;
     }
     return res;
-}
-
-void HvProcess_ChgReStartJudgeAction(void)
-{
-    HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
 }
 
 boolean HvProcess_ChargerIsHeadMode(void)

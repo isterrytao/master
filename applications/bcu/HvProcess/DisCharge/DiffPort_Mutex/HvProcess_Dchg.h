@@ -29,7 +29,7 @@ typedef enum{
     HVPROCESS_DCHG_START = 0, /**< 启动状态 */
     HVPROCESS_DCHG_HV_ON = 1, /**< 高压上电状态 */
     HVPROCESS_DCHG_RELAY_OFF_DELAY = 2, /**< 继电器断开延时状态 */
-    HVPROCESS_DCHG_RESTART_JUDGE = 3, /**< 重启判断 */
+    HVPROCESS_DCHG_RESTART_ALLOW = 3, /**< 允许重新启动状态 */
     HVPROCESS_DCHG_STATE_MAX = 4, /**< 放电高压流程控制状态最大值 */
 }HvProcess_DchgStateType;
 
@@ -41,6 +41,7 @@ typedef struct{
     HvProcess_DchgStateType State; /**< 放电高压流程状态 */
     uint32 RelayOffTick; /**< 继电器断开计时 */
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
+    uint32 ChgRlyOnTick; /**< 充电继电器闭合延时 */
 }HvProcess_DchgInnerDataType;
 
 
@@ -113,9 +114,7 @@ boolean HvProcess_DchgRelayOffDelayCond(void);
  * \brief 继电器断开动作
  */
 void HvProcess_DchgRelayOffDelayAction(void);
-
-boolean HvProcess_DchgReStartJudgeCond(void);
-void HvProcess_DchgReStartJudgeAction(void);
+boolean HvProcess_DchgRestartAllowedCond(void);
 
 
 #endif

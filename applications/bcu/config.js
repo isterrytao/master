@@ -259,7 +259,7 @@ module.exports = {
             {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0"'},
             {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K"'},
         ],
-        chg: "UDAN",
+        chg: "YiJiaTongV2.0",
         vcu: "UDAN",
     },
 
