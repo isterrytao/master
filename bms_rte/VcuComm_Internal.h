@@ -63,6 +63,7 @@
 
 #define VCUCOMM_REC_TIMEOUT_DEFAULT         5000U
 
+#define VCUCOMM_INVALID_IPDU                0xFFU
 
 /**
  * \brief 整车通信数据发送回调函数类型定义
