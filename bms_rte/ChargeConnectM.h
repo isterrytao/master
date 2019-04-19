@@ -137,6 +137,8 @@ typedef struct{
 typedef struct{
     uint8 type; /**< 数字输入类型 */
     uint8 channel; /**< 数字输入通道 */
+    uint16 on_delay; /**< 连接延时 */
+    uint16 off_delay; /**< 断开延时 */
 }ChargeConnectM_DinParaType;
 
 typedef Std_ReturnType (*ChargeConnectM_ConnectFunPtr)(void);
@@ -230,6 +232,10 @@ typedef struct{
     uint8 CpConnectFlag; /**< CP连接标志 */
     uint32 CpConnectLastTick; /**< CP连接计时 */
     uint8 ChargeCurrentConnectionFlag; /**< 充电电流连接标志 */
+    uint32 acDinOnLastTime; /**< 慢充DIN连接计时 */
+    uint32 acDinOffLastTime; /**< 慢充DIN断开计时 */
+    uint32 dcDinOnLastTime; /**< 快充DIN连接计时 */
+    uint32 dcDinOffLastTime; /**< 快充DIN断开计时 */
 }ChargeConnectM_InnerDataType;
 
 
@@ -399,7 +405,7 @@ Std_ReturnType ChargeConnectM_GBModeIsPreConnect(ChargeConnectM_ConnectType mode
  *
  * \return E_OK: 连接正常 E_NOT_OK: 连接异常
  */
-Std_ReturnType ChargeConnectM_GBIsPreConnect(Charge_ChargeType type);
+Std_ReturnType ChargeConnectM_IsPreConnect(Charge_ChargeType type);
 
 /**
  * \brief 控制国标S2开启关闭
