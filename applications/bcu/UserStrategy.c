@@ -162,6 +162,7 @@ static void pollPowerKeyState()
             {
                 status = 1U;
                 tick = now;
+                UserStrategy_AllRlyOff();
             }
         }
         else
@@ -607,12 +608,7 @@ static void UserStrategy_ManualPowerDownCheck(void)
         {
             if (is_manual)
             {
-#ifdef RELAYM_FN_SELF_LOCK
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
                 RuntimeM_RequestPowerDown();
-#else
-                RuntimeM_RequestPowerDown();
-#endif
             }
             else
             {
@@ -648,12 +644,7 @@ static void UserStrategy_AutoLostPower(void)
                 ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
                 DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
                 UserStrategy_AllRlyOff();
-#ifdef RELAYM_FN_SELF_LOCK
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
                 RuntimeM_RequestPowerDown();
-#else
-                RuntimeM_RequestPowerDown();
-#endif
             }
         }
         else

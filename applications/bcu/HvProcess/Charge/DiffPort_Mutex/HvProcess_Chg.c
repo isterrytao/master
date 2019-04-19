@@ -32,6 +32,7 @@ void HvProcess_ChgInit(Async_LooperType *looper)
 {
     (void)looper;
     HvProcess_ChgInnerData.State = HVPROCESS_CHG_START;
+    HvProcess_ChgInnerData.OnChgRly = RELAYM_FN_NONE;
 }
 
 HvProcess_ChgStateType HvProcess_GetChgState(void)
