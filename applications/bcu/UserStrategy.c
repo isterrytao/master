@@ -959,6 +959,76 @@ void UserStrategy_DchgOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *p
     }
 }
 
+void UserStrategy_DchgSpOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+{
+#if USERSTRATEGH_DCHG_SP_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+    uint32 temp;
+#endif
+    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
+    Current_CurrentType current;
+
+    current = PowerM_GetCurrent(POWERM_CUR_DCHARGE_PEAK);
+    if (para != NULL)
+    {
+        if (CurrentM_IsValidCurrent(current))
+        {
+            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_SP_OC, level, 0U);
+            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_SP_OC, level, 1U);
+
+#if USERSTRATEGH_DCHG_SP_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
+            triggerThreshold += (uint16)current;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                releaseThreshold += (uint16)current;
+            }
+            else
+            {
+                releaseThreshold = 0U;
+            }
+#elif USERSTRATEGH_DCHG_SP_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+            temp = (uint16)current;
+            temp = temp * triggerThreshold;
+            temp = DIVISION(temp, 1000U);
+            if (temp > 0x7FFFU)
+            {
+                temp = 0x7FFFU;
+            }
+            if (temp == 0U)
+            {
+                temp = CURRENT_100MA_FROM_A(2U);
+            }
+            triggerThreshold = (uint16)temp;
+
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                temp = (uint16)current;
+                temp = temp * releaseThreshold;
+                temp = DIVISION(temp, 1000U);
+                if (temp > 0x7FFFU)
+                {
+                    temp = 0x7FFFU;
+                }
+                if (temp == 0U)
+                {
+                    temp = CURRENT_100MA_FROM_A(2U);
+                }
+            }
+            else
+            {
+                temp = 0U;
+            }
+            releaseThreshold = (uint16)temp;
+#else
+            // do nothing
+#endif
+        }
+        para->triggerThreshold = triggerThreshold;
+        para->releaseThreshold = releaseThreshold;
+        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_SP_OC, level, 2U);
+        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_SP_OC, level, 3U);
+    }
+}
+
 void UserStrategy_DchgHvProcessAdhesiveDetect(void)
 {
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
