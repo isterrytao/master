@@ -591,7 +591,7 @@ static void UserStrategy_ManualPowerDownCheck(void)
     uint32 nowTime = OSTimeGet();
     RuntimeM_RunModeType mode = RuntimeM_GetMode();
 
-    if (nowTime >= 10000U && (mode == RUNTIMEM_RUNMODE_CALIBRATE && mode == RUNTIMEM_RUNMODE_NORMAL))
+    if (nowTime >= 10000U && (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL))
     {
         if (USERSTRATEGY_IS_MANUAL_POWER_DOWN())
         {

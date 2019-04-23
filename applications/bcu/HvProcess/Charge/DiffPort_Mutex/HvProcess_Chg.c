@@ -139,6 +139,7 @@ boolean HvProcess_ChgChargeConnectionCond(void)
     if (!CHARGECONNECTM_IS_CONNECT())
     {
         res = TRUE;
+        UserStrategy_FullChargeReleaseHook();
     }
     return res;
 }
