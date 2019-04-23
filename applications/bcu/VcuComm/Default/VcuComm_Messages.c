@@ -208,7 +208,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -231,7 +231,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -254,7 +254,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -277,7 +277,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
@@ -304,7 +304,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DV);
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -322,7 +322,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     }
     //放电过流
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -340,7 +340,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     }
     //充电过流
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_AC_CHG_OC);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -365,7 +365,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT);
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
@@ -392,7 +392,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT);
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -417,7 +417,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     {
         diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DT);
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -435,7 +435,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     }
     //soc过低
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LSOC);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -453,7 +453,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     }
     //绝缘故障
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
@@ -475,7 +475,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x7F4(uint16 IPdu)
     //外部通信故障
     //内部通信故障
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_INTER_COMM);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
