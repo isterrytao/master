@@ -251,7 +251,7 @@ module.exports = {
         notes: [
             {section:"type", chs:"绝缘检测方式", comments:'"OFF", "BY_VOL", "ALWAYS_ON", "ON_WHEN_DETECT"'}
         ],
-        type: "BY_VOL",
+        type: "OFF",
     },
 
     CommProtocol: {

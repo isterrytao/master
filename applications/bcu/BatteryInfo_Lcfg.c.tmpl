@@ -73,5 +73,5 @@ const BatteryInfo_BaseConfigType BatteryInfo_BaseConfigInfo = {
     <%- lowVoltLimit %>U, /**< 单体电压低极限保护 */
     <% if (highTempLimit != 0xff) { %>(App_TemperatureType)TEMPERATURE_FROM_C(<%- highTempLimit %>), /**< 单体温度高极限保护 */<% } else { %>0xFFU, /**< 单体温度高极限保护 */<% } %>
     <%- limitProtectDelay %>UL, /**< 极限保护延时 */
-    <%- cfg.nominal.cap * 10 %>U, /**< DisplayCap: 显示容量 */
+    <%- cfg.nominal.displaycap * 10 %>U, /**< DisplayCap: 显示容量 */
 };

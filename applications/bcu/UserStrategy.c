@@ -162,7 +162,6 @@ static void pollPowerKeyState()
             {
                 status = 1U;
                 tick = now;
-                UserStrategy_AllRlyOff();
             }
         }
         else
@@ -188,6 +187,7 @@ static void pollPowerKeyState()
     else if (status == 2U)
     {
         status = 0U;
+        UserStrategy_AllRlyOff();
         RuntimeM_RequestPowerDown();
     }
     else

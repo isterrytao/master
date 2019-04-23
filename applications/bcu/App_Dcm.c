@@ -721,7 +721,7 @@ void App_Read0x0100(Dcm_MsgContextType *pMsgContext) {
     BatteryInfo_BaseConfigType BatteryConfigInfo = BatteryInfo_BaseConfigInfo;
     BatteryConfigInfo.NominalCap = BatteryConfigInfo.DisplayCap;
 
-    (void)memcpy(&pMsgContext->resData[length], &BatteryInfo_BaseConfigInfo, sizeof(BatteryInfo_BaseConfigType));
+    (void)memcpy(&pMsgContext->resData[length], &BatteryConfigInfo, sizeof(BatteryInfo_BaseConfigType));
     length += sizeof(BatteryInfo_BaseConfigType);
 
 #if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
