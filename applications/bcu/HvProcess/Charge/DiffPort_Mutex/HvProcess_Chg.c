@@ -79,7 +79,7 @@ boolean HvProcess_ChgStateStartCond(void)
             {
                 if (UserStrategy_ChgHvProcessRelayIsNormal())
                 {
-                    if (ChargeM_ChargeIsAllowed() == E_OK)
+                    if (ChargeM_ChargeIsReady() == E_OK)
                     {
                         res = TRUE;
                     }
