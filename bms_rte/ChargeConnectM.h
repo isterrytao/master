@@ -277,6 +277,16 @@ uint16 ChargerConnectM_GetCCxVoltageStatus(ChargeConnectM_CCxChannelType Channel
 ChargeConnectM_CCxResistanceType ChargerConnectM_GetCCxResistanceStatus(ChargeConnectM_CCxChannelType ChannelId);
 
 /**
+ * \brief 获取DIN作为充电连接的连接状态
+ *
+ * \param type 连接类型 DIGITALINPUT_TYPE_SWITCH / DIGITALINPUT_TYPE_LEVEL / DIGITALINPUT_TYPE_WAKEUP_SIGNAL
+ * \param channel 通道
+ *
+ * \return E_OK：连接 E_NOT_OK:未连接
+ */
+Std_ReturnType ChargeConnectM_DinIsConnect(uint8 type, uint8 channel);
+
+/**
  * \brief 获取充电连接状态
  * \note 根据充电类型返回对应连接的连接状态
  *
