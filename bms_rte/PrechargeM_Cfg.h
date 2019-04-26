@@ -14,12 +14,10 @@
 #define PRECHARGEM_CFG_H_
 
 
+#define PRECHARGEM_MODE_NUM     2U
 
-
-
-
-
-
+#define PRECHARGEM_MODE_DCHG    0U
+#define PRECHARGEM_MODE_CHG     1U
 
 
 

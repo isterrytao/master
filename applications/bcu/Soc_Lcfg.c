@@ -27,6 +27,7 @@ const Soc_ConfigInfoType Soc_ConfigInfo = {
     },
     {
         PERCENT_TO_SOC(10U), /**< socJumpMax: SOC最大跳变值，注：此值需要不大于SOC跳变缓存大小SOC_JUMP_BUFF_SIZE */
+        NULL, /**< 获取最大跳变SOC值，包含释放值，此函数有效时 socJumpMax 和 socJumpRel不启作用 */
         MIN_TO_S(1U), /**< socJumpTime: SOC跳变时间 单位：S */
     },
 };
