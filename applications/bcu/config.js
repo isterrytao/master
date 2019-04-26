@@ -239,7 +239,7 @@ module.exports = {
         // {name: "预充", def: "PRECHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2"},
         // {name: "充电", def: "CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
         // {name: "快充正", def: "POSITIVE_DC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
-        {name: "慢充正", def: "CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
+        {name: "慢充正", def: "POSITIVE_AC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
         {name: "自锁", def: "SELF_LOCK", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3"},
         {name: "蜂鸣器", def: "BUZZER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS4"},
         // {name: "主负", def: "NEGATIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5"},
