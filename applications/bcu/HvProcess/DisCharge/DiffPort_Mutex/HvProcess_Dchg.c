@@ -9,7 +9,6 @@
  * | :--- | :--- | :--- | :--- |
  * | 0.1 | 初始版本, 完成讨论部分的定义. | UD00004 | 20170320 |
  */
-#include "stdlib.h"
 #include "Cpu.h"
 #include "HvProcess_Dchg.h"
 #include "HvProcess_Chg.h"
@@ -132,6 +131,10 @@ boolean HvProcess_DchgStateStartCond(void)
                              ChargeConnectM_ConfigInfo.AC_Para.Wakeup == RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
                     {
                         delay = 1500UL;
+                    }
+                    else
+                    {
+
                     }
                     if (nowTime >= delay)
                     {

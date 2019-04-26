@@ -80,7 +80,20 @@ boolean HvProcess_ChgStateStartCond(void)
             {
                 if (UserStrategy_ChgHvProcessRelayIsNormal())
                 {
-                    chargerIsComm = ChargerComm_GetCommunicationStatus();
+                    if (ChargeConnectM_GetConnectType() == CHARGE_TYPE_DC &&
+                        ChargerComm_ConfigInfo.DC_Blind_En != STD_ON)
+                    {
+                        chargerIsComm = ChargerComm_GetCommunicationStatus();
+                    }
+                    else if (ChargeConnectM_GetConnectType() == CHARGE_TYPE_AC &&
+                            ChargerComm_ConfigInfo.AC_Blind_En != STD_ON)
+                    {
+                        chargerIsComm = ChargerComm_GetCommunicationStatus();
+                    }
+                    else
+                    {
+                        chargerIsComm = TRUE;
+                    }
                     if (ChargeM_ChargeIsReady() == E_OK &&
                         chargerIsComm)
                     {
@@ -239,13 +252,13 @@ boolean HvProcess_ChgRestartAllowedCond(void)
 #else
         bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
 #endif
-        hv1 = RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage();
+        hv1 = (App_Tv100mvType)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage();
         if (RelayMConfigData[HvProcess_ChgInnerData.OnChgRly].GetInstantVoltage != NULL)
         {
             if ((type == CHARGE_TYPE_DC && ChargerComm_ConfigInfo.DC_Blind_En == STD_OFF) ||
                 (type == CHARGE_TYPE_AC && ChargerComm_ConfigInfo.AC_Blind_En == STD_OFF))
             {
-                hv2 = RelayMConfigData[HvProcess_ChgInnerData.OnChgRly].GetInstantVoltage();
+                hv2 = (App_Tv100mvType)RelayMConfigData[HvProcess_ChgInnerData.OnChgRly].GetInstantVoltage();
             }
         }
         if (Statistic_TotalVoltageIsValid(bat_tv))
