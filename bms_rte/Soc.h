@@ -48,11 +48,14 @@ typedef struct {
     uint16 DischargeIntegralEfficiency; /**< 放电效率因子 精度：0.1% */
 } Soc_CalibConfigType;
 
+typedef App_SocType (*Soc_GetJumpSocMaxFuncPtr)(void);
+
 /**
  * \brief SOC跳变参数类型定义
  */
 typedef struct{
-    App_SocType socJumpMax; /**< SOC最大跳变值，注：此值需要不大于SOC跳变缓存大小SOC_JUMP_BUFF_SIZE */
+    App_SocType socJumpMax; /**< SOC最大跳变值，注：此值需要不大于SOC跳变缓存大小SOC_JUMP_BUFF_SIZE（默认30） */
+    Soc_GetJumpSocMaxFuncPtr func; /**< 获取最大跳变SOC值，包含释放值，此函数有效时 socJumpMax 不启作用 */
     uint16 socJumpTime; /**< SOC跳变时间 单位：S */
 }Soc_JumpConfigType;
 

@@ -32,7 +32,7 @@ typedef enum{
     PRECHARGEM_STATUS_PRECHARGE_RELAY_ON, /**< 预充继电器闭合 */
     PRECHARGEM_STATUS_PRECHARGE_RETRY_WAITING, /**< 等待重新预充 */
     PRECHARGEM_STATUS_PRECHARGING, /**< 预充中 */
-    PRECHARGEM_STATUS_WAITING_DISCHARGE_ON, /**< 等待放电回路闭合 */
+    PRECHARGEM_STATUS_WAITING_MAIN_ON, /**< 等待主回路闭合 */
     PRECHARGEM_STATUS_PRECHARGE_FINISH, /**< 预充成功 */
     PRECHARGEM_STATUS_PRECHARGE_FAILURE, /**< 预充失败 */
     PRECHARGEM_STATUS_MAX,
@@ -76,20 +76,25 @@ typedef struct{
     uint32 overCurTime; /**< 允许超预充最大电流最大时间(ms) */
 }PrechargeM_ConfigInfoType;
 
-/**
- * \brief 预充管理模块内部参数类型
- */
-typedef struct{
+typedef struct {
     uint8 start; /**< 预充启动标志 */
     uint8 retryCnt; /**< 重试计数 */
     uint32 timeoutTick; /**< 超时计时 */
     uint32 finishTick; /**< 预充完成计时 */
     uint32 overCurTick; /**< 预充过流计时 */
-    Async_EventType event; /**< 异步事件 */
     PrechargeM_StatusType status; /**< 预充状态 */
+}PrechargeM_ContextType;
+
+/**
+ * \brief 预充管理模块内部参数类型
+ */
+typedef struct{
+    Async_EventType event; /**< 异步事件 */
+    PrechargeM_ContextType ctx[PRECHARGEM_MODE_NUM]; /**< 预充控制上下文信息 */
 }PrechargeM_InnerDataType;
 
-extern const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo;
+extern const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo[];
+extern const uint8 PrechargeM_ConfigInfoSize;
 
 /**
  * \brief 预充管理模块初始化
@@ -97,28 +102,28 @@ extern const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo;
 void PrechargeM_Init(Async_LooperType *looper);
 
 /**
- * \brief 启动预充
+ * \brief 启动放电模式预充
  */
 void PrechargeM_Start(void);
 
 /**
- * \brief 停止预充
+ * \brief 停止放电模式预充
  */
 void PrechargeM_Stop(void);
 
 /**
- * \brief 复位预充
+ * \brief 复位放电模式预充
  */
 void PrechargeM_Reset(void);
 
 /**
- * \brief 预充是否已经启动
+ * \brief 放电模式预充是否已经启动
  * \return TRUE-启动 FALSE-未启动
  */
 uint8 PrechargeM_IsStart(void);
 
 /**
- * \brief 预充是否完成
+ * \brief 放电模式预充是否完成
  * \details 包含预充条件成立后，等待主回路继电器闭合而后断开预充
  *
  * \return TRUE-完成 FALSE-未完成
@@ -126,19 +131,68 @@ uint8 PrechargeM_IsStart(void);
 uint8 PrechargeM_IsFinish(void);
 
 /**
- * \brief 预充是否失败
+ * \brief 放电模式预充是否失败
  * \return TRUE-失败 FALSE-未失败
  */
 uint16 PrechargeM_IsFailure(void);
 
 /**
- * \brief 预充是否进行中
+ * \brief 放电模式预充是否进行中
  * \details 预充失败重试等待过程中也认为未预充
  *
  * \return TRUE-预充中 FALSE-未预充
  */
 uint8 PrechargeM_IsPrecharging(void);
 
+/**
+ * \brief 启动充电模式预充
+ */
+void PrechargeM_ChgStart(void);
+
+/**
+ * \brief 停止充电模式预充
+ */
+void PrechargeM_ChgStop(void);
+
+/**
+ * \brief 复位充电模式预充
+ */
+void PrechargeM_ChgReset(void);
+
+/**
+ * \brief 充电模式预充是否已经启动
+ * \return TRUE-启动 FALSE-未启动
+ */
+uint8 PrechargeM_ChgIsStart(void);
+
+/**
+ * \brief 充电模式预充是否完成
+ * \details 包含预充条件成立后，等待主回路继电器闭合而后断开预充
+ *
+ * \return TRUE-完成 FALSE-未完成
+ */
+uint8 PrechargeM_ChgIsFinish(void);
+
+/**
+ * \brief 充电模式预充是否失败
+ * \return TRUE-失败 FALSE-未失败
+ */
+uint16 PrechargeM_ChgIsFailure(void);
+
+/**
+ * \brief 充电模式预充是否进行中
+ * \details 预充失败重试等待过程中也认为未预充
+ *
+ * \return TRUE-预充中 FALSE-未预充
+ */
+uint8 PrechargeM_ChgIsPrecharging(void);
+
+/**
+ * \brief 预充是否失败
+ * \details 根据充放电模式确认对应模式下预充是否失败，用于故障诊断模式
+ * \return TRUE-失败 FALSE-未失败
+ */
+uint16 PrechargeM_DiagIsFailure(void);
 
 #endif
 

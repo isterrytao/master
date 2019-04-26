@@ -292,6 +292,16 @@ void DischargeM_StartDiagCtlEnableEventCbk(Diagnosis_ItemType item, Diagnosis_Le
  */
 void DischargeM_StartDiagCtlDisableEventCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event);
 
+/**
+ * \brief 获取禁止放电故障等级
+ * \details 获取对应诊断项禁止放电的故障等级
+ *
+ * \param item 诊断项
+ * \param is_descend 等级是否从高到低等级降序检查 TRUE-降序检查 FALSE-升序检查
+ * \return 禁止放电故障等级 返回DIAGNOSIS_LEVEL_NONE表示无禁止放电故障
+ */
+Diagnosis_LevelType DischargeM_GetDischargeDisableLevel(Diagnosis_ItemType item, boolean is_descend);
+
 
 
 

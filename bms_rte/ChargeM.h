@@ -435,9 +435,10 @@ boolean ChargeM_ELIsChargeReady(void);
  * \details 获取对应诊断项禁止充电的故障等级
  *
  * \param item 诊断项
+ * \param is_descend 等级是否从高到低等级降序检查 TRUE-降序检查 FALSE-升序检查
  * \return 禁止充电故障等级 返回DIAGNOSIS_LEVEL_NONE表示无禁止充电故障
  */
-Diagnosis_LevelType ChargeM_GetChargeDisableLevel(Diagnosis_ItemType item);
+Diagnosis_LevelType ChargeM_GetChargeDisableLevel(Diagnosis_ItemType item, boolean is_descend);
 
 /**
  * \brief 获取禁止充电故障触发配置参数值

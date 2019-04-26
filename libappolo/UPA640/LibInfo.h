@@ -14,21 +14,21 @@
 #define FWVERSION_MAJOR                   3
 #define FWVERSION_MINOR                   0
 #define FWVERSION_REVISION                3
-#define FWVERSION_BUILD                   6
-#define LIB_INFO_FWVERSION                "3.0.3.26"
+#define FWVERSION_BUILD                   7
+#define LIB_INFO_FWVERSION                "3.0.3.27"
 
 
-#define LIB_INFO_SOURCE_COMMIT_ID        "3e0228faf59afa5ab6d7cb3cb148b522dccfc8c7"
-#define LIB_INFO_CONFIG_COMMIT_ID        "3e0228faf59afa5ab6d7cb3cb148b522dccfc8c7"
-#define LIB_INFO_BUILD_TIME              "20190419152247"
+#define LIB_INFO_SOURCE_COMMIT_ID        "28d0b4f0a987202227b91cd3d37abb370593dab3"
+#define LIB_INFO_CONFIG_COMMIT_ID        "28d0b4f0a987202227b91cd3d37abb370593dab3"
+#define LIB_INFO_BUILD_TIME              "20190426113037"
 
 #define LIB_INFO_BUILD_DATE_Y            2019
 #define LIB_INFO_BUILD_DATE_M            4
-#define LIB_INFO_BUILD_DATE_D            19
+#define LIB_INFO_BUILD_DATE_D            26
 
-#define LIB_INFO_BUILD_TIME_H            15
-#define LIB_INFO_BUILD_TIME_M            22
-#define LIB_INFO_BUILD_TIME_S            47
+#define LIB_INFO_BUILD_TIME_H            11
+#define LIB_INFO_BUILD_TIME_M            30
+#define LIB_INFO_BUILD_TIME_S            37
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO
