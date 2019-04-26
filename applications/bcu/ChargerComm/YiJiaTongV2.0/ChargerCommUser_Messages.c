@@ -366,7 +366,7 @@ cleanup:
 
 void ChargerCommUser_RecTCTimeoutCbk(void)
 {
-    ChargerCommUser_innerData.startFlag = FALSE;
+    // ChargerCommUser_innerData.startFlag = FALSE;
     ChargerCommUser_SetCommunication(FALSE);
     ChargerComm_ClrChargerStatus();
     if (ChargerConnectM_GetConnectMode(ChargerCommUser_GetCurrentChargeType()) == CHARGECONNECTM_CONNECT_COMMUNICATION)

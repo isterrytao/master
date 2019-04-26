@@ -1240,7 +1240,8 @@ static void UserStrategy_AllRlyOff(void)
 
 void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event)
 {
-    if (Diagnosis_GetLevel(item) < DIAGNOSIS_LEVEL_FOURTH)
+    Diagnosis_LevelType nowLevel = DischargeM_GetDischargeDisableLevel(item,FALSE);
+    if (Diagnosis_GetLevel(item) < nowLevel)
     {
         DischargeM_DiagnosisCtlEnableEventCbk(item, level, event);
     }

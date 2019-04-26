@@ -65,6 +65,7 @@ boolean HvProcess_ChgStateStartCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
+    uint8 chargerIsComm;
 
     if (CHARGECONNECTM_IS_CONNECT())
     {
@@ -79,7 +80,9 @@ boolean HvProcess_ChgStateStartCond(void)
             {
                 if (UserStrategy_ChgHvProcessRelayIsNormal())
                 {
-                    if (ChargeM_ChargeIsReady() == E_OK)
+                    chargerIsComm = ChargerComm_GetCommunicationStatus();
+                    if (ChargeM_ChargeIsReady() == E_OK &&
+                        chargerIsComm)
                     {
                         res = TRUE;
                     }
