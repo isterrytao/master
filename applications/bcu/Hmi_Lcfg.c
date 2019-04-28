@@ -8,6 +8,87 @@
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
 
+static uint32 chargeTime;
+static uint32 disChargeTime;
+
+// static uint16 MDBSgetChargeTime(const Modbus_RegistersRegionType *p, uint16 addr)
+// {
+//     uint16 rc;
+//     (void)addr;
+//     (void)p;
+
+//     chargeTime = Statistic_GetCumuChgTime();
+//     if (chargeTime > 65535U)
+//     {
+//         chargeTime = 65535U;
+//     }
+//     rc = (uint16)(chargeTime / 360U);
+
+//     return rc;
+// }
+
+static uint16 MDBSgetChargeTime32_h(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    uint32 rc;
+    (void)addr;
+    (void)p;
+    chargeTime = Statistic_GetCumuChgTime();
+    rc = chargeTime / 360U;
+
+    return (uint16)(rc >> 16);
+}
+
+static uint16 MDBSgetChargeTime32_l(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    uint32 rc;
+    (void)addr;
+    (void)p;
+    chargeTime = Statistic_GetCumuChgTime();
+    rc = chargeTime / 360U;
+
+    return (uint16)(rc);
+}
+
+// static uint16 MDBSgetDischargeTime(const Modbus_RegistersRegionType *p, uint16 addr)
+// {
+//     uint16 rc;
+//     (void)addr;
+//     (void)p;
+
+//     disChargeTime = Statistic_GetCumuDchgTime();
+//     if (disChargeTime > 65535U)
+//     {
+//         disChargeTime = 65535U;
+//     }
+//     rc = (uint16)(disChargeTime / 360U);
+
+//     return rc;
+// }
+
+static uint16 MDBSgetDischargeTime32_h(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    uint32 rc;
+    (void)addr;
+    (void)p;
+
+    disChargeTime = Statistic_GetCumuDchgTime();
+    rc = disChargeTime / 360U;
+
+    return (uint16)(rc >> 16);
+}
+
+static uint16 MDBSgetDischargeTime32_l(const Modbus_RegistersRegionType *p, uint16 addr)
+{
+    uint32 rc;
+    (void)addr;
+    (void)p;
+
+    disChargeTime = Statistic_GetCumuDchgTime();
+    rc = disChargeTime / 360U;
+
+    return (uint16)(rc);
+}
+
 static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
     uint16 rc;
     (void)addr;
@@ -223,13 +304,13 @@ static const Modbus_RegistersRegionType x03registerTable[] = {
 
 static const Modbus_RegistersRegionType x04registerTable[] = {
     {2000U, 2399U, MDBSget_CellDataM_GetVoltage},
-    /*	{2400, 2999, get2},*/
+    /*  {2400, 2999, get2},*/
     {3000U, 3199U, MDBSget_CellDataM_GetTemperature},
-    /*	{3200,3499, getCellVolVisable},*/
+    /*  {3200,3499, getCellVolVisable},*/
     {3500U, 3549U, MDBSget_CellDataM_GetHeatTemperature},
-    /*	{3550,3599, getCellVolVisable},*/
+    /*  {3550,3599, getCellVolVisable},*/
     {3600U, 3649U, MDBSget_CellDataM_GettPoleTemperature},
-    /*	{3650,3699, getCellVolVisable},*/
+    /*  {3650,3699, getCellVolVisable},*/
 
     {1000U, 1000U, MDBSgetTotalVoltage},
     {1001U, 1001U, MDBSgetTotalCurrent},
@@ -241,6 +322,10 @@ static const Modbus_RegistersRegionType x04registerTable[] = {
     {1007U, 1007U, MDBSgetDeltaVoltage},
     {1008U, 1008U, MDBSgetDeltaTemperature},
     {1050U, 1080U, MDBSgetRelaystate},
+    {1800U, 1800U, MDBSgetDischargeTime32_l},
+    {1801U, 1801U, MDBSgetDischargeTime32_h},
+    {1802U, 1802U, MDBSgetChargeTime32_l},
+    {1803U, 1803U, MDBSgetChargeTime32_h},
 };
 
 
