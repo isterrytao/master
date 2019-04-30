@@ -65,6 +65,7 @@ module.exports = {
             requires: {
                 'child_process': child_process,
                 'util': util,
+                'process': process,
             }
         }
 
