@@ -325,7 +325,7 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 5;
     }
-    if (ChargeM_ChargeIsFault() == E_OK)
+    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
     {
         temp |= (uint16)1U << 6;
     }
@@ -376,9 +376,9 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     {
         flag |= (uint16)1U << 5;
     }
-    if (flag)
+    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
     {
-        flag |= (uint16)1U << 6;
+        falg |= (uint16)1U << 6;
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
     // 保留
