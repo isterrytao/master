@@ -124,3 +124,15 @@ Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode) {
     return E_OK;
 <% } %>
 }
+
+
+Std_ReturnType AllInOneComm_Stop(void) {
+<% if (UseIslAllInOne) {%>
+    return Isl78600Comm_Stop();
+<% } else if (UseLtcAllInOne) {%>
+    return Ltc6804Comm_Stop();
+<% } else {%>
+    return E_OK;
+<% } %>
+}
+

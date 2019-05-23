@@ -17,6 +17,7 @@ App_VoltageType* Isl78600Comm_GetVoltageBuffPtr(void);
 App_TemperatureType* Isl78600Comm_GetTemperatureBuffPtr(void);
 void Isl78600Comm_SetBalanceFlag(const uint8 *balance, uint8 length);
 uint8* Isl78600Comm_GetBalanceBuffPtr(void);
+Std_ReturnType Isl78600Comm_Stop(void);
 
 
 extern const Dio_ChannelType Isl78600_DaisyChainPowerEnableCtrl;

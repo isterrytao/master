@@ -15,7 +15,7 @@ SHELL_PROTYPE(hef4052);
 
 #if defined(A650) || defined(A651)
 SHELL_PROTYPE(ldmhv_A650);
-#elif defined(A652) || defined(A653)
+#elif defined(A652) || defined(A653) || defined(A660) || defined(A661)
 SHELL_PROTYPE(ldmhv_A652);
 #elif defined(A640) || defined(A641)
 #else
@@ -55,7 +55,7 @@ SHELL_PROTYPE(onboardt);
 #if defined(A600) || defined(A601) || defined(A602) || defined(A603)
 SHELL_PROTYPE(ltc);
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661)
 SHELL_PROTYPE(isl);
 SHELL_PROTYPE(rs485);
 #endif
@@ -84,7 +84,7 @@ const struct shell_command shell_commands[] = {
 
 #if defined(A650) || defined(A651)
     SHELL_COMMAND("ldmhv", ldmhv_A650),
-#elif defined(A652) || defined(A653)
+#elif defined(A652) || defined(A653) || defined(A660) || defined(A661)
     SHELL_COMMAND("ldmhv", ldmhv_A652),
 #elif defined(A640) || defined(A641)
 #else
@@ -121,7 +121,7 @@ const struct shell_command shell_commands[] = {
 #if defined(A600) || defined(A601) || defined(A602) || defined(A603)
     SHELL_COMMAND("ltc", ltc),
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661)
     SHELL_COMMAND("ltc", isl),
     SHELL_COMMAND("rs485", rs485),
 #endif

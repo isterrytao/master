@@ -60,6 +60,7 @@ for (var i = 0; i < globalInfo.CanIf.canhohs.length; i++) {
                     hw: x.hw,
                     hohOffset: i,
                     baud: (x.hasOwnProperty('baud')) ? x.baud : 250000,
+                    bor_time: (x && x.hasOwnProperty('bor_time')) ? x.bor_time : 980,
                 });
                 break;
             }
@@ -133,6 +134,7 @@ for (var hwcfg of hwcfgs){%>
         /* Can_Loopback = */ FALSE,
         /* Can_Fifo = */ 0U,
         /* CanFilterMask = */ &Can_FilterMaskConfigData_Mask_<%- i %>,
+        /* CanBOR_Time = */ <%- hwcfg.bor_time %>U,
     }, <%
     if (hwcfg.baud != 250000) {
         hasOtherBaud = true;
@@ -159,6 +161,7 @@ for (var hwcfg of hwcfgs){%>
         /* Can_Loopback = */ FALSE,
         /* Can_Fifo = */ 0U,
         /* CanFilterMask = */ &Can_FilterMaskConfigData_Mask_<%- i %>,
+        /* CanBOR_Time = */ <%- hwcfg.bor_time %>U,
     }, <%
     i++;
 }%>

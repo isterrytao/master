@@ -43,6 +43,7 @@
 #include "SocOcvCalib.h"
 #include "BridgeInsu.h"
 #include "BridgeInsu_Cfg.h"
+#include "AllInOneComm.h"
 
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "Logger.h"
@@ -545,6 +546,14 @@ void App_ProgrammingPost(Std_ReturnType Result) {
         /* Reset MCU and go to bootloader at here. */
         /* Below codes are demo, can be removed */
         Set_SesCtrl(DCM_SESSION_PROGRAMMING);
+        (void)AllInOneComm_Stop();
+        (void)Can_SetControllerMode(0U, CAN_T_STOP);
+        (void)Can_SetControllerMode(1U, CAN_T_STOP);
+#if defined(A640) || defined(A641)
+#else
+            (void)Can_SetControllerMode(2U, CAN_T_STOP);
+            (void)Can_SetControllerMode(3U, CAN_T_STOP);
+#endif
         for (i = 0U; i < KIND_OF_SECURITY_LEVEL; i++) {
             gSecurityAcessSequence[i] = 0U;
         }

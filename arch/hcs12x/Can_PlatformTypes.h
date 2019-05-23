@@ -140,6 +140,7 @@ typedef struct {
     boolean Can_Fifo;
 
     const Can_FilterMaskType *CanFilterMaskRef;
+    uint16 CanBOR_Time;
 } Can_HardwareConfigType;
 
 

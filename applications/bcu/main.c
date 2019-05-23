@@ -66,7 +66,7 @@
 #include "App_Cfg.h"
 #include "BridgeInsu.h"
 #include "LimitProtect.h"
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661)
 #include "Rs485Shell.h"
 #endif
 #define LOG_LEVEL LOG_LEVEL_OFF
@@ -315,7 +315,7 @@ static void run_test_mode(void) {
 #else
         Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661)
     (void)UartShell_Init((const UartShell_ConfigType *)UartShellConfigType, 0U);
 #endif
     for (;;) {
@@ -351,7 +351,10 @@ static void start_task(void *pdata) {
     (void)Can_SetControllerMode(3U, CAN_T_START);
 #endif
 
+#if defined(A640) || defined(A641)
+#else
     HC12XIrq_InstallVector(IRQ_IIC1, IIC1_Isr, 0U);
+#endif
     HC12XIrq_InstallVector(IRQ_SCI1, SCI1_Isr, 0U);
     HC12XIrq_InstallVector(IRQ_SCI2, SCI2_Isr, 0U);
 
@@ -439,7 +442,7 @@ static void start_task(void *pdata) {
     Soh_Init();
 #if defined(A650) || defined(A651)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A650);
-#elif defined(A652) || defined(A653)
+#elif defined(A652) || defined(A653) || defined(A660) || defined(A661)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
 #elif defined(A640)||defined(A641)
     BridgeInsu_Init(&driverLooper, NULL);
