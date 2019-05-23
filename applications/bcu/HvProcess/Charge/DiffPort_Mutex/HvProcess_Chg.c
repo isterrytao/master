@@ -98,6 +98,7 @@ boolean HvProcess_ChgStateStartCond(void)
                         chargerIsComm)
                     {
                         res = TRUE;
+                        HvProcess_ChgInnerData.ChgType = ChargeConnectM_GetConnectType();
                     }
                 }
             }
@@ -242,7 +243,7 @@ boolean HvProcess_ChgRestartAllowedCond(void)
     boolean res = FALSE;
     App_Tv100mvType bat_tv, hv1, hv2 = 0U;
     uint32 delay = 30000UL, nowTime = OSTimeGet();
-    Charge_ChargeType type = ChargeConnectM_GetConnectType();
+    Charge_ChargeType type = HvProcess_ChgInnerData.ChgType;
     static uint32 lastTime = 0UL;
 
     if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)

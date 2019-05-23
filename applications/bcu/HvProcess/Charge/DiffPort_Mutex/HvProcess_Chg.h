@@ -22,6 +22,7 @@
 #include "Async_Looper.h"
 #include "Async_Event.h"
 #include "RelayM_Cfg.h"
+#include "Charge_Types.h"
 
 /**
  * \brief 充电高压流程控制状态类型
@@ -43,6 +44,7 @@ typedef struct{
     uint32 RelayOffTick; /**< 继电器断开计时 */
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
     RelayM_FunctionType OnChgRly; /**< 充电使用继电器 */
+    Charge_ChargeType ChgType; /**< 充电连接类型 */
 }HvProcess_ChgInnerDataType;
 
 

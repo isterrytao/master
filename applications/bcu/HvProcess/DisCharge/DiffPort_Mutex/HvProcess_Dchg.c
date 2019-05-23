@@ -236,20 +236,33 @@ void HvProcess_DchgRelayOffDelayAction(void)
 boolean HvProcess_DchgRestartAllowedCond(void)
 {
     boolean res = FALSE;
-    App_Tv100mvType bat_tv = Statistic_GetBcu100mvTotalVoltage(), hv1 = HV_GetVoltage(HV_CHANNEL_HV1);
+    App_Tv100mvType bat_tv, hv1;
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-    if (Statistic_TotalVoltageIsValid(bat_tv))
+    if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
     {
-        if (Statistic_TotalVoltageIsValid(hv1))
+#if defined(A640)||defined(A641)
+        bat_tv = Statistic_GetBcu100mvTotalVoltage();
+#else
+        bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
+#endif
+        hv1 = HV_GetVoltage(HV_CHANNEL_HV1);
+        if (Statistic_TotalVoltageIsValid(bat_tv))
         {
-            bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
-            if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
+            if (Statistic_TotalVoltageIsValid(hv1))
             {
-                delay = 0U;
+                 bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+                 if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
+                 {
+                     delay = 0U;
+                 }
             }
         }
+    }
+    else
+    {
+        delay = 3000U;
     }
     if (lastTime == 0UL)
     {
@@ -261,6 +274,32 @@ boolean HvProcess_DchgRestartAllowedCond(void)
         res = TRUE;
     }
     return res;
+    // boolean res = FALSE;
+    // App_Tv100mvType bat_tv = Statistic_GetBcu100mvTotalVoltage(), hv1 = HV_GetVoltage(HV_CHANNEL_HV1);
+    // uint32 delay = 30000UL, nowTime = OSTimeGet();
+    // static uint32 lastTime = 0UL;
+
+    // if (Statistic_TotalVoltageIsValid(bat_tv))
+    // {
+    //     if (Statistic_TotalVoltageIsValid(hv1))
+    //     {
+    //         bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+    //         if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
+    //         {
+    //             delay = 0U;
+    //         }
+    //     }
+    // }
+    // if (lastTime == 0UL)
+    // {
+    //     lastTime = nowTime;
+    // }
+    // if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+    // {
+    //     lastTime = 0UL;
+    //     res = TRUE;
+    // }
+    // return res;
 }
 
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void)
