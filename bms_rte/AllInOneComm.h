@@ -4,5 +4,6 @@
 #include "Async_Looper.h"
 
 Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode);
+Std_ReturnType AllInOneComm_Stop(void);
 
 #endif

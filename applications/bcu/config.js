@@ -63,7 +63,7 @@ module.exports = {
 
         bcu:{
             notes:[
-                {section:"type", chs:"BCU类型", comments:'可选:"C600", "C601", "A600", "A601", "A602", "A603".'},
+                {section:"type", chs:"BCU类型", comments:'可选:"C600", "C601", "A600", "A601", "A602", "A603", "A650", "A651", "A652", "A653", "A660", "A661".'},
                 {section:"battconn", chs:"电池连接", comments:"电池连接, 只有型号为A60X的时候有效, 长度与型号相关."},
                 {section:"tempconn", chs:"温感连接", comments:"只有型号为A60X的时候有效, 长度与型号相关; C标识电池单体温感,P表示电池极柱温感,H表示加热片温感,0表示没有链接温感."},
             ],
@@ -1843,6 +1843,7 @@ module.exports = {
             notes:[
                 {section:"hw", chs:"硬件单元", comments:"硬件Can控制器单元."},
                 {section:"baud", chs:"波特率", comments:"125000,250000,500000,1000000."},
+                {section:"bor_time", chs:"busoff 自恢复时间", comments:"0:autorecovery, 单位 ms"},
             ],
             hw:0, baud:250000,
         },
