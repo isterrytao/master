@@ -335,10 +335,6 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 6;
     }
-    else if (ChargeM_ChargerGBIsReady() == E_NOT_OK)
-    {
-        temp |= (uint16)1U << 6;
-    }
     else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
     {
         temp |= (uint16)1U << 6;
