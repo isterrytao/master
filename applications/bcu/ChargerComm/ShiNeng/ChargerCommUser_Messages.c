@@ -389,9 +389,20 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     {
         flag |= (uint16)1U << 5;
     }
-    if (flag)
+    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
     {
         flag |= (uint16)1U << 6;
+    }
+    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && ChargerCommUser_MsgInnerData.isNeedToSendStop == TRUE)
+    {
+        flag |= (uint16)1U << 6;
+    }
+    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
+    {
+        flag |= (uint16)1U << 6;
+    }
+    else
+    {
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
     // 保留
