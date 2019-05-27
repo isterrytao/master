@@ -159,10 +159,34 @@ void HvProcess_DchgStateStartAction(void)
 boolean HvProcess_DchgChargeConnectionCond(void)
 {
     boolean res = FALSE;
+    uint32 nowTime = OSTimeGet();
+    static uint32 lastTime = 0UL,monitorTime = 0U;
 
-    if (CHARGECONNECTM_IS_CONNECT())
+    if (MS_GET_INTERNAL(monitorTime, nowTime) > 500UL)
     {
+        lastTime = 0UL;
+    }
+    monitorTime = nowTime;
+    if (!WakeupSignalIsOk())
+    {
+        if (lastTime == 0UL)
+        {
+            lastTime = nowTime;
+        }
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 500U)
+        {
+            lastTime = 0UL;
+            res = TRUE;
+        }
+    }
+    else if (CHARGECONNECTM_IS_CONNECT())
+    {
+        lastTime = 0UL;
         res = TRUE;
+    }
+    else
+    {
+        lastTime = 0UL;
     }
     return res;
 }
