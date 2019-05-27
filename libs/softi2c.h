@@ -16,7 +16,15 @@ typedef const struct softi2c_platform *softi2c_t;
 uint8 softi2c_init(softi2c_t i2c);
 
 void softi2c_deinit(const struct softi2c_platform *i2c);
+uint8 softi2c_write(const struct softi2c_platform *i2c,
+                      uint8 addr,
+                      const uint8 *dat,
+                      uint8 len);
 
+uint8 softi2c_read(const struct softi2c_platform *i2c,
+                     uint8 addr,
+                     uint8 *dat,
+                     uint8 len);
 /// \brief softi2c_write_then_read 先写后读.
 ///
 /// \param i2c 对应的IO底层接口.
