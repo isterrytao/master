@@ -20,6 +20,7 @@
 #include "Statistic.h"
 #include "Stdlib.h"
 #include "UserStrategy.h"
+#include "DischargeM_Cfg.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
