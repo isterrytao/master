@@ -1175,6 +1175,7 @@ static void dchgLvProtectForCurrentCheck(void)
             {
                 lastTime = nowTime;
                 DischargeM_SetDiagnosisDchargeCtl(DIAGNOSIS_ITEM_DCHG_LV, DISCHARGEM_DISCHARGE_DISABLE);
+                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_OVER_DCHG, DISCHARGEM_DISCHARGE_DISABLE);
             }
         }
         else
@@ -1210,6 +1211,7 @@ static void dchgLtvProtectForCurrentCheck(void)
             {
                 lastTime = nowTime;
                 DischargeM_SetDiagnosisDchargeCtl(DIAGNOSIS_ITEM_DCHG_LTV, DISCHARGEM_DISCHARGE_DISABLE);
+                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_OVER_DCHG, DISCHARGEM_DISCHARGE_DISABLE);
             }
         }
         else

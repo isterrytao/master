@@ -311,6 +311,10 @@ static boolean HvProcess_DchgIsFaultDirectRelayOff(void)
     {
         res = TRUE;
     }
+    else if (DischargeM_GetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_OVER_DCHG) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
     else
     {
     }
