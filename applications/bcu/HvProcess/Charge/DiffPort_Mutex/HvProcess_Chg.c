@@ -190,7 +190,7 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
-    uint32 delay = 5000U;
+    uint32 delay = 12000U;
     Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
     if(CURRENT_IS_VALID(current))
