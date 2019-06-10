@@ -22,7 +22,6 @@
 #include "EL.h"
 #include "Soc.h"
 #include "Statistic.h"
-#include "Diagnosis.h"
 
 #define CHARGERCOMMUSER_MESSAGES_E_PARAM_INVALID_PTR         0U
 
@@ -306,7 +305,6 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     WRITE_BT_UINT8(Buffer, index,  flag);
     // 状态标志
     temp = 0U;
-    flag = Diagnosis_StartDiagIsFinish();
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 1;
@@ -327,20 +325,9 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 5;
     }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
+    if (ChargeM_ChargeIsFault() == E_OK)
     {
         temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && flag == TRUE)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else
-    {
     }
     WRITE_BT_UINT8(Buffer, index,  temp);
     // 保留
@@ -389,20 +376,9 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     {
         flag |= (uint16)1U << 5;
     }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
+    if (flag)
     {
         flag |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && ChargerCommUser_MsgInnerData.isNeedToSendStop == TRUE)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else
-    {
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
     // 保留

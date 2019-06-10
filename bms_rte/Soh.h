@@ -28,9 +28,22 @@
  */
 typedef uint16 App_SohType;
 
+/**
+ * \brief SOH配置参数类型定义
+ */
+typedef struct{
+    boolean isMonitorNominalCapChange; /**< soh是否监控程序额定容量变化 */
+}Soh_ConfigInfoType;
+
+/**
+ * \brief SOH内部参数类型定义
+ */
 typedef struct{
     App_SohType soh; /**< soh值 */
 }Soh_InnerDataType;
+
+
+extern const Soh_ConfigInfoType Soh_ConfigInfo;
 
 /**
  * \brief Soh模块初始化
