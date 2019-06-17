@@ -44,6 +44,10 @@ extern const DeviceInfo_DeviceTypeType SystemConnection_SlaveTypesTable[];
  */
 extern const uint16 CellDataM_CellsSetup[];
 /**
+ * \brief 定义温度连接位图,最低位表示第一串温度
+ */
+extern const uint8 CellDataM_TempsSetup[];
+/**
  * \brief 每个从机单体电压逻辑编号最大值表定义
  * \note 每个从机逻辑编号最大值为对应从机最后一串电池的逻辑编号+1
  */
