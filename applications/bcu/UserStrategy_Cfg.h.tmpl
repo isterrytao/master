@@ -23,6 +23,7 @@ var mdata = {
     manual_power_down_en: cfg.power_down_control.manual_power_down.en,
     manual_power_down_type: cfg.power_down_control.manual_power_down.type,
     manual_power_down_delay: cfg.power_down_control.manual_power_down.delay,
+    onboard_key_type_mode: cfg.power_down_control.onboard_key_type.mode,
     ac_chg_oc_type: cfg.oc_type.ac_chg_oc_type,
     dc_chg_oc_type: cfg.oc_type.dc_chg_oc_type,
     dchg_oc_type: cfg.oc_type.dchg_oc_type,
@@ -50,7 +51,7 @@ globalInfo.setReturn({processedcfg:processedcfg});
  */
 #define KEY_TYPE_IS_SELFLOCK 0
 #define KEY_TYPE_IS_SELFRESET 1
-#define KEY_TYPE KEY_TYPE_IS_SELFRESET//KEY_TYPE_IS_SELFRESET
+#define KEY_TYPE <%- mdata.onboard_key_type_mode%> //KEY_TYPE
 
 #if defined(A641)
 #define USERSTRATEGY_RESET_TO_OTA_EN                STD_ON //对于A641主机 此项必须开启

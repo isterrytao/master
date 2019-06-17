@@ -377,6 +377,7 @@ module.exports = {
                 {section:"self_lock", chs: "自锁继电器功能使能,仅配置自锁继电器时有效"},
                 {section:"auto_power_down", chs: "自动休眠功能"},
                 {section:"manual_power_down", chs: "手动休眠功能"},
+                {section:"onboard_key_type", chs:"选择板载自锁继电器类型，仅对A64x系列有效"},
             ],
             self_lock: {
                 notes: [
@@ -405,6 +406,12 @@ module.exports = {
                 en: "STD_ON",
                 type: "DIN1",
                 delay: 3000,
+            },
+            onboard_key_type: {
+                notes: [
+                    {section:"mode", chs: "A64x上电方式有两种，一种为自恢复模式，一种为自锁模式", comments: '"KEY_TYPE_IS_SELFLOCK", "KEY_TYPE_IS_SELFRESET"'},
+                ],
+                mode: "KEY_TYPE_IS_SELFRESET",
             },
         },
         oc_type: {
