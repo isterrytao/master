@@ -28,6 +28,7 @@ typedef uint8 Isl_ReturnType;
 #define ISL_E_UNREADY             7U
 #define ISL_E_COMM                8U
 #define ISL_E_REF                 9U
+#define ISL_E_RXABORT             10U
 #else
 typedef enum {
     kIslScanIndex_Voltage,
@@ -76,7 +77,9 @@ Isl_ReturnType Isl78600_WriteData(const struct Isl78600 *dev, uint8 addr, uint8 
 Isl_ReturnType Isl78600_Init(const struct Isl78600 *dev, uint8 num);
 Isl_ReturnType Isl78600_Identify(const struct Isl78600 *dev);
 Isl_ReturnType Isl78600_Scan(const struct Isl78600 *dev, IslScanModeType type);
+Isl_ReturnType Isl78600_GetAllVoltageWithSetup(const struct Isl78600 *dev, uint8 addr, struct Isl78600_AllVoltage *v, uint16 setup);
 Isl_ReturnType Isl78600_GetAllVoltage(const struct Isl78600 *dev, uint8 addr, struct Isl78600_AllVoltage *v);
+Isl_ReturnType Isl78600_GetAllTempValueWithSetup(const struct Isl78600 *dev, uint8 addr, struct Isl78600_AllTemp *t, uint8 setup);
 Isl_ReturnType Isl78600_GetAllTempValue(const struct Isl78600 *dev, uint8 addr, struct Isl78600_AllTemp *t);
 Isl_ReturnType Isl78600_SetBalanceFlag(const struct Isl78600 *dev, uint8 addr, uint16 flags);
 Isl_ReturnType Isl78600_GetBalanceFlag(const struct Isl78600 *dev, uint8 addr, uint16 *flags);

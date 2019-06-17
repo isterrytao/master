@@ -80,6 +80,9 @@ typedef struct{
     ChargeM_CtlInfoType diagnosisCtl[CHARGEM_DIAGNOSIS_CTL_BUFFER_SIZE]; /**< 故障诊断充电控制 */
     uint8 startDiagCtl[CHARGEM_START_DIAG_CTL_BUFFER_SIZE]; /**< 上电自检诊断充电控制 */
     uint8 othersFaultCtl[CHARGEM_OTHERS_FAULT_CTL_BUFFER_SIZE]; /**< 其他故障充电控制 */
+
+    uint8 diagnosisCtlMask[CHARGEM_DIAGNOSIS_CTL_BUFFER_SIZE]; /**< 故障诊断充电控制掩码 */
+    uint8 startDiagCtlMask[CHARGEM_START_DIAG_CTL_BUFFER_SIZE]; /**< 上电自检诊断充电控制掩码 */
 }ChargeM_InnerDataType;
 
 /**
@@ -150,6 +153,16 @@ Diagnosis_ItemType ChargeM_GetStartDiagFault(void);
 Std_ReturnType ChargeM_StartDiagIsNormal(void);
 
 /**
+ * \brief 充电上电自检排除指定诊断项序列后是否允许故障
+ *
+ * \param item 诊断项序列
+ * \param length 序列长度
+ *
+ * \return E_OK: 故障 E_NOT_OK: 无故障
+ */
+Std_ReturnType ChargeM_StartDiagIsFaultExcludeItems(const Diagnosis_ItemType *item, uint8 length);
+
+/**
  * \brief 获取充电控制诊断标志故障码
  * \details 此标志故障码是引起停止充电机充电的故障，不一定是断开继电器的故障
  *
@@ -198,6 +211,17 @@ Std_ReturnType ChargeM_DiagnosisIsFaultAction(void);
  * \return E_OK:成立 E_NOT_OK:未成立
  */
 Std_ReturnType ChargeM_DiagnosisIsFaultActionExcludeItem(Diagnosis_ItemType item);
+
+/**
+ * \brief 排除指定诊断项序列后当前充电故障标志是否成立
+ * \details 此函数用于确认排除多个故障后是否有诊断故障需要禁止充电
+ *
+ * \param item 诊断项序列
+ * \param length 诊断项个数
+ *
+ * \return E_OK:成立 E_NOT_OK:未成立
+ */
+Std_ReturnType ChargeM_DiagnosisIsFaultFlagExcludeItems(const Diagnosis_ItemType *item, uint8 length);
 
 /**
  * \brief 设置国标充电控制状态
