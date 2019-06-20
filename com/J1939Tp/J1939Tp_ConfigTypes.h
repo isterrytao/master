@@ -204,7 +204,7 @@ struct J1939Tp_ChannelType_ {
      *
      * This is the list of PGs transferred through this channel, be it received
      * or transmitted. */
-    const J1939Tp_PgType**                  Pgs;
+    const J1939Tp_PgType* const*                  Pgs;
 
     /*--------[Setup MetaDataLength]------------------------------------------*/
 
@@ -280,7 +280,7 @@ typedef struct {
  */
 typedef struct {
     /** @brief Array of pointers to PDU descriptions. */
-    const J1939Tp_RxPduInfoType** RxPdus;
+    J1939Tp_RxPduInfoType const *const *RxPdus;
 
     /** @brief Length of array RxPdus */
     const PduIdType               RxPduCount;

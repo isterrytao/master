@@ -53,6 +53,9 @@ typedef struct{
     DischargeM_CtlInfoType diagnosisCtl[DISCHARGEM_DIAGNOSIS_CTL_BUFFER_SIZE]; /**< 故障诊断放电控制 */
     uint8 startDiagCtl[DISCHARGEM_START_DIAG_CTL_BUFFER_SIZE]; /**< 上电自检诊断放电控制 */
     uint8 othersFaultCtl[DISCHARGEM_OTHERS_FAULT_CTL_BUFFER_SIZE]; /**< 其他故障放电控制 */
+
+    uint8 diagnosisCtlMask[DISCHARGEM_DIAGNOSIS_CTL_BUFFER_SIZE]; /**< 故障诊断充电控制掩码 */
+    uint8 startDiagCtlMask[DISCHARGEM_START_DIAG_CTL_BUFFER_SIZE]; /**< 上电自检诊断充电控制掩码 */
 }DischargeM_InnerDataType;
 
 /**
@@ -99,6 +102,16 @@ Std_ReturnType DischargeM_StartDiagIsNormal(void);
 Diagnosis_ItemType DischargeM_GetStartDiagFault(void);
 
 /**
+ * \brief 放电上电自检排除指定诊断项序列后是否允许故障
+ *
+ * \param item 诊断项序列
+ * \param length 序列长度
+ *
+ * \return E_OK: 故障 E_NOT_OK: 无故障
+ */
+Std_ReturnType DischargeM_StartDiagIsFaultExcludeItems(const Diagnosis_ItemType *item, uint8 length);
+
+/**
  * \brief 故障诊断放电控制是否允许放电
  *
  * \return E_OK:允许放电  E_NOT_OK:不允许放电
@@ -123,6 +136,17 @@ Diagnosis_ItemType DischargeM_GetDiagFaultFlag(void);
  * \return 诊断故障 返回DIAGNOSIS_ITEM_INVALID_INDEX为无故障
  */
 Diagnosis_ItemType DischargeM_GetDiagFaultAction(void);
+
+/**
+ * \brief 排除指定诊断项序列后当前放电故障标志是否成立
+ * \details 此函数用于确认排除多个故障后是否有诊断故障需要禁止放电
+ *
+ * \param item 诊断项序列
+ * \param length 诊断项个数
+ *
+ * \return E_OK:成立 E_NOT_OK:未成立
+ */
+Std_ReturnType DischargeM_DiagnosisIsFaultFlagExcludeItems(const Diagnosis_ItemType *item, uint8 length);
 
 /**
  * \brief 同时设置故障诊断放电控制标志及动作

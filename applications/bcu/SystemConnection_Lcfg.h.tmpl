@@ -33,7 +33,6 @@ function checkBmuConnection(bmu) {
 
 function processConn(dat, conn, tstr) {
     var sum = dat.LogicIdMax.length == 0 ? 0 : dat.LogicIdMax.slice(-1)[0];
-    dat.CellsSetup = conn.split('_').map(x => x.split('').reverse().join(''))
     dat.LogicIdMax.push(conn.countOfChar(tstr) + sum);
     dat.BoardLogicIdMax = dat.BoardLogicIdMax.concat(conn.split('_').map(x => x.countOfChar(tstr).toString() + 'U'));
     dat.LogicToPhyIdMap = dat.LogicToPhyIdMap.concat(conn.replace(/_/g, '').match(/./g).map((x, i) => x == tstr ? "" + i + "U," : "/*" + i + "U,*/"));
@@ -145,12 +144,16 @@ var processedcfg = {
         LogicIdMax: [],
         BoardLogicIdMax: [],
         LogicToPhyIdMap: [],
-    }
+    },
+    CellsSetup: [],
+    TempsSetup: []
 }
 
 if (BcuIsAllInOne) {
     checkBmuConnection(cfg.bcu);
     processBmuData(processedcfg, cfg.bcu);
+    processedcfg.CellsSetup = cfg.bcu.battconn.split('_').map(x=>x.split('').reverse().join(''))
+    processedcfg.TempsSetup = cfg.bcu.tempconn.replace(/[CHP]/g,'1').split('_').map(x=>x.split('').reverse().join(''))
     processedcfg.Bmus[0] = "UNKNOWN";
     processedcfg.SlaveSampleBoardNum.push(typeToNumTable[cfg.bcu.type].SlaveSampleBoardNum + 'U');
     processedcfg.SlaveCellNum.push(typeToNumTable[cfg.bcu.type].SlaveCellNum + 'U');

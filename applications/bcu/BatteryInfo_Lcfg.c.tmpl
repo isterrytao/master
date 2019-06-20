@@ -40,8 +40,9 @@ globalInfo.setReturn({
         celltempnum: cfg.celltempnum,
         heattempnum: cfg.heattempnum,
         poletempnum: cfg.poletempnum,
-        totalCap: cfg.nominal.cap,
-        initCap: cfg.nominal.cap * cfg.initsoc / 100,
+        totalCap: cfg.nominal.cap * cfg.initsoh / 100,
+        initCap: cfg.nominal.cap * cfg.initsoc * cfg.initsoh / 10000,
+        nominalCap: cfg.nominal.cap,
         acchargecurrent: cfg.nominal.acchargecurrent,
         dcchargecurrent: cfg.nominal.dcchargecurrent
     });

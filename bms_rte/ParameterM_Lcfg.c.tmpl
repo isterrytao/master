@@ -129,6 +129,7 @@ var tempmparammapper = x => {
 var EeepParaDefault = {
         totalCap: globalInfo.BatteryInfo.totalCap,
         leftCap: globalInfo.BatteryInfo.initCap,
+        nominalCap: globalInfo.BatteryInfo.nominalCap,
     };
 var SocEfficiency = calibrateparam.SocEfficiency;
 var SocCalibParam = calibrateparam.SocCalibParam;
@@ -273,7 +274,7 @@ const ParameterM_DataType ParameterM_EeepParaDefault[] = {
     0U, /**< 118: 保留 */
     0U, /**< 119: 保留 */
     0U, /**< 120: 保留 */
-    0U, /**< 121: 保留 */
+    <%- Math.round(EeepParaDefault.nominalCap * 10) %>U, /**< PARAMETERM_EEEP_NOMINAL_CAP_INDEX: 额定容量 */
     0U, /**< PARAMETERM_EEEP_CUMULATIVE_CHG_TIME_L_INDEX: 累计充电时间低字 精度：1S/bit */
     0U, /**< PARAMETERM_EEEP_CUMULATIVE_CHG_TIME_H_INDEX: 累计充电时间高字 精度：1S/bit */
     0U, /**< PARAMETERM_EEEP_CUMULATIVE_DCHG_TIME_L_INDEX: 累计放电时间低字 精度：1S/bit */
