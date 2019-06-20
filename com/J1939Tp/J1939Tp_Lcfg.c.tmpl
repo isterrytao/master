@@ -10,7 +10,7 @@ const J1939Tp_PgType J1939Tp_Pgs[<%- processedcfg.pgs.length %>];
 <%
 var i = 0;
 for (var ch of processedcfg.channels) {%>
-static const J1939Tp_PgType* pgsForChannel<%- i %>[] = {<%
+static const J1939Tp_PgType* const pgsForChannel<%- i %>[] = {<%
     for (var pgid of ch.pgs) {%>
     &J1939Tp_Pgs[<%- pgid %>],<%
     }%>
@@ -71,17 +71,13 @@ for (var rxpdu of processedcfg.rxpdus) {%>
 };
 
 <%
-for (var relation of processedcfg.rxpduRelations) {
-    if (relation.rxpdus.length > 0) {%>
-static const J1939Tp_RxPduInfoType *RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %>[] = {<%
-        for(var rxpdu of relation.rxpdus){%>
+for (var relation of processedcfg.rxpduRelations) {%>
+static const J1939Tp_RxPduInfoType *const RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %>[] = {<%
+    for(var rxpdu of relation.rxpdus){%>
     &J1939Tp_RxPdus[<%- rxpdu %>],<%
         }%>
 
 };<%
-    } else {%>
-#define RxPduRelations_PDUR_RX_<%- relation.name %>_<%- relation.type %> NULL
- <% }
 }%>
 
 static const J1939Tp_RxPduInfoRelationsType J1939Tp_RxPduRelations[] = {<%
