@@ -287,8 +287,12 @@ if (cfg.hasOwnProperty('dcChgSckTempType')
     throw "Unsupport charge stack temp sensor type: " + cfg.dcChgSckTempType;
 }
 
-var resToVolMapper = (res) => Math.round(4096.0 * res / (10 + res));
 for (var i = 0; i < temperatureSensors.length; i++) {
+    if ((temperatureSensors[i].desc == 'PT1000') && (globalInfo.SystemConnection.BcuType.startsWith('A65') || globalInfo.SystemConnection.BcuType.startsWith('A66'))){
+         var resToVolMapper = (res) => Math.round((4096.0*5000.0/5070.0) * res / (temperatureSensors[i].rpulldown + res));
+     }else {
+         var resToVolMapper = (res) => Math.round(4096.0 * res / (temperatureSensors[i].rpulldown + res));
+     }
     temperatureSensors[i]['vols'] = temperatureSensors[i].resistors.map(resToVolMapper);
 }
 
