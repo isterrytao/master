@@ -231,22 +231,21 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     uint16 index = 0U;
     uint8 temp;
     App_SocType soc = Soc_Get();
-    HvProcess_ChgStateType status = HvProcess_GetChgState();
     App_Tv100mvType Volt;
-    Current_CurrentType current;
+    Current_CurrentType current, current_max;
+    RelayM_FunctionType relayType;
+    Charge_ChargeType type = ChargeConnectM_GetConnectType();
+
+    if (type == CHARGE_TYPE_DC)
+    {
+        relayType = ChargerComm_ConfigInfo.DC_RelayType;
+    }
+    else
+    {
+        relayType = ChargerComm_ConfigInfo.AC_RelayType;
+    }
 
     flag = ChargerCommUser_ChargeIsAllowed();
-#if defined(A640)||defined(A641)
-    if (status >= HVPROCESS_CHG_RELAY_OFF_DELAY)
-    {
-        flag = E_NOT_OK;
-    }
-#else
-    if (RuntimeM_GetWakeSignal() == 0U || status >= HVPROCESS_CHG_RELAY_OFF_DELAY)
-    {
-        flag = E_NOT_OK;
-    }
-#endif
     if (flag == E_OK)
     {
         if (ChargeConnectM_ELIsNeeding())
@@ -279,6 +278,16 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     if (current < 0)
     {
         current = 0;
+    }
+    current_max = ChargerCommUser_GetGBSignalCurrentMax();
+    if(current > current_max)
+    {
+        current = current_max;
+    }
+    if (!UserStartegy_GBChargeRelayIsReady(relayType))
+    {
+        current = 0;
+        Volt = 0U;
     }
     ChargerComm_SetChargeVoltMax(Volt);
     WRITE_BT_UINT16(Buffer, index, Volt);
