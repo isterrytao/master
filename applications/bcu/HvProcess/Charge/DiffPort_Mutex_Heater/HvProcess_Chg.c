@@ -654,33 +654,66 @@ void HvProcess_ChgRelayOffDelayAction(void)
 boolean HvProcess_ChgReStartJudgeCond(void)
 {
     boolean res = FALSE;
-    App_Tv100mvType bat_tv, hv1;
+    uint8 state = 0U;
+    App_Tv100mvType bat_tv, hv1, hv2 = 0U, hv3 = 0U;
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-    if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
-    {
 #if defined(A640)||defined(A641)
-        bat_tv = Statistic_GetBcu100mvTotalVoltage();
+    bat_tv = Statistic_GetBcu100mvTotalVoltage();
 #else
-        bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
+    bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
 #endif
-        hv1 = HV_GetVoltage(HV_CHANNEL_HV1);
-        if (Statistic_TotalVoltageIsValid(bat_tv))
+    if (Statistic_TotalVoltageIsValid(bat_tv))
+    {
+        if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
         {
+            hv1 = (App_Tv100mvType)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage();
             if (Statistic_TotalVoltageIsValid(hv1))
             {
-                 bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
-                 if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
-                 {
-                     delay = 0U;
-                 }
+                bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+                if (hv1 > bat_tv)
+                {
+                    state |= 1U;
+                }
             }
         }
-    }
-    else
-    {
-        delay = 3000U;
+        if (state == 0U)
+        {
+            if (RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].GetInstantVoltage != NULL)
+            {
+                hv2 = (App_Tv100mvType)RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].GetInstantVoltage();
+                if (Statistic_TotalVoltageIsValid(hv2))
+                {
+                    bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].totalPercent / 100UL);
+                    if (hv2 > bat_tv)
+                    {
+                        state |= (uint8)((uint8)1U << 1);
+                    }
+                }
+            }
+        }
+        if (state ==0U)
+        {
+            if (RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].GetInstantVoltage != NULL)
+            {
+                hv3 = (App_Tv100mvType)RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].GetInstantVoltage();
+                {
+                    if (Statistic_TotalVoltageIsValid(hv3))
+                    {
+                        bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].totalPercent / 100UL);
+                        if (hv3 > bat_tv)
+                        {
+                            state |= (uint8)((uint8)1U << 2);
+                        }
+                    }
+                }
+            }
+        }
+        if (state == 0U)
+        {
+            delay = 0U;
+        }
     }
     if (lastTime == 0UL)
     {
