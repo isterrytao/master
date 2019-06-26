@@ -21,6 +21,7 @@
 #include "Stdlib.h"
 #include "UserStrategy.h"
 #include "DischargeM_Cfg.h"
+#include "ChargerComm_LCfg.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
