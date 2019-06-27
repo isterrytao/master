@@ -1846,16 +1846,12 @@ void ChargerCommGB_ReceiveCSTCbk(const uint8 *Buffer, uint16 Length)
 #endif
         {
             ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CHARGE_STOP;
-            if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_BMS)
-            {
-                ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_STATISTIC;
-                ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CST_CSD);
-            }
-            else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_NONE)
+            if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_NONE)
             {
                 ChargerCommGB_innerData.stopChargeDev = CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER; //正常充电完成
             }
-            else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER)
+            else if(ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_CHARGER ||
+                    ChargerCommGB_innerData.stopChargeDev == CHARGERCOMMGB_STOP_CHARGE_DEV_BMS)
             {
                 if(ChargerCommGB_innerData.bstSendCnt >= 3U)
                 {
