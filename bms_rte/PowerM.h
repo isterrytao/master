@@ -205,9 +205,10 @@ typedef struct {
     const PowerM_ChargeEndConfigType *chargeEndConfigs; /**< 降流链表 */
     Std_ReturnType (*getChargeEndCheckVal)(uint16 *v);  /**< 获取降流末端比较值函数 */
     const PowerM_ChargeEndConfigType *(*getChargeEndTable)(void); /**< 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
-    void (*hook)(PowerM_InnerChannelDataType *itemData, uint16 current_map); /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    void (*hook)(PowerM_InnerChannelDataType *itemData, uint16 dest); /**< 计算出目标值之后，使用改函数修改目标电流值，可用于复杂降流策略，包含故障降流 */
     void (*hookReset)(PowerM_InnerChannelDataType *itemData); /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
     uint32 temperatureConfirmTickTime; /**< 温度改变引起查表区域变化时确认时间 */
+    void (*mapCurrentHook)(PowerM_InnerChannelDataType *itemData, uint16 map_current); /**< 计算出查表电流值之后，使用改函数修改查表电流值，可用于复杂降流策略，不包含故障降流 */
 } PowerM_ConfigParamType;
 
 

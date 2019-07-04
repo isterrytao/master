@@ -58,7 +58,7 @@
                                                     (MODE) == CHARGECONNECTM_GB_AC_MODE3_CONNECT_C)
 
 
-#define CHARGECONNECTM_SINGLE_PHASE_VOLT            1861U // 单相电压值，计算公式：0.9*0.92*220 精度：0.1v/bit 注：参考QCT 895 6.5.5
+#define CHARGECONNECTM_SINGLE_PHASE_VOLT            1821U // 单相电压值，计算公式：0.9*0.92*220 精度：0.1v/bit 注：参考QCT 895 6.5.5
 #define CHARGECONNECTM_THREE_PHASE_VOLT             5449U // 三相电压值，计算公式：1.732*0.9*0.92*380 精度：0.1v/bit 注：参考QCT 895 6.5.5
 #define CHARGECONNECTM_AC_VOLT_DEFAULT              CHARGECONNECTM_SINGLE_PHASE_VOLT // v/bit 交流充电供电电压端电压值，用于功率转换 可选 380v
 
