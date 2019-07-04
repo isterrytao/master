@@ -149,9 +149,10 @@ static const PowerM_ConfigParamType PowerMCur<%- powername %>ConfigTable = {
     <%- powername %>decrease /* &dcDecreaseCurrent */, /**< 降流链表 */
     <%- powername %>_thisHvGet /* thisHvGet */,  /**< 获取降流末端比较值函数 */
     NULL, /**< getChargeEndTable 获取降流链表，此函数配置后“chargeEndConfigs”和“getChargeEndCheckVal”将不起作用 */
-    NULL, /**< 计算出查表值之后，使用改函数修改查标值，可用于复杂降流策略 */
+    NULL, /**< 计算出目标值之后，使用改函数修改目标电流值，可用于复杂降流策略，包含故障降流 */
     NULL, /**< 在复位降流表时，只用该函数复位用户层数据，一般与hook函数配合使用 */
     0UL, /**< 温度改变引起查表区域变化时的确认时间，单位ms */
+    NULL, /**< 计算出查表电流值之后，使用改函数修改查表电流值，可用于复杂降流策略，不包含故障降流 */
 };
 <%
     }
