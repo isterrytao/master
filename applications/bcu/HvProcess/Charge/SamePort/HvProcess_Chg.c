@@ -167,7 +167,7 @@ void HvProcess_ChgRelayOffDelayAction(void)
 boolean HvProcess_ChgReStartJudgeCond(void)
 {
     boolean res = FALSE;
-    App_Tv100mvType bat_tv, hv1;
+    App_Tv100mvType bat_tv, hv1, temp;
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
@@ -179,8 +179,8 @@ boolean HvProcess_ChgReStartJudgeCond(void)
         {
             if (Statistic_TotalVoltageIsValid(hv1))
             {
-                 bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
-                 if (hv1 <= bat_tv)  // 判断HV1是否低于粘连检测阈值
+                 temp = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+                 if (hv1 <= temp)  // 判断HV1是否低于粘连检测阈值
                  {
                      delay = 0U;
                  }
