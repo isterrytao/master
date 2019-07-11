@@ -484,7 +484,7 @@ module.exports = {
                 ],
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
@@ -505,7 +505,7 @@ module.exports = {
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
@@ -526,7 +526,7 @@ module.exports = {
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
@@ -547,7 +547,7 @@ module.exports = {
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
