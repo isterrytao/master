@@ -261,7 +261,7 @@ boolean HvProcess_DchgRestartAllowedCond(void)
 {
     boolean res = FALSE;
     uint8 state = 0U;
-    App_Tv100mvType bat_tv, hv1, hv2 = 0U, hv3 = 0U;
+    App_Tv100mvType bat_tv, hv1, hv2 = 0U, hv3 = 0U, temp;
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
@@ -277,8 +277,8 @@ boolean HvProcess_DchgRestartAllowedCond(void)
             hv1 = (App_Tv100mvType)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage();
             if (Statistic_TotalVoltageIsValid(hv1))
             {
-                bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
-                if (hv1 > bat_tv)
+                temp = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].totalPercent / 100UL);
+                if (hv1 > temp)
                 {
                     state |= 1U;
                 }
@@ -291,8 +291,8 @@ boolean HvProcess_DchgRestartAllowedCond(void)
                 hv2 = (App_Tv100mvType)RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].GetInstantVoltage();
                 if (Statistic_TotalVoltageIsValid(hv2))
                 {
-                    bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].totalPercent / 100UL);
-                    if (hv2 > bat_tv)
+                    temp = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].totalPercent / 100UL);
+                    if (hv2 > temp)
                     {
                         state |= (uint8)((uint8)1U << 1);
                     }
@@ -307,8 +307,8 @@ boolean HvProcess_DchgRestartAllowedCond(void)
                 {
                     if (Statistic_TotalVoltageIsValid(hv3))
                     {
-                        bat_tv = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].totalPercent / 100UL);
-                        if (hv3 > bat_tv)
+                        temp = (App_Tv100mvType)((uint32)bat_tv * (uint32)RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].totalPercent / 100UL);
+                        if (hv3 > temp)
                         {
                             state |= (uint8)((uint8)1U << 2);
                         }
@@ -318,7 +318,7 @@ boolean HvProcess_DchgRestartAllowedCond(void)
         }
         if (state == 0U)
         {
-            delay = 0U;
+            delay = 3000U;
         }
     }
     if (lastTime == 0UL)
