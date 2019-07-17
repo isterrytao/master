@@ -143,6 +143,10 @@ boolean HvProcess_DchgStateStartCond(void)
                 }
             }
         }
+        else
+        {
+            HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
+        }
     }
 
     return res;
