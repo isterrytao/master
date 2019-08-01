@@ -369,6 +369,12 @@ boolean UserStartegy_GBChargeRelayIsReady(RelayM_FunctionType relayType)
     {
         res = TRUE;
     }
+#ifdef RELAYM_FN_HEATER
+    else if (RelayM_GetActualStatus(RELAYM_FN_HEATER) == RELAYM_ACTUAL_ON)
+    {
+        res = TRUE;
+    }
+#endif
     else
     {
     }
