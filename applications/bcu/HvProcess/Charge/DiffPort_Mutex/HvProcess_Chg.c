@@ -85,6 +85,10 @@ boolean HvProcess_ChgStateStartCond(void)
             }
         }
     }
+    else
+    {
+        HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
+    }
     return res;
 }
 
