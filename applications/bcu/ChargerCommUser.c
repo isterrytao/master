@@ -290,6 +290,7 @@ void ChargerCommUser_StartRecStageTimeout(uint8 channel, ChargerComm_StageType c
             case CHARGERCOMM_STAGE_GB_CCS:
             case CHARGERCOMM_STAGE_GB_CST_CSD:
             case CHARGERCOMM_STAGE_GB_CEM:
+            case CHARGERCOMM_STAGE_GB_FULLCHARGE:
                 break;
             case CHARGERCOMM_STAGE_USER_START:
                 if (channel < cfg->IPduNum)
