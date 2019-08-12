@@ -67,6 +67,7 @@ static ChargerCommGB_InnerDataType ChargerCommGB_innerData;
 static void ChargerCommGB_ReadConfigPara(void);
 void ChargerCommGB_CommStart(void);
 void ChargerCommGB_CommStop(void);
+void ChargerCommGB_FullCharge(void);
 static void ChargerCommGB_SetCommunication(uint8 flag);
 static void ChargerCommGB_SetCurrentChargeType(Charge_ChargeType type);
 static void ChargerCommGB_SetSelfDiagnosis(ChargerComm_SelfDiagnosisType diagnosis);
@@ -327,6 +328,44 @@ static void ChargerCommGB_CommStopForRestart(void)
         ChargerCommGB_ClearChargerStatusCarefully();
         ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_RECOMM_CRM);
         ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CONNECT_WAITING;
+        ChargeM_SetChargerGBReadyStatus(CHARGEM_CHARGERGB_READY_RELAY_INDEX, CHARGEM_CHARGE_DISABLE);
+    }
+    Irq_Restore(mask);
+}
+
+void ChargerCommGB_FullCharge(void)
+{
+    imask_t mask;
+    Charge_ChargeType currentType;
+    ChargerComm_StageType stage = ChargerComm_GetCurrentRecStage();
+
+    Irq_Save(mask);
+    ChargerCommGB_innerData.communication = FALSE;
+    ChargerComm_ResetCommunicationStatus();
+    // ChargerCommGB_RestChargerStatus();
+    currentType = ChargerCommGB_GetCurrentChargeType();
+    if (currentType == CHARGE_TYPE_DC)
+    {
+        PowerM_Reset(POWERM_CUR_CHARGE_DC);
+    }
+    else if (currentType == CHARGE_TYPE_AC)
+    {
+        PowerM_Reset(POWERM_CUR_CHARGE_AC);
+    }
+    else
+    {
+    }
+    // ChargerCommGB_SetCurrentChargeType(CHARGE_TYPE_NONE);
+    ChargerCommGB_innerData.stage = CHARGERCOMMGB_STAGE_CONNECT_WAITING;
+    if (ChargerCommGB_innerData.stopFlag == TRUE)
+    {
+        ChargerCommGB_innerData.startFlag = FALSE;
+        ChargerCommGB_innerData.stopFlag = FALSE;
+    }
+    if (stage >= CHARGERCOMM_STAGE_GB_START && stage <= CHARGERCOMM_STAGE_GB_STOP)
+    {
+        // ChargerComm_ClrChargeStatus();
+        ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_FULLCHARGE);
         ChargeM_SetChargerGBReadyStatus(CHARGEM_CHARGERGB_READY_RELAY_INDEX, CHARGEM_CHARGE_DISABLE);
     }
     Irq_Restore(mask);
@@ -1918,7 +1957,7 @@ void ChargerCommGB_ReceiveCSDCbk(const uint8 *Buffer, uint16 Length)
         }
         if (ChargeM_BatteryChargeIsFinish() == TRUE)
         {
-            ChargerCommGB_CommStop();
+            ChargerCommGB_FullCharge();
         }
         else
         {
@@ -2282,6 +2321,7 @@ void ChargerCommGB_StartRecStageTimeout(uint8 channel, ChargerComm_StageType cur
             case CHARGERCOMM_STAGE_GB_CST_CSD:
             case CHARGERCOMM_STAGE_GB_CEM:
             case CHARGERCOMM_STAGE_GB_CRM:
+            case CHARGERCOMM_STAGE_GB_FULLCHARGE:
                 if (channel < cfg->IPduNum)
                 {
                     if (cfg->IPduInfo[channel].TimeoutFunc)
