@@ -11,6 +11,7 @@
  */
 #include "HvProcess_Types.h"
 #include "HvProcess_Chg.h"
+#include "RelayM_Lcfg.h"
 
 const HvProcess_StateInfoType HvProcess_ChgStartInfoConfig[] = {
     {

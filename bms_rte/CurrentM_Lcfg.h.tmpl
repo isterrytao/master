@@ -19,8 +19,12 @@ var hallparams = {
     HAH1BV_S02: {name:"LEM 500A单量程", offset: -2500,  mul: 5, div: 2, voltMin: 260, voltMax: 4740, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-500A, 500A]" },
     WHK20BS5S2: {name:"启东双赢20A单量程", offset: -2500,  mul: 1, div: 10, voltMin: 50, voltMax: 5200, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-20A, 20A]" },
     WHK50BS5S2: {name:"启东双赢50A单量程", offset: -2500,  mul: 1, div: 4, voltMin: 50, voltMax: 5200, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-50A, 50A]" },
+    WHK100EA5S2S: {name:"启东双赢100A单量程", offset: -2500,  mul: 1, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-100A, 100A]" },
+    WHK200EA5S2S: {name:"启东双赢200A单量程", offset: -2500,  mul: 1, div: 1, voltMin: 240, voltMax: 4800, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-200A, 200A]" },
     WHK300EA5S2S: {name:"启东双赢300A单量程", offset: -2500, mul: 3, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: true, comments:"[0.5V, 4.5V] <=> [-300A, 300A]" },
+    WHK400EA5S2S: {name:"启东双赢400A单量程", offset: -2500, mul: 2, div: 1, voltMin: 240, voltMax: 4800, supplyVolAdj: true, comments:"[0.5V, 4.5V] <=> [-400A, 400A]" },
     WHK500EA5S2S: {name:"启东双赢500A单量程", offset: -2500, mul: 5, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: true, comments:"[0.5V, 4.5V] <=> [-500A, 500A]" },
+    WHK600EA5S2S: {name:"启东双赢600A单量程", offset: -2500, mul: 3, div: 1, voltMin: 240, voltMax: 4800, supplyVolAdj: true, comments:"[0.5V, 4.5V] <=> [-600A, 600A]" },
 
     AS2V300A00: {name:"MAGFLAKS300A单量程", offset: -2500, mul: 3, div: 2, voltMin: 100, voltMax: 4850, supplyVolAdj: true, comments:"[0.5V, 4.5V] <=> [-300A, 300A]" },
     AS2V500A00: {name:"MAGFLAKS500A单量程", offset: -2500, mul: 5, div: 2, voltMin: 100, voltMax: 4850, supplyVolAdj: true, comments:"[0.5V, 4.5V] <=> [-500A, 500A]" },
@@ -37,12 +41,14 @@ var shuntparams = {
     FL250A75mV: {name:"福来2型,50A,75mV", maxVol: 100000, resistor: 1500, tempDrift: 0},
     FL2100A75mV: {name:"福来2型,100A,75mV", maxVol: 100000, resistor: 750, tempDrift: 0},
     FL2200A75mV: {name:"福来2型,200A,75mV", maxVol: 100000, resistor: 375, tempDrift: 0},
+    FL2250A75mV: {name:"福来2型,250A,75mV", maxVol: 100000, resistor: 300, tempDrift: 0},
     FL2300A75mV: {name:"福来2型,300A,75mV", maxVol: 100000, resistor: 250, tempDrift: 0},
     FL2400A75mV: {name:"福来2型,400A,75mV", maxVol: 100000, resistor: 187.5, tempDrift: 0},
     FL2500A75mV: {name:"福来2型,500A,75mV", maxVol: 100000, resistor: 150, tempDrift: 0},
     FL2650A75mV: {name:"福来2型,650A,75mV", maxVol: 100000, resistor: 115.4, tempDrift: 0},
     FL2750A75mV: {name:"福来2型,750A,75mV", maxVol: 100000, resistor: 100, tempDrift: 0},
     FL2800A75mV: {name:"福来2型,800A,75mV", maxVol: 100000, resistor: 93.75, tempDrift: 0},
+    FL21000A75mV: {name:"福来2型,1000A,75mV", maxVol: 100000, resistor: 75, tempDrift: 0},
     FL21200A75mV: {name:"福来2型,1200A,75mV", maxVol: 100000, resistor: 62.5, tempDrift: 0},
 };
 
