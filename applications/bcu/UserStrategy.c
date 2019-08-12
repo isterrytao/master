@@ -525,10 +525,12 @@ static void UserStrategy_SelfLockRelayControl(void)
 #elif !defined(A640) && !defined(A641)
             if (Dio_ReadChannel(DIO_CHANNEL_OBC_POWER) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
             else if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
             else
@@ -536,6 +538,7 @@ static void UserStrategy_SelfLockRelayControl(void)
 #else
             if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
 #endif
@@ -551,10 +554,12 @@ static void UserStrategy_SelfLockRelayControl(void)
 #elif !defined(A640) && !defined(A641)
             if (Dio_ReadChannel(DIO_CHANNEL_CHARGER_READY) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
             else if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
             else
@@ -562,6 +567,7 @@ static void UserStrategy_SelfLockRelayControl(void)
 #else
             if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
 #endif
@@ -577,6 +583,7 @@ static void UserStrategy_SelfLockRelayControl(void)
 #else
             if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
             {
+                is_on = FALSE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
             }
 #endif

@@ -161,7 +161,7 @@ DeviceInfo_DeviceTypeType CellDataM_SlaveTypeBuffer[SYSTEM_BMU_NUM];
  * \从机均衡状态缓存定义
  */
 uint8 BalanceM_BalanceStatus[BALANCEM_BALANCE_STATUS_BUFFER_SIZE];
-const uint8 BalanceM_BalanceBuffSize = BALANCEM_BALANCE_STATUS_BUFFER_SIZE;
+const uint8 BalanceM_BalanceBuffSize = (uint8)BALANCEM_BALANCE_STATUS_BUFFER_SIZE;
 
 
 DeviceInfo_DeviceInfoType DeviceInfo_RuntimeInfo[SYSTEM_BMU_NUM];

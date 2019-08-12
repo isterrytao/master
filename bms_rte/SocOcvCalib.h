@@ -41,6 +41,7 @@ typedef struct{
     boolean linear_calib; /**< 线性校准使能 */
     isAllowCalibFuncPtr isAllowFuncPtr; /**< 是否允许校正函数指针 */
     boolean temperature_linear; /**< 温度是否线性查表 */
+    App_VoltageType diffVoltMin; /**< 允许校正最小压差 */
 }SocOcvCalib_ConfigType;
 
 /**
@@ -51,6 +52,8 @@ typedef struct{
     uint8 currentLargeFlag; /**< 大电流标志 */
     uint8 dateTime; /**< 时间 */
     boolean isAutoCalib; /**< 是否自动校正 */
+    App_VoltageType voltage; /**< 校正电压 */
+    App_TemperatureType temperature; /**< 校正温度 */
     App_VoltageType voltBuffer[30U]; /**< 温度线性插值后电压缓存 */
 }SocOcvCalib_InnerDataType;
 
@@ -77,6 +80,12 @@ void SocOcvCalib_AutoCalibStart(void);
  */
 Std_ReturnType SocOcvCalib_Check(void);
 
+/**
+ * \brief OCV是否允许校正检查函数
+ * \details 根据当前电压和温度状态，确定在当前状态下的相临电压之间差异是否满足校正的条件
+ * \return TRUE-允许 FALSE-不允许
+ */
+boolean SocOcvCalib_IsAllowCalib(void);
 
 #endif
 
