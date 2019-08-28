@@ -57,6 +57,8 @@
 #define PARAMETERM_GET_PFLASH_DIAG_CALIB_PARA_START_ADDR(index) \
     (PARAMETERM_GET_PFLASH_CALIB_PARA_ADDR(diagnosisPara) + (uint32)Diagnosis_ItemToIndex(index) * sizeof(Diagnosis_ParaType))
 
+#define ParameterM_Read     ParameterM_CalibRead
+
 /**
  * \brief 参数管理模块参数类型定义
  */
@@ -151,6 +153,13 @@ typedef struct{
     ParameterM_EeepParaIndexType eeepLowerEndIndex; /**< 低段参数索引结束(不单独占用一个索引) */
     ParameterM_EeepParaIndexType eeepHigherStartIndex; /**< 高段参数索引起始(不单独占用一个索引) */
 }ParameterM_ConfigInfoType;
+
+/**
+ * \brief 参数管理模块内部参数类型定义
+ */
+typedef struct {
+    ParameterM_CalibParaTypeType type;
+}ParameterM_innerDataType;
 
 extern const Diagnosis_ParaType ParameterM_NoneCalibrateDiagConfig[];
 extern const ParameterM_DataType ParameterM_EeepParaDefault[];
@@ -266,6 +275,11 @@ uint16 ParameterM_PFlashDiagCalibRead(Diagnosis_ItemType index, uint8 level, uin
  */
 void ParameterM_SetCalibParaPtr(ParameterM_CalibParaTypeType type);
 
+/**
+ * \brief 获取配置参数类型
+ * \return 详见“ParameterM_CalibParaTypeType”定义
+ */
+ParameterM_CalibParaTypeType ParameterM_GetParaType(void);
 
 /**
  * \brief 检查参数是否全部同步到DFLASH

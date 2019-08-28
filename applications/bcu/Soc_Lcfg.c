@@ -17,13 +17,13 @@ const Soc_ConfigInfoType Soc_ConfigInfo = {
     /**< ChgCumuInfo: 充电累计配置信息 */
     {
         Soc_CumuTypeCap, /**< type: 累计类型 */
-        100U, /**< resoltion: 存储分辨率(仅用于能量累计类型) 精度: 瓦时(wh) 范围: 1~1000 */
+        100U, /**< resoltion: 存储分辨率(仅用于能量累计类型) 精度: 瓦时(wh) 范围: 100~1000 */
         FALSE, /**< isContainFeedback: 是否包含回馈电流 */
     },
     /**< DchgCumuInfo: 放电累计配置信息 */
     {
         Soc_CumuTypeCap, /**< type: 累计类型 */
-        100U, /**< resoltion: 存储分辨率(仅用于能量累计类型) 精度: 瓦时(wh) 范围: 1~1000 */
+        100U, /**< resoltion: 存储分辨率(仅用于能量累计类型) 精度: 瓦时(wh) 范围: 100~1000 */
     },
     {
         PERCENT_TO_SOC(10U), /**< socJumpMax: SOC最大跳变值，注：此值需要不大于SOC跳变缓存大小SOC_JUMP_BUFF_SIZE */
