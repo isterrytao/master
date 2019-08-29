@@ -93,7 +93,6 @@ typedef struct{
     uint8 clrEeepIntegralFlag; /**< 增强EEPROM积分值清零标志 */
     App_SocType soc; /**< 当前SOC */
     Soc_IntegralType integral; /**< 积分值 精度：100UAs/bit */
-    Soc_IntegralType negativeIntegral; /**< 负积分值 精度：100UAs/bit 用于剩余容量为0以后的积分 */
     Soc_IntegralType rtcRamIntegralLast; /**< 上次记录RTC RAM中存储的积分值 */
     uint32 lastTime; /**< 上次积分时间 */
     uint8 socOverLimitFlag; /**< Soc超时限制值标志，用于充电SOC保持 */
