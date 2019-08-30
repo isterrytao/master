@@ -101,6 +101,7 @@ static boolean DcmOnDtuTp_RxPduIdIsValid(PduIdType RxPduId) {
     }
     return ret;
 }
+
 static const Dcm_ConfigType DcmConfigDtuTp = {
     DCM_UDS_ON_CAN, /* Dcm_ProtocolType protocolType; */
     DcmOnDtuTp_RxPduIdIsValid, /* boolean (*RxPduIdIsValid)(PduIdType RxPduId); */
