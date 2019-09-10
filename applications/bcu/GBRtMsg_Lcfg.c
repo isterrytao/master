@@ -28,6 +28,7 @@
 #include "ChargeM.h"
 #include "DisChargeM.h"
 #include "SocDiagCalib.h"
+#include "Isl78600Comm.h"
 
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
@@ -261,7 +262,7 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
 
 #if defined(A640)||defined(A641)
     msgHeader->dataHeader.systemStatus.DI2 = 0U;
-    msgHeader->dataHeader.systemStatus.SW1 = 0U;
+    msgHeader->dataHeader.systemStatus.SW1 = getIsl78600Fault();
     msgHeader->dataHeader.systemStatus.SW2 = 0U;
 #else
     msgHeader->dataHeader.systemStatus.DI2 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN2);
