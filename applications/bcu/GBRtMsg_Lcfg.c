@@ -28,6 +28,7 @@
 #include "ChargeM.h"
 #include "DisChargeM.h"
 #include "SocDiagCalib.h"
+#include "Isl78600Comm.h"
 
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
@@ -261,7 +262,7 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
 
 #if defined(A640)||defined(A641)
     msgHeader->dataHeader.systemStatus.DI2 = 0U;
-    msgHeader->dataHeader.systemStatus.SW1 = 0U;
+    msgHeader->dataHeader.systemStatus.SW1 = getIsl78600Fault();
     msgHeader->dataHeader.systemStatus.SW2 = 0U;
 #else
     msgHeader->dataHeader.systemStatus.DI2 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN2);
@@ -346,13 +347,45 @@ static void fillCellVoltage(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.cellVoltages.current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     msgHeader->dataHeader.cellVoltages.totalCellNum = SYSTEM_BATTERY_CELL_NUM;
     msgHeader->dataHeader.cellVoltages.startCellOfThisFrame = 1U;
-    msgHeader->dataHeader.cellVoltages.cellNumOfThisFrame = (uint8)(SYSTEM_BATTERY_CELL_NUM & 0xFFU);
+#if SYSTEM_BATTERY_CELL_NUM >= 256U
+    msgHeader->dataHeader.cellVoltages.cellNumOfThisFrame = 255U;
+#else
+    msgHeader->dataHeader.cellVoltages.cellNumOfThisFrame = (uint8)(SYSTEM_BATTERY_CELL_NUM);
+#endif
 }
+
 
 static const GB32960_CopySegmentType copySegmentsCellVoltage[] = {
     {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
+#if SYSTEM_BATTERY_CELL_NUM >= 256U
+    {1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * 255UL), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr}}
+#else
     {1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr}}
+#endif
 };
+
+#if SYSTEM_BATTERY_CELL_NUM >= 256U
+const App_VoltageType *CellDataM_GetVoltagePtr2(void);
+const App_VoltageType *CellDataM_GetVoltagePtr2(void) {
+    const App_VoltageType *celldataPtr =  CellDataM_GetVoltagePtr();
+    return &celldataPtr[255];
+}
+
+static void fillCellVoltage2(GBRt_MsgBuffer *msgHeader) {
+    msgHeader->dataHeader.cellVoltages.totalSysNum = 1U;
+    msgHeader->dataHeader.cellVoltages.sysNumOfThisFrame = 1U;
+    msgHeader->dataHeader.cellVoltages.totalVoltage = Statistic_GetBcu100mvTotalVoltage();
+    msgHeader->dataHeader.cellVoltages.current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+    msgHeader->dataHeader.cellVoltages.totalCellNum = SYSTEM_BATTERY_CELL_NUM;
+    msgHeader->dataHeader.cellVoltages.startCellOfThisFrame = 256U;
+    msgHeader->dataHeader.cellVoltages.cellNumOfThisFrame = (uint8)(SYSTEM_BATTERY_CELL_NUM - 255U);
+}
+
+static const GB32960_CopySegmentType copySegmentsCellVoltage2[] = {
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages), 1U + MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr2}}
+};
+#endif
 
 static void fillCellTemperatures(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.cellTemperatures.totalSysNum = 1U;
@@ -565,6 +598,9 @@ const GB32960_RTMessageItemType intervalData[] = {
     {0x95U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_CHADISCHATIME, NULL, (GB32960_FillMessageFuncType)fillCharDisTime, copySegmentschargeDischargeTime, (uint8)ARRAY_SIZE(copySegmentschargeDischargeTime)},
     {0x93U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copySegmentsSystemStatus, (uint8)ARRAY_SIZE(copySegmentsSystemStatus)},
     {0x08U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copySegmentsCellVoltage, (uint8)ARRAY_SIZE(copySegmentsCellVoltage)},
+#if SYSTEM_BATTERY_CELL_NUM >= 256U
+    {0x08U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage2, copySegmentsCellVoltage2, (uint8)ARRAY_SIZE(copySegmentsCellVoltage2)},
+#endif
     {0x09U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copySegmentsCellTemperatures, (uint8)ARRAY_SIZE(copySegmentsCellTemperatures)},
     {0x06U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copySegmentsCellPeakData, (uint8)ARRAY_SIZE(copySegmentsCellPeakData)},
     {0x84U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copySegmentsDtuStatus, (uint8)ARRAY_SIZE(copySegmentsDtuStatus)},
@@ -622,6 +658,13 @@ static const GB32960_CopySegmentType copyRecordSegmentsCellVoltage[] = {
     {0U, MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(cellVoltages), MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr}}
 };
+
+#if SYSTEM_BATTERY_CELL_NUM >= 256U
+static const GB32960_CopySegmentType copyRecordSegmentsCellVoltage2[] = {
+    {0U, MEMBER_SIZEOF_MSG_HEADER(cellVoltages), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
+    {MEMBER_SIZEOF_MSG_HEADER(cellVoltages), MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM), PTR_TYPE_GET_DATA, {CellDataM_GetVoltagePtr2}}
+};
+#endif
 
 static const GB32960_CopySegmentType copyRecordSegmentsCellTemperatures[] = {
     {0U, MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
@@ -738,6 +781,9 @@ static const GB32960_RecordItemType unfixedCycleDataList[] = {
     {GB_TYPE_TO_RECORD_TYPE(0x95U), MSG_LENGTH_DEVICE_CHADISCHATIME, NULL, (GB32960_FillMessageFuncType)fillCharDisTime, copyRecordSegmentschargeDischargeTime, (uint8)ARRAY_SIZE(copyRecordSegmentschargeDischargeTime), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x93U), MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copyRecordSegmentsSystemStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsSystemStatus), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x08U), MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copyRecordSegmentsCellVoltage, (uint8)ARRAY_SIZE(copyRecordSegmentsCellVoltage), NULL},
+#if SYSTEM_BATTERY_CELL_NUM >= 256U
+    {GB_TYPE_TO_RECORD_TYPE(0x08U), MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage2, copyRecordSegmentsCellVoltage2, (uint8)ARRAY_SIZE(copyRecordSegmentsCellVoltage2), NULL},
+#endif
     {GB_TYPE_TO_RECORD_TYPE(0x09U), MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copyRecordSegmentsCellTemperatures, (uint8)ARRAY_SIZE(copyRecordSegmentsCellTemperatures), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x06U), MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copyRecordSegmentsCellPeakData, (uint8)ARRAY_SIZE(copyRecordSegmentsCellPeakData), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x86U), MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copyRecordSegmentsBalanceStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsBalanceStatus), BalanceM_IsBalance},
