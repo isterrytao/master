@@ -25,5 +25,6 @@ extern const boolean Isl78600_IsHighWhenDaisyChainPowerEnableCtrlOn;
 extern const Dio_ChannelType Isl78600_PowerEnableCtrl;
 extern const boolean Isl78600_IsHighWhenPowerEnableCtrlOn;
 
+boolean getIsl78600Fault(void);
 
 #endif

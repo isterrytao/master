@@ -19,7 +19,7 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_GROUP_HW_INDENTIFY            (&DioGroupHwId) /**< 硬件版本标识DIO组 */
 #define DIO_CHANNEL_SUSPEND               DIO_CHANNEL_NONE //DIO_CHANNEL(D, 4U) //DIO_CHANNEL(C, 4) /**< 休眠电压控制, 高电平开启板上所有电源 */
 #define DIO_CHANNEL_SYSTEM_POWER_LATCH    DIO_CHANNEL(A, 2U) /*HIGH : LOCK LOW:UNLOCK*< 外部供电使能自锁, 高电平自锁电源 */
-#define DIO_CHANNEL_SYSTEM_POWER_OFF      DIO_CHANNEL(A, 3U) /*HIGH: OFF  LOW: ON*/ 
+#define DIO_CHANNEL_SYSTEM_POWER_OFF      DIO_CHANNEL(A, 3U) /*HIGH: OFF  LOW: ON*/
 
 //#define DIO_CHANNEL_NAND_POWER_EN         DIO_CHANNEL(C, 7U) /**< NAND FLASH电源控制, 高电平或高阻态使能NAND FLASH的电源 */
 //#define DIO_CHANNEL_LTC6820_EN            DIO_CHANNEL(K, 5U) /**< LTC6820使能控制 A64和A65都没有*/
@@ -98,11 +98,14 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_CHANNEL_ISL78600_CS           DIO_CHANNEL(S, 7U)   // PK6 输出
 #define DIO_CHANNEL_ISL78600_EN           DIO_CHANNEL(P, 6U)//DIO_CHANNEL(K, 6U)    // PK6 输出
 #define DIO_CHANNEL_ISL78600_DREADY       DIO_CHANNEL(P, 4U)//DIO_CHANNEL(P, 3U)   // PP3 输入
+#define DIO_CHANNEL_ISL78600_FAULT       DIO_CHANNEL(P, 7U)//DIO_CHANNEL(P, 3U)   // PP3 输入
 
 #define DIO_CAHNNEL_VNQ7140AH_SEN         DIO_CHANNEL(D, 2U) /*SEn脚*/
 #define DIO_CAHNNEL_VNQ7140AH_SEL0        DIO_CHANNEL(E, 2U) /*SEn脚*/
 #define DIO_CAHNNEL_VNQ7140AH_SEL1        DIO_CHANNEL(D, 3U) /*SEn脚*/
 #define DIO_CAHNNEL_VNQ7140AH_SEL2        DIO_CHANNEL(A, 1U) /*SEn脚*/
+#define DIO_CAHNNEL_VNQ7140AH_FAULTRST        DIO_CHANNEL(E, 4U) /*SEn脚*/
+
 #endif
 
 /**
