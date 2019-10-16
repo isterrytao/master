@@ -306,6 +306,10 @@ static uint16 MDBSgetChargerStatus(const Modbus_RegistersRegionType *p, uint16 a
             rc |= ((uint16)1U << 4);
         }
     }
+    else
+    {
+        rc |= ((uint16)1U << 3);
+    }
     return rc;
 }
 // 继电器相关状态上报，序号与RelayM_Lcfg.h中一致，继电器索引号参考协议中继电器定义部分
@@ -388,6 +392,18 @@ static uint16 getRlyIndex(uint8 num) {
     if (RELAYM_FN_ALARM == num)
     {
         rc = 28U;
+    }
+#endif
+#ifdef RELAYM_FN_POSITIVE_MAIN_LED
+    if (RELAYM_FN_POSITIVE_MAIN_LED == num)
+    {
+        rc = 30U;
+    }
+#endif
+#ifdef RELAYM_FN_SELF_LOCK_LED
+    if (RELAYM_FN_SELF_LOCK_LED == num)
+    {
+        rc = 31U;
     }
 #endif
 
