@@ -14,9 +14,10 @@
  */
 #define INTERNALCOMM_SLAVE_CELL_VOLTAGE_DID             0x480U
 #define INTERNALCOMM_SLAVE_CELL_TEMPERATURE_DID         0x484U
-#define INTERNALCOMM_SLAVE_CELL_BALANCE_STATUS_DID      0x488U
+#define INTERNALCOMM_SLAVE_CELL_BALANCE_BYTE_DID        0x488U
 #define INTERNALCOMM_SLAVE_TEMPERATURE_TYPE_DID         0x48BU
 #define INTERNALCOMM_SLAVE_TEMPERATURE_TYPE_CFG_DID     0x48CU
+#define INTERNALCOMM_SLAVE_CELL_BALANCE_BITMAP_DID      0x48DU
 #define INTERNALCOMM_SLAVE_CELL_HSS_STATUS_DID          0x900U
 #define INTERNALCOMM_SLAVE_CELL_HSS_VOLTAGE_DID         0x901U
 #define INTERNALCOMM_SLAVE_CELL_HSS_CURRENT_DID         0x902U
@@ -43,6 +44,8 @@ typedef enum{
   INTERNALCOMM_SCHEDULE_ITEM_0xA50D = 11,
   INTERNALCOMM_SCHEDULE_ITEM_0x48B = 12,
   INTERNALCOMM_SCHEDULE_ITEM_0x48C = 13,
+  INTERNALCOMM_SCHEDULE_ITEM_0x48D = 14,
+  INTERNALCOMM_SCHEDULE_ITEM_MAX = 15,
   INTERNALCOMM_SCHEDULE_ITEM_INVALID = 0xFF
 }InternalComm_ScheduleItemIndexType;
 
@@ -203,6 +206,7 @@ Async_EvnetCbkReturnType InternalComm_RequestDID0xA50C_Cbk(Async_EventType *Even
 Async_EvnetCbkReturnType InternalComm_RequestDID0xA50D_Cbk(Async_EventType *Event, uint8 byWhat);
 Async_EvnetCbkReturnType InternalComm_RequestDID0x48B_Cbk(Async_EventType *Event, uint8 byWhat);
 Async_EvnetCbkReturnType InternalComm_RequestDID0x48C_Cbk(Async_EventType *Event, uint8 byWhat);
+Async_EvnetCbkReturnType InternalComm_RequestDID0x48D_Cbk(Async_EventType *Event, uint8 byWhat);
 
 
 

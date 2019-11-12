@@ -34,6 +34,10 @@
  */
 #define BALANCEM_BALANCE_COMMAND_BUFFER_SIZE    10U
 
+/**
+ * \brief 采集板支持最大均衡个数定义
+ */
+#define BALANCEM_REMOTE_BMU_BOARD_BALANCE_NUM_MAX      6U
 
 
 #endif

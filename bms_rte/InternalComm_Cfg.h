@@ -16,12 +16,13 @@
 #ifndef INTERNALCOMM_CFG_H_
 #define INTERNALCOMM_CFG_H_
 
+#include "Platform_Types.h"
 #include "CanTp_Cfg.h"
 
 /**
  * \brief 内网通信DID请求使能控制
  */
-#define INTERNALCOMM_REQUIRE_SLAVE_BALANCE_STATUS_EN    STD_ON
+#define INTERNALCOMM_REQUIRE_SLAVE_BALANCE_BYTE_EN      STD_ON
 #define INTERNALCOMM_REQUIRE_SLAVE_HSS_STATUS_EN        STD_ON
 #define INTERNALCOMM_REQUIRE_SLAVE_HSS_VOLTAGE_EN       STD_ON
 #define INTERNALCOMM_REUQIRE_SLAVE_HSS_CURRENT_EN       STD_ON
@@ -31,6 +32,7 @@
 #define INTERNALCOMM_REUQIRE_SLAVE_BOARD_TEMPERATURE_EN STD_ON
 #define INTERNALCOMM_REQUIRE_SLAVE_FW_VERSION_EN        STD_ON
 #define INTERNALCOMM_REUQIRE_SLAVE_HWID_EN              STD_ON
+#define INTERNALCOMM_REQUIRE_SLAVE_BALANCE_BITMAP_EN    STD_ON
 
 /**
  * \brief 内网通信发送缓存大小定义
@@ -45,7 +47,7 @@
 /**
  * \brief 内网通信从机请求DID个数
  */
-#define INTERNALCOMM_SLAVE_DID_NUM              (0x0EU)
+#define INTERNALCOMM_SLAVE_DID_NUM              (0x0FU)
 
 /**
  * \内网通信请求通道个数，代表主机请求从机数据并发能力
@@ -82,5 +84,45 @@
  * \brief 内网通信使用到的XGATE软件中断最大通道号
  */
 #define INTERNALCOMM_USE_XGATE_SW_ISR_MAX       3U
+
+/**
+ * \brief 内网通信从机支持bitmap均衡命令的从机软件版本
+ * \notes 长度加字符串结束符不能小于4个字节
+ */
+#define INTERNALCOMM_SUPPORT_BITMAP_BALANCE_SLAVE_FWVERSION   "1.1.0.0"
+
+
+/**
+ * \brief 获取向从机发送的字节均衡控制命令，对应DID为0x488
+ *
+ * \param SlaveNum 从机号
+ * \param Did 控制DID
+ * \param DataBufferPtr 组包数据存放缓存
+ * \param Length 返回实际组包长度
+ */
+#define InternalComm_GetBalanceByteCtlData_Cbk(SlaveNum, Did, DataBufferPtr, Length)     BalanceM_ModelGetSlaveBalanceControlSendData_Cbk(SlaveNum, Did, DataBufferPtr, Length)
+
+/**
+ * \brief 获取向从机发送的位图均衡控制命令，对应DID为0x48D
+ *
+ * \param SlaveNum 从机号
+ * \param Did 控制DID
+ * \param DataBufferPtr 组包数据存放缓存
+ * \param Length 返回实际组包长度
+ */
+#define InternalComm_GetBalanceBitmapCtlData_Cbk(SlaveNum, Did, DataBufferPtr, Length)     InternalComm_ModelGetSlaveBalanceBitmapSendData_Cbk(SlaveNum, Did, DataBufferPtr, Length)
+
+/**
+ * \brief 从机位图均衡状态接收响应
+ * \note 接收到的为从机当前实时的位图均衡状态，用于更新系统均衡状态
+ *
+ * \param SlaveNum 从机号
+ * \param DataPtr 数据缓存
+ * \param Length 数据长度
+ */
+#define InternalComm_RxBalanceBitmapIndication(SlaveNum, DataPtr, Length)   BalanceM_RxBalanceNewStatusBitmapIndication(SlaveNum, DataPtr, Length)
+
+
+
 
 #endif
