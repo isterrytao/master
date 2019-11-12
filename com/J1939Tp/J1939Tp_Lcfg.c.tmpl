@@ -5,6 +5,9 @@ var processedcfg = globalInfo.J1939Tp.processedcfg;
 #include "J1939Tp_Lcfg.h"
 #include "CanIf_Lcfg.h"
 
+#define J1939TP_CM_BAM J1939TP_CM
+#define J1939TP_DT_BAM J1939TP_DT
+
 const J1939Tp_PgType J1939Tp_Pgs[<%- processedcfg.pgs.length %>];
 
 <%
@@ -24,7 +27,7 @@ var i = 0;
 for (var ch of processedcfg.channels) {%>
     {/*<%- JSON.stringify(ch) %>*/
         /* .ChannelIndex = */ <%- i %>U,
-        /* .Protocol = */ J1939TP_PROTOCOL_CMDT,
+        /* .Protocol = */ J1939TP_PROTOCOL_<%-ch.protocol%>,
         /* .DtNPdu = */ <%- ch.dtnpdu %>,
         /* .CmNPdu = */ <%- ch.cmnpdu %>,
         /* .FcNPdu = */ <%- ch.fcnpdu %>,

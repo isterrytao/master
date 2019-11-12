@@ -338,6 +338,9 @@ extern const InternalComm_ConfigInfoType InternalComm_ConfigInfo;
 
 extern uint8 InternalComm_TempTypeCfgCntBuff[];
 
+extern InternalComm_SlaveBitMaskType InternalComm_DID0x488Bit;
+extern InternalComm_SlaveBitMaskType InternalComm_DID0x48DBit;
+
 /**
  * \brief 内网通信初始化
  *

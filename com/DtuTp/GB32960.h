@@ -96,7 +96,7 @@ typedef struct {
 } GB32960_PACKED GB32960_CommandHeaderType;
 
 
-#define GB32960_SUPPORT_COMMAND_NUMBER 1U
+#define GB32960_SUPPORT_COMMAND_NUMBER 2U
 extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);
@@ -128,5 +128,7 @@ Std_ReturnType GB32960_ReportRtMsg(uint16 length, GB32960_CopyDataBody copyTxMsg
 Std_ReturnType DtuTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType *TpTxInfoPtr);
 
 extern const GB32960_ConfigType GB32960ConfigData;
+boolean GB32960_BalanceRemoteIsConnect(void);
+const uint8 *GB32960_GetBalanceRemote(void);
 
 #endif

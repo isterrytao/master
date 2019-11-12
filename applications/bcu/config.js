@@ -391,7 +391,7 @@ module.exports = {
             auto_power_down: {
                 en: "STD_ON",
                 current: 3,
-                time: (30*60*1000),
+                time: 30*60*1000,
             },
             manual_power_down: {
                 notes: [
@@ -752,6 +752,10 @@ module.exports = {
             minVoltage: 2700, // 开启最小电压
             minDiffVoltage: 10, // 开启的最小压差
             maxDiffVoltage: 800, // 开启的最大压差
+        },
+        Remote: {
+            enable: 0, // 是否使能
+            condition:{inc:"UserStrategy.h", func:"UserStrategy_RemoteBalanceConditionCheck"},
         }
     },
 
