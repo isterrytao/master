@@ -25,6 +25,7 @@
 #include "CellDataM.h"
 #include "Async_Event.h"
 #include "Diagnosis.h"
+#include "InternalComm.h"
 
 /**
  * \从机均衡状态控制DID
@@ -36,6 +37,7 @@
  */
 #define BALANCE_SLAVE_BALANCE_INVALID_BAT_NUM   0xFFU
 
+typedef boolean (*RemoteBalanceEnable)(void);
 /**
  * \brief 均衡类别定义
  */
@@ -69,6 +71,10 @@ typedef struct{
     App_VoltageType delta_volt_max; /**< 均衡最大压差 */
 }BalanceM_BalanceConfigType;
 
+typedef struct{
+    uint8 balance_en; /**< 均衡使能控制 */
+    RemoteBalanceEnable func; /**< 均衡启动电压 */
+}BalanceM_RemoteBalanceConfigType;
 
 /**
  * \brief 均衡管理配置类型
@@ -77,6 +83,7 @@ typedef struct{
     BalanceM_BalanceCategoryType type; /**< 均衡类别 */
     BalanceM_BalanceConfigType chg_bal_config; /**< 充电均衡参数配置 */
     BalanceM_BalanceConfigType stc_bal_config; /**< 静态均衡参数配置 */
+    BalanceM_RemoteBalanceConfigType remote_bal_config; /**< 远程均衡参数配置 */
     Diagnosis_LevelType disable_bal_ht_level; /**< 禁止均衡高温等级 */
     Diagnosis_LevelType disable_bal_lv_level; /**< 禁止均衡低压等级 */
     BalanceM_ReferenceTypeType reference; /**< 参考基准电压 */
@@ -190,6 +197,16 @@ boolean BalanceM_IsBalance(void);
  * \brief 获取当前均衡配置指针
  */
 const BalanceM_ConfigType* BalanceM_GetConfigPtr(void);
+
+/**
+ * \brief 获取均衡指令，0x48D，按位发送，每个采集板开6串
+ */
+void InternalComm_GetSlaveBalanceBitmapSendData_Cbk(App_SlaveIdType SlaveNum, InternalComm_DidTypes Did, InternalComm_MsgType DataBufferPtr, InternalComm_MsgLenType *Length);
+
+/**
+ * \brief 获取均衡状态,每个采集板开6串
+ */
+void BalanceM_RxBalanceNewStatusBitmapIndication(App_SlaveIdType SlaveNum, const uint8 *DataPtr, uint16 Length);
 
 #endif
 

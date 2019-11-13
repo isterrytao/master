@@ -123,6 +123,7 @@ extern const uint8 SystemConnection_SlaveSampleBoardNumTable[];
 extern const uint8 SystemConnection_SlaveCellNumTable[];
 extern const uint8 SystemConnection_SlaveTempNumTable[];
 extern uint8 BalanceM_BalanceStatus[];
+extern uint8 BalanceM_BalanceCmdBits[];
 extern const uint8 BalanceM_BalanceBuffSize;
 
 /**
