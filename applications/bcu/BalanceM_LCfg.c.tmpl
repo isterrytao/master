@@ -1,5 +1,21 @@
 #include "BalanceM.h"
 
+<%
+if (cfg.Remote.enable) {
+    if (!cfg.Remote.hasOwnProperty('condition')) {
+        throw('cfg.Remote must hasOwnProperty condition');
+    }
+
+    if (!cfg.Remote.condition.hasOwnProperty('func')) {
+        throw('cfg.Remote.condition must hasOwnProperty func');
+    }
+}
+%>
+
+<% if (cfg.Remote.enable && cfg.Remote.condition.inc) {%>
+#include "<%- cfg.Remote.condition.inc %>"
+<%}%>
+
 const BalanceM_ConfigType BalanceM_ConfigInfo = {
     BALANCEM_BALANCE_PASSTIVE, /**< type */
     /**< 充电均衡配置参数 */
@@ -23,6 +39,13 @@ const BalanceM_ConfigType BalanceM_ConfigInfo = {
         <%- cfg.Static.minVoltage %>U, /**< voltage_min */
         <%- cfg.Static.minDiffVoltage %>U, /**< delta_volt_min */
         <%- cfg.Static.maxDiffVoltage %>U, /**< delta_volt_max */
+    },
+    /**< 远程均衡配置 */
+    {
+        <%- cfg.Remote.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
+        <% if (cfg.Remote.enable) {%><%- cfg.Remote.condition.func %>,
+        <% } else {%>NULL,
+        <%}%>
     },
     DIAGNOSIS_LEVEL_THIRD, /**< disable_bal_ht_level */
     DIAGNOSIS_LEVEL_THIRD, /**< disable_bal_lv_level */

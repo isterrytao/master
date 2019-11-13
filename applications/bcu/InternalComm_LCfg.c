@@ -11,6 +11,7 @@
  */
 
 #include "InternalComm.h"
+#include "InternalComm_Cfg.h"
 #include "InternalComm_Cbk.h"
 #include "HLSS_Cbk.h"
 #include "BalanceM_Cbk.h"
@@ -55,7 +56,7 @@ const InternalComm_ScheduleItemType InternalComm_ScheduleItem[INTERNALCOMM_SLAVE
     },
     /* 2 */
     {
-        INTERNALCOMM_SLAVE_CELL_BALANCE_STATUS_DID, /**< 从机均衡状态DID */
+        INTERNALCOMM_SLAVE_CELL_BALANCE_BYTE_DID, /**< 从机均衡状态DID */
         1000U, /**< Interval */
         BalanceM_GetSlaveBalanceControlSendData_Cbk, /**< 获取通信数据回调函数 */
         InternalComm_RequestDID0x488_Cbk /**< Request */
@@ -136,6 +137,13 @@ const InternalComm_ScheduleItemType InternalComm_ScheduleItem[INTERNALCOMM_SLAVE
         100U, /**< Interval */
         InternalComm_GetTemperatureTypeSendData_Cbk, /**< 获取通信数据回调函数 */
         InternalComm_RequestDID0x48C_Cbk /**< Request */
+    },
+    /* 14 */
+    {
+        INTERNALCOMM_SLAVE_CELL_BALANCE_BITMAP_DID, /**< 从机HWID DID */
+        1000U, /**< Interval */
+        InternalComm_GetSlaveBalanceBitmapSendData_Cbk, /**< 获取通信数据回调函数 */
+        InternalComm_RequestDID0x48D_Cbk /**< Request */
     },
 };
 

@@ -85,6 +85,18 @@ long ExString_StrToLDecade(const char *s, const char **left);
  */
 long ExString_StrToLHex(const char *s, const char **left);
 
+/**
+ * \brief 带‘.’版本号的大小比较
+ * \details 版本号格式为“x.x.x.x”,长度不同时，只比较相同长度的版本
+ *
+ * \param version1 版本1字符串
+ * \param version2 版本2字符串
+ *
+ * \return 0:相等 -1：version2 > version1 1:version1 > version2
+ */
+char ExString_CompareVersionWithDot(const char *version1, const char *version2);
+
+
 
 #endif
 

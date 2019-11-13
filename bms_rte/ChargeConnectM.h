@@ -42,7 +42,7 @@
                                                     CHARGECONNECTM_GB_CC680_IS_CONNECT(RES) || \
                                                     CHARGECONNECTM_GB_CC1500_IS_CONNECT(RES))
 #define CHARGECONNECTM_GB_CC2_IS_CONNECT(RES)       ((RES) >= ChargeConnectM_ConfigInfo.ResistancePara.CC2ResMin && (RES) <= ChargeConnectM_ConfigInfo.ResistancePara.CC2ResMax)
-#define CHARGECONNECTM_GB_CP_DUTY_IS_VALID(DUTY)    (!(((DUTY) < PWM_DUTY_FROM_PERCENT(8U)) || ((DUTY) > PWM_DUTY_FROM_PERCENT(90U) && (DUTY) <= PWM_DUTY_FROM_PERCENT(97U)) || ((DUTY) > PWM_DUTY_FROM_PERCENT(97U))))
+#define CHARGECONNECTM_GB_CP_DUTY_IS_VALID(DUTY)    (!(((DUTY) < PWM_DUTY_FROM_PERCENT(3U)) || ((DUTY) > PWM_DUTY_FROM_PERCENT(7U) && (DUTY) < PWM_DUTY_FROM_PERCENT(8U)) || ((DUTY) > PWM_DUTY_FROM_PERCENT(90U))))
 #define CHARGECONNECTM_GB_CP_IS_CONNECT(DUTY)       CHARGECONNECTM_GB_CP_DUTY_IS_VALID(DUTY)
 #define CHARGECONNECTM_GB_CP_FREQ_IS_VALID(FREQ)    ((FREQ) >= ChargeConnectM_ConfigInfo.CpPara.FreqMin && (FREQ) <= ChargeConnectM_ConfigInfo.CpPara.FreqMax)
 #define CHARGECONNECTM_GB_CC_IS_ENABLE(MODE)        ((MODE) == CHARGECONNECTM_GB_AC_MODE1_CONNECT_B || \
