@@ -53,6 +53,7 @@ typedef enum{
 typedef enum{
     BALANCE_CHARGE_BALANCE, /**< 充电均衡 */
     BALANCE_STATIC_BALANCE, /**< 静态均衡 */
+    BALANCE_REMOTE_BALANCE, /**< 远程均衡 */
 }BalanceM_BalanceTypeType;
 
 typedef enum{
