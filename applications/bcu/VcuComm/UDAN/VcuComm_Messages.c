@@ -979,11 +979,14 @@ void VcuComm_GetStatusMsg_0x207(uint8 *buf, uint16 *Length)
 
 void VcuComm_GetStatusMsg_0x208(uint8 *buf, uint16 *Length) {
     uint16 index = 0U;
-    uint16 u16val;
+    Current_CurrentType current;
 
     // 加热电流(采集)
-    u16val = (uint16)(CurrentM_GetCurrent(CURRENTM_CHANNEL_HEATER));
-    WRITE_BT_UINT16(buf, index, u16val);
+    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_HEATER);
+    if (!CurrentM_IsValidCurrent(current)) {
+        current = 0;
+    }
+    WRITE_BT_UINT16(buf, index, (uint16)current);
 
     // 保留
     WRITE_BT_UINT16(buf, index, 0xFFFFU);

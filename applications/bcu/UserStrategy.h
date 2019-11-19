@@ -134,6 +134,7 @@ Std_ReturnType UserStrategy_DCConnected(void);
 void UserStrategy_FullChargeHook(void);
 void UserStrategy_FullChargeReleaseHook(void);
 boolean UserStrategy_Wakeup(void);
+boolean UserStrategy_RemoteBalanceConditionCheck(void);
 
 /**
  * \brief 慢充交流充电继电器是否闭合就绪

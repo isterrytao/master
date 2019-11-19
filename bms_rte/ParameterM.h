@@ -124,6 +124,8 @@ typedef enum{
 
     PARAMETERM_EEEP_LOWER_INDEX_END = 34, /**< 低段参数索引结束(不单独占用一个索引)， 注：处于PARAMETERM_EEEP_LOWER_INDEX_END和PARAMETERM_EEEP_HIGHER_INDEX_START之间的参数不进行存储有效性校验 */
 
+    PARAMETERM_EEEP_REMOTELINK_TIME_HIGH_INDEX = 119,/**< 远程均衡命令下发时间高字 精度：1S/bit */
+    PARAMETERM_EEEP_REMOTELINK_TIME_LOW_INDEX = 120,/**< 远程均衡命令下发时间低字 精度：1S/bit */
     PARAMETERM_EEEP_HIGHER_INDEX_START = 121, /**< 高段参数索引起始(不单独占用一个索引) */
 
     PARAMETERM_EEEP_NOMINAL_CAP_INDEX = 121, /**< 额定容量 */

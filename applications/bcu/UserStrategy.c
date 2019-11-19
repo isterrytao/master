@@ -479,6 +479,12 @@ boolean UserStrategy_Wakeup(void){
 #endif
 }
 
+boolean UserStrategy_RemoteBalanceConditionCheck(void)
+{
+    uint8 ret = TRUE;
+    return ret;
+}
+
 boolean UserStartegy_AcChargeRelayIsReady(void)
 {
     boolean res = FALSE;
