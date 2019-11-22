@@ -43,11 +43,11 @@ typedef enum{
  * \brief 充电高压流程控制内部数据类型
  */
 typedef struct{
-	RelayM_FunctionType chgRelay;
     uint8 chgFinishFlag; /**< 充电完成标志 */
     HvProcess_ChgStateType State; /**< 充电高压流程状态 */
     uint32 RelayOffTick; /**< 继电器断开计时 */
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
+    RelayM_FunctionType ChgRelay;
     boolean HeatRelayFaultCheckFlag;
     boolean HeatIsFinish;
 }HvProcess_ChgInnerDataType;
@@ -177,12 +177,13 @@ boolean HvProcess_ChgStartChgFinishCond(void);
 void HvProcess_ChgStartChgFinishAction(void);
 
 boolean HvProcess_ChgReStartJudgeCond(void);
-
 void HvProcess_ChgReStartJudgeAction(void);
 
 boolean HvProcess_ChargerIsHeadMode(void);
 boolean HvProcess_IsJumpMode(void);
 boolean HvProcess_HeatIsFinish(void);
+boolean HvProcess_ChgHeaterRelayIsNormal(void);
+void HvProcess_ChgHeaterRelayNormalAction(void);
 #endif
 
 /**

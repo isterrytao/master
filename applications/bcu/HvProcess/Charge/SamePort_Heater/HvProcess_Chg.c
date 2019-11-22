@@ -70,7 +70,7 @@ boolean HvProcess_ChgStateStartCond(void)
     HvProcess_DchgStateType dchgState;
 
     dchgState = HvProcess_GetDchgState();
-    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= 300U)
+    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= 500U)
     {
         if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag)
         {
@@ -94,38 +94,41 @@ boolean HvProcess_ChgStateStartCond(void)
 
 void HvProcess_ChgStateStartAction(void)
 {
-    HvProcess_ChgInnerData.chgRelay = RELAYM_FN_NONE;
-    HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = FALSE;
 #ifdef RELAYM_FN_NEGATIVE_MAIN
     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_ON);
 #endif
-#ifdef RELAYM_FN_CHARGE
-        HvProcess_ChgInnerData.chgRelay = RELAYM_FN_CHARGE;
-        (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_ON);
-#endif
-    if (ChargerComm_GetChargeType() == CHARGE_TYPE_AC)
-    {
-#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
-        HvProcess_ChgInnerData.chgRelay = RELAYM_FN_POSITIVE_AC_CHARGE;
-        (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_ON);
-#endif
-    }
-    else
-    {
-#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
-        HvProcess_ChgInnerData.chgRelay = RELAYM_FN_POSITIVE_DC_CHARGE;
-        (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_ON);
-#endif
-    }
+    HvProcess_ChgInnerData.ChgRelay = RELAYM_FN_POSITIVE_MAIN;
+    HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = FALSE;
+    (void)RelayM_Control(RELAYM_FN_POSITIVE_MAIN, RELAYM_CONTROL_ON);
+// #ifdef RELAYM_FN_NEGATIVE_MAIN
+//     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_ON);
+// #endif
+// #ifdef RELAYM_FN_CHARGE
+//         HvProcess_ChgInnerData.ChgRelay = RELAYM_FN_CHARGE;
+//         (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_ON);
+// #endif
+//     if (ChargerComm_GetChargeType() == CHARGE_TYPE_AC)
+//     {
+// #ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+//         HvProcess_ChgInnerData.ChgRelay = RELAYM_FN_POSITIVE_AC_CHARGE;
+//         (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_ON);
+// #endif
+//     }
+//     else
+//     {
+// #ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+//         HvProcess_ChgInnerData.ChgRelay = RELAYM_FN_POSITIVE_DC_CHARGE;
+//         (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_ON);
+// #endif
+//     }
 }
 
 boolean HvProcess_ChgHeaterRelayIsNormal(void)
 {
     boolean res = FALSE;
 
-    if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && !HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
+    if (RelayM_GetActualStatus(HvProcess_ChgInnerData.ChgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.ChgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && !HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
     {
-        HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
 #ifdef RELAYM_FN_HEATER
         if (RelayMConfigData[RELAYM_FN_HEATER].GetInstantVoltage != NULL)
         {
@@ -134,8 +137,13 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
                 if (RelayM_GetActualStatus(RELAYM_FN_HEATER) == RELAYM_ACTUAL_OFF)
                 {
                     (void)RelayM_StartAdhesiveDetect(RELAYM_FN_HEATER, NULL);
+                    HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
                 }
             }
+        }
+        else
+        {
+            res = TRUE;
         }
 #endif
     }
@@ -192,9 +200,9 @@ boolean HvProcess_ChgStartHeatCond(void)
 
 void HvProcess_ChgStartHeatAction(void)
 {
-    if (HvProcess_ChgInnerData.chgRelay != RELAYM_FN_NONE)
+    if (HvProcess_ChgInnerData.ChgRelay != RELAYM_FN_NONE)
     {
-        (void)RelayM_Control(HvProcess_ChgInnerData.chgRelay, RELAYM_CONTROL_ON);
+        (void)RelayM_Control(HvProcess_ChgInnerData.ChgRelay, RELAYM_CONTROL_ON);
     }
     TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_LT);
     HvProcess_ChgInnerData.HeatIsFinish = FALSE;
@@ -231,15 +239,14 @@ boolean HvProcess_ChgStartChargeCond(void)
             lastTime = 0U;
         }
     }
-
     return res;
 }
 
 void HvProcess_ChgStartChargeAction(void)
 {
-    if (HvProcess_ChgInnerData.chgRelay != RELAYM_FN_NONE)
+    if (HvProcess_ChgInnerData.ChgRelay != RELAYM_FN_NONE)
     {
-        (void)RelayM_Control(HvProcess_ChgInnerData.chgRelay, RELAYM_CONTROL_ON);
+        (void)RelayM_Control(HvProcess_ChgInnerData.ChgRelay, RELAYM_CONTROL_ON);
     }
 #ifdef RELAYM_FN_HEATER
     (void)RelayM_Control(RELAYM_FN_HEATER, RELAYM_CONTROL_OFF);
@@ -288,7 +295,7 @@ boolean HvProcess_ChgStartHeatFinishCond(void)
         lastTime = 0UL;
     }
     monitorTime = nowTime;
-    if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && heatRelay == RELAYM_ACTUAL_ON)
+    if (RelayM_GetActualStatus(HvProcess_ChgInnerData.ChgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.ChgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && heatRelay == RELAYM_ACTUAL_ON)
     {
         if (lastTime == 0UL)
         {
@@ -310,9 +317,9 @@ boolean HvProcess_ChgStartHeatFinishCond(void)
 
 void HvProcess_ChgStartHeatFinishAction(void)
 {
-    if (HvProcess_ChgInnerData.chgRelay != RELAYM_FN_NONE)
+    if (HvProcess_ChgInnerData.ChgRelay != RELAYM_FN_NONE)
     {
-        (void)RelayM_Control(HvProcess_ChgInnerData.chgRelay, RELAYM_CONTROL_OFF);
+        (void)RelayM_Control(HvProcess_ChgInnerData.ChgRelay, RELAYM_CONTROL_OFF);
     }
 }
 
@@ -441,9 +448,9 @@ boolean HvProcess_ChgHeatFinishCond(void)
 
 void HvProcess_ChgHeatFinishAction(void)
 {
-    if (HvProcess_ChgInnerData.chgRelay != RELAYM_FN_NONE)
+    if (HvProcess_ChgInnerData.ChgRelay != RELAYM_FN_NONE)
     {
-        (void)RelayM_Control(HvProcess_ChgInnerData.chgRelay, RELAYM_CONTROL_ON);
+        (void)RelayM_Control(HvProcess_ChgInnerData.ChgRelay, RELAYM_CONTROL_ON);
     }
     TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
     HvProcess_ChgInnerData.HeatIsFinish = FALSE;
@@ -476,7 +483,7 @@ boolean HvProcess_ChgHeatFinishCheckCond(void)
         {
             lastTime = nowTime;
         }
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 3000UL)
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000UL)
         {
             res = TRUE;
             lastTime = 0UL;
@@ -505,7 +512,7 @@ boolean HvProcess_ChgStartChgFinishCond(void)
         lastTime = 0UL;
     }
     monitorTime = nowTime;
-    if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) != RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != RELAYM_FN_NONE)
+    if (RelayM_GetActualStatus(HvProcess_ChgInnerData.ChgRelay) != RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.ChgRelay != RELAYM_FN_NONE)
     {
         lastTime = 0U;
     }
@@ -515,7 +522,7 @@ boolean HvProcess_ChgStartChgFinishCond(void)
         {
             lastTime = nowTime;
         }
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000UL)
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 5000UL)
         {
             res = TRUE;
         }
@@ -562,6 +569,7 @@ boolean HvProcess_ChgChargeConnectionCond(void)
 
 void HvProcess_ChgChargeConnectionAction(void)
 {
+    (void)RelayM_Control(RELAYM_FN_HEATER, RELAYM_CONTROL_OFF);
     HvProcess_ChgInnerData.RelayOffTick = OSTimeGet();
 }
 
@@ -589,7 +597,7 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
-    uint32 delay = S_TO_MS(2U);
+    uint32 delay = S_TO_MS(12U);
     Current_CurrentType current;
 
     current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
@@ -611,6 +619,7 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
 
 void HvProcess_ChgRelayOffDelayAction(void)
 {
+    (void)RelayM_Control(RELAYM_FN_POSITIVE_MAIN, RELAYM_CONTROL_OFF);
 #ifdef RELAYM_FN_HEATER
     (void)RelayM_Control(RELAYM_FN_HEATER, RELAYM_CONTROL_OFF);
 #endif

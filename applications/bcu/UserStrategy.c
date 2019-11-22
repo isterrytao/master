@@ -295,27 +295,29 @@ boolean UserStartegy_ChargeIsAllow(void)
 
 App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
 {
-    App_Tv100mvType volt;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
-
-    volt = PowerM_GetChargeVoltage(type);
+    App_Tv100mvType volt = PowerM_GetChargeVoltage(type);
 #ifdef RELAYM_FN_HEATER
-    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    boolean isHeat = HvProcess_ChargerIsHeadMode();
+    boolean isJump = HvProcess_IsJumpMode();
+    if (HvProcess_HeatIsFinish())
     {
-        if (HvProcess_HeatIsJump() == TRUE)
-        {
-            volt = Statistic_GetBcu100mvTotalVoltage();
-            if (Statistic_TotalVoltageIsValid(volt))
-            {
-                volt += V_TO_100MV(5U);
-            }
-        }
+        volt = USERSTRATEGY_STOP_HEAT_VOLT;
+    }
+    else if (isHeat || isJump)
+    {
+        volt = USERSTRATEGY_START_HEAT_VOLT;
+    }
+    else
+    {
+        // volt = PowerM_GetChargeVoltage(type);
     }
 #endif
     if (!Statistic_TotalVoltageIsValid(volt))
     {
         volt = 0U;
     }
+
     return volt;
 }
 
@@ -324,17 +326,32 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     Current_CurrentType current;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
 #ifdef RELAYM_FN_HEATER
-    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    boolean isHeat = HvProcess_ChargerIsHeadMode();
+    boolean isJump = HvProcess_IsJumpMode();
+
+    if (HvProcess_HeatIsFinish())
+    {
+        // current = CURRENT_S_100MA_FROM_A(10);
+        current = USERSTRATEGY_STOP_HEAT_CURRENT;
+    }
+    else if (isJump)
+    {
+        current = USERSTRATEGY_START_HEAT_CURRENT;
+    }
+    else if (isHeat)
     {
         current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
     }
-    else if (type == CHARGE_TYPE_DC)
-    {
-        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
-    }
     else
     {
-        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+        if (type == CHARGE_TYPE_DC)
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
+        }
+        else
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+        }
     }
 #else
     if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
