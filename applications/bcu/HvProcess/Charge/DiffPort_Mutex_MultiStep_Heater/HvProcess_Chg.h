@@ -28,11 +28,17 @@
  */
 typedef enum{
     HVPROCESS_CHG_START = 0, /**< 启动状态 */
-    HVPROCESS_CHG_HEATER_RLY_FAULT_CHECK, /**< 加热继电器故障检查状态 */
-    HVPROCESS_CHG_HEAT_JUDGE, /**< 加热判断状态 */
-    HVPROCESS_CHG_START_HEAT, /**< 启动加热状态 */
-    HVPROCESS_CHG_HEATING, /**< 加热状态 */
-    HVPROCESS_CHG_START_CHARGE, /**< 充电启动状态 */
+    HVPROCESS_CHG_HEATER_RLY_FAULT_CHECK,
+    HVPROCESS_CHG_HEAT_TEMP_JUDGE,
+    HVPROCESS_CHG_START_TO_HEAT_CURR_VALID_JUDGE,
+    HVPROCESS_CHG_START_TO_HEAT_RELAY_DELAY_ACTION,
+    HVPROCESS_CHG_HEAT_AND_CHARGE_TO_HEAT_PREPARE,
+    HVPROCESS_CHG_HEAT_ON,
+    HVPROCESS_CHG_START_TO_HEAT_AND_CHARGE_CURR_VALID_JUDGE,
+    HVPROCESS_CHG_HEAT_TO_HEAT_AND_CHARGE_PREPARE, //加热转入
+    HVPROCESS_CHG_CHARGE_TO_HEAT_AND_CHARGE_PREPARE,
+    HVPROCESS_CHG_HEAT_AND_CHARGE_ON,
+    HVPROCESS_CHG_HEAT_AND_CHARGE_TO_CHARGE_PREPARE,
     HVPROCESS_CHG_HV_ON, /**< 高压上电状态 */
     HVPROCESS_CHG_RELAY_OFF_DELAY, /**< 继电器断开延时状态 */
     HVPROCESS_CHG_RESTART_JUDGE, /**< 重启判断 */
@@ -43,13 +49,14 @@ typedef enum{
  * \brief 充电高压流程控制内部数据类型
  */
 typedef struct{
-	RelayM_FunctionType chgRelay;
     uint8 chgFinishFlag; /**< 充电完成标志 */
     HvProcess_ChgStateType State; /**< 充电高压流程状态 */
     uint32 RelayOffTick; /**< 继电器断开计时 */
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
     boolean HeatRelayFaultCheckFlag;
     boolean HeatIsFinish;
+    uint32 startToHeatRelayActionTime;
+    RelayM_FunctionType chgRelay;
 }HvProcess_ChgInnerDataType;
 
 
@@ -136,54 +143,61 @@ boolean HvProcess_ChgRelayOffDelayCond(void);
  */
 void HvProcess_ChgRelayOffDelayAction(void);
 
-boolean HvProcess_ChgHeaterRelayIsNormal(void);
-
-void HvProcess_ChgHeaterRelayNormalAction(void);
-
-boolean HvProcess_ChgStartHeatCond(void);
-
-void HvProcess_ChgStartHeatAction(void);
-
-boolean HvProcess_ChgStartChargeCond(void);
-
-void HvProcess_ChgStartChargeAction(void);
-
-boolean HvProcess_ChgStartHeatTimeoutCond(void);
-
-void HvProcess_ChgStartHeatTimeoutAction(void);
-
-boolean HvProcess_ChgStartHeatFinishCond(void);
-
-void HvProcess_ChgStartHeatFinishAction(void);
-
-boolean HvProcess_ChgHeatCurrentIsOk(void);
-
-void HvProcess_ChgHeatRelayOn(void);
-
-boolean HvProcess_ChgHeatPowerFaultCond(void);
-
-void HvProcess_ChgHeatFaultAction(void);
-
-boolean HvProcess_ChgHeatFinishCond(void);
-
-void HvProcess_ChgHeatFinishAction(void);
-
-boolean HvProcess_ChgHeatFinishCheckCond(void);
-
-void HvProcess_ChgHeatFinishCheckAction(void);
-
-boolean HvProcess_ChgStartChgFinishCond(void);
-
-void HvProcess_ChgStartChgFinishAction(void);
 
 boolean HvProcess_ChgReStartJudgeCond(void);
 
 void HvProcess_ChgReStartJudgeAction(void);
 
 boolean HvProcess_ChargerIsHeadMode(void);
+
+void HvProcess_ChgSetHeatStateNone(void);
+
+boolean HvProcess_ChgHeaterRelayIsNormal(void);
+void HvProcess_ChgHeaterRelayNormalAction(void);
+boolean HvProcess_ChgStartHeatTempCond(void);
+void HvProcess_ChgStartHeatTempAction(void);
+boolean HvProcess_ChgStartHeatAndChargeTempCond(void);
+void HvProcess_ChgStartHeatAndChargeTempAction(void);
+boolean HvProcess_ChgStartChargeTempCond(void);
+void HvProcess_ChgStartChargeTempAction(void);
+boolean HvProcess_ChgPowerOnCurrIsValidCond(void);
+void HvProcess_ChgPowerOnCurrIsValidAction(void);
+boolean HvProcess_ChgPowerOnCurrInValidCond(void);
+void HvProcess_ChgPowerOnCurrInValidAction(void);
+boolean HvProcess_ChgPowerOnToHeatRelayDelayActionCond(void);
+void HvProcess_ChgPowerOnToHeatRelayDelayActionAction(void);
+boolean HvProcess_ChgHeatAndChargeToHeatPrepareCond(void);
+void HvProcess_ChgHeatAndChargeToHeatPrepareAction(void);
+boolean HvProcess_ChgStopHeatTempCond(void);
+void HvProcess_ChgStopHeatTempAction(void);
+boolean HvProcess_ChgStartHeatAndChargeCurrIsValidCond(void);
+void HvProcess_ChgStartHeatAndChargeCurrIsValidAction(void);
+boolean HvProcess_ChgStartHeatAndChargeCurrInValidCond(void);
+void HvProcess_ChgStartHeatAndChargeCurrInValidAction(void);
+boolean HvProcess_ChgHeatToHeatAndChargePrepareCond(void);
+void HvProcess_ChgHeatToHeatAndChargePrepareAction(void);
+boolean HvProcess_ChgChargeToHeatAndChargePrepareCond(void);
+void HvProcess_ChgChargeToHeatAndChargePrepareAction(void);
+boolean HvProcess_ChgHeatAndChargeToHeatTempCond(void);
+void HvProcess_ChgHeatAndChargeToHeatTempAction(void);
+boolean HvProcess_ChgHeatAndChargeToChargeTempCond(void);
+void HvProcess_ChgHeatAndChargeToChargeTempAction(void);
+boolean HvProcess_ChgHeatAndChargeToChargePrepareCond(void);
+void HvProcess_ChgHeatAndChargeToChargePrepareAction(void);
+boolean HvProcess_ChgHvOnToHeatAndChargeTempCond(void);
+void HvProcess_ChgHvOnToHeatAndChargeTempAction(void);
+uint8 HvProcess_ChgGetStartToHeatTemp(void);
+uint8 HvProcess_ChgGetStartToChargeTemp(void);
+uint8 HvProcess_ChgGetHeatToHeatAndChargeTemp(void);
+uint8 HvProcess_ChgGetHeatAndChargeToHeatTemp(void);
+uint8 HvProcess_ChgGetHeatAndChargeToChargeTemp(void);
+uint8 HvProcess_ChgGetChargeToHeatAndChargeTemp(void);
+boolean HvProcess_ChargerIsHeadMode(void);
 boolean HvProcess_IsJumpMode(void);
 boolean HvProcess_HeatIsFinish(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
+
+
 #endif
 
 /**

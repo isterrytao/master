@@ -328,6 +328,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
 #ifdef RELAYM_FN_HEATER
     boolean isHeat = HvProcess_ChargerIsHeadMode();
     boolean isJump = HvProcess_IsJumpMode();
+    boolean isHeatCharge = HvProcess_IsHeatAndChargeMode();
 
     if (HvProcess_HeatIsFinish())
     {
@@ -340,7 +341,20 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     }
     else if (isHeat)
     {
-        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+        current = USERSTRATEGY_START_HEAT_CURRENT;
+        // current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    }
+    else if (isHeatCharge)
+    {
+        if (type == CHARGE_TYPE_DC)
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
+        }
+        else
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+        }
+        current += USERSTRATEGY_START_HEAT_CURRENT;
     }
     else
     {

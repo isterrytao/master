@@ -759,3 +759,8 @@ boolean HvProcess_HeatIsFinish(void)
     }
     return res;
 }
+
+boolean HvProcess_IsHeatAndChargeMode(void)
+{
+    return FALSE;
+}
