@@ -1264,6 +1264,9 @@ static void UserStrategy_AllRlyOff(void)
     {
         (void)RelayM_Control(i, RELAYM_CONTROL_OFF);
     }
+#ifdef RELAYM_FN_HMI
+    HLSS_Drive(RelayMConfigData[RELAYM_FN_HMI].DriveHSS, HLSS_DRIVE_OFF);
+#endif
 }
 
 void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event)
