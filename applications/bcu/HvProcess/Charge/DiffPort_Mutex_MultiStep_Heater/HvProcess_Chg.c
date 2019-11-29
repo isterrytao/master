@@ -86,7 +86,10 @@ boolean HvProcess_ChgStateStartCond(void)
                 chargeReady == E_OK &&
                 chargerIsComm)
             {
-                res = TRUE;
+                if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_FAULT)
+                {
+                    res = TRUE;
+                }
             }
         }
     }
@@ -123,7 +126,6 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
 
     if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && !HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
     {
-        HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
 #ifdef RELAYM_FN_HEATER
         if (RelayMConfigData[RELAYM_FN_HEATER].GetInstantVoltage != NULL)
         {
@@ -131,10 +133,17 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
             {
                 if (RelayM_GetActualStatus(RELAYM_FN_HEATER) == RELAYM_ACTUAL_OFF)
                 {
+                    HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
                     (void)RelayM_StartAdhesiveDetect(RELAYM_FN_HEATER, NULL);
                 }
             }
         }
+        else
+        {
+            res = TRUE;
+        }
+#else
+        res = TRUE;
 #endif
     }
     if (HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
@@ -270,6 +279,7 @@ boolean HvProcess_ChgPowerOnCurrIsValidCond(void)
     static uint32 lastTime = 0UL,monitorTime = 0UL;
     uint32 nowTime = OSTimeGet();
     uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
+    // uint16 mainCur = (uint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
     RelayM_ActualStatusType heatRelay = RelayM_GetActualStatus(RELAYM_FN_HEATER);
 
@@ -279,18 +289,30 @@ boolean HvProcess_ChgPowerOnCurrIsValidCond(void)
     }
     monitorTime = nowTime;
     heatCurrent += CURRENT_100MA_FROM_A(10U);
-    if (CURRENT_IS_VALID(current) && current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    if (CURRENT_IS_VALID(current) && /*current > 0U &&*/ current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
     {
         if (lastTime == 0UL)
         {
             lastTime = nowTime;
         }
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 5000U)
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
         {
             res = TRUE;
             lastTime = 0UL;
         }
     }
+    // else if (CURRENT_IS_VALID(mainCur) && mainCur > 0U && mainCur < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    // {
+    //     if (lastTime == 0UL)
+    //     {
+    //         lastTime = nowTime;
+    //     }
+    //     if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
+    //     {
+    //         res = TRUE;
+    //         lastTime = 0UL;
+    //     }
+    // }
     else
     {
         lastTime = 0UL;
@@ -309,7 +331,7 @@ void HvProcess_ChgPowerOnCurrIsValidAction(void)
 boolean HvProcess_ChgPowerOnCurrInValidCond(void)
 {
     boolean res = FALSE;
-    uint32 delay = S_TO_MS(30U);
+    uint32 delay = S_TO_MS(300UL);
     static uint32 lastTime = 0U;
     uint32 nowTime = OSTimeGet();
     static uint32 monitorTime = 0UL;
@@ -485,47 +507,49 @@ void HvProcess_ChgStopHeatTempAction(void)
 boolean HvProcess_ChgStartHeatAndChargeCurrIsValidCond(void)
 {
     boolean res = FALSE;
-    uint32 delay = 500UL;
-    static uint32 lastTime = 0U;
+#ifdef RELAYM_FN_HEATER
+    static uint32 lastTime = 0UL,monitorTime = 0UL;
     uint32 nowTime = OSTimeGet();
-    static uint32 monitorTime = 0UL;
-    Current_CurrentType current, minValidCurr/*, maxCurrLimit*/;
+    uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
+    // uint16 mainCur = (uint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+    uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    RelayM_ActualStatusType heatRelay = RelayM_GetActualStatus(RELAYM_FN_HEATER);
 
-    /** 监控 */
-    if (MS_GET_INTERNAL(monitorTime, nowTime) >= 300UL){
+    if (MS_GET_INTERNAL(monitorTime, nowTime) > 300UL)
+    {
         lastTime = 0UL;
     }
     monitorTime = nowTime;
-
-    minValidCurr = CURRENT_S_100MA_FROM_A(5); //此处只判断充电机有输出就行
-    // maxCurrLimit = CURRENT_S_100MA_FROM_A(5);
-    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-    if (CurrentM_IsValidCurrent(current))
+    heatCurrent += CURRENT_100MA_FROM_A(10U);
+    if (CURRENT_IS_VALID(current) && /*current > 0U &&*/ current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
     {
-        if (current >= minValidCurr /*&& current <= maxCurrLimit*/)
+        if (lastTime == 0UL)
         {
-            if (lastTime == 0U)
-            {
-                lastTime = nowTime;
-            }
-            else
-            {
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
-                {
-                    res = TRUE;
-                    lastTime = 0U;
-                }
-            }
+            lastTime = nowTime;
         }
-        else
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
         {
-            lastTime = 0U;
+            res = TRUE;
+            lastTime = 0UL;
         }
     }
+    // else if (CURRENT_IS_VALID(mainCur) && mainCur > 0U && mainCur < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    // {
+    //     if (lastTime == 0UL)
+    //     {
+    //         lastTime = nowTime;
+    //     }
+    //     if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
+    //     {
+    //         res = TRUE;
+    //         lastTime = 0UL;
+    //     }
+    // }
     else
     {
-        lastTime = 0U;
+        lastTime = 0UL;
     }
+#endif
     return res;
 }
 
@@ -537,7 +561,7 @@ void HvProcess_ChgStartHeatAndChargeCurrIsValidAction(void)
 boolean HvProcess_ChgStartHeatAndChargeCurrInValidCond(void)
 {
     boolean res = FALSE;
-    uint32 delay = S_TO_MS(30U);
+    uint32 delay = S_TO_MS(300UL);
     static uint32 lastTime = 0U;
     uint32 nowTime = OSTimeGet();
     static uint32 monitorTime = 0UL;
@@ -844,6 +868,7 @@ boolean HvProcess_ChgChargeConnectionCond(void)
 void HvProcess_ChgChargeConnectionAction(void)
 {
     HvProcess_ChgInnerData.RelayOffTick = OSTimeGet();
+    TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
 }
 
 boolean HvProcess_ChgFaultCond(void)
@@ -1001,6 +1026,7 @@ boolean HvProcess_ChgReStartJudgeCond(void)
 void HvProcess_ChgReStartJudgeAction(void)
 {
     HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
+    HvProcess_ChgSetHeatStateNone();
 }
 
 void HvProcess_ChgSetHeatStateNone(void)
@@ -1100,17 +1126,12 @@ uint8 HvProcess_ChgGetChargeToHeatAndChargeTemp(void)
     return temp;
 }
 
-boolean HvProcess_ChargerIsHeadMode(void)
+boolean HvProcess_ChargerIsHeatMode(void)
 {
     boolean res = FALSE;
     HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
 
-    if (chgStatus == HVPROCESS_CHG_START_TO_HEAT_CURR_VALID_JUDGE ||
-        chgStatus == HVPROCESS_CHG_START_TO_HEAT_RELAY_DELAY_ACTION ||
-        chgStatus == HVPROCESS_CHG_HEAT_AND_CHARGE_TO_HEAT_PREPARE ||
-        chgStatus == HVPROCESS_CHG_HEAT_ON ||
-        chgStatus == HVPROCESS_CHG_HEAT_TO_HEAT_AND_CHARGE_PREPARE ||
-        chgStatus == HVPROCESS_CHG_START_TO_HEAT_AND_CHARGE_CURR_VALID_JUDGE)
+    if (chgStatus == HVPROCESS_CHG_HEAT_ON)
     {
         res = TRUE;
     }
@@ -1120,24 +1141,18 @@ boolean HvProcess_ChargerIsHeadMode(void)
 boolean HvProcess_IsJumpMode(void)
 {
     boolean res = FALSE;
-    // HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
+    HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
 
-    // if (chgStatus == HVPROCESS_CHG_START_HEAT)
-    // {
-    //     res = TRUE;
-    // }
+    if (chgStatus == HVPROCESS_CHG_START_TO_HEAT_CURR_VALID_JUDGE ||
+        chgStatus == HVPROCESS_CHG_START_TO_HEAT_RELAY_DELAY_ACTION ||
+        chgStatus == HVPROCESS_CHG_HEAT_AND_CHARGE_TO_HEAT_PREPARE ||
+        chgStatus == HVPROCESS_CHG_START_TO_HEAT_AND_CHARGE_CURR_VALID_JUDGE ||
+        chgStatus == HVPROCESS_CHG_HEAT_TO_HEAT_AND_CHARGE_PREPARE ||
+        chgStatus == HVPROCESS_CHG_HEAT_AND_CHARGE_TO_CHARGE_PREPARE)
+    {
+        res = TRUE;
+    }
 
-    return res;
-}
-
-boolean HvProcess_HeatIsFinish(void)
-{
-    boolean res = FALSE;
-
-    // if (HvProcess_ChgInnerData.HeatIsFinish == TRUE)
-    // {
-    //     res = TRUE;
-    // }
     return res;
 }
 

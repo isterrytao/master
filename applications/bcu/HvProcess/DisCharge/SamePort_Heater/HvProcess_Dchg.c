@@ -4,6 +4,8 @@
  *
  * \brief 高压放电流程控制文件.
  *
+ * \note 充放电同口带加热无预充高压流程
+ *
  * * \par 修订历史:
  * | 版本号 | 修订日志 | 修改人 | 修订时间 |
  * | :--- | :--- | :--- | :--- |
@@ -22,6 +24,7 @@
 #include "UserStrategy.h"
 #include "ChargerComm_LCfg.h"
 #include "PrechargeM.h"
+#include "TemperatureM.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
@@ -186,6 +189,10 @@ boolean HvProcess_DchgStateStartCond(void)
                     if (UserStrategy_DchgHvProcessRelayIsNormal() && allow == E_OK)
                     {
                         res = TRUE;
+                        if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
+                        {
+                            TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
+                        }
                     }
                 }
             }

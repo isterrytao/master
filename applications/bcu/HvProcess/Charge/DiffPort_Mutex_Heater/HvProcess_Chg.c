@@ -4,6 +4,8 @@
  *
  * \brief 高压充电流程控制文件.
  *
+ * \note 充放电异口带加热高压流程，充电加热互斥
+ *
  * * \par 修订历史:
  * | 版本号 | 修订日志 | 修改人 | 修订时间 |
  * | :--- | :--- | :--- | :--- |
@@ -85,7 +87,10 @@ boolean HvProcess_ChgStateStartCond(void)
                 chargeReady == E_OK &&
                 chargerIsComm)
             {
-                res = TRUE;
+                if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_FAULT)
+                {
+                    res = TRUE;
+                }
             }
         }
     }
@@ -125,7 +130,6 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
 
     if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && !HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
     {
-        HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
 #ifdef RELAYM_FN_HEATER
         if (RelayMConfigData[RELAYM_FN_HEATER].GetInstantVoltage != NULL)
         {
@@ -133,10 +137,17 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
             {
                 if (RelayM_GetActualStatus(RELAYM_FN_HEATER) == RELAYM_ACTUAL_OFF)
                 {
+                    HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
                     (void)RelayM_StartAdhesiveDetect(RELAYM_FN_HEATER, NULL);
                 }
             }
         }
+        else
+        {
+            res = TRUE;
+        }
+#else
+        res = TRUE;
 #endif
     }
     if (HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
@@ -323,6 +334,7 @@ boolean HvProcess_ChgHeatCurrentIsOk(void)
     static uint32 lastTime = 0UL,monitorTime = 0UL;
     uint32 nowTime = OSTimeGet();
     uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
+    // uint16 mainCur = (uint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
     RelayM_ActualStatusType heatRelay = RelayM_GetActualStatus(RELAYM_FN_HEATER);
 
@@ -332,18 +344,30 @@ boolean HvProcess_ChgHeatCurrentIsOk(void)
     }
     monitorTime = nowTime;
     heatCurrent += CURRENT_100MA_FROM_A(10U);
-    if (CURRENT_IS_VALID(current) && current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    if (CURRENT_IS_VALID(current) && /*current > 0U &&*/ current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
     {
         if (lastTime == 0UL)
         {
             lastTime = nowTime;
         }
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 5000U)
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
         {
             res = TRUE;
             lastTime = 0UL;
         }
     }
+    // else if (CURRENT_IS_VALID(mainCur) && mainCur > 0U && mainCur < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    // {
+    //     if (lastTime == 0UL)
+    //     {
+    //         lastTime = nowTime;
+    //     }
+    //     if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
+    //     {
+    //         res = TRUE;
+    //         lastTime = 0UL;
+    //     }
+    // }
     else
     {
         lastTime = 0UL;
@@ -563,6 +587,7 @@ boolean HvProcess_ChgChargeConnectionCond(void)
 void HvProcess_ChgChargeConnectionAction(void)
 {
     HvProcess_ChgInnerData.RelayOffTick = OSTimeGet();
+    TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
 }
 
 boolean HvProcess_ChgFaultCond(void)
@@ -722,9 +747,13 @@ boolean HvProcess_ChgReStartJudgeCond(void)
 void HvProcess_ChgReStartJudgeAction(void)
 {
     HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
+    if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_FAULT)
+    {
+        TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
+    }
 }
 
-boolean HvProcess_ChargerIsHeadMode(void)
+boolean HvProcess_ChargerIsHeatMode(void)
 {
     boolean res = FALSE;
     HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
@@ -741,22 +770,12 @@ boolean HvProcess_IsJumpMode(void)
     boolean res = FALSE;
     HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
 
-    if (chgStatus == HVPROCESS_CHG_START_HEAT)
+    if (chgStatus == HVPROCESS_CHG_START_HEAT ||
+        chgStatus == HVPROCESS_CHG_START_CHARGE)
     {
         res = TRUE;
     }
 
-    return res;
-}
-
-boolean HvProcess_HeatIsFinish(void)
-{
-    boolean res = FALSE;
-
-    if (HvProcess_ChgInnerData.HeatIsFinish == TRUE)
-    {
-        res = TRUE;
-    }
     return res;
 }
 

@@ -180,9 +180,8 @@ boolean HvProcess_ChgReStartJudgeCond(void);
 
 void HvProcess_ChgReStartJudgeAction(void);
 
-boolean HvProcess_ChargerIsHeadMode(void);
+boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_IsJumpMode(void);
-boolean HvProcess_HeatIsFinish(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
 #endif
 

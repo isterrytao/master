@@ -4,6 +4,8 @@
  *
  * \brief 高压充电流程控制文件.
  *
+ * \note 充放电异口无预充无加热高压流程
+ *
  * * \par 修订历史:
  * | 版本号 | 修订日志 | 修改人 | 修订时间 |
  * | :--- | :--- | :--- | :--- |
@@ -325,7 +327,7 @@ boolean HvProcess_ChgRestartAllowedCond(void)
     return res;
 }
 
-boolean HvProcess_ChargerIsHeadMode(void)
+boolean HvProcess_ChargerIsHeatMode(void)
 {
     boolean res = FALSE;
     return res;

@@ -28,18 +28,18 @@
  */
 typedef enum{
     HVPROCESS_CHG_START = 0, /**< 启动状态 */
-    HVPROCESS_CHG_HEATER_RLY_FAULT_CHECK,
-    HVPROCESS_CHG_HEAT_TEMP_JUDGE,
-    HVPROCESS_CHG_START_TO_HEAT_CURR_VALID_JUDGE,
-    HVPROCESS_CHG_START_TO_HEAT_RELAY_DELAY_ACTION,
-    HVPROCESS_CHG_HEAT_AND_CHARGE_TO_HEAT_PREPARE,
-    HVPROCESS_CHG_HEAT_ON,
-    HVPROCESS_CHG_START_TO_HEAT_AND_CHARGE_CURR_VALID_JUDGE,
-    HVPROCESS_CHG_HEAT_TO_HEAT_AND_CHARGE_PREPARE, //加热转入
-    HVPROCESS_CHG_CHARGE_TO_HEAT_AND_CHARGE_PREPARE,
-    HVPROCESS_CHG_HEAT_AND_CHARGE_ON,
-    HVPROCESS_CHG_HEAT_AND_CHARGE_TO_CHARGE_PREPARE,
-    HVPROCESS_CHG_HV_ON, /**< 高压上电状态 */
+    HVPROCESS_CHG_HEATER_RLY_FAULT_CHECK, /**< 加热继电器检测状态 */
+    HVPROCESS_CHG_HEAT_TEMP_JUDGE, /**< 温度判定状态 */
+    HVPROCESS_CHG_START_TO_HEAT_CURR_VALID_JUDGE, /**< 纯加热电流判定状态 */
+    HVPROCESS_CHG_START_TO_HEAT_RELAY_DELAY_ACTION, /**< 纯加热延时状态 */
+    HVPROCESS_CHG_HEAT_AND_CHARGE_TO_HEAT_PREPARE, /**< 边充电边加热到纯加热跳转状态 */
+    HVPROCESS_CHG_HEAT_ON, /**< 纯加热状态 */
+    HVPROCESS_CHG_START_TO_HEAT_AND_CHARGE_CURR_VALID_JUDGE, /**< 边充电变加热电流判定状态 */
+    HVPROCESS_CHG_HEAT_TO_HEAT_AND_CHARGE_PREPARE, /**< 纯加热到边充电边加热跳转状态 */
+    HVPROCESS_CHG_CHARGE_TO_HEAT_AND_CHARGE_PREPARE, /**< 纯充电到边充电边加热跳转状态 */
+    HVPROCESS_CHG_HEAT_AND_CHARGE_ON, /**< 边充电边加热状态 */
+    HVPROCESS_CHG_HEAT_AND_CHARGE_TO_CHARGE_PREPARE, /**< 边充电边加热到纯充电跳转状态 */
+    HVPROCESS_CHG_HV_ON, /**< 纯充电状态 */
     HVPROCESS_CHG_RELAY_OFF_DELAY, /**< 继电器断开延时状态 */
     HVPROCESS_CHG_RESTART_JUDGE, /**< 重启判断 */
     HVPROCESS_CHG_STATE_MAX, /**< 充电高压流程控制状态最大值 */
@@ -192,9 +192,8 @@ uint8 HvProcess_ChgGetHeatToHeatAndChargeTemp(void);
 uint8 HvProcess_ChgGetHeatAndChargeToHeatTemp(void);
 uint8 HvProcess_ChgGetHeatAndChargeToChargeTemp(void);
 uint8 HvProcess_ChgGetChargeToHeatAndChargeTemp(void);
-boolean HvProcess_ChargerIsHeadMode(void);
+boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_IsJumpMode(void);
-boolean HvProcess_HeatIsFinish(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
 
 

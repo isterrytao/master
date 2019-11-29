@@ -4,6 +4,8 @@
  *
  * \brief 高压充电流程控制文件.
  *
+ * \note 充放电同口无预充无加热高压流程
+ *
  * * \par 修订历史:
  * | 版本号 | 修订日志 | 修改人 | 修订时间 |
  * | :--- | :--- | :--- | :--- |
@@ -208,7 +210,7 @@ void HvProcess_ChgReStartJudgeAction(void)
     HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
 }
 
-boolean HvProcess_ChargerIsHeadMode(void)
+boolean HvProcess_ChargerIsHeatMode(void)
 {
     boolean res = FALSE;
     return res;

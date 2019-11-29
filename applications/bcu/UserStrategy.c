@@ -306,13 +306,13 @@ App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
     App_Tv100mvType volt = PowerM_GetChargeVoltage(type);
 #ifdef RELAYM_FN_HEATER
-    boolean isHeat = HvProcess_ChargerIsHeadMode();
+    boolean isHeat = HvProcess_ChargerIsHeatMode();
     boolean isJump = HvProcess_IsJumpMode();
-    if (HvProcess_HeatIsFinish())
+    if (isJump)
     {
-        volt = USERSTRATEGY_STOP_HEAT_VOLT;
+        volt = Statistic_GetBcu100mvTotalVoltage() + V_TO_100MV(2U);
     }
-    else if (isHeat || isJump)
+    else if (isHeat)
     {
         volt = USERSTRATEGY_START_HEAT_VOLT;
     }
@@ -334,16 +334,11 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     Current_CurrentType current;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
 #ifdef RELAYM_FN_HEATER
-    boolean isHeat = HvProcess_ChargerIsHeadMode();
+    boolean isHeat = HvProcess_ChargerIsHeatMode();
     boolean isJump = HvProcess_IsJumpMode();
     boolean isHeatCharge = HvProcess_IsHeatAndChargeMode();
 
-    if (HvProcess_HeatIsFinish())
-    {
-        // current = CURRENT_S_100MA_FROM_A(10);
-        current = USERSTRATEGY_STOP_HEAT_CURRENT;
-    }
-    else if (isJump)
+    if (isJump)
     {
         current = USERSTRATEGY_START_HEAT_CURRENT;
     }
@@ -691,18 +686,25 @@ static void UserStrategy_AutoLostPower(void)
     uint32 delay = USERSTRATEGY_AUTO_POWER_DOWN_TIME;
 
     mode = RuntimeM_GetMode();
-    if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
+    if (!HvProcess_ChargerIsHeatMode())
     {
-        current = abs(CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN));
-        if (CurrentM_IsValidCurrent(current) && current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+        if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
         {
-            if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+            current = abs(CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN));
+            if (CurrentM_IsValidCurrent(current) && current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+            {
+                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                {
+                    lastTime = nowTime;
+                    ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
+                    DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+                    UserStrategy_AllRlyOff();
+                    RuntimeM_RequestPowerDown();
+                }
+            }
+            else
             {
                 lastTime = nowTime;
-                ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
-                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
-                UserStrategy_AllRlyOff();
-                RuntimeM_RequestPowerDown();
             }
         }
         else
