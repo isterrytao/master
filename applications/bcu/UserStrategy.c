@@ -310,7 +310,11 @@ App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
     boolean isJump = HvProcess_IsJumpMode();
     if (isJump)
     {
-        volt = Statistic_GetBcu100mvTotalVoltage() + V_TO_100MV(2U);
+        volt = Statistic_GetBcu100mvTotalVoltage();
+        if (Statistic_TotalVoltageIsValid(volt))
+        {
+            volt += V_TO_100MV(2U);
+        }
     }
     else if (isHeat)
     {
@@ -690,16 +694,24 @@ static void UserStrategy_AutoLostPower(void)
     {
         if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
         {
-            current = abs(CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN));
-            if (CurrentM_IsValidCurrent(current) && current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+            current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+            if (CurrentM_IsValidCurrent(current))
             {
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                current = abs(current);
+                if (current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+                {
+                    if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                    {
+                        lastTime = nowTime;
+                        ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
+                        DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+                        UserStrategy_AllRlyOff();
+                        RuntimeM_RequestPowerDown();
+                    }
+                }
+                else
                 {
                     lastTime = nowTime;
-                    ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
-                    DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
-                    UserStrategy_AllRlyOff();
-                    RuntimeM_RequestPowerDown();
                 }
             }
             else

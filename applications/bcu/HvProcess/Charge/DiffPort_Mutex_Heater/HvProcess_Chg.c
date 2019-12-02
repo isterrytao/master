@@ -131,13 +131,13 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
     if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && !HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
     {
 #ifdef RELAYM_FN_HEATER
+        HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
         if (RelayMConfigData[RELAYM_FN_HEATER].GetInstantVoltage != NULL)
         {
             if (RelayM_GetControlStatus(RELAYM_FN_HEATER) == RELAYM_CONTROL_OFF)
             {
                 if (RelayM_GetActualStatus(RELAYM_FN_HEATER) == RELAYM_ACTUAL_OFF)
                 {
-                    HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
                     (void)RelayM_StartAdhesiveDetect(RELAYM_FN_HEATER, NULL);
                 }
             }
