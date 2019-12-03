@@ -280,7 +280,7 @@ boolean HvProcess_ChgPowerOnCurrIsValidCond(void)
     uint32 nowTime = OSTimeGet();
     uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
     // uint16 mainCur = (uint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-    uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    uint16 heatCurrent = (uint16)USERSTRATEGY_START_HEAT_CURRENT;
     RelayM_ActualStatusType heatRelay = RelayM_GetActualStatus(RELAYM_FN_HEATER);
 
     if (MS_GET_INTERNAL(monitorTime, nowTime) > 300UL)
@@ -512,7 +512,7 @@ boolean HvProcess_ChgStartHeatAndChargeCurrIsValidCond(void)
     uint32 nowTime = OSTimeGet();
     uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
     // uint16 mainCur = (uint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-    uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    uint16 heatCurrent = (uint16)USERSTRATEGY_START_HEAT_CURRENT;
     RelayM_ActualStatusType heatRelay = RelayM_GetActualStatus(RELAYM_FN_HEATER);
 
     if (MS_GET_INTERNAL(monitorTime, nowTime) > 300UL)
