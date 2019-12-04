@@ -105,17 +105,20 @@ void HvProcess_ChgStateStartAction(void)
 #endif
 #ifdef RELAYM_FN_CHARGE
         (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_ON);
+        HvProcess_ChgInnerData.chgRelay = RELAYM_FN_CHARGE;
 #endif
     if (ChargerComm_GetChargeType() == CHARGE_TYPE_AC)
     {
 #ifdef RELAYM_FN_POSITIVE_AC_CHARGE
         (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_ON);
+        HvProcess_ChgInnerData.chgRelay = RELAYM_FN_POSITIVE_AC_CHARGE;
 #endif
     }
     else
     {
 #ifdef RELAYM_FN_POSITIVE_DC_CHARGE
         (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_ON);
+        HvProcess_ChgInnerData.chgRelay = RELAYM_FN_POSITIVE_DC_CHARGE;
 #endif
     }
 }
