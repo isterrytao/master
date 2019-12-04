@@ -148,8 +148,6 @@ boolean HvProcess_ChgReStartJudgeCond(void);
 
 void HvProcess_ChgReStartJudgeAction(void);
 
-boolean HvProcess_ChargerIsHeadMode(void);
-
 void HvProcess_ChgSetHeatStateNone(void);
 
 boolean HvProcess_ChgHeaterRelayIsNormal(void);

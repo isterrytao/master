@@ -754,7 +754,7 @@ void ChargerCommGB_GetBCLDataCbk(uint8 *Buffer, uint16 *Length)
         Volt = 0x02U; //恒流模式
     }
 #ifdef RELAYM_FN_HEATER
-    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    if (HvProcess_ChargerIsHeatMode() == TRUE)
     {
         Volt = 0x01U; //恒压模式
     }

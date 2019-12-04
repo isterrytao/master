@@ -299,7 +299,7 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
         flag = 1U;
         ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
     }
-    else if (HvProcess_ChargerIsHeadMode())
+    else if (HvProcess_ChargerIsHeatMode())
     {
         flag = 2U;
         ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
