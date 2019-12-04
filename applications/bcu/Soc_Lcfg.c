@@ -37,6 +37,11 @@ Std_ReturnType Soc_IsChargeFinish(void)
 	return ChargeM_ChargeIsAllowed();
 }
 
+Current_CurrentType Soc_CurrentHook(Current_CurrentType current)
+{
+    return current;
+}
+
 boolean Soc_IsBatteryCurrent(void)
 {
 	return TemperatureM_IsHeatCurrent() ? FALSE : TRUE;
