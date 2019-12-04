@@ -300,6 +300,7 @@ uint32 Soc_GetCumuDchgPower(void);
  * @brief 外部依赖函数声明
  */
 extern Std_ReturnType Soc_IsChargeFinish(void);
+extern Current_CurrentType Soc_CurrentHook(Current_CurrentType current);
 extern boolean Soc_IsBatteryCurrent(void);
 
 
