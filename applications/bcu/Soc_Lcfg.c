@@ -13,6 +13,11 @@
 #include "ChargeM.h"
 #include "TemperatureM.h"
 #include "UserStrategy_Cfg.h"
+#ifdef RELAYM_FN_HEATER
+#include "RelayM_Lcfg.h"
+#include "HvProcess_Chg.h"
+#endif
+
 
 const Soc_ConfigInfoType Soc_ConfigInfo = {
     /**< ChgCumuInfo: 充电累计配置信息 */
@@ -40,21 +45,36 @@ Std_ReturnType Soc_IsChargeFinish(void)
 
 Current_CurrentType Soc_CurrentHook(Current_CurrentType current)
 {
+#ifdef RELAYM_FN_HEATER
+    if (CurrentM_IsValidCurrent(current))
+    {
+        if (HvProcess_IsHeatAndChargeMode())
+        {
+            current = current - USERSTRATEGY_START_HEAT_CURRENT;
+        }
+    }
+#endif
     return current;
 }
 
 boolean Soc_IsBatteryCurrent(void)
 {
+    boolean res;
 #ifdef RELAYM_FN_HEATER
-    if (!USERSTRATEGY_CURRENT_FLAG)
+#if USERSTRATEGY_CURRENT_FLAG == FALSE
+    res = TRUE;
+#else
+    if (!HvProcess_ChargerIsHeatMode())
     {
-        return TRUE;
+        res = TRUE;
     }
     else
     {
-        return TemperatureM_IsHeatCurrent() ? FALSE : TRUE;
+        res = FALSE;
     }
-#else
-    return TemperatureM_IsHeatCurrent() ? FALSE : TRUE;
 #endif
+#else
+    res = TRUE;
+#endif
+    return res;
 }

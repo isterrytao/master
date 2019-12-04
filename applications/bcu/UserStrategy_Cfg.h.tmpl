@@ -172,7 +172,7 @@ globalInfo.setReturn({processedcfg:processedcfg});
 #define USERSTRATEGY_STOP_HEAT_CURRENT                  <%- (mdata.chg_heat_parameters_stop_heat_current*10)%> // 加热结束进入纯充电时请求电流 0.1A
 
 <%}%>
-#define USERSTRATEGY_CURRENT_FLAG                       <%- mdata.chg_heat_parameters_current_flag%>
+#define USERSTRATEGY_CURRENT_FLAG                       <%- mdata.chg_heat_parameters_current_flag%> //加热电流是否经过分流器      TRUE为经过     FALSE为不经过
 
 
 #endif
