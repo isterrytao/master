@@ -221,3 +221,8 @@ boolean HvProcess_HeatIsJump(void)
     boolean res = FALSE;
     return res;
 }
+
+boolean HvProcess_IsHeatAndChargeMode(void)
+{
+    return FALSE;
+}

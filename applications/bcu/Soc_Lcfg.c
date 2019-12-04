@@ -12,6 +12,7 @@
 #include "Soc.h"
 #include "ChargeM.h"
 #include "TemperatureM.h"
+#include "UserStrategy_Cfg.h"
 
 const Soc_ConfigInfoType Soc_ConfigInfo = {
     /**< ChgCumuInfo: 充电累计配置信息 */
@@ -39,5 +40,16 @@ Std_ReturnType Soc_IsChargeFinish(void)
 
 boolean Soc_IsBatteryCurrent(void)
 {
-	return TemperatureM_IsHeatCurrent() ? FALSE : TRUE;
+#ifdef RELAYM_FN_HEATER
+    if (!USERSTRATEGY_CURRENT_FLAG)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return TemperatureM_IsHeatCurrent() ? FALSE : TRUE;
+    }
+#else
+    return TemperatureM_IsHeatCurrent() ? FALSE : TRUE;
+#endif
 }

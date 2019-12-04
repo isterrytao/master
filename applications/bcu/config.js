@@ -439,6 +439,7 @@ module.exports = {
                 {section: "start_heat_current", chs: "充电转加热时请求电流(A)"},
                 {section: "stop_heat_volt", chs: "加热结束转入充电时请求电压(V),若为请求系统总压该参数需配置为0,目前该参数默认为0"},
                 {section: "stop_heat_current", chs: "加热结束转入充电是请求电流"},
+                {section: "current_flag", chs: "加热电流是否经过分流器，若经过为TRUE，否则为FALSE"},
             ],
             en: "STD_OFF",
             start_heat_temp: -5,
@@ -448,6 +449,7 @@ module.exports = {
             start_heat_current: 15.8,
             stop_heat_volt: 0,
             stop_heat_current: 10,
+            current_flag: "FALSE",
         },
     },
 

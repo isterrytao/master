@@ -688,9 +688,11 @@ static void UserStrategy_AutoLostPower(void)
     static uint32 lastTime = 0U;
     uint32 nowTime = OSTimeGet();
     uint32 delay = USERSTRATEGY_AUTO_POWER_DOWN_TIME;
+    boolean isChgHeat = HvProcess_IsHeatAndChargeMode();
 
     mode = RuntimeM_GetMode();
-    if (!HvProcess_ChargerIsHeatMode())
+    if (!HvProcess_ChargerIsHeatMode() &&
+        !isChgHeat)
     {
         if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
         {

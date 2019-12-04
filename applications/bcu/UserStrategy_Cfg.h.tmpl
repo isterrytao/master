@@ -40,6 +40,7 @@ var mdata = {
     chg_heat_parameters_start_heat_current: cfg.chg_heat_parameters.start_heat_current,
     chg_heat_parameters_stop_heat_volt: cfg.chg_heat_parameters.stop_heat_volt,
     chg_heat_parameters_stop_heat_current: cfg.chg_heat_parameters.stop_heat_current,
+    chg_heat_parameters_current_flag: cfg.chg_heat_parameters.current_flag,
 };
 
 
@@ -171,6 +172,7 @@ globalInfo.setReturn({processedcfg:processedcfg});
 #define USERSTRATEGY_STOP_HEAT_CURRENT                  <%- (mdata.chg_heat_parameters_stop_heat_current*10)%> // 加热结束进入纯充电时请求电流 0.1A
 
 <%}%>
+#define USERSTRATEGY_CURRENT_FLAG                       <%- mdata.chg_heat_parameters_current_flag%>
 
 
 #endif

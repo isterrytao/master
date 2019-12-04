@@ -132,6 +132,7 @@ void HvProcess_ChgReStartJudgeAction(void);
 
 boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_HeatIsJump(void);
+boolean HvProcess_IsHeatAndChargeMode(void);
 #endif
 
 /**
