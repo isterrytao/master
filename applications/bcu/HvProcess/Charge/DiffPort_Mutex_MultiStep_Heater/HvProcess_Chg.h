@@ -194,6 +194,8 @@ boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_IsJumpMode(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
 
+boolean HvProcess_ChgHeatPowerFaultCond(void);
+void HvProcess_ChgHeatFaultAction(void);
 
 #endif
 

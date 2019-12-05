@@ -140,6 +140,11 @@ const HvProcess_StateInfoType HvProcess_ChgHeatOnInfoConfig[] = {
         (uint16)HVPROCESS_CHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
     },
     {
+        HvProcess_ChgHeatPowerFaultCond, /**< Cond: 条件函数指针 */
+        HvProcess_ChgHeatFaultAction, /**< Action: 动作函数指针 */
+        (uint16)HVPROCESS_CHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
+    },
+    {
         HvProcess_ChgStopHeatTempCond, /**< Cond: 条件函数指针 */
         HvProcess_ChgStopHeatTempAction, /**< Action: 动作函数指针 */
         (uint16)HVPROCESS_CHG_HEAT_TO_HEAT_AND_CHARGE_PREPARE, /**< Next: 下一状态 */

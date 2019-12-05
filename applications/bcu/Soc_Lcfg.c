@@ -13,10 +13,7 @@
 #include "ChargeM.h"
 #include "TemperatureM.h"
 #include "UserStrategy_Cfg.h"
-#ifdef RELAYM_FN_HEATER
-#include "RelayM_Lcfg.h"
 #include "HvProcess_Chg.h"
-#endif
 
 
 const Soc_ConfigInfoType Soc_ConfigInfo = {
@@ -60,7 +57,7 @@ Current_CurrentType Soc_CurrentHook(Current_CurrentType current)
 boolean Soc_IsBatteryCurrent(void)
 {
     boolean res;
-#ifdef RELAYM_FN_HEATER
+
 #if USERSTRATEGY_CURRENT_FLAG == FALSE
     res = TRUE;
 #else
@@ -73,8 +70,6 @@ boolean Soc_IsBatteryCurrent(void)
         res = FALSE;
     }
 #endif
-#else
-    res = TRUE;
-#endif
+
     return res;
 }

@@ -1171,3 +1171,53 @@ boolean HvProcess_IsHeatAndChargeMode(void)
 
     return res;
 }
+
+boolean HvProcess_ChgHeatPowerFaultCond(void)
+{
+    boolean res = FALSE, flag = FALSE;
+    uint32 nowTime = OSTimeGet(),delay = 60000UL;
+    uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
+    static uint32 lastTime = 0UL,monitorTime = 0U;
+    uint16 heatCurrent = (uint16)USERSTRATEGY_START_HEAT_CURRENT;
+
+    if (MS_GET_INTERNAL(monitorTime, nowTime) > 300UL)
+    {
+        lastTime = 0UL;
+    }
+    monitorTime = nowTime;
+    heatCurrent += CURRENT_100MA_FROM_A(10U);
+    if (current < CURRENT_100MA_FROM_A(1U))
+    {
+        flag = TRUE;
+    }
+    else if (current >= heatCurrent)
+    {
+        flag = TRUE;
+        delay = 5000UL;
+    }
+    else
+    {}
+    if (flag && HvProcess_ChgInnerData.HeatIsFinish == FALSE)
+    {
+        if (lastTime == 0UL)
+        {
+            lastTime = nowTime;
+        }
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+        {
+            res = TRUE;
+            lastTime = 0UL;
+        }
+    }
+    else
+    {
+        lastTime = 0UL;
+    }
+    return res;
+}
+
+void HvProcess_ChgHeatFaultAction(void)
+{
+    HvProcess_ChgInnerData.RelayOffTick = OSTimeGet();
+    TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_FAULT);
+}
