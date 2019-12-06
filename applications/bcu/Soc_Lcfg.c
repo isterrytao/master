@@ -14,6 +14,7 @@
 #include "TemperatureM.h"
 #include "UserStrategy_Cfg.h"
 #include "HvProcess_Chg.h"
+#include "RelayM_Lcfg.h"
 
 
 const Soc_ConfigInfoType Soc_ConfigInfo = {
@@ -43,6 +44,7 @@ Std_ReturnType Soc_IsChargeFinish(void)
 Current_CurrentType Soc_CurrentHook(Current_CurrentType current)
 {
 #ifdef RELAYM_FN_HEATER
+#if USERSTRATEGY_CURRENT_FLAG == TRUE
     if (CurrentM_IsValidCurrent(current))
     {
         if (HvProcess_IsHeatAndChargeMode())
@@ -50,6 +52,7 @@ Current_CurrentType Soc_CurrentHook(Current_CurrentType current)
             current = current - USERSTRATEGY_START_HEAT_CURRENT;
         }
     }
+#endif
 #endif
     return current;
 }
