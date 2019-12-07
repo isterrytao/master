@@ -303,27 +303,33 @@ boolean UserStartegy_ChargeIsAllow(void)
 
 App_Tv100mvType UserStrategy_GetChargeVoltMax(void)
 {
-    App_Tv100mvType volt;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
-
-    volt = PowerM_GetChargeVoltage(type);
+    App_Tv100mvType volt = PowerM_GetChargeVoltage(type);
 #ifdef RELAYM_FN_HEATER
-    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    boolean isHeat = HvProcess_ChargerIsHeatMode();
+    boolean isJump = HvProcess_IsJumpMode();
+    if (isJump)
     {
-        if (HvProcess_HeatIsJump() == TRUE)
+        volt = Statistic_GetBcu100mvTotalVoltage();
+        if (Statistic_TotalVoltageIsValid(volt))
         {
-            volt = Statistic_GetBcu100mvTotalVoltage();
-            if (Statistic_TotalVoltageIsValid(volt))
-            {
-                volt += V_TO_100MV(5U);
-            }
+            volt += V_TO_100MV(2U);
         }
+    }
+    else if (isHeat)
+    {
+        volt = USERSTRATEGY_START_HEAT_VOLT;
+    }
+    else
+    {
+        // volt = PowerM_GetChargeVoltage(type);
     }
 #endif
     if (!Statistic_TotalVoltageIsValid(volt))
     {
         volt = 0U;
     }
+
     return volt;
 }
 
@@ -332,17 +338,41 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     Current_CurrentType current;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
 #ifdef RELAYM_FN_HEATER
-    if (HvProcess_ChargerIsHeadMode() == TRUE)
+    boolean isHeat = HvProcess_ChargerIsHeatMode();
+    boolean isJump = HvProcess_IsJumpMode();
+    boolean isHeatCharge = HvProcess_IsHeatAndChargeMode();
+
+    if (isJump)
     {
-        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+        current = USERSTRATEGY_START_HEAT_CURRENT;
     }
-    else if (type == CHARGE_TYPE_DC)
+    else if (isHeat)
     {
-        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
+        current = USERSTRATEGY_START_HEAT_CURRENT;
+        // current = PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    }
+    else if (isHeatCharge)
+    {
+        if (type == CHARGE_TYPE_DC)
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
+        }
+        else
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+        }
+        current += USERSTRATEGY_START_HEAT_CURRENT;
     }
     else
     {
-        current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+        if (type == CHARGE_TYPE_DC)
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_DC);
+        }
+        else
+        {
+            current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
+        }
     }
 #else
     if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
@@ -658,20 +688,37 @@ static void UserStrategy_AutoLostPower(void)
     static uint32 lastTime = 0U;
     uint32 nowTime = OSTimeGet();
     uint32 delay = USERSTRATEGY_AUTO_POWER_DOWN_TIME;
+    boolean isChgHeat = HvProcess_IsHeatAndChargeMode();
 
     mode = RuntimeM_GetMode();
-    if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
+    if (!HvProcess_ChargerIsHeatMode() &&
+        !isChgHeat)
     {
-        current = abs(CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN));
-        if (CurrentM_IsValidCurrent(current) && current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+        if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
         {
-            if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+            current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+            if (CurrentM_IsValidCurrent(current))
+            {
+                current = abs(current);
+                if (current <= CURRENT_S_100MA_FROM_A(USERSTRATEGY_AUTO_POWER_DOWN_CURRENT))
+                {
+                    if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                    {
+                        lastTime = nowTime;
+                        ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
+                        DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
+                        UserStrategy_AllRlyOff();
+                        RuntimeM_RequestPowerDown();
+                    }
+                }
+                else
+                {
+                    lastTime = nowTime;
+                }
+            }
+            else
             {
                 lastTime = nowTime;
-                ChargeM_SetOthersFaultChargeCtl(CHARGEM_OTHERS_FAULT_POWER_OFF, CHARGEM_CHARGE_DISABLE);
-                DischargeM_SetOthersFaultDchargeCtl(DISCHARGEM_OTHERS_FAULT_POWER_OFF, DISCHARGEM_DISCHARGE_DISABLE);
-                UserStrategy_AllRlyOff();
-                RuntimeM_RequestPowerDown();
             }
         }
         else

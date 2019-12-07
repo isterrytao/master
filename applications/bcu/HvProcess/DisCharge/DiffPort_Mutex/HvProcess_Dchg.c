@@ -4,6 +4,8 @@
  *
  * \brief 高压放电流程控制文件.
  *
+ * \note 充放电异口无预充无加热高压流程
+ *
  * * \par 修订历史:
  * | 版本号 | 修订日志 | 修改人 | 修订时间 |
  * | :--- | :--- | :--- | :--- |
@@ -21,6 +23,7 @@
 #include "Statistic.h"
 #include "ChargerComm_LCfg.h"
 #include "UserStrategy.h"
+#include "TemperatureM.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
@@ -139,6 +142,10 @@ boolean HvProcess_DchgStateStartCond(void)
                     if (nowTime >= delay)
                     {
                         res = TRUE;
+                        if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
+                        {
+                            TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
+                        }
                     }
                 }
             }

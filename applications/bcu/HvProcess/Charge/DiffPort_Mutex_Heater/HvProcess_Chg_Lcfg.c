@@ -62,7 +62,7 @@ const HvProcess_StateInfoType HvProcess_ChgHeatJudgeInfoConfig[] = {
     {
         HvProcess_ChgStartChargeCond, /**< Cond: 条件函数指针 */
         HvProcess_ChgStartChargeAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_CHG_START_CHARGE, /**< Next: 下一状态 */
+        (uint16)HVPROCESS_CHG_HV_ON, /**< Next: 下一状态 */
     },
 };
 

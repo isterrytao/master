@@ -32,7 +32,17 @@ var mdata = {
     lv_protect_level: cfg.lv_protect.level,
     ltv_protect_en: cfg.ltv_protect.en,
     ltv_protect_level: cfg.ltv_protect.level,
+    chg_heat_parameters_en: cfg.chg_heat_parameters.en,
+    chg_heat_parameters_start_heat_temp: cfg.chg_heat_parameters.start_heat_temp,
+    chg_heat_parameters_stop_heat_temp: cfg.chg_heat_parameters.stop_heat_temp,
+    chg_heat_parameters_revert_temp: cfg.chg_heat_parameters.revert_temp,
+    chg_heat_parameters_start_heat_volt: cfg.chg_heat_parameters.start_heat_volt,
+    chg_heat_parameters_start_heat_current: cfg.chg_heat_parameters.start_heat_current,
+    chg_heat_parameters_stop_heat_volt: cfg.chg_heat_parameters.stop_heat_volt,
+    chg_heat_parameters_stop_heat_current: cfg.chg_heat_parameters.stop_heat_current,
+    chg_heat_parameters_current_flag: cfg.chg_heat_parameters.current_flag,
 };
+
 
 var processedcfg = {mdata: mdata};
 
@@ -43,6 +53,9 @@ globalInfo.setReturn({processedcfg:processedcfg});
 
 #include "App_Types.h"
 #include "DigitalInput.h"
+<%if (mdata.chg_heat_parameters_stop_heat_volt  == 0) {%>
+#include "Statistic.h"
+<%}%>
 
 
 /**
@@ -138,6 +151,28 @@ globalInfo.setReturn({processedcfg:processedcfg});
  */
 #define USERSTRATEGY_DCHG_LTV_PROTECT_WITH_CURRENT_EN   <%- mdata.ltv_protect_en%>
 #define USERSTRATEGY_DCHG_LTV_PROTECT_LEVEL             <%- mdata.ltv_protect_level%>
+
+<% if (mdata.chg_heat_parameters_en == "STD_ON") {%>
+
+/**
+ * \brief 充电加热策略参数
+ */
+#define USERSTRATEGY_START_HEAT_TEMP                    TEMPERATURE_FROM_C(<%- mdata.chg_heat_parameters_start_heat_temp%>) // 进入纯加热温度
+#define USERSTRATEGY_STOP_HEAT_TEMP                     TEMPERATURE_FROM_C(<%- mdata.chg_heat_parameters_stop_heat_temp%>) // 停止加热进入纯充电温度
+<% if (mdata.chg_heat_parameters_revert_temp != 0) {%>
+#define USERSTRATEGY_REVERT_TEMP                        <%- mdata.chg_heat_parameters_revert_temp%>U // 回滚温度
+<%}%>
+#define USERSTRATEGY_START_HEAT_VOLT                    <%- (mdata.chg_heat_parameters_start_heat_volt*10)%>U // 进入纯加热时请求电压 0.1V
+#define USERSTRATEGY_START_HEAT_CURRENT                 <%- (mdata.chg_heat_parameters_start_heat_current*10)%> // 进入纯加热时请求电流 0.1A
+<% if (mdata.chg_heat_parameters_stop_heat_volt == 0) {%>
+#define USERSTRATEGY_STOP_HEAT_VOLT                     Statistic_GetBcu100mvTotalVoltage() // 加热结束进入纯充电时请求电压
+<%} else {%>
+#define USERSTRATEGY_STOP_HEAT_VOLT                     <%- (mdata.chg_heat_parameters_stop_heat_volt*10)%>U // 加热结束进入纯充电时请求电压 0.1V
+<%}%>
+#define USERSTRATEGY_STOP_HEAT_CURRENT                  <%- (mdata.chg_heat_parameters_stop_heat_current*10)%> // 加热结束进入纯充电时请求电流 0.1A
+
+<%}%>
+#define USERSTRATEGY_CURRENT_FLAG                       <%- mdata.chg_heat_parameters_current_flag%> //加热电流是否经过分流器      TRUE为经过     FALSE为不经过
 
 
 #endif

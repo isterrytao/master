@@ -265,8 +265,8 @@ module.exports = {
 
     HVProcess: {
         notes: [
-            {section:"chg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Heater", "SamePort"'},
-            {section:"dchg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Precharge", "SamePort", "SamePort_Precharge"'},
+            {section:"chg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Heater", "SamePort", "SamePort_Heater", "DiffPort_Mutex_MultiStep_Heater"'},
+            {section:"dchg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Precharge", "SamePort", "SamePort_Precharge", "SamePort_Heater"'},
         ],
         chg: "DiffPort_Mutex",
         dchg: "DiffPort_Mutex",
@@ -361,6 +361,7 @@ module.exports = {
             {section:"oc_type", chs: "过流配置类型定义", comments: '"CURRENT", "CURRENT_OFFSET", "PERCENT "'},
             {section:"lv_protect", chs: "放电单体电压低有放电电流时才保护使能"},
             {section:"ltv_protect", chs: "放电总压低有放电电流时才保护使能"},
+            {section:"chg_heat_parameters", chs: "充电加热策略相关参数"},
         ],
         ota_tpye: "USERSTRATEGY_REALTIME_OTA",
         buzzer_alarm: {
@@ -427,6 +428,28 @@ module.exports = {
         ltv_protect: {
             en: "STD_OFF",
             level: "DIAGNOSIS_LEVEL_THIRD",
+        },
+        chg_heat_parameters: {
+            notes: [
+                {section: "en", chs: "加热策略使能，配置加热继电器时改参数使能,若配置了加热继电器则默认为'STD_ON',否则为'STD_OFF'", comments: '"STD_ON", "STD_OFF"'},
+                {section: "start_heat_temp", chs: "开始加热温度，当最低温度小于等于此温度时由充电转入加热"},
+                {section: "stop_heat_temp", chs: "停止加热温度，当最低温度大于等于此温度时，结束加热流程进入纯充电流程"},
+                {section: "revert_temp", chs: "回滚温度，用于充电加热不互斥流程中三种状态转换判定，若为充电加热互斥流程（DiffPort_Mutex_Heater）时，该参数默认为0"},
+                {section: "start_heat_volt", chs: "充电转加热时请求电压(V)"},
+                {section: "start_heat_current", chs: "充电转加热时请求电流(A)"},
+                {section: "stop_heat_volt", chs: "加热结束转入充电时请求电压(V),若为请求系统总压该参数需配置为0,目前该参数默认为0"},
+                {section: "stop_heat_current", chs: "加热结束转入充电是请求电流"},
+                {section: "current_flag", chs: "加热电流是否经过分流器，若经过为TRUE，否则为FALSE"},
+            ],
+            en: "STD_OFF",
+            start_heat_temp: -5,
+            stop_heat_temp: 10,
+            revert_temp: 0,
+            start_heat_volt: 25.6,
+            start_heat_current: 15.8,
+            stop_heat_volt: 0,
+            stop_heat_current: 10,
+            current_flag: "FALSE",
         },
     },
 

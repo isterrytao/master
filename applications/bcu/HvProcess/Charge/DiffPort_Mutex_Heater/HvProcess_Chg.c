@@ -4,6 +4,8 @@
  *
  * \brief 高压充电流程控制文件.
  *
+ * \note 充放电异口带加热高压流程，充电加热互斥
+ *
  * * \par 修订历史:
  * | 版本号 | 修订日志 | 修改人 | 修订时间 |
  * | :--- | :--- | :--- | :--- |
@@ -25,6 +27,7 @@
 #include "AppParameterM.h"
 #include "CellDataM.h"
 #include "PowerM.h"
+#include "UserStrategy_Cfg.h"
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
 
@@ -84,7 +87,10 @@ boolean HvProcess_ChgStateStartCond(void)
                 chargeReady == E_OK &&
                 chargerIsComm)
             {
-                res = TRUE;
+                if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_FAULT)
+                {
+                    res = TRUE;
+                }
             }
         }
     }
@@ -124,8 +130,8 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
 
     if (RelayM_GetActualStatus(HvProcess_ChgInnerData.chgRelay) == RELAYM_ACTUAL_ON && HvProcess_ChgInnerData.chgRelay != (RelayM_FunctionType)RELAYM_FN_NONE && !HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
     {
-        HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
 #ifdef RELAYM_FN_HEATER
+        HvProcess_ChgInnerData.HeatRelayFaultCheckFlag = TRUE;
         if (RelayMConfigData[RELAYM_FN_HEATER].GetInstantVoltage != NULL)
         {
             if (RelayM_GetControlStatus(RELAYM_FN_HEATER) == RELAYM_CONTROL_OFF)
@@ -136,6 +142,12 @@ boolean HvProcess_ChgHeaterRelayIsNormal(void)
                 }
             }
         }
+        else
+        {
+            res = TRUE;
+        }
+#else
+        res = TRUE;
 #endif
     }
     if (HvProcess_ChgInnerData.HeatRelayFaultCheckFlag)
@@ -158,7 +170,6 @@ void HvProcess_ChgHeaterRelayNormalAction(void)
 boolean HvProcess_ChgStartHeatCond(void)
 {
     App_TemperatureType temperature, heatOnTemp;
-    ParameterM_DataType temp;
     boolean res = FALSE;
     static uint32 lastTime = 0U,monitorTime = 0U;
     uint32 nowTime = OSTimeGet();
@@ -168,26 +179,23 @@ boolean HvProcess_ChgStartHeatCond(void)
         lastTime = 0UL;
     }
     monitorTime = nowTime;
-    if (E_OK == ParameterM_CalibRead(PARAMETERM_GET_APP_CALIB_PARA_ADDR(TemperatureMPara.chgHeatPara.temperatureOn), (uint8*)&temp, 2U))
+    temperature = Statistic_GetBcuLt(0U);
+    heatOnTemp = (App_TemperatureType)USERSTRATEGY_START_HEAT_TEMP;
+    if (CellDataM_TemperatureIsValid((uint16)temperature) != 0U)
     {
-        temperature = Statistic_GetBcuLt(0U);
-        heatOnTemp = (App_TemperatureType)temp;
-        if (CellDataM_TemperatureIsValid((uint16)temperature) != 0U)
+        if (temperature <= heatOnTemp)
         {
-            if (temperature <= heatOnTemp)
-            {
-                if (lastTime == 0U){
-                    lastTime = nowTime;
-                }
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
-                {
-                    res = TRUE;
-                }
+            if (lastTime == 0U){
+                lastTime = nowTime;
             }
-            else
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
             {
-                lastTime = 0U;
+                res = TRUE;
             }
+        }
+        else
+        {
+            lastTime = 0U;
         }
     }
     return res;
@@ -206,7 +214,6 @@ void HvProcess_ChgStartHeatAction(void)
 boolean HvProcess_ChgStartChargeCond(void)
 {
     App_TemperatureType temperature, heatOnTemp;
-    ParameterM_DataType temp;
     boolean res = FALSE;
     static uint32 lastTime = 0U,monitorTime = 0U;
     uint32 nowTime = OSTimeGet();
@@ -216,28 +223,26 @@ boolean HvProcess_ChgStartChargeCond(void)
         lastTime = 0UL;
     }
     monitorTime = nowTime;
-    if (E_OK == ParameterM_CalibRead(PARAMETERM_GET_APP_CALIB_PARA_ADDR(TemperatureMPara.chgHeatPara.temperatureOn), (uint8*)&temp, 2U))
+    temperature = Statistic_GetBcuLt(0U);
+    heatOnTemp = (App_TemperatureType)USERSTRATEGY_START_HEAT_TEMP;
+    if (CellDataM_TemperatureIsValid((uint16)temperature) != 0U)
     {
-        temperature = Statistic_GetBcuLt(0U);
-        heatOnTemp = (App_TemperatureType)temp;
-        if (CellDataM_TemperatureIsValid((uint16)temperature) != 0U)
+        if (temperature > heatOnTemp)
         {
-            if (temperature > heatOnTemp)
-            {
-                if (lastTime == 0U){
-                    lastTime = nowTime;
-                }
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
-                {
-                    res = TRUE;
-                }
+            if (lastTime == 0U){
+                lastTime = nowTime;
             }
-            else
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
             {
-                lastTime = 0U;
+                res = TRUE;
             }
         }
+        else
+        {
+            lastTime = 0U;
+        }
     }
+
     return res;
 }
 
@@ -329,7 +334,8 @@ boolean HvProcess_ChgHeatCurrentIsOk(void)
     static uint32 lastTime = 0UL,monitorTime = 0UL;
     uint32 nowTime = OSTimeGet();
     uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
-    uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    // uint16 mainCur = (uint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+    uint16 heatCurrent = (uint16)USERSTRATEGY_START_HEAT_CURRENT;
     RelayM_ActualStatusType heatRelay = RelayM_GetActualStatus(RELAYM_FN_HEATER);
 
     if (MS_GET_INTERNAL(monitorTime, nowTime) > 300UL)
@@ -338,18 +344,30 @@ boolean HvProcess_ChgHeatCurrentIsOk(void)
     }
     monitorTime = nowTime;
     heatCurrent += CURRENT_100MA_FROM_A(10U);
-    if (CURRENT_IS_VALID(current) && current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    if (CURRENT_IS_VALID(current) && /*current > 0U &&*/ current < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
     {
         if (lastTime == 0UL)
         {
             lastTime = nowTime;
         }
-        if (MS_GET_INTERNAL(lastTime, nowTime) >= 5000U)
+        if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
         {
             res = TRUE;
             lastTime = 0UL;
         }
     }
+    // else if (CURRENT_IS_VALID(mainCur) && mainCur > 0U && mainCur < heatCurrent && heatRelay == RELAYM_ACTUAL_OFF)
+    // {
+    //     if (lastTime == 0UL)
+    //     {
+    //         lastTime = nowTime;
+    //     }
+    //     if (MS_GET_INTERNAL(lastTime, nowTime) >= 1000U)
+    //     {
+    //         res = TRUE;
+    //         lastTime = 0UL;
+    //     }
+    // }
     else
     {
         lastTime = 0UL;
@@ -371,7 +389,7 @@ boolean HvProcess_ChgHeatPowerFaultCond(void)
     uint32 nowTime = OSTimeGet(),delay = 60000UL;
     uint16 current = (uint16)ChargerComm_GetChargerOutputCurrent();
     static uint32 lastTime = 0UL,monitorTime = 0U;
-    uint16 heatCurrent = (uint16)PowerM_GetCurrent(POWERM_CUR_CHARGE_HEATER);
+    uint16 heatCurrent = (uint16)USERSTRATEGY_START_HEAT_CURRENT;
 
     if (MS_GET_INTERNAL(monitorTime, nowTime) > 300UL)
     {
@@ -458,7 +476,6 @@ void HvProcess_ChgHeatFinishAction(void)
 boolean HvProcess_ChgHeatFinishCheckCond(void)
 {
     App_TemperatureType temperature, heatOffTemp;
-    ParameterM_DataType temp;
     boolean flag = FALSE, res = FALSE;
     static uint32 lastTime = 0UL,monitorTime = 0U;
     uint32 nowTime = OSTimeGet();
@@ -468,16 +485,13 @@ boolean HvProcess_ChgHeatFinishCheckCond(void)
         lastTime = 0UL;
     }
     monitorTime = nowTime;
-    if (E_OK == ParameterM_CalibRead(PARAMETERM_GET_APP_CALIB_PARA_ADDR(TemperatureMPara.chgHeatPara.temperatureOff), (uint8*)&temp, 2U) && HvProcess_ChgInnerData.HeatIsFinish == FALSE)
+    temperature = Statistic_GetBcuLt(0U);
+    heatOffTemp = (App_TemperatureType)USERSTRATEGY_STOP_HEAT_TEMP;
+    if (CellDataM_TemperatureIsValid((uint16)temperature) != 0U)
     {
-        temperature = Statistic_GetBcuLt(0U);
-        heatOffTemp = (App_TemperatureType)temp;
-        if (CellDataM_TemperatureIsValid((uint16)temperature) != 0U)
+        if (temperature >= heatOffTemp)
         {
-            if (temperature >= heatOffTemp)
-            {
-                flag = TRUE;
-            }
+            flag = TRUE;
         }
     }
     if (flag)
@@ -573,6 +587,7 @@ boolean HvProcess_ChgChargeConnectionCond(void)
 void HvProcess_ChgChargeConnectionAction(void)
 {
     HvProcess_ChgInnerData.RelayOffTick = OSTimeGet();
+    TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
 }
 
 boolean HvProcess_ChgFaultCond(void)
@@ -732,28 +747,39 @@ boolean HvProcess_ChgReStartJudgeCond(void)
 void HvProcess_ChgReStartJudgeAction(void)
 {
     HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
+    if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_FAULT)
+    {
+        TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);
+    }
 }
 
-boolean HvProcess_ChargerIsHeadMode(void)
+boolean HvProcess_ChargerIsHeatMode(void)
 {
     boolean res = FALSE;
     HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
 
-    if (chgStatus == HVPROCESS_CHG_HEATING || chgStatus == HVPROCESS_CHG_START_HEAT)
+    if (chgStatus == HVPROCESS_CHG_HEATING)
     {
         res = TRUE;
     }
     return res;
 }
 
-boolean HvProcess_HeatIsJump(void)
+boolean HvProcess_IsJumpMode(void)
 {
     boolean res = FALSE;
     HvProcess_ChgStateType chgStatus = HvProcess_GetChgState();
 
-    if (HvProcess_ChgInnerData.HeatIsFinish == TRUE || chgStatus == HVPROCESS_CHG_START_HEAT)
+    if (chgStatus == HVPROCESS_CHG_START_HEAT ||
+        chgStatus == HVPROCESS_CHG_START_CHARGE)
     {
         res = TRUE;
     }
+
     return res;
+}
+
+boolean HvProcess_IsHeatAndChargeMode(void)
+{
+    return FALSE;
 }

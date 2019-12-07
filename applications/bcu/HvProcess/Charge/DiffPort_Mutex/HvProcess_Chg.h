@@ -133,8 +133,9 @@ void HvProcess_ChgRelayOffDelayAction(void);
 
 boolean HvProcess_ChgRestartAllowedCond(void);
 
-boolean HvProcess_ChargerIsHeadMode(void);
+boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_HeatIsJump(void);
+boolean HvProcess_IsHeatAndChargeMode(void);
 
 #endif
 
