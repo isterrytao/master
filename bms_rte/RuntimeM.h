@@ -93,6 +93,7 @@ typedef struct {
 #define RUNTIMEM_WAKEUP_PARAM_IS_TIME     2U /**< 唤醒参数是时刻, 每天的秒偏移 */
 
 typedef struct {
+    uint16 powerDownConfirmCount; /**< 确认下电信号计数 5ms/次 */
     uint8 maxTimeForWaitTaskPowerdown; /**< 等待低压下电的最大时间, 单位:毫秒 */
     const RuntimeM_TaskNotifyType *notifies; /**< 需要等待的任务列表, */
     uint8 TimeOrDelayToWakeupForData; /**< 唤醒进行数据传输的时间参数是时刻还是延时, RUNTIMEM_WAKEUP_PARAM_IS_XX*/
