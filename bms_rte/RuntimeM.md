@@ -69,6 +69,7 @@ reset-->xend
 
 ```javascript
 RuntimeM: {
+    powerDownConfirmCount: 10,
     maxTimeForWaitTaskPowerdown: 10,
     wakeupTimeForOTA: 90,
     wakeupTimeForData: "02:00",
@@ -82,6 +83,7 @@ RuntimeM: {
     ]
 },
 ```
+1. powerDownConfirmCount: 确认下电信号计数 5ms/次,默认为50ms滤波;
 
 1. maxTimeForWaitTaskPowerdown: 下电等待的最大时间(单位秒), 指上面流程图中结束所有任务所需要的最大时间, 如果在这个时间内仍有任务没有结束, 也是强制下电;
 

@@ -148,6 +148,7 @@ module.exports = {
     },
 
     RuntimeM: {
+        powerDownConfirmCount: 10,
         maxTimeForWaitTaskPowerdown: 10,
         wakeupTimeForOTA: 90,
         wakeupTimeForData: "02:00",
@@ -166,6 +167,7 @@ module.exports = {
             {func:"ChargeConnectM_SaftyOff", inc: "ChargeConnectM.h"},
         ],
 
+        powerDownConfirmCount_comments: "确认下电信号计数 5ms/次",
         maxTimeForWaitTaskPowerdown_comments: "下电等待的最大时间, 单位秒",
         wakeupTimeForOTA_comments: '收到升级请求之后, 多长时间(什么时刻)唤醒开始升级, 单位秒或者指定时刻:"02:00"',
         wakeupTimeForData_comments: '关机之后, 多长时间唤醒开始向后台发送数据, 单位秒或者指定时刻:"02:00"',
