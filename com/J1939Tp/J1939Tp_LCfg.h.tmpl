@@ -222,7 +222,7 @@ for (var v of cfg) {
             let id;
             var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
             if (((pg.pgn >> 8) & 0xFF) < 240) {
-                id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (v.self << 8) + v.remote
+                id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (0xFF << 8) + v.remote
             } else {
                 id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFFFF) << 8) + v.remote
             }
@@ -240,7 +240,7 @@ for (var v of cfg) {
             let id;
             var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
             if (((pg.pgn >> 8) & 0xFF) < 240) {
-                id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (v.self << 8) + v.remote
+                id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (0xFF << 8) + v.remote
             } else {
                 id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFFFF) << 8) + v.remote
             }
