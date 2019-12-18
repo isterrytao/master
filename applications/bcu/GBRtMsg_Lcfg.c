@@ -123,7 +123,7 @@ typedef struct {
             uint8 signalStrength;
             uint8 errorBitrate;
             uint16 lac;
-            uint16 ci;
+            uint32 ci;
             sint32 longtitude;
             sint32 latitude;
         } dtuStatus;
@@ -438,13 +438,17 @@ static const GB32960_CopySegmentType copySegmentsCellPeakData[] = {
 };
 
 static void fillDtuStatus(GBRt_MsgBuffer *msgHeader) {
+    uint32 lacci[2];
     msgHeader->dataHeader.dtuStatus.supplyVoltage = DtuM35_GetSupplyVoltage();
     msgHeader->dataHeader.dtuStatus.ops = DtuM35_GetOPS();
     DtuM35_GetSingalQuality(&msgHeader->dataHeader.dtuStatus.signalStrength,
                             &msgHeader->dataHeader.dtuStatus.errorBitrate);
-    DtuM35_GetLacCi(&msgHeader->dataHeader.dtuStatus.lac);
+    DtuM35_GetLacCi(&lacci[0]);
+    msgHeader->dataHeader.dtuStatus.lac = (uint16)lacci[0];
+    msgHeader->dataHeader.dtuStatus.ci = lacci[1];
     DtuM35_GetLoc(&msgHeader->dataHeader.dtuStatus.longtitude);
 }
+
 static const GB32960_CopySegmentType copySegmentsDtuStatus[] = {
     {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(dtuStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
 };
@@ -608,7 +612,7 @@ const GB32960_RTMessageItemType intervalData[] = {
 #endif
     {0x09U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copySegmentsCellTemperatures, (uint8)ARRAY_SIZE(copySegmentsCellTemperatures)},
     {0x06U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copySegmentsCellPeakData, (uint8)ARRAY_SIZE(copySegmentsCellPeakData)},
-    {0x84U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copySegmentsDtuStatus, (uint8)ARRAY_SIZE(copySegmentsDtuStatus)},
+    {0x96U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copySegmentsDtuStatus, (uint8)ARRAY_SIZE(copySegmentsDtuStatus)},
     {0x86U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalanceStatus, (uint8)ARRAY_SIZE(copySegmentsBalanceStatus)},
     {0x94U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copySegmentsChargerStatus, (uint8)ARRAY_SIZE(copySegmentsChargerStatus)},
     {0x87U, TRUE, LEN_TYPE_GET_LENGTH, 0U, getAlarmLength, (GB32960_FillMessageFuncType)fillAlarmStatus, copySegmentsAlarmStatus, (uint8)ARRAY_SIZE(copySegmentsAlarmStatus)},
@@ -780,7 +784,7 @@ static const GB32960_RecordItemType onceDataList[] = {
 };
 
 static const GB32960_RecordItemType fixedCycleDataList[] = {
-    {GB_TYPE_TO_RECORD_TYPE(0x84U), MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copyRecordSegmentsDtuStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsDtuStatus), has_dtu_module},
+    {GB_TYPE_TO_RECORD_TYPE(0x96U), MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copyRecordSegmentsDtuStatus, (uint8)ARRAY_SIZE(copyRecordSegmentsDtuStatus), has_dtu_module},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
 };
 

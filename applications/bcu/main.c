@@ -66,7 +66,7 @@
 #include "App_Cfg.h"
 #include "BridgeInsu.h"
 #include "LimitProtect.h"
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
 #include "Rs485Shell.h"
 #endif
 #define LOG_LEVEL LOG_LEVEL_OFF
@@ -117,13 +117,20 @@ static OS_STK hvadc_task_stack[300];
 #endif
 // static OS_STK shunt_task_stack[400];
 
+
 static void start_dtu_task(void) {
 
     static OS_STK dtu_task_stack[400];
 
     (void)OSTaskCreateExt(
         (void(*)(void *p_arg))DtuM35_MainLoop,
-        (void *)&DtuCommM35ConfigGB32960,
+#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661)
+        (void *)&DtuCommM35ConfigGB32960MC20,
+#elif defined(A655)|| defined(A657)|| defined(A665)
+        (void *)&DtuCommM35ConfigGB32960EC20,
+#elif defined(A641)
+        (void *)&A640DtuCommM35ConfigGB32960MC20,
+#endif
         &dtu_task_stack[ARRAY_SIZE(dtu_task_stack) - 1U],
         DTU_TASK_PRI,
         DTU_TASK_PRI,
@@ -311,12 +318,12 @@ static void run_test_mode(void) {
 #endif
     (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, TRUE);
 #if defined(A640)||defined(A641)
-        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_LOW);
-//        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_HIGH);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_LOW);
+    //        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_HIGH);
 #else
-        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
     (void)UartShell_Init((const UartShell_ConfigType *)UartShellConfigType, 0U);
 #endif
     for (;;) {
@@ -441,9 +448,9 @@ static void start_task(void *pdata) {
     }
     Soc_Init(&extLooper);
     Soh_Init();
-#if defined(A650) || defined(A651)
+#if defined(A650) || defined(A651) || defined(A655)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A650);
-#elif defined(A652) || defined(A653) || defined(A660) || defined(A661)
+#elif defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A657) || defined(A665)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
 #elif defined(A640)||defined(A641)
     BridgeInsu_Init(&driverLooper, NULL);
@@ -490,13 +497,14 @@ static void start_task(void *pdata) {
     LimitProtect_Init(&extLooper);
 
     HardwareSn_Init();
-    if (SystemConnection_ConfigInfo.DtuSupport) {
-        if (isNeedStartSampleTask()) {
-            GBRtMsg_Init(&driverLooper);
-            GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
-            start_dtu_task();
-        }
+
+#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
+    if (isNeedStartSampleTask()) {
+        GBRtMsg_Init(&driverLooper);
+        GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
+        start_dtu_task();
     }
+#endif
 
     WatchdogM_Enable();
 
