@@ -124,12 +124,16 @@ static void start_dtu_task(void) {
 
     (void)OSTaskCreateExt(
         (void(*)(void *p_arg))DtuM35_MainLoop,
-#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661)
+#if defined(A651) || defined(A653) || defined(A661)
         (void *)&DtuCommM35ConfigGB32960MC20,
+#elif defined(A601) || defined(A603) || defined(C601) || defined(C603)
+        (void *)&C600DtuCommM35ConfigGB32960MC20,
 #elif defined(A655)|| defined(A657)|| defined(A665)
         (void *)&DtuCommM35ConfigGB32960EC20,
 #elif defined(A641)
         (void *)&A640DtuCommM35ConfigGB32960MC20,
+#else
+        (void *)NULL,
 #endif
         &dtu_task_stack[ARRAY_SIZE(dtu_task_stack) - 1U],
         DTU_TASK_PRI,
@@ -323,7 +327,7 @@ static void run_test_mode(void) {
 #else
     Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
 #endif
-#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
+#if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A655) || defined(A657) || defined(A665) || defined(C601) || defined(C603)
     (void)UartShell_Init((const UartShell_ConfigType *)UartShellConfigType, 0U);
 #endif
     for (;;) {
@@ -498,7 +502,7 @@ static void start_task(void *pdata) {
 
     HardwareSn_Init();
 
-#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
+#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641)
     if (isNeedStartSampleTask()) {
         GBRtMsg_Init(&driverLooper);
         GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
