@@ -453,6 +453,10 @@ static boolean HvProcess_DchgIsFaultDirectRelayOff(void)
     {
         res = TRUE;
     }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_FB_OC) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
     else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_HT) == DISCHARGEM_DISCHARGE_DISABLE)
     {
         res = TRUE;
