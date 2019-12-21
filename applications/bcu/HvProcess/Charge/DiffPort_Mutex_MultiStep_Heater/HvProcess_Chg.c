@@ -979,7 +979,8 @@ boolean HvProcess_ChgReStartJudgeCond(void)
         }
         if (state == 0U)
         {
-            if (RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].GetInstantVoltage != NULL)
+            if (ChargerComm_ConfigInfo.AC_RelayType != 0xFFU &&
+                RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].GetInstantVoltage != NULL)
             {
                 hv2 = (App_Tv100mvType)RelayMConfigData[ChargerComm_ConfigInfo.AC_RelayType].GetInstantVoltage();
                 if (Statistic_TotalVoltageIsValid(hv2))
@@ -994,7 +995,8 @@ boolean HvProcess_ChgReStartJudgeCond(void)
         }
         if (state ==0U)
         {
-            if (RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].GetInstantVoltage != NULL)
+            if (ChargerComm_ConfigInfo.DC_RelayType != 0xFFU &&
+                RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].GetInstantVoltage != NULL)
             {
                 hv3 = (App_Tv100mvType)RelayMConfigData[ChargerComm_ConfigInfo.DC_RelayType].GetInstantVoltage();
                 {
