@@ -13,8 +13,10 @@
 #include "ChargeM.h"
 #include "TemperatureM.h"
 #include "UserStrategy_Cfg.h"
-#include "HvProcess_Chg.h"
+#ifdef RELAYM_FN_HEATER
 #include "RelayM_Lcfg.h"
+#include "HvProcess_Chg.h"
+#endif
 
 
 const Soc_ConfigInfoType Soc_ConfigInfo = {
