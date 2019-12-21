@@ -72,7 +72,7 @@ static sint16 const <%- powername %>tempaltyvalue[] = {<%
 
 static uint16 const <%- powername %>tableValue[] = {<%
     for (var current of power.current) {
-        %><%- (current*10)%>U, <%
+        %><%- current * 10%>U, <%
     }%>
 };
 
