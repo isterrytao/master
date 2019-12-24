@@ -30,6 +30,7 @@ const Soc_ConfigInfoType Soc_ConfigInfo = {
         NULL, /**< 获取最大跳变SOC值，包含释放值，此函数有效时 socJumpMax 和 socJumpRel不启作用 */
         MIN_TO_S(1U), /**< socJumpTime: SOC跳变时间 单位：S */
     },
+    SOC_MAX_FOR_FULL_CHARGE, /**< 充电中最大SOC值 0.1% */
 };
 
 Std_ReturnType Soc_IsChargeFinish(void)

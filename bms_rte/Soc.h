@@ -83,6 +83,7 @@ typedef struct{
     Soc_ChgCumuInfoType ChgCumuInfo; /**< 充电累计配置信息 */
     Soc_DchgCumuInfoType DchgCumuInfo; /**< 放电累计配置信息 */
     Soc_JumpConfigType jumpPara; /**< SOC跳变参数 */
+    App_SocType socMaxForCharging; /**< 充电中最大SOC值 */
 }Soc_ConfigInfoType;
 
 /**
