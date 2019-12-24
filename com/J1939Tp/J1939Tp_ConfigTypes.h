@@ -57,6 +57,9 @@ typedef enum {
     /** @brief Waiting for Clear To Send command from receiver. */
     J1939TP_TX_WAITING_FOR_CTS,
 
+    /** @brief Waiting for J1939 To Send DT. */
+    J1939TP_TX_WAITING_FOR_DT_SEND,
+
     /** @brief Wait for CanIf to confirm sending a TP.DT packet
      *         which we send using CMDT. */
     J1939TP_TX_WAIT_DT_CANIF_CONFIRM,
