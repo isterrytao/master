@@ -4,29 +4,20 @@
  * \brief DTU AT命令的封装声明.
  */
 
-#ifndef __ATCMD_H__
-#define __ATCMD_H__
+#ifndef __DTU_ATCMD_H__
+#define __DTU_ATCMD_H__
 
 #include "Std_Types.h"
 #include "ComStack_Types.h"
 #include "Uart.h"
-
-typedef struct {
-    /// 期望应答的起始字符串.
-    const char *expect;
-    /// 用于保存匹配的应答行的缓存.
-    char *recvBuffer;
-    /// 缓存大小.
-    uint8 recvLen;
-} ATCMD_Expect;
+#include "atcmd_Abstract.h"
 
 typedef struct {
     Uart_ChannelType uart;
-    BufReq_ReturnType (*StartOfReception)(PduLengthType length);
-    BufReq_ReturnType (*CopyRxData)(const uint8 *dat, PduLengthType length);
-    void (*RxIndication)(NotifResultType Result);
+
 } ATCMD_ConfigType;
 
+#if 0
 /// \brief ATCMD_SerialRecvLine AT命令接收一个字节的数据.
 ///
 /// \param b 接收的数据
@@ -97,11 +88,14 @@ typedef uint16 (*ATCMD_CopySendData)(uint8 *buf, uint16 len);
 Std_ReturnType ATCMD_SendDataViaGPRSCallback(ATCMD_CopySendData copySendData, uint16 len);
 Std_ReturnType ATCMD_GetCellLoc(sint32 loc[2]);
 Std_ReturnType ATCMD_GetOPS(char *buf, uint8 len);
-Std_ReturnType ATCMD_GetLacCi(uint16 lac_ci[2]);
+Std_ReturnType ATCMD_GetLacCi(uint32 lac_ci[2]);
 Std_ReturnType ATCMD_GetCIMI(char *buf, uint8 len);
 Std_ReturnType ATCMD_GetIMEI(char *buf, uint8 len);
 Std_ReturnType ATCMD_GetSignalQuality(uint8 *rssi, uint8 *ber);
 Std_ReturnType ATCMD_GetDataSentInfo(uint32 *sent, uint32 *acked, uint32 *unacked);
 Std_ReturnType ATCMD_GetVoltage(uint16 *vol);
+
+#endif
+
 
 #endif
