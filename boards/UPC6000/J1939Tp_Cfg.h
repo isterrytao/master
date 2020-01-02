@@ -23,5 +23,6 @@
 #define J1939TP_PACKETS_PER_BLOCK       5U
 #define J1939TP_MAIN_FUNCTION_PERIOD    2U
 #define J1939TP_TX_CONF_TIMEOUT         99U
+#define J1939TP_TX_DT_PERIOD            3U
 
 #endif /*J1939TP_CFG_H*/

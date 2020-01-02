@@ -1089,6 +1089,7 @@ void App_Read0x0489(Dcm_MsgContextType *pMsgContext) {
 void App_Read0x0620(Dcm_MsgContextType *pMsgContext) {
     uint16 length = DCM_INDEX_2;
     uint32 temp;
+    uint32 lacci[2];
 
     WRITE_BT_UINT8(pMsgContext->resData, length, DtuM35_GetRuntimeStatus(0U));
     WRITE_BT_UINT16(pMsgContext->resData, length, DtuM35_GetSupplyVoltage());
@@ -1107,7 +1108,11 @@ void App_Read0x0620(Dcm_MsgContextType *pMsgContext) {
     DtuM35_GetIMEI((sint8 *)(&pMsgContext->resData[length]), (uint8)temp); //IMEI
     length += strlen((const sint8 *)&pMsgContext->resData[length]) + 1U;
 
-    DtuM35_GetLacCi((uint16 *)(&pMsgContext->resData[length])); //LAC CI
+    DtuM35_GetLacCi(lacci);
+    pMsgContext->resData[length++] = (uint8)(lacci[0]);
+    pMsgContext->resData[length++] = (uint8)(lacci[0] >> 8);
+
+    (void)memcpy(&pMsgContext->resData[length], &lacci[1], 4U);
     length += 4U;
 
     WRITE_BT_UINT8(pMsgContext->resData, length, DtuM35_GetOPS()); //ops
@@ -1363,22 +1368,16 @@ void App_Read0x0E40(Dcm_MsgContextType *pMsgContext) {
 #endif
 }
 
-void App_Read0x0E60(Dcm_MsgContextType *pMsgContext)
-{
+void App_Read0x0E60(Dcm_MsgContextType *pMsgContext) {
     uint16 temp = 0U, length = DCM_INDEX_2;
 
     if (CurrentM_ConfigInfo.main.enable == STD_ON &&
-        CurrentM_ConfigInfo.main.channel == CURRENTM_SAMPLE_CHANNEL_SHUNT)
-    {
+            CurrentM_ConfigInfo.main.channel == CURRENTM_SAMPLE_CHANNEL_SHUNT) {
         temp = 0x01U;
-    }
-    else if (CurrentM_ConfigInfo.heater.enable == STD_ON &&
-        CurrentM_ConfigInfo.heater.channel == CURRENTM_SAMPLE_CHANNEL_SHUNT)
-    {
+    } else if (CurrentM_ConfigInfo.heater.enable == STD_ON &&
+               CurrentM_ConfigInfo.heater.channel == CURRENTM_SAMPLE_CHANNEL_SHUNT) {
         temp = 0x02U;
-    }
-    else
-    {
+    } else {
     }
     WRITE_BT_UINT8(pMsgContext->resData, length, (uint8)temp);
     WRITE_BT_UINT16(pMsgContext->resData, length, ShuntSensorConfig.resistor);
@@ -1386,13 +1385,13 @@ void App_Read0x0E60(Dcm_MsgContextType *pMsgContext)
     WRITE_BT_UINT16(pMsgContext->resData, length, CurrentM_ConfigInfo.zeroFilter[CURRENTM_SAMPLE_CHANNEL_SHUNT]);
     WRITE_BT_UINT8(pMsgContext->resData, length, 0x00U);
 
-    #if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
+#if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
     DsdInternal_DidProcessingDone();
-    #else
+#else
     pMsgContext->resData += length;
     pMsgContext->resDataLen += length;
     DsdInternal_ProcessingDone(pMsgContext);
-    #endif
+#endif
 }
 void App_Read0x0E61(Dcm_MsgContextType *pMsgContext) {
     uint16 temp = 0U, length = DCM_INDEX_2;
@@ -5450,8 +5449,7 @@ void APP_RequestResultsRoutine0xF008(Dcm_MsgContextType *pMsgContext) {
 void App_StartRoutine0xF009(Dcm_MsgContextType *pMsgContext) {
     uint16 length = 4U;
     DsdInternal_RoutineStarted();
-    if (pMsgContext->reqDataLen >= 5U)
-    {
+    if (pMsgContext->reqDataLen >= 5U) {
         Statistic_SetSimulationHt(pMsgContext->reqData[4]);
         Statistic_SetSimulationLt(pMsgContext->reqData[5]);
         Statistic_SimulationHtLtEnable();
@@ -5479,16 +5477,13 @@ void App_StartRoutine0xF00A(Dcm_MsgContextType *pMsgContext) {
     uint8 command;
     uint16 length = 4U;
     DsdInternal_RoutineStarted();
-    if (pMsgContext->reqDataLen >= 4U)
-    {
+    if (pMsgContext->reqDataLen >= 4U) {
         command = pMsgContext->reqData[4];
-        if (command & 0x01U)
-        {
+        if (command & 0x01U) {
             Statistic_SetCumuChgTime(0UL);
             (void)Statistic_SaveCumuChgTime(0UL);
         }
-        if (command & 0x02U)
-        {
+        if (command & 0x02U) {
             Statistic_SetCumuDchgTime(0UL);
             (void)Statistic_SaveCumuDchgTime(0UL);
         }

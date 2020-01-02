@@ -6,23 +6,10 @@
 #include "dtu_atcmd.h"
 #include "Uart.h"
 #include "ComStack_Types.h"
+#include "DtuComm_M35_Platform.h"
 
-/// ADS1015底层接口.
-/// 硬件层需要向这个功能模块提供的接口.
-
-typedef struct {
-    Dio_ChannelType keyDo;
-    boolean isKeyHighAssert;
-    Dio_ChannelType pwrDo;
-    boolean isPwrHighEnable;
-    Dio_ChannelType statusDi;
-    boolean ioLevelWhenPowerOn;
-} DtuCommM35_HardwareConfigType;
-
-typedef struct {
-    const ATCMD_ConfigType atcmdCfg;
-    const DtuCommM35_HardwareConfigType *hwConfig;
-} DtuCommM35_ConfigType;
+#define DTU_MODULE_IS_MC20 0x01U
+#define DTU_MODULE_IS_EC20 0x02U
 
 void DtuM35_MainLoop(const DtuCommM35_ConfigType *config);
 
@@ -88,7 +75,7 @@ void DtuM35_GetSingalQuality(uint8 *strength, uint8 *err_rate);
 /// \brief DtuM35_GetLacCi 获取注册的基站的LAC和CI．
 ///
 /// \param lacci[2]　LAC,CI存储在这个指针指向的内存, 先存LAC, 再存CI.
-void DtuM35_GetLacCi(uint16 lacci[2]);
+void DtuM35_GetLacCi(uint32 lacci[2]);
 
 /// \brief DtuM35_GetLoc 获取注册的基站的LOC．
 ///

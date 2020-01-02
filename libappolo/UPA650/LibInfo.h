@@ -13,22 +13,22 @@
 
 #define FWVERSION_MAJOR                   3
 #define FWVERSION_MINOR                   0
-#define FWVERSION_REVISION                4
-#define FWVERSION_BUILD                   4
-#define LIB_INFO_FWVERSION                "3.0.4.4"
+#define FWVERSION_REVISION                5
+#define FWVERSION_BUILD                   0
+#define LIB_INFO_FWVERSION                "3.0.5.0"
 
 
-#define LIB_INFO_SOURCE_COMMIT_ID        "afa43efdd9a173b5e2af1817f8332b4dcb422b97"
-#define LIB_INFO_CONFIG_COMMIT_ID        "afa43efdd9a173b5e2af1817f8332b4dcb422b97"
-#define LIB_INFO_BUILD_TIME              "20191216105812"
+#define LIB_INFO_SOURCE_COMMIT_ID        "bb853380b91d29113bbbacbfaf1a28a41d49b0ee"
+#define LIB_INFO_CONFIG_COMMIT_ID        "bb853380b91d29113bbbacbfaf1a28a41d49b0ee"
+#define LIB_INFO_BUILD_TIME              "20200102135746"
 
-#define LIB_INFO_BUILD_DATE_Y            2019
-#define LIB_INFO_BUILD_DATE_M            12
-#define LIB_INFO_BUILD_DATE_D            16
+#define LIB_INFO_BUILD_DATE_Y            2020
+#define LIB_INFO_BUILD_DATE_M            1
+#define LIB_INFO_BUILD_DATE_D            2
 
-#define LIB_INFO_BUILD_TIME_H            10
-#define LIB_INFO_BUILD_TIME_M            58
-#define LIB_INFO_BUILD_TIME_S            12
+#define LIB_INFO_BUILD_TIME_H            13
+#define LIB_INFO_BUILD_TIME_M            57
+#define LIB_INFO_BUILD_TIME_S            46
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO
