@@ -75,6 +75,7 @@ typedef struct{
 typedef struct{
     uint8 balance_en; /**< 均衡使能控制 */
     RemoteBalanceEnable func; /**< 均衡启动电压 */
+    uint32 enable_default_balance_time; /**< 超过该时间没有接收到远程均衡指令就开启默认均衡 */
 }BalanceM_RemoteBalanceConfigType;
 
 /**
