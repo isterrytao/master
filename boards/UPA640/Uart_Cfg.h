@@ -1,7 +1,7 @@
 #ifndef UART_CFG_H
 #define UART_CFG_H
 
-#define UART_CHANNEL_NUM           3U
+#define UART_CHANNEL_NUM           4U
 #define UART_DEV_ERROR_DETECT      STD_OFF
 
 

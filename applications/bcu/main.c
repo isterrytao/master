@@ -66,6 +66,7 @@
 #include "App_Cfg.h"
 #include "BridgeInsu.h"
 #include "LimitProtect.h"
+#include "SlaveProcessor.h"
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
 #include "Rs485Shell.h"
 #endif
@@ -75,6 +76,17 @@
 #else
 #include "BridgeInsu_Cfg.h"
 #endif
+
+#if defined(A640)||defined(A641)
+
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+#include "a64pwrfix_self_return_kl15_strategy.h"
+#elif (KEY_TYPE == KEY_TYPE_IS_SELFLOCK)
+#include "a64pwrfix_self_hold_kl15_strategy.h"
+
+#endif
+#endif
+
 
 static boolean DcmOnCanTp_RxPduIdIsValid(PduIdType RxPduId) {
     boolean ret;
@@ -369,6 +381,12 @@ static void start_task(void *pdata) {
 #endif
     HC12XIrq_InstallVector(IRQ_SCI1, SCI1_Isr, 0U);
     HC12XIrq_InstallVector(IRQ_SCI2, SCI2_Isr, 0U);
+#if defined(A640)||defined(A641)
+    if (HardWareIO_GetVersion() == 6U /*0b001*/)
+    {
+        HC12XIrq_InstallVector(IRQ_SCI0, SCI0_Isr, 0U);
+    }
+#endif
 
     start_looper_tasks();
 
@@ -381,7 +399,16 @@ static void start_task(void *pdata) {
     WatchdogM_Init();
 
     DigitalInput_Init();
-
+#if defined(A640)||defined(A641)
+    if (HardWareIO_GetVersion() == 6U /*0b001*/)
+    {
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+        (void)SlaveProcessor_Init(&extLooper, (uint8 *)&a64pwrfix_self_return_kl15_strategy[0], a64pwrfix_self_return_kl15_strategy_CODE_LENGTH, a64pwrfix_self_return_kl15_strategy_CODE_CRC);
+#elif (KEY_TYPE == KEY_TYPE_IS_SELFLOCK)
+        (void)SlaveProcessor_Init(&extLooper, (uint8 *)&a64pwrfix_self_hold_kl15_strategy[0], a64pwrfix_self_hold_kl15_strategy_CODE_LENGTH, a64pwrfix_self_hold_kl15_strategy_CODE_CRC);
+#endif
+    }
+#endif
     HLSS_Init(&driverLooper);
     if (isNeedStartSampleTask()) {
         HLSS_Drive(HLSS_BCU_BMU_ENABLE, HLSS_DRIVE_ON);
@@ -537,6 +564,11 @@ void main(void) {
     (void)Mcu_InitClock(MCU_DEFAULT_CONFIG.McuDefaultClockSettings);
     Port_Init(&PortConfigData);
 #if defined(A640)||defined(A641)
+    if (HardWareIO_GetVersion() == 6U /*0b001*/)
+    {
+        Port_Init(&PortConfigData_HW_105);
+        Dio_WriteChannel(DIO_CAHNNEL_KL30_FB_ON, STD_HIGH);
+    }
     Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
     Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_LOW);
 #else
