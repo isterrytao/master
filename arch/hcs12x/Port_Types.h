@@ -367,4 +367,8 @@ typedef struct {
 
 extern const Port_ConfigType PortConfigData;
 
+#if defined(UPA640)
+extern const Port_ConfigType PortConfigData_HW_105;
+#endif
+
 #endif

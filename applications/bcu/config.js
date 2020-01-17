@@ -784,8 +784,9 @@ module.exports = {
             maxDiffVoltage: 800, // 开启的最大压差
         },
         Remote: {
-            enable: 0, // 是否使能
+            enable: 1, // 是否使能
             condition:{inc:"UserStrategy.h", func:"UserStrategy_RemoteBalanceConditionCheck"},
+            enableDefaultBalanceTime:12*3600,//连续超过该时间没有接收到远程均衡指令，就打开默认均衡，单位S
         }
     },
 
