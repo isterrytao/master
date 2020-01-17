@@ -45,7 +45,7 @@ const BalanceM_ConfigType BalanceM_ConfigInfo = {
         <%- cfg.Remote.enable ? "STD_ON" : "STD_OFF" %>, /**< balance_en */
         <% if (cfg.Remote.enable) {%><%- cfg.Remote.condition.func %>,
         <% } else {%>NULL,
-        <%}%>
+        <%}%><%- Math.max(cfg.Remote.enableDefaultBalanceTime,1860) %>U, /**< max_disconnect_time */
     },
     DIAGNOSIS_LEVEL_THIRD, /**< disable_bal_ht_level */
     DIAGNOSIS_LEVEL_THIRD, /**< disable_bal_lv_level */
