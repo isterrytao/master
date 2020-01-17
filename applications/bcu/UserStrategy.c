@@ -144,6 +144,7 @@ void UserStrategy_Init(Async_LooperType *looper)
 }
 
 #if defined(A640)||defined(A641)
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
 static void pollPowerKeyState()
 {
     uint32 now = OSTimeGet();
@@ -189,7 +190,7 @@ static void pollPowerKeyState()
     else
     {}
 }
-
+#endif
 #endif
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)

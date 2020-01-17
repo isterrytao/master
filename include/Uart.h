@@ -103,6 +103,7 @@ void Uart_Isr(Uart_ChannelType channel);
 
 void SCI1_Isr(void);
 void SCI2_Isr(void);
+void SCI0_Isr(void);
 
 #endif
 /** \} */
