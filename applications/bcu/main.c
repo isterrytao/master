@@ -399,8 +399,8 @@ static void start_task(void *pdata) {
     WatchdogM_Init();
 
     DigitalInput_Init();
-#if defined(A640)||defined(A641)
     HWDiagnosis_Init();
+#if defined(A640)||defined(A641)
     if (HardWareIO_GetVersion() == 6U /*0b001*/)
     {
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
