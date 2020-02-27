@@ -106,6 +106,11 @@ extern const Dio_ChannelGroupType DioGroupWakeupSignal; /** 唤醒源的DIO组. 
 #define DIO_CAHNNEL_VNQ7140AH_SEL2        DIO_CHANNEL(A, 1U) /*SEn脚*/
 #define DIO_CAHNNEL_VNQ7140AH_FAULTRST        DIO_CHANNEL(E, 4U) /*SEn脚*/
 
+
+#define DIO_CAHNNEL_KL30_FB_ON            DIO_CHANNEL(AN_00_07, 3U) /*SEn脚*/
+#define DIO_CAHNNEL_CC_AD_MCU            DIO_CHANNEL(AN_00_07, 4U) /*SEn脚*/
+
+
 #endif
 
 /**

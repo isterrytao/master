@@ -613,7 +613,7 @@ const GB32960_RTMessageItemType intervalData[] = {
     {0x09U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copySegmentsCellTemperatures, (uint8)ARRAY_SIZE(copySegmentsCellTemperatures)},
     {0x06U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copySegmentsCellPeakData, (uint8)ARRAY_SIZE(copySegmentsCellPeakData)},
     {0x96U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copySegmentsDtuStatus, (uint8)ARRAY_SIZE(copySegmentsDtuStatus)},
-    {0x86U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalanceStatus, (uint8)ARRAY_SIZE(copySegmentsBalanceStatus)},
+    {0x86U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalanceStatus, (uint8)ARRAY_SIZE(copySegmentsBalanceStatus)},
     {0x94U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copySegmentsChargerStatus, (uint8)ARRAY_SIZE(copySegmentsChargerStatus)},
     {0x87U, TRUE, LEN_TYPE_GET_LENGTH, 0U, getAlarmLength, (GB32960_FillMessageFuncType)fillAlarmStatus, copySegmentsAlarmStatus, (uint8)ARRAY_SIZE(copySegmentsAlarmStatus)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}
