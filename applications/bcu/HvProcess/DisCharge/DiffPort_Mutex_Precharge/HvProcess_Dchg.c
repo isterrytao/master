@@ -26,6 +26,9 @@
 #include "PrechargeM.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
+static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
+static boolean HvProcess_DchgIsFault17sOff(void);
+static boolean HvProcess_DchgIsFault27sOff(void);
 
 void HvProcess_DchgInit(Async_LooperType *looper)
 {
@@ -246,40 +249,49 @@ boolean HvProcess_DchgFaultCond(void)
 
     if (DischargeM_DischargeIsFault() == E_OK)
     {
-        res = TRUE;
+        if (HvProcess_DchgIsFaultDirectRelayOff())
+        {
+            res = TRUE;
+        }
+        else if (HvProcess_DchgIsFault17sOff())
+        {
+            res = TRUE;
+        }
+        else if (HvProcess_DchgIsFault27sOff())
+        {
+            res = TRUE;
+        }
+        else
+        {}
     }
     return res;
 }
-
 void HvProcess_DchgFaultAction(void)
 {
     HvProcess_DchgInnerData.RelayOffTick = OSTimeGet();
-#ifdef RELAYM_FN_PRECHARGE
-    PrechargeM_Stop();
-#endif
 }
 
 boolean HvProcess_DchgRelayOffDelayCond(void)
 {
-    boolean res = FALSE;
-    uint32 nowTime = OSTimeGet();
-    uint32 delay = 5000U;
-    Current_CurrentType current;
+    // boolean res = FALSE;
+    // uint32 nowTime = OSTimeGet();
+    // uint32 delay = 0U;
+    // Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
 
-    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-    if (CurrentM_IsValidCurrent(current))
-    {
-        if (abs(current) <= CURRENT_S_100MA_FROM_A(5))
-        {
-            delay = 0U;
-        }
-    }
-    if (MS_GET_INTERNAL(HvProcess_DchgInnerData.RelayOffTick, nowTime) >= delay)
-    {
-        res = TRUE;
-        HvProcess_DchgInnerData.RelayOffTick = nowTime;
-    }
-    return res;
+    // if(CURRENT_IS_VALID(current))
+    // {
+    //     if((uint16)abs(current) < CURRENT_100MA_FROM_A(3U))
+    //     {
+    //         delay = 0UL;
+    //     }
+    // }
+    // if (MS_GET_INTERNAL(HvProcess_DchgInnerData.RelayOffTick, nowTime) >= delay)
+    // {
+    //     res = TRUE;
+    //     HvProcess_DchgInnerData.RelayOffTick = nowTime;
+    // }
+    // return res;
+    return TRUE;
 }
 
 void HvProcess_DchgRelayOffDelayAction(void)
@@ -371,4 +383,150 @@ boolean HvProcess_DchgReStartJudgeCond(void)
 void HvProcess_DchgReStartJudgeAction(void)
 {
     HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
+}
+
+static boolean HvProcess_DchgIsFaultDirectRelayOff(void)
+{
+    boolean res = FALSE;
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) == DIAGNOSIS_LEVEL_FOURTH)
+    {
+        res = TRUE;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) == DIAGNOSIS_LEVEL_FOURTH)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_HTV) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_FB_OC) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_HV) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_HT) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_LT) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_DT) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_SP_OC) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_DCHG_OC) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_BMS_INIT_FAILURE) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_VOLT_LINE) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_TEMP_LINE) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_LEAK) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_RELAY_ABNORMAL) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else if (DischargeM_GetDiagnosisDchargeCtlAction(DIAGNOSIS_ITEM_CURRENT_ABNORMAL) == DISCHARGEM_DISCHARGE_DISABLE)
+    {
+        res = TRUE;
+    }
+    else
+    {
+    }
+    return res;
+}
+
+static boolean HvProcess_DchgIsFault17sOff(void)
+{
+    boolean res = FALSE;
+    static uint32 lastTime = 0UL, monitorTime = 0U;
+    uint32 nowTime = OSTimeGet();
+
+    if (MS_GET_INTERNAL(monitorTime, nowTime) > 500UL)
+    {
+        lastTime = 0UL;
+    }
+    monitorTime = nowTime;
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) == DIAGNOSIS_LEVEL_THIRD)
+    {
+        res = TRUE;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) == DIAGNOSIS_LEVEL_THIRD)
+    {
+        res = TRUE;
+    }
+    else
+    {
+    }
+    if (res == TRUE)
+    {
+        if (lastTime == 0UL)
+        {
+            lastTime = nowTime;
+        }
+        if (MS_GET_INTERNAL(lastTime, nowTime) < 17000UL)
+        {
+            res = FALSE;
+        }
+    }
+    else
+    {
+        lastTime = 0UL;
+    }
+    return res;
+}
+
+static boolean HvProcess_DchgIsFault27sOff(void)
+{
+    boolean res = FALSE;
+    static uint32 lastTime = 0UL, monitorTime = 0U;
+    uint32 nowTime = OSTimeGet();
+
+    if (MS_GET_INTERNAL(monitorTime, nowTime) > 500UL)
+    {
+        lastTime = 0UL;
+    }
+    monitorTime = nowTime;
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DV) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        res = TRUE;
+    }
+    if (res == TRUE)
+    {
+        if (lastTime == 0UL)
+        {
+            lastTime = nowTime;
+        }
+        if (MS_GET_INTERNAL(lastTime, nowTime) < 27000UL)
+        {
+            res = FALSE;
+        }
+    }
+    else
+    {
+        lastTime = 0UL;
+    }
+    return res;
 }
