@@ -20,6 +20,7 @@
 #include "SystemConnection_Lcfg.h"
 #include "Diagnosis.h"
 #include "Dio.h"
+#include "ParameterM.h"
 
 #include "AppInfo.h"
 #include "HWDiagnosis.h"
@@ -51,6 +52,10 @@ typedef struct {
             uint8 vinCode[17];
             uint8 deviceCnt;
         } deviceList;
+        struct {
+            uint16 messageLength;
+            uint8 command;
+        } ableCommand;
         struct {
             uint16 messageLength;
             uint8 heardbeat;
@@ -190,6 +195,7 @@ typedef struct {
 
 #define MSG_LENGTH_DEVICE_INFO         (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U/*FWID*/ + 16U/*BurnID*/)
 #define MSG_LENGTH_DEVICE_LIST         (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(deviceList) + (uint16)(1U + SYSTEM_BMU_NUM) * sizeof(DeviceInfo_DeviceInfoType) /*HWIDs*/)
+#define MSG_LENGTH_ABLE_COMMDEND       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(ableCommand))
 #define MSG_LENGTH_SYSTEM_STATUS       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + RELAYM_FN_NUM)
 #if SYSTEM_BATTERY_CELL_NUM <= 255U
 #define MSG_LENGTH_CELL_VOLTAGES       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM))
@@ -226,9 +232,21 @@ static const GB32960_CopySegmentType copySegmentsDeviceInfo[] = {
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 32U, PTR_TYPE_DATA, {AppInfoTag.BurnID}},
 };
 
+static const GB32960_CopySegmentType copyRecordSegmentsAbleCommand[] = {
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(ableCommand), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
+};
+
 static void fillDeviceList(GBRt_MsgBuffer *msgHeader) {
     (void)strcpy((sint8 *)msgHeader->dataHeader.deviceList.vinCode, "1234567890ABCDEF");
     msgHeader->dataHeader.deviceList.deviceCnt = SYSTEM_BMU_NUM + 1U;
+}
+
+static void fillAbleCommand(GBRt_MsgBuffer *msgHeader) {
+    uint16 temp = 0xFFU;
+
+    msgHeader->dataHeader.ableCommand.messageLength = sizeof(msgHeader->dataHeader.ableCommand) - 2U;
+    (void)ParameterM_EeepRead(PARAMETERM_EEEP_REMOTEABLE_COMMAND_INDEX, &temp);
+    msgHeader->dataHeader.ableCommand.command = (uint8)temp;
 }
 
 const GB32960_CopySegmentType copySegmentsDeviceList[] = {
@@ -598,6 +616,7 @@ static const GB32960_CopySegmentType copySupportCommandIDs[] = {
 
 const GB32960_RTMessageItemType loginOnceData[] = {
     {0x92U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copySegmentsDeviceInfo, (uint8)ARRAY_SIZE(copySegmentsDeviceInfo)},
+    {0x97U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_ABLE_COMMDEND, NULL, (GB32960_FillMessageFuncType)fillAbleCommand, copyRecordSegmentsAbleCommand, (uint8)ARRAY_SIZE(copyRecordSegmentsAbleCommand)},
     {0x82U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_LIST, NULL, (GB32960_FillMessageFuncType)fillDeviceList, copySegmentsDeviceList, (uint8)ARRAY_SIZE(copySegmentsDeviceList)},
     {0x91U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_GB32960_SUPPORT_CMDID, NULL, (GB32960_FillMessageFuncType)fillGB32960CommandListNum, copySupportCommandIDs, (uint8)ARRAY_SIZE(copySupportCommandIDs)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}
@@ -779,6 +798,7 @@ static boolean is_valid_in_charging_mode(void) {
 
 static const GB32960_RecordItemType onceDataList[] = {
     {GB_TYPE_TO_RECORD_TYPE(0x92U), MSG_LENGTH_DEVICE_INFO, NULL, (GB32960_FillMessageFuncType)fillDeviceInfo, copyRecordSegmentsDeviceInfo, (uint8)ARRAY_SIZE(copyRecordSegmentsDeviceInfo), NULL},
+    {GB_TYPE_TO_RECORD_TYPE(0x97U), MSG_LENGTH_ABLE_COMMDEND, NULL, (GB32960_FillMessageFuncType)fillAbleCommand, copyRecordSegmentsAbleCommand, (uint8)ARRAY_SIZE(copyRecordSegmentsAbleCommand), NULL},
     {GB_TYPE_TO_RECORD_TYPE(0x82U), MSG_LENGTH_DEVICE_LIST, NULL, (GB32960_FillMessageFuncType)fillDeviceList, copyRecordSegmentsDeviceList, (uint8)ARRAY_SIZE(copyRecordSegmentsDeviceList), NULL},
     {0xFFFFU, 0x00U, NULL, NULL, NULL, 0U, NULL}
 };
