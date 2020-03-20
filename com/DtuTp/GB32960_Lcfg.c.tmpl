@@ -7,6 +7,10 @@ if (!xx || parseInt(xx[2]) >= 65535) {
 var rtMsgInterval = Math.round(cfg.rtmsg_interval * 1000);
 var serverAddr =  xx[1];
 var serverPort=  xx[2];
+var apn = "";
+if (cfg.hasOwnProperty('apn')) {
+    apn = cfg.apn;
+}
 %>
 
 #include "GB32960.h"
@@ -28,3 +32,10 @@ const GB32960_ConfigType GB32960ConfigData = {
     GB32960_TCP_DISCONNECT,    // Std_ReturnType (*tcpDisconnect)(void);
     <%- rtMsgInterval %>UL,    // uint32 rtMessageInterval;
 };
+
+
+<% if (apn != "") {%>
+const char *const apn_command = "AT+QICSGP=1,\"<%- apn %>\"";
+<% } else { %>
+const char *const apn_command = NULL;
+<% } %>

@@ -21,6 +21,12 @@
 #include "App_Types.h"
 
 /**
+ * \brief 温度上下限默认允许范围
+ */
+#define SOCOCVCALIB_RESERVE_TEMPERATURE     10U
+
+
+/**
  * \brief 允许OCV校正条件函数接口类型
  */
 typedef boolean (*isAllowCalibFuncPtr)(void);

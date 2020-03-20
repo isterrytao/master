@@ -1988,6 +1988,7 @@ module.exports = {
     ],
 
     GB32960: {
+        apn: "",
         server: "dtu.udantech.com:30097",
         rtmsg_interval: 30,
     },
