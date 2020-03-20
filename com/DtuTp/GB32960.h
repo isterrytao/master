@@ -35,6 +35,7 @@ typedef struct {
 #define GB32960_ACKFLAG_VIN_DUPLICATED  0x03U
 #define GB32960_ACKFLAG_CMD             0xFEU
 
+#define GB32960_REMOTE_DISABLE_VALUE    0x56ABU
 
 typedef struct {
     uint16 serverPort;
@@ -96,7 +97,7 @@ typedef struct {
 } GB32960_PACKED GB32960_CommandHeaderType;
 
 
-#define GB32960_SUPPORT_COMMAND_NUMBER 2U
+#define GB32960_SUPPORT_COMMAND_NUMBER 5U
 extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);
@@ -130,5 +131,6 @@ Std_ReturnType DtuTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType *TpTxInf
 extern const GB32960_ConfigType GB32960ConfigData;
 boolean GB32960_BalanceRemoteIsConnect(void);
 const uint8 *GB32960_GetBalanceRemote(void);
+boolean GB32960_IsDchgAllowed(void);
 
 #endif

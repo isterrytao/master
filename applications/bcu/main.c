@@ -298,6 +298,10 @@ static void startHvSample(void) {
 }
 
 extern const Adc_ConfigType AdcConfigTestMode;
+#if defined(A640) || defined(A641)
+extern void init_AiShellNamedAiSignal_Table(void);
+#else
+#endif
 
 static void run_test_mode(void) {
     Can_DeInit();
@@ -306,6 +310,11 @@ static void run_test_mode(void) {
     if (HardWareIO_GetVersion() != 5U /*0b101*/) {
         (void)Can_SetControllerMode(1U, CAN_T_START);
     }
+
+#if defined(A640) || defined(A641)
+    init_AiShellNamedAiSignal_Table();
+#else
+#endif
 
 #if defined(A640) || defined(A641)
 #else

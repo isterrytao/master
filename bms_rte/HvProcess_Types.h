@@ -60,9 +60,14 @@ typedef uint16 (*HvProcess_GetStateFuncPtr)(void);
 typedef void (*HvProcess_SetStateFuncPtr)(uint16 state);
 
 /**
- * \brief 高压流程轮循函数指针类型定义
+ * \brief 高压流程初始化函数指针类型定义
  */
 typedef void (*HvProcess_InitFuncPtr)(Async_LooperType *looper);
+
+/**
+ * \brief 高压流程使能函数指针类型定义
+ */
+typedef boolean (*HvProcess_IsEnableFuncPtr)(void);
 
 /**
  * \brief 高压流程轮循函数指针类型定义
@@ -78,6 +83,7 @@ typedef struct{
     HvProcess_GetStateFuncPtr GetState; /**< 读取状态函数指针 */
     HvProcess_SetStateFuncPtr SetState; /**< 设置状态函数指针 */
     HvProcess_InitFuncPtr Init; /**< 初始化函数指针 */
+    HvProcess_IsEnableFuncPtr IsEnable; /**< 使能函数指针 */
     HvProcess_PollFuncPtr Poll; /**< 轮循函数指针 */
 }HvProcess_ProcessDataType;
 
