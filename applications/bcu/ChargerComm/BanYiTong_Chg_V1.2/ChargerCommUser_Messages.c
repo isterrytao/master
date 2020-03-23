@@ -481,16 +481,16 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
 {
     uint16 index = 0U;
     uint16 temp;
-    // ChargerComm_StageType stage;
+    ChargerComm_StageType stage;
     VALIDATE_PTR(Buffer, CHARGERCOMMUSER_MESSAGES_API_ID_ReceiveTCCbk);
 
-    // if (ChargerCommUser_TCRecConditionCheck() == E_OK)
+    if (ChargerCommUser_TCRecConditionCheck() == E_OK)
     {
         // condition check
-        // stage = ChargerComm_GetCurrentRecStage();
-        // if(stage == CHARGERCOMM_STAGE_USER_TC)
+        stage = ChargerComm_GetCurrentRecStage();
+        (stage == CHARGERCOMM_STAGE_USER_TC)
         {
-            ChargerCommUser_CommStart();
+            // ChargerCommUser_CommStart();
             if(Length >= 5U)
             {
                 ChargerComm_SetCommunicationStatus(TRUE);
