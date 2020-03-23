@@ -88,7 +88,7 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     {
         if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
         {
-            uval |= (uint16)3U << 2;
+            uval |= (uint16)1U << 2;
         }
         else if (level1 >= DIAGNOSIS_LEVEL_SECOND)
         {
@@ -101,7 +101,7 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     {
         if (DischargeM_DischargeIsAllowed() == E_NOT_OK)
         {
-            uval |= (uint16)3U << 2;
+            uval |= (uint16)1U << 2;
         }
         else if (level1 >= DIAGNOSIS_LEVEL_SECOND)
         {

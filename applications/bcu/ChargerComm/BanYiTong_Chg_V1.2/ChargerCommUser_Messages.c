@@ -490,7 +490,7 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
         // stage = ChargerComm_GetCurrentRecStage();
         // if(stage == CHARGERCOMM_STAGE_USER_TC)
         {
-            //ChargerCommUser_CommStart();
+            ChargerCommUser_CommStart();
             if(Length >= 5U)
             {
                 ChargerComm_SetCommunicationStatus(TRUE);
