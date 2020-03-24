@@ -99,7 +99,9 @@ void VcuComm_GetStatusMsg_0x1F1(uint8 *buf, uint16 *Length) {
     uval = Statistic_GetBcu100mvTotalVoltage();
     uval = (uint16)DIVISION(uval, 10U);
     WRITE_LT_UINT16(buf, index, uval);
-    WRITE_LT_UINT16(buf, index, 150U);
+    uval = BatteryInfo_BaseConfigInfo.DisplayCap;
+    uval = (uint16)DIVISION(uval, 10U);
+    WRITE_LT_UINT16(buf, index, uval);
     *Length = index;
 }
 

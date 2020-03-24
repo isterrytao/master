@@ -88,9 +88,9 @@ void VcuComm_GetStatusMsg_0x18FFA2F4(uint8 *buf, uint16 *Length) {
     uval = Soc_Get();
     uval = (uint16)SOC_TO_PERCENT(uval);
     WRITE_LT_UINT8(buf, index, uval);
+    WRITE_LT_UINT8(buf, index, 0xFFU);
     uval = Statistic_GetBcuBatteryDischargeCount();
     WRITE_LT_UINT16(buf, index, uval);
-    WRITE_LT_UINT8(buf, index, 0xFFU);
     *Length = index;
 }
 
@@ -459,8 +459,8 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
 
     }
-    //BMS自检硬件故障
-    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_BMS_INIT_FAILURE);
+    //绝缘漏电
+    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK);
     if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
@@ -479,8 +479,8 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     }
     WRITE_LT_UINT8(VcuComm_MsgData.faultBuff, index, temp);
     temp = 0U;
-    //电压排线脱落故障
-    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_VOLT_LINE);
+    //高压互锁故障
+    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_HVIL_ABNORMAL);
     if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
@@ -495,8 +495,13 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     }
     else
     {}
-    //温感排线脱落故障
-    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_TEMP_LINE);
+    //外部通信故障
+    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHARGER_COMM);
+    diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_VCU_COMM);
+    if (diaChgLevel >= diaLevel)
+    {
+        diaLevel = diaChgLevel;
+    }
     if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
@@ -511,8 +516,8 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     }
     else
     {}
-    //继电器粘连故障
-    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_RELAY_ABNORMAL);
+    //内部通信故障
+    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_INTER_COMM);
     if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
@@ -530,23 +535,23 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
 
     }
     //预充失败
-    diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_PRECHARGE_FAILURE);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
-    {
-        temp |= ((uint16)1U << 6);
-    }
-    else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-    {
-        temp |= ((uint16)2U << 6);
-    }
-    else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= ((uint16)3U << 6);
-    }
-    else
-    {
+    // diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_PRECHARGE_FAILURE);
+    // if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    // {
+    //     temp |= ((uint16)1U << 6);
+    // }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
+    // {
+    //     temp |= ((uint16)2U << 6);
+    // }
+    // else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= ((uint16)3U << 6);
+    // }
+    // else
+    // {
 
-    }
+    // }
     WRITE_LT_UINT8(VcuComm_MsgData.faultBuff, index, temp);
     WRITE_LT_UINT16(VcuComm_MsgData.faultBuff, index, 0xFFFFU);
     WRITE_LT_UINT16(VcuComm_MsgData.faultBuff, index, 0xFFFFU);

@@ -91,7 +91,8 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *Buffer, uint16 *Length)
     uval = (uint16)SOC_TO_UINT8(uval);
     WRITE_LT_UINT8(Buffer, index, uval);
     // 容量 5ah/bit
-    uval = 90U;
+    uval = BatteryInfo_BaseConfigInfo.DisplayCap;
+    uval = (uint16)DIVISION(uval, 50U);
     WRITE_LT_UINT8(Buffer, index, uval);
     uval = 0U;
     /*if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HTV) != DIAGNOSIS_LEVEL_NONE)

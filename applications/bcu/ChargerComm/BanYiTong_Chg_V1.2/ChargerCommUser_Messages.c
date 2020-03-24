@@ -59,35 +59,35 @@ Std_ReturnType ChargerCommUser_ChargeIsAllowed(void)
 
 Std_ReturnType ChargerCommUser_TCSendConditionCheck(void)
 {
-#if CHARGERCOMMUSER_SEND_ALWAYS_EN == STD_ON
+// #if CHARGERCOMMUSER_SEND_ALWAYS_EN == STD_ON
     return E_OK;
-#else
-    Std_ReturnType res = E_NOT_OK;
-    Charge_ChargeType type;
+// #else
+//     Std_ReturnType res = E_NOT_OK;
+//     Charge_ChargeType type;
 
-    type = ChargerCommUser_GetCurrentChargeType();
-    if (ChargerCommUser_innerData.startFlag == TRUE)
-    {
-        if (type != CHARGE_TYPE_NONE)
-        {
-            if (ChargeConnectM_GetConnectType() == type)
-            {
-                if (ChargerComm_GetCurrentRecStage() == CHARGERCOMM_STAGE_USER_TC)
-                {
-                    res = E_OK;
-                }
-            }
-        }
-    }
-    else
-    {
-        if (ChargerCommUser_MsgInnerData.isNeedToSendStop)
-        {
-            res = E_OK;
-        }
-    }
-    return res;
-#endif
+//     type = ChargerCommUser_GetCurrentChargeType();
+//     if (ChargerCommUser_innerData.startFlag == TRUE)
+//     {
+//         if (type != CHARGE_TYPE_NONE)
+//         {
+//             if (ChargeConnectM_GetConnectType() == type)
+//             {
+//                 if (ChargerComm_GetCurrentRecStage() == CHARGERCOMM_STAGE_USER_TC)
+//                 {
+//                     res = E_OK;
+//                 }
+//             }
+//         }
+//     }
+//     else
+//     {
+//         if (ChargerCommUser_MsgInnerData.isNeedToSendStop)
+//         {
+//             res = E_OK;
+//         }
+//     }
+//     return res;
+// #endif
 }
 
 // Std_ReturnType ChargerCommUser_TC2SendConditionCheck(void)
