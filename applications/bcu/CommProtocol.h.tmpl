@@ -30,6 +30,18 @@ var ChargerMsg = {
         tx: [{id:0x00000272, def:"USER_TC"}],
         rx: [{id:0x00000227, def:"USER_TC"}],
     },
+    QianGaiLi: {
+        tx: [{id: 0x111, def: "USER_TC"}, {id:0x115, def:"USER_TC1"}],
+        rx: [{id: 0x112, def: "USER_TC"}],
+    },
+    "BanYiTong_Chg_V1.2": {
+        tx: [{id: 0x1F4, def: "USER_TC"},{id: 0x2F4, def: "USER_TC1"},{id: 0x7F4, def: "USER_TC2"}],
+        rx: [{id: 0x112, def: "USER_TC"}],
+    },
+    "ADY_V1.1": {
+        tx: [{id: 0x9806E5F4, def: "USER_TC"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}],
+    },
 };
 
 var VcuMsg = {
@@ -51,6 +63,30 @@ var VcuMsg = {
     },
     "QianTuo_CAN20A_125K_V1.02": {
         tx: [0x2F4, 0x4F4, 0x5F4, 0x7F4],
+        rx: [0x12345678],
+    },
+    CHOLIFT: {
+        tx: [0x244, 0x444, 0x447, 0x446],
+        rx: [0x12345678],
+    },
+    CAN_1232E_201809: {
+        tx: [0x1F1, 0x1F2],
+        rx: [0x12345678],
+    },
+    "ZOWELL_V2.0": {
+        tx: [0x2F0],
+        rx: [0x12345678],
+    },
+    "XianFeng_V3.0": {
+        tx: [0x98FFA2F4, 0x98FFA4F4, 0x98FFA5F4, 0x98FFAFF4],
+        rx: [0x12345678],
+    },
+    BaoLi: {
+        tx: [0x241],
+        rx: [0x12345678],
+    },
+    "BanYiTong_Vcu_V1.2": {
+        tx: [0x2F4, 0x4F4, 0x5F4, 0x7F4, 0x207],
         rx: [0x12345678],
     },
 };
