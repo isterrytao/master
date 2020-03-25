@@ -22,7 +22,6 @@
 
 typedef struct{
     boolean isNeedToSendStop; /**< 充电连接断开后，是否需要发送停止充电报文 */
-    uint8 faultBuff[8];
 }ChargerCommUser_MessageInnerDataType;
 
 /**
@@ -44,21 +43,12 @@ Std_ReturnType ChargerCommUser_ChargeIsAllowed(void);
 Std_ReturnType ChargerCommUser_TCSendConditionCheck(void);
 
 /**
- * \brief 发送TC2报文条件检查
- *
- * \return E_OK: 允许发送 E_NOT_OK: 不允许发送
- */
-// Std_ReturnType ChargerCommUser_TC2SendConditionCheck(void);
-
-/**
  * \brief 获取TC发送的数据信息
  *
  * \param Buffer 数据缓存
  * \param Length 数据长度
  */
 void ChargerCommUser_GetTCDataCbk(uint8 *Buffer, uint16 *Length);
-void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length);
-void ChargerCommUser_GetTC2DataCbk(uint8 *Buffer, uint16 *Length);
 
 
 /**

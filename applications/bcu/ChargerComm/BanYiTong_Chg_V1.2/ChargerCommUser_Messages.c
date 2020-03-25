@@ -9,7 +9,6 @@
  * | :--- | :--- | :--- | :--- |
  * | 0.1 | 初始版本, 完成讨论部分的定义. | UD00004 | 20170315 |
  */
-#include <String.h>
 #include "App_Types.h"
 #include "Cpu.h"
 #include "Det.h"
@@ -59,372 +58,36 @@ Std_ReturnType ChargerCommUser_ChargeIsAllowed(void)
 
 Std_ReturnType ChargerCommUser_TCSendConditionCheck(void)
 {
-// #if CHARGERCOMMUSER_SEND_ALWAYS_EN == STD_ON
+#if CHARGERCOMMUSER_SEND_ALWAYS_EN == STD_ON
     return E_OK;
-// #else
-//     Std_ReturnType res = E_NOT_OK;
-//     Charge_ChargeType type;
+#else
+    Std_ReturnType res = E_NOT_OK;
+    Charge_ChargeType type;
 
-//     type = ChargerCommUser_GetCurrentChargeType();
-//     if (ChargerCommUser_innerData.startFlag == TRUE)
-//     {
-//         if (type != CHARGE_TYPE_NONE)
-//         {
-//             if (ChargeConnectM_GetConnectType() == type)
-//             {
-//                 if (ChargerComm_GetCurrentRecStage() == CHARGERCOMM_STAGE_USER_TC)
-//                 {
-//                     res = E_OK;
-//                 }
-//             }
-//         }
-//     }
-//     else
-//     {
-//         if (ChargerCommUser_MsgInnerData.isNeedToSendStop)
-//         {
-//             res = E_OK;
-//         }
-//     }
-//     return res;
-// #endif
+    type = ChargerCommUser_GetCurrentChargeType();
+    if (ChargerCommUser_innerData.startFlag == TRUE)
+    {
+        if (type != CHARGE_TYPE_NONE)
+        {
+            if (ChargeConnectM_GetConnectType() == type)
+            {
+                if (ChargerComm_GetCurrentRecStage() == CHARGERCOMM_STAGE_USER_TC)
+                {
+                    res = E_OK;
+                }
+            }
+        }
+    }
+    else
+    {
+        if (ChargerCommUser_MsgInnerData.isNeedToSendStop)
+        {
+            res = E_OK;
+        }
+    }
+    return res;
+#endif
 }
-
-// Std_ReturnType ChargerCommUser_TC2SendConditionCheck(void)
-// {
-//     Std_ReturnType res = E_NOT_OK;
-//     uint16 temp;
-//     uint16 index = 0U;
-//     Diagnosis_LevelType diaChgLevel, diaLevel;
-//     static uint8 count = 0U;
-
-//     temp = 0U;
-//     // 单体过压
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HV);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 0);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 0);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 0);
-//     }
-//     else
-//     {
-
-//     }
-//     //单体欠压
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 2);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 2);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 2);
-//     }
-//     else
-//     {
-
-//     }
-//     //总压过压
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HTV);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HTV);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 4);
-//     }
-//     else
-//     {
-
-//     }
-//     //总压欠压
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LTV);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 6);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 6);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 6);
-//     }
-//     else
-//     {
-
-//     }
-//     WRITE_LT_UINT8(ChargerCommUser_MsgInnerData.faultBuff, index, temp);
-//     temp = 0U;
-//     //单体压差过大
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_DV);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DV);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 0);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 0);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 0);
-//     }
-//     else
-//     {
-
-//     }
-//     //放电过流
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 2);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 2);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 2);
-//     }
-//     else
-//     {
-
-//     }
-//     //充电过流
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_AC_CHG_OC);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 4);
-//     }
-//     else
-//     {
-
-//     }
-//     //温度过高
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 6);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 6);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 6);
-//     }
-//     else
-//     {
-
-//     }
-//     WRITE_LT_UINT8(ChargerCommUser_MsgInnerData.faultBuff, index, temp);
-//     temp = 0U;
-//     //温度过低
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LT);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 0);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 0);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 0);
-//     }
-//     else
-//     {
-
-//     }
-//     //温差过大
-//     diaChgLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_DT);
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DT);
-//     if (diaChgLevel >= diaLevel)
-//     {
-//         diaLevel = diaChgLevel;
-//     }
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 2);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 2);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 2);
-//     }
-//     else
-//     {
-
-//     }
-//     //soc过低
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LSOC);
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 4);
-//     }
-//     else
-//     {
-
-//     }
-//     //绝缘故障
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK);
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 6);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 6);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 6);
-//     }
-//     else
-//     {
-
-//     }
-//     WRITE_LT_UINT8(ChargerCommUser_MsgInnerData.faultBuff, index, temp);
-//     temp = 0U;
-//     //高压互锁故障
-//     //外部通信故障
-//     //内部通信故障
-//     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_INTER_COMM);
-//     if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
-//     {
-//         temp |= ((uint16)1U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_SECOND)
-//     {
-//         temp |= ((uint16)2U << 4);
-//     }
-//     else if (diaLevel == DIAGNOSIS_LEVEL_FIRST)
-//     {
-//         temp |= ((uint16)3U << 4);
-//     }
-//     else
-//     {
-
-//     }
-//     WRITE_LT_UINT8(ChargerCommUser_MsgInnerData.faultBuff, index, temp);
-//     WRITE_LT_UINT16(ChargerCommUser_MsgInnerData.faultBuff, index, 0xFFFFU);
-//     WRITE_LT_UINT16(ChargerCommUser_MsgInnerData.faultBuff, index, 0xFFFFU);
-
-//     if (ChargerCommUser_MsgInnerData.faultBuff[0] ||
-//         ChargerCommUser_MsgInnerData.faultBuff[1] ||
-//         ChargerCommUser_MsgInnerData.faultBuff[2] ||
-//         ChargerCommUser_MsgInnerData.faultBuff[3])
-//     {
-//         res = E_OK;
-//     }
-//     if (res == E_NOT_OK)
-//     {
-//         if (count < 3U)
-//         {
-//             res = E_OK;
-//         }
-//         else
-//         {
-//             count = 5U;
-//         }
-//         count ++;
-//     }
-//     else
-//     {
-//         count = 0U;
-//     }
-//     return res;
-// }
 
 static Std_ReturnType ChargerCommUser_TCRecConditionCheck(void)
 {
@@ -488,16 +151,16 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
     {
         // condition check
         stage = ChargerComm_GetCurrentRecStage();
-        (stage == CHARGERCOMM_STAGE_USER_TC)
+        if(stage == CHARGERCOMM_STAGE_USER_TC)
         {
-            // ChargerCommUser_CommStart();
+            //ChargerCommUser_CommStart();
+            ChargerComm_SetCommunicationStatus(TRUE);
             if(Length >= 5U)
             {
-                ChargerComm_SetCommunicationStatus(TRUE);
                 // 充电机输出电压
-                ChargerComm_SetChargerOutputHV(READ_LT_UINT16(Buffer, index));
+                ChargerComm_SetChargerOutputHV(READ_BT_UINT16(Buffer, index));
                 // 充电机输出电流
-                temp = READ_LT_UINT16(Buffer, index);
+                temp = READ_BT_UINT16(Buffer, index);
                 ChargerComm_SetChargerOutputCurrent((Current_CurrentType)temp);
                 // 充电机充电状态
                 if(temp > 0U)
@@ -509,7 +172,7 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
                     ChargerComm_SetChargingStatus(FALSE);
                 }
                 // 充电机硬件故障
-                temp = READ_LT_UINT8(Buffer, index);
+                temp = READ_BT_UINT8(Buffer, index);
                 if (temp & 0x01U)
                 {
                     (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_HARDWARE_FAULT_INDEX, 0x01U);
@@ -770,46 +433,13 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     WRITE_LT_UINT8(Buffer, index,  flag);
     // 电池容量
     flag = (uint16)CAP_TO_AH(Soc_GetHighPrecisionLeftCap());
+    flag = flag * 45U / 44U;
     WRITE_LT_UINT16(Buffer, index, flag);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
 #endif
     return;
-}
-
-void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length)
-{
-    uint16 index = 0U;
-    uint8 soc;
-    uint16 temp;
-    uint32 time;
-    Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-
-    // 总电压
-    temp = Statistic_GetBcu100mvTotalVoltage();
-    WRITE_LT_UINT16(Buffer, index, temp);
-    // 总电流
-    temp = (uint16)(4000 - current);
-    WRITE_LT_UINT16(Buffer, index, temp);
-    // 剩余容量
-    temp = Soc_Get();
-    soc = (uint8)SOC_TO_UINT8(temp);
-    WRITE_LT_UINT8(Buffer, index, soc);
-    // 预留
-    WRITE_LT_UINT8(Buffer, index, 0xFFU);
-    // 放电计时
-    time = Statistic_GetCumuDchgTime();
-    temp = (uint16)(time / 3600U);
-    WRITE_LT_UINT16(Buffer, index, temp);
-
-    *Length = index;
-}
-
-void ChargerCommUser_GetTC2DataCbk(uint8 *Buffer, uint16 *Length)
-{
-    (void)memcpy(Buffer, ChargerCommUser_MsgInnerData.faultBuff, 8U);
-    *Length = 8U;
 }
 
 void ChargerCommUser_RecTCTimeoutCbk(void)

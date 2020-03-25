@@ -127,7 +127,7 @@ const ChargerComm_SendIPduCfgType ChargerComm_IPduSendConfigInfo[] = {
     {
         PDUR_CHARGERCOMM_TX_PDUID_USER_TC1, /**< IPdu */
         8U, /**< Length */
-        20U, /**< Cycle */
+        100U, /**< Cycle */
         ChargerCommUser_TCSendConditionCheck, /**< CondFunc */
         VcuComm_GetStatusMsg_0x2F4, /**< Func */
     },
@@ -349,6 +349,25 @@ static const ChargerComm_RecIPduInfoType ChargerComm_StageGBCemRecItem[] = {
     },
 };
 
+static const ChargerComm_RecIPduInfoType ChargerComm_StageGBFullChargeItem[] = {
+    {
+        PDUR_CHARGERCOMM_RX_PDUID_GB_CRM, /**< IPdu */
+        8U,
+        CHARGERCOMMGB_REC_TIMEOUT_RECOMM_CRM, /**< Timeout: 接收超时时间 */
+        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
+        ChargerCommGB_ReceiveCRMCbk, /**< RecFunc: 数据接收回调函数 */
+        NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
+    },
+    {
+        PDUR_CHARGERCOMM_RX_PDUID_GB_CHM, /**< IPdu */
+        3U,
+        CHARGERCOMMGB_REC_TIMEOUT_DEFAULT, /**< Timeout: 接收超时时间 */
+        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
+        ChargerCommGB_ReceiveCHMCbk, /**< RecFunc: 数据接收回调函数 */
+        NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
+    },
+};
+
 static const ChargerComm_RecIPduInfoType ChargerComm_StageUserTCRecItem[] = {
     {
         PDUR_CHARGERCOMM_RX_PDUID_USER_TC, /**< IPdu */
@@ -408,6 +427,10 @@ const ChargerComm_RecIPduCfgType ChargerComm_IPduRecConfigInfo[CHARGERCOMM_STAGE
     {
         (uint8)ARRAY_SIZE(ChargerComm_StageGBCemRecItem), /**< IPduNum: 报文个数 */
         ChargerComm_StageGBCemRecItem, /**< IPduInfo: 各IPdu配置信息 */
+    },
+    {
+        (uint8)ARRAY_SIZE(ChargerComm_StageGBFullChargeItem), /**< IPduNum: 报文个数 */
+        ChargerComm_StageGBFullChargeItem, /**< IPduInfo: 各IPdu配置信息 */
     },
     {
         (uint8)ARRAY_SIZE(ChargerComm_StageUserTCRecItem), /**< IPduNum: 报文个数 */
