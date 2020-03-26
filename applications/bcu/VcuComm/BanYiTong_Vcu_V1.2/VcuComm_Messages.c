@@ -111,7 +111,7 @@ void VcuComm_GetStatusMsg_0x207(uint8 *buf, uint16 *Length) {
     soc = (uint8)SOC_TO_PERCENT(temp);
     WRITE_LT_UINT8(buf, index, soc);
     // 剩余容量
-    temp = BatteryInfo_BaseConfigInfo.NominalCap;
+    temp = BatteryInfo_BaseConfigInfo.DisplayCap;
     temp /= 10U;
     if (temp >= 255U)
     {

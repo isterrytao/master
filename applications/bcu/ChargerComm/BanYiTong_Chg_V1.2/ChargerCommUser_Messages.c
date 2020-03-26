@@ -362,8 +362,8 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     }
     WRITE_LT_UINT8(Buffer, index,  temp);
     // 电池容量
-    temp = (uint16)CAP_TO_AH(Soc_GetHighPrecisionLeftCap());
-    temp = temp * 45U / 44U;
+    temp = BatteryInfo_BaseConfigInfo.DisplayCap;
+    temp /= 10U;
     WRITE_LT_UINT16(Buffer, index, temp);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
@@ -432,8 +432,8 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     }
     WRITE_LT_UINT8(Buffer, index,  flag);
     // 电池容量
-    flag = (uint16)CAP_TO_AH(Soc_GetHighPrecisionLeftCap());
-    flag = flag * 45U / 44U;
+    flag = BatteryInfo_BaseConfigInfo.DisplayCap;
+    flag /= 10U;
     WRITE_LT_UINT16(Buffer, index, flag);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
