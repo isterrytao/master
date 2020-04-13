@@ -41,6 +41,16 @@ var mdata = {
     chg_heat_parameters_stop_heat_volt: cfg.chg_heat_parameters.stop_heat_volt,
     chg_heat_parameters_stop_heat_current: cfg.chg_heat_parameters.stop_heat_current,
     chg_heat_parameters_current_flag: cfg.chg_heat_parameters.current_flag,
+    chg_user_parameters_en: cfg.chg_user_parameters.en,
+    chg_user_parameters_low_temp_start: cfg.chg_user_parameters.low_temp_start,
+    chg_user_parameters_low_temp_stop: cfg.chg_user_parameters.low_temp_stop,
+    chg_user_parameters_low_temp_chg_current: cfg.chg_user_parameters.low_temp_chg_current,
+    chg_user_parameters_low_temp_chg_time: cfg.chg_user_parameters.low_temp_chg_time,
+    chg_user_parameters_full_chg_volt: cfg.chg_user_parameters.full_chg_volt,
+    chg_user_parameters_chg_end_current: cfg.chg_user_parameters.chg_end_current,
+    chg_user_parameters_chg_end_time: cfg.chg_user_parameters.chg_end_time,
+    chg_user_parameters_chg_stop_current: cfg.chg_user_parameters.chg_stop_current,
+    chg_user_parameters_chg_stop_volt: cfg.chg_user_parameters.chg_stop_volt,
 };
 
 
@@ -173,6 +183,25 @@ globalInfo.setReturn({processedcfg:processedcfg});
 
 <%}%>
 #define USERSTRATEGY_CURRENT_FLAG                       <%- mdata.chg_heat_parameters_current_flag%> //加热电流是否经过分流器      TRUE为经过     FALSE为不经过
+
+/**
+ * \brief 用户自定义充电策略
+ */
+
+#define USERSTRATEGY_CHG_TRATEGY_EN                     <%- mdata.chg_user_parameters_en%> //用户自定义充电策略开关
+
+<% if (mdata.chg_user_parameters_en == 'STD_ON') {%>
+#define USERSTRATEGY_LOW_TEMP_START                     TEMPERATURE_FROM_C(<%- mdata.chg_user_parameters_low_temp_start%>) // 低温区间起始温度
+#define USERSTRATEGY_LOW_TEMP_STOP                      TEMPERATURE_FROM_C(<%- mdata.chg_user_parameters_low_temp_stop%>) // 低温区间结束温度
+#define USERSTRATEGY_LOW_TEMP_CHG_CURRENT               <%- (mdata.chg_user_parameters_low_temp_chg_current*10)%> // 低温区间短时充电电流 0.1A
+#define USERSTRATEGY_LOW_TEMP_CHG_TIME                  <%- (mdata.chg_user_parameters_low_temp_chg_time*60000)%>U // 低温区间小电流充电时长 ms
+#define USERSTRATEGY_FULL_CHG_VOLT                      <%- mdata.chg_user_parameters_full_chg_volt%>U // 满充电压 mv
+#define USERSTRATEGY_CHG_END_CURRENT                    <%- (mdata.chg_user_parameters_chg_end_current*10)%> // 满充后充电电流 0.1A
+#define USERSTRATEGY_CHG_END_TIME                       <%- (mdata.chg_user_parameters_chg_end_time*60000)%>U // 满充后小电流充电时长 ms
+#define USERSTRATEGY_CHG_STOP_CURRENT                   <%- (mdata.chg_user_parameters_chg_stop_current*10)%> // 满充后停止充电电流 0.1A
+#define USERSTRATEGY_CHG_STOP_VOLT                      <%- mdata.chg_user_parameters_chg_stop_volt%>U // 满充后停止充电电压 mv
+
+<%}%>
 
 
 #endif
