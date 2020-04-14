@@ -551,7 +551,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     }
 #endif
 #if USERSTRATEGY_CHG_TRATEGY_EN == STD_ON
-    if (MS_GET_INTERNAL(monitorTime, nowTime) >= 300U)
+    if (MS_GET_INTERNAL(monitorTime, nowTime) >= 3000U)
     {
         lastTime = 0U;
     }
