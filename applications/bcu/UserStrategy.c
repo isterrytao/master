@@ -496,6 +496,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
 #if USERSTRATEGY_CHG_TRATEGY_EN == STD_ON
     static uint32 lastTime = 0U, monitorTime = 0U;
+    static uint8 flag = 0U;
     uint32 nowTime = OSTimeGet();
     uint16 lt = Statistic_GetBcuLtMax();
 #endif
@@ -523,6 +524,43 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
         {
             current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
         }
+#if USERSTRATEGY_CHG_TRATEGY_EN == STD_ON
+        if (MS_GET_INTERNAL(monitorTime, nowTime) >= 3000U)
+        {
+            lastTime = 0U;
+        }
+        monitorTime = nowTime;
+        if (lt <= (uint8)USERSTRATEGY_LOW_TEMP_STOP &&
+            lt > (uint8)USERSTRATEGY_LOW_TEMP_START)
+        {
+            if (flag == 0U)
+            {
+                flag = 1U;
+            }
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            else
+            {
+                if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME &&
+                    flag = 1U)
+                {
+                    if (current > USERSTRATEGY_LOW_TEMP_CHG_CURRENT)
+                    {
+                        current = USERSTRATEGY_LOW_TEMP_CHG_CURRENT;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (flag == 1U)
+            {
+                flag = 2U;
+            }
+        }
+#endif
         current += USERSTRATEGY_START_HEAT_CURRENT;
     }
     else
@@ -535,6 +573,43 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
         {
             current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
         }
+#if USERSTRATEGY_CHG_TRATEGY_EN == STD_ON
+        if (MS_GET_INTERNAL(monitorTime, nowTime) >= 3000U)
+        {
+            lastTime = 0U;
+        }
+        monitorTime = nowTime;
+        if (lt <= (uint8)USERSTRATEGY_LOW_TEMP_STOP &&
+            lt > (uint8)USERSTRATEGY_LOW_TEMP_START)
+        {
+            if (flag == 0U)
+            {
+                flag = 1U;
+            }
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            else
+            {
+                if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME &&
+                    flag = 1U)
+                {
+                    if (current > USERSTRATEGY_LOW_TEMP_CHG_CURRENT)
+                    {
+                        current = USERSTRATEGY_LOW_TEMP_CHG_CURRENT;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (flag == 1U)
+            {
+                flag = 2U;
+            }
+        }
+#endif
     }
 #else
     if (TemperatureM_GetHeatState() != TEMPERATUREM_HEAT_STATE_NONE)
@@ -549,7 +624,6 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     {
         current = PowerM_GetCurrent(POWERM_CUR_CHARGE_AC);
     }
-#endif
 #if USERSTRATEGY_CHG_TRATEGY_EN == STD_ON
     if (MS_GET_INTERNAL(monitorTime, nowTime) >= 3000U)
     {
@@ -559,13 +633,18 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     if (lt <= (uint8)USERSTRATEGY_LOW_TEMP_STOP &&
         lt > (uint8)USERSTRATEGY_LOW_TEMP_START)
     {
+        if (flag == 0U)
+        {
+            flag = 1U;
+        }
         if (lastTime == 0U)
         {
             lastTime = nowTime;
         }
         else
         {
-            if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME)
+            if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME &&
+                flag = 1U)
             {
                 if (current > USERSTRATEGY_LOW_TEMP_CHG_CURRENT)
                 {
@@ -574,6 +653,14 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
             }
         }
     }
+    else
+    {
+        if (flag == 1U)
+        {
+            flag = 2U;
+        }
+    }
+#endif
 #endif
 
     return current;
