@@ -544,7 +544,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
             else
             {
                 if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME &&
-                    flag = 1U)
+                    flag == 1U)
                 {
                     if (current > USERSTRATEGY_LOW_TEMP_CHG_CURRENT)
                     {
@@ -593,7 +593,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
             else
             {
                 if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME &&
-                    flag = 1U)
+                    flag == 1U)
                 {
                     if (current > USERSTRATEGY_LOW_TEMP_CHG_CURRENT)
                     {
@@ -644,7 +644,7 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
         else
         {
             if (MS_GET_INTERNAL(lastTime, nowTime) <= USERSTRATEGY_LOW_TEMP_CHG_TIME &&
-                flag = 1U)
+                flag == 1U)
             {
                 if (current > USERSTRATEGY_LOW_TEMP_CHG_CURRENT)
                 {
