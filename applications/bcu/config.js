@@ -364,6 +364,7 @@ module.exports = {
             {section:"lv_protect", chs: "放电单体电压低有放电电流时才保护使能"},
             {section:"ltv_protect", chs: "放电总压低有放电电流时才保护使能"},
             {section:"chg_heat_parameters", chs: "充电加热策略相关参数"},
+            {section:"chg_user_parameters", chs: "用户自定义充电策略相关参数"},
         ],
         ota_tpye: "USERSTRATEGY_REALTIME_OTA",
         buzzer_alarm: {
@@ -453,6 +454,30 @@ module.exports = {
             stop_heat_current: 10,
             current_flag: "FALSE",
         },
+        chg_user_parameters: {
+            notes: [
+                {section: "en", chs: "用户自定义充电策略使能，若配置为使能则启用用户自定义充电策略", comments: '"STD_ON", "STD_OFF"'},
+                {section: "low_temp_start", chs: "低温区间起始温度(℃), low_temp_start < 低温区间 <= low_temp_stop"},
+                {section: "low_temp_stop", chs: "低温区间结束温度"},
+                {section: "low_temp_chg_current", chs: "低温区间短时充电电流(A)"},
+                {section: "low_temp_chg_time", chs: "低温区间小电流充电时长(min)"},
+                {section: "full_chg_volt", chs: "满充电压(mv)"},
+                {section: "chg_end_current", chs: "满充后充电电流(A)"},
+                {section: "chg_end_time", chs: "满充后小电流充电时长(min)，满充后达到小电流充电时长时停止充电"},
+                {section: "chg_stop_current", chs: "满充后停止充电电流(A)，满充后当回路中电流小于满充后停止充电电流时停止充电"},
+                {section: "chg_stop_volt", chs: "满充后停止充电最高电压(mv)，满充后进行小电流充电时若达到最高电压则停止充电"},
+            ],
+            en: "STD_OFF",
+            low_temp_start: 0,
+            low_temp_stop: 5,
+            low_temp_chg_current: 20,
+            low_temp_chg_time: 5,
+            full_chg_volt: 3600,
+            chg_end_current: 20,
+            chg_end_time: 8,
+            chg_stop_current: 15,
+            chg_stop_volt: 3700,
+        }
     },
 
     FullCharge: {
