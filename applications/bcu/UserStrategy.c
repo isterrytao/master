@@ -209,6 +209,19 @@ static void pollPowerKeyState()
 #endif
 
 #if (USERSTRATEGY_CHG_TRATEGY_EN == STD_ON)
+static void UserStrategy_ChgRelayOff(void)
+{
+#ifdef RELAYM_FN_CHARGE
+    (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_OFF);
+#endif
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+    (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_OFF);
+#endif
+#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+    (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_OFF);
+#endif
+}
+
 static void UserStrategy_FullChgCheck(void)
 {
     uint32 nowTime = OSTimeGet();
@@ -235,6 +248,7 @@ static void UserStrategy_FullChgCheck(void)
             {
                 SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
                 ChargeM_DiagnosisCtlDisableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+                UserStrategy_ChgRelayOff();
             }
         }
         else
@@ -257,6 +271,7 @@ static void UserStrategy_FullCharge(void)
 {
     SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
     ChargeM_DiagnosisCtlDisableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+    UserStrategy_ChgRelayOff();
 }
 
 static void UserStrategy_StopChargeCheck(void)
