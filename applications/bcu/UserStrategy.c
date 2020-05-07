@@ -93,6 +93,7 @@ static const UserStrategy_BuzzerAlarmType Alarm_type_Lever1[] = {
     {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_TEMP_LINE, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_LEAK, DIAGNOSIS_LEVEL_SECOND},
 };
 
 static const UserStrategy_BuzzerAlarmType Alarm_type_Lever2[] = {
@@ -128,6 +129,7 @@ static const UserStrategy_BuzzerAlarmType Alarm_type_Lever3[] = {
     {DIAGNOSIS_ITEM_CURRENT_ABNORMAL, DIAGNOSIS_LEVEL_THIRD},
     {DIAGNOSIS_ITEM_SUPPLY_VOL_LOW, DIAGNOSIS_LEVEL_THIRD},
     {DIAGNOSIS_ITEM_DOUBLE_CHG_CONNECT_FAULT, DIAGNOSIS_LEVEL_THIRD},
+    {DIAGNOSIS_ITEM_LEAK, DIAGNOSIS_LEVEL_THIRD},
 };
 #endif
 
@@ -207,6 +209,19 @@ static void pollPowerKeyState()
 #endif
 
 #if (USERSTRATEGY_CHG_TRATEGY_EN == STD_ON)
+static void UserStrategy_ChgRelayOff(void)
+{
+#ifdef RELAYM_FN_CHARGE
+    (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_OFF);
+#endif
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+    (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_OFF);
+#endif
+#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+    (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_OFF);
+#endif
+}
+
 static void UserStrategy_FullChgCheck(void)
 {
     uint32 nowTime = OSTimeGet();
@@ -233,6 +248,7 @@ static void UserStrategy_FullChgCheck(void)
             {
                 SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
                 ChargeM_DiagnosisCtlDisableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+                UserStrategy_ChgRelayOff();
             }
         }
         else
@@ -255,6 +271,7 @@ static void UserStrategy_FullCharge(void)
 {
     SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
     ChargeM_DiagnosisCtlDisableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+    UserStrategy_ChgRelayOff();
 }
 
 static void UserStrategy_StopChargeCheck(void)
@@ -264,7 +281,7 @@ static void UserStrategy_StopChargeCheck(void)
     boolean stopFlag = FALSE;
     Current_CurrentType chgCurrent = ChargerComm_GetChargeCurrentMax();
     uint16 mainCurrent = CurrentM_GetMainDiagChgCurrent();
-    static uint32 lastTime = 0U, lastTime1 = 0U;
+    static uint32 lastTime = 0U, lastTime1 = 0U, lastTime2 = 0U;
     uint32 nowTime = OSTimeGet();
     Std_ReturnType allow = ChargeM_ChargeIsAllowed();
 
@@ -305,24 +322,24 @@ static void UserStrategy_StopChargeCheck(void)
         {
             if (chgCurrent <= USERSTRATEGY_CHG_END_CURRENT && chgCurrent > 0)
             {
-                if (lastTime == 0U)
+                if (lastTime2 == 0U)
                 {
-                    lastTime = nowTime;
+                    lastTime2 = nowTime;
                 }
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= USERSTRATEGY_CHG_END_TIME)
+                if (MS_GET_INTERNAL(lastTime2, nowTime) >= USERSTRATEGY_CHG_END_TIME)
                 {
                     UserStrategy_FullCharge();
-                    lastTime = 0U;
+                    lastTime2 = 0U;
                 }
             }
             else
             {
-                lastTime = 0U;
+                lastTime2 = 0U;
             }
         }
         else
         {
-            lastTime = 0U;
+            lastTime2 = 0U;
         }
         if (CurrentM_DiagIsValidCurrent(mainCurrent))
         {
@@ -352,6 +369,7 @@ static void UserStrategy_StopChargeCheck(void)
     {
         lastTime = 0U;
         lastTime1 = 0U;
+        lastTime2 = 0U;
     }
 }
 #endif
