@@ -281,7 +281,7 @@ static void UserStrategy_StopChargeCheck(void)
     boolean stopFlag = FALSE;
     Current_CurrentType chgCurrent = ChargerComm_GetChargeCurrentMax();
     uint16 mainCurrent = CurrentM_GetMainDiagChgCurrent();
-    static uint32 lastTime = 0U, lastTime1 = 0U;
+    static uint32 lastTime = 0U, lastTime1 = 0U, lastTime2 = 0U;
     uint32 nowTime = OSTimeGet();
     Std_ReturnType allow = ChargeM_ChargeIsAllowed();
 
@@ -322,24 +322,24 @@ static void UserStrategy_StopChargeCheck(void)
         {
             if (chgCurrent <= USERSTRATEGY_CHG_END_CURRENT && chgCurrent > 0)
             {
-                if (lastTime == 0U)
+                if (lastTime2 == 0U)
                 {
-                    lastTime = nowTime;
+                    lastTime2 = nowTime;
                 }
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= USERSTRATEGY_CHG_END_TIME)
+                if (MS_GET_INTERNAL(lastTime2, nowTime) >= USERSTRATEGY_CHG_END_TIME)
                 {
                     UserStrategy_FullCharge();
-                    lastTime = 0U;
+                    lastTime2 = 0U;
                 }
             }
             else
             {
-                lastTime = 0U;
+                lastTime2 = 0U;
             }
         }
         else
         {
-            lastTime = 0U;
+            lastTime2 = 0U;
         }
         if (CurrentM_DiagIsValidCurrent(mainCurrent))
         {
@@ -369,6 +369,7 @@ static void UserStrategy_StopChargeCheck(void)
     {
         lastTime = 0U;
         lastTime1 = 0U;
+        lastTime2 = 0U;
     }
 }
 #endif
