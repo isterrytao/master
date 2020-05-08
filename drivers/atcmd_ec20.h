@@ -24,6 +24,7 @@ typedef struct ATCMDEC20_PrivateData {
     uint8 expect_length;
     uint8 ec20rxbuf_index1;
     uint8 ec20rxbuf_index2;
+    uint8 ec20rxbuf_filled;
     uint8 ec20rxbuf1[50];
     uint8 ec20rxbuf2[50];
     uint8 ec20rxbuf_which;
