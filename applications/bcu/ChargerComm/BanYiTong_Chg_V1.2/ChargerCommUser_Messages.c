@@ -158,9 +158,9 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
             if(Length >= 5U)
             {
                 // 充电机输出电压
-                ChargerComm_SetChargerOutputHV(READ_BT_UINT16(Buffer, index));
+                ChargerComm_SetChargerOutputHV(READ_LT_UINT16(Buffer, index));
                 // 充电机输出电流
-                temp = READ_BT_UINT16(Buffer, index);
+                temp = READ_LT_UINT16(Buffer, index);
                 ChargerComm_SetChargerOutputCurrent((Current_CurrentType)temp);
                 // 充电机充电状态
                 if(temp > 0U)
@@ -172,7 +172,7 @@ void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
                     ChargerComm_SetChargingStatus(FALSE);
                 }
                 // 充电机硬件故障
-                temp = READ_BT_UINT8(Buffer, index);
+                temp = READ_LT_UINT8(Buffer, index);
                 if (temp & 0x01U)
                 {
                     (void)ChargerComm_SetChargeFaultWithIndex(CHARGERCOMM_CHR_HARDWARE_FAULT_INDEX, 0x01U);
