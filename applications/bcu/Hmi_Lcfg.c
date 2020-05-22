@@ -8,7 +8,7 @@
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
 
-static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTotalVoltage(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void)addr;
     (void)p;
@@ -20,7 +20,7 @@ static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 ad
     return rc;
 }
 
-static uint16 MDBSgetTotalCurrent(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTotalCurrent(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     (void) addr;
     (void)p;
@@ -40,7 +40,7 @@ static uint16 MDBSgetTotalCurrent(const Modbus_RegistersRegionType *p, uint16 ad
     return (uint16)rc;
 }
 
-static uint16 MDBSgetSOC(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSOC(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -50,34 +50,34 @@ static uint16 MDBSgetSOC(const Modbus_RegistersRegionType *p, uint16 addr) {
     return rc;
 }
 
-static uint16 MDBSgetCellNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetCellNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
 
     return (uint16)SYSTEM_BATTERY_CELL_NUM;
 }
 
-static uint16 MDBSgetTempSensorNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempSensorNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
 
     return (uint16)SYSTEM_TEMP_CELL_NUM;
 }
 
-static uint16 MDBSgetHeatSensorNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetHeatSensorNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
 
     return (uint16)SYSTEM_HEAT_TEMP_NUM;
 }
 
-static uint16 MDBSgetPoleTempNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetPoleTempNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
 
     return (uint16)SYSTEM_POLE_TEMP_NUM;
 }
-static uint16 MDBSgetDeltaVoltage(const Modbus_RegistersRegionType *p, uint16 addr)
+static uint16 MDBSgetDeltaVoltage(const Modbus_ReadRegionType *p, uint16 addr)
 {
     uint16 val16;
     (void) p;
@@ -85,7 +85,7 @@ static uint16 MDBSgetDeltaVoltage(const Modbus_RegistersRegionType *p, uint16 ad
     val16 = Statistic_GetBcuDeltaVoltage();
     return val16;
 }
-static uint16 MDBSgetDeltaTemperature(const Modbus_RegistersRegionType *p, uint16 addr)
+static uint16 MDBSgetDeltaTemperature(const Modbus_ReadRegionType *p, uint16 addr)
 {
     sint16 rc;
     (void) p;
@@ -98,7 +98,7 @@ static uint16 MDBSgetDeltaTemperature(const Modbus_RegistersRegionType *p, uint1
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetRelaystate(const Modbus_RegistersRegionType *p, uint16 addr)
+static uint16 MDBSgetRelaystate(const Modbus_ReadRegionType *p, uint16 addr)
 {
     RelayM_FunctionType fn;
     RelayM_DiagnosisStatusType diag;
@@ -137,14 +137,14 @@ static uint16 MDBSgetRelaystate(const Modbus_RegistersRegionType *p, uint16 addr
 }
 
 /*2000-2399*/
-static uint16 MDBSget_CellDataM_GetVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GetVoltage(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     rc = CellDataM_GetVoltage(addr - p->startaddr);
     return rc;
 }
 
 /*3000,3199*/
-static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
 
     rc = (sint16)CellDataM_GetTemperature(addr - p->startaddr);
@@ -157,7 +157,7 @@ static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_RegistersRegionType 
 }
 
 /*3500,3549,*/
-static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
 
     rc = (sint16)CellDataM_GetHeatTemperature(addr - p->startaddr);
@@ -170,7 +170,7 @@ static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_RegistersRegionT
 }
 
 /*3600,3649,*/
-static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
 
     rc = (sint16)CellDataM_GetPoleTemperature(addr - p->startaddr);
@@ -185,7 +185,7 @@ static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_RegistersRegion
 
 
 
-static uint16 MDBSgetalarm(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetalarm(const Modbus_ReadRegionType *p, uint16 addr) {
     uint8 i, j;
     uint16 trc, rc = 0U;
 
@@ -200,28 +200,36 @@ static uint16 MDBSgetalarm(const Modbus_RegistersRegionType *p, uint16 addr) {
     return rc;
 }
 
-static uint16 test_modbus_x01(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 test_modbus_x01(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) p;
     (void) addr;
     return 0x1234U;
 
 }
-static const Modbus_RegistersRegionType x01registerTable[] = {
+
+static void modbus_ctrl_mos(const struct Modbus_WriteRegion *regs, uint16 addr, const uint8 *dat, uint16 len) {
+    (void) regs;
+    (void) addr;
+    (void) dat;
+    (void) len;
+}
+
+static const Modbus_ReadRegionType x01registerTable[] = {
     {2000U, 2399U, test_modbus_x01},
 };
 
 
-static const Modbus_RegistersRegionType x02registerTable[] = {
+static const Modbus_ReadRegionType x02registerTable[] = {
     {2000U, 2399U, MDBSgetalarm},
 };
 
 
-static const Modbus_RegistersRegionType x03registerTable[] = {
+static const Modbus_ReadRegionType x03registerTable[] = {
     {2000U, 2399U, test_modbus_x01},
 };
 
 
-static const Modbus_RegistersRegionType x04registerTable[] = {
+static const Modbus_ReadRegionType x04registerTable[] = {
     {2000U, 2399U, MDBSget_CellDataM_GetVoltage},
     /*	{2400, 2999, get2},*/
     {3000U, 3199U, MDBSget_CellDataM_GetTemperature},
@@ -243,15 +251,20 @@ static const Modbus_RegistersRegionType x04registerTable[] = {
     {1050U, 1080U, MDBSgetRelaystate},
 };
 
+static const Modbus_WriteRegionType x16registerTable[] = {
+    {3001U, 3001U, modbus_ctrl_mos},
+};
 
 const Modbus_Cfg ModbusCfg = {
     0x01U, //uint8  slaveaddr;
     0x00U, //uint8  broadcastaddr;
     0xa001U, //uint16 CRCpolynomial;
     0xffffU, //uint16 CRCInit;
+    100U, //uint16 FrameTimeout
     {x01registerTable, (uint8)ARRAY_SIZE(x01registerTable), 16U}, //Modbus_RegistersTableType Modbus_X01registerTable;
     {x02registerTable, (uint8)ARRAY_SIZE(x02registerTable), 16U}, //Modbus_RegistersTableType Modbus_X02registerTable;
     {x03registerTable, (uint8)ARRAY_SIZE(x03registerTable), 1U}, //Modbus_RegistersTableType odbus_X03registerTable;
     {x04registerTable, (uint8)ARRAY_SIZE(x04registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X04registerTable;
+    {x16registerTable, (uint8)ARRAY_SIZE(x16registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X16registerTable;
 };
 
