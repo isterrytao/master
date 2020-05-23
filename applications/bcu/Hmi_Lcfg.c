@@ -16,7 +16,8 @@
 #include "DischargeM.h"
 #include "ChargeM.h"
 #include "Insu.h"
-static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
+
+static uint16 MDBSgetTotalVoltage(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void)addr;
     (void)p;
@@ -24,7 +25,8 @@ static uint16 MDBSgetTotalVoltage(const Modbus_RegistersRegionType *p, uint16 ad
     rc = (rc + 5U) / 10U;
     return rc;
 }
-static uint16 MDBSgetTotalCurrent(const Modbus_RegistersRegionType *p, uint16 addr) {
+
+static uint16 MDBSgetTotalCurrent(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     (void) addr;
     (void)p;
@@ -39,7 +41,7 @@ static uint16 MDBSgetTotalCurrent(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetSOC(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSOC(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -47,12 +49,12 @@ static uint16 MDBSgetSOC(const Modbus_RegistersRegionType *p, uint16 addr) {
     rc = (uint16)((rc + 5U) / 10U);
     return rc;
 }
-static uint16 MDBSgetCellNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetCellNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
     return (uint16)SYSTEM_BATTERY_CELL_NUM;
 }
-static uint16 MDBSgetStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     (void) addr;
     (void)p;
@@ -62,14 +64,14 @@ static uint16 MDBSgetStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return rc;
 }
-static uint16 MDBSgetVoltMax(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMax(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Statistic_GetBcuHvMax();
     return rc;
 }
-static uint16 MDBSgetVoltMaxIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMaxIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -80,7 +82,7 @@ static uint16 MDBSgetVoltMaxIndex(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetVoltMaxBmu(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMaxBmu(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -91,7 +93,7 @@ static uint16 MDBSgetVoltMaxBmu(const Modbus_RegistersRegionType *p, uint16 addr
     }
     return rc;
 }
-static uint16 MDBSgetVoltMaxBmuSn(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMaxBmuSn(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -102,14 +104,14 @@ static uint16 MDBSgetVoltMaxBmuSn(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetVoltMin(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMin(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Statistic_GetBcuLvMax();
     return rc;
 }
-static uint16 MDBSgetVoltMinIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMinIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -120,7 +122,7 @@ static uint16 MDBSgetVoltMinIndex(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetVoltMinBmu(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMinBmu(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -131,7 +133,7 @@ static uint16 MDBSgetVoltMinBmu(const Modbus_RegistersRegionType *p, uint16 addr
     }
     return rc;
 }
-static uint16 MDBSgetVoltMinBmuSn(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetVoltMinBmuSn(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -142,7 +144,7 @@ static uint16 MDBSgetVoltMinBmuSn(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetTempMax(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMax(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     (void) addr;
     (void)p;
@@ -153,28 +155,28 @@ static uint16 MDBSgetTempMax(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetTempMaxIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMaxIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = CellDataM_TemperatureIndexToLogic(Statistic_GetBcuHtSlaveNum(0U), Statistic_GetBcuHtIndex(0U)) + 1U;
     return rc;
 }
-static uint16 MDBSgetTempMaxBmu(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMaxBmu(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)Statistic_GetBcuHtSlaveNum(0U) + 1U;
     return rc;
 }
-static uint16 MDBSgetTempMaxBmuSn(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMaxBmuSn(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)Statistic_GetBcuHtIndex(0U) + 1U;
     return rc;
 }
-static uint16 MDBSgetTempMin(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMin(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     (void) addr;
     (void)p;
@@ -185,28 +187,28 @@ static uint16 MDBSgetTempMin(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetTempMinIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMinIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = CellDataM_TemperatureIndexToLogic(Statistic_GetBcuLtSlaveNum(0U), Statistic_GetBcuLtIndex(0U)) + 1U;
     return rc;
 }
-static uint16 MDBSgetTempMinBmu(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMinBmu(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)Statistic_GetBcuLtSlaveNum(0U) + 1U;
     return rc;
 }
-static uint16 MDBSgetTempMinBmuSn(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempMinBmuSn(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)Statistic_GetBcuLtIndex(0U) + 1U;
     return rc;
 }
-static uint16 MDBSgetChgRequestVolt(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgRequestVolt(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     (void) addr;
     (void)p;
@@ -219,7 +221,7 @@ static uint16 MDBSgetChgRequestVolt(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetChgRequestCur(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgRequestCur(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     (void) addr;
     (void)p;
@@ -232,7 +234,7 @@ static uint16 MDBSgetChgRequestCur(const Modbus_RegistersRegionType *p, uint16 a
     }
     return rc;
 }
-static uint16 MDBSgetChgRequestOrder(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgRequestOrder(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     (void) addr;
     (void)p;
@@ -249,21 +251,21 @@ static uint16 MDBSgetChgRequestOrder(const Modbus_RegistersRegionType *p, uint16
     }
     return rc;
 }
-static uint16 MDBSgetChargerOutVolt(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChargerOutVolt(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = ChargerComm_GetChargerOutputHV();
     return rc;
 }
-static uint16 MDBSgetChargerOutCur(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChargerOutCur(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)ChargerComm_GetChargerOutputCurrent();
     return rc;
 }
-static uint16 MDBSgetChargerStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChargerStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sta;
     (void) addr;
@@ -410,7 +412,7 @@ static uint16 getRlyIndex(uint8 num) {
     return rc;
 }
 
-static uint16 MDBSgetFirstRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFirstRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
 
     (void) addr;
@@ -419,7 +421,7 @@ static uint16 MDBSgetFirstRlyIndex(const Modbus_RegistersRegionType *p, uint16 a
 
     return rc;
 }
-static uint16 MDBSgetFirstRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFirstRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 0U;
     (void) addr;
@@ -430,7 +432,7 @@ static uint16 MDBSgetFirstRlyStatus(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetFirstRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFirstRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 0U;
@@ -454,7 +456,7 @@ static uint16 MDBSgetFirstRlyDia(const Modbus_RegistersRegionType *p, uint16 add
     }
     return rc;
 }
-static uint16 MDBSgetSecondRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSecondRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
 
     (void) addr;
@@ -463,7 +465,7 @@ static uint16 MDBSgetSecondRlyIndex(const Modbus_RegistersRegionType *p, uint16 
 
     return rc;
 }
-static uint16 MDBSgetSecondRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSecondRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 1U;
     (void) addr;
@@ -474,7 +476,7 @@ static uint16 MDBSgetSecondRlyStatus(const Modbus_RegistersRegionType *p, uint16
     }
     return rc;
 }
-static uint16 MDBSgetSecondRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSecondRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 1U;
@@ -498,7 +500,7 @@ static uint16 MDBSgetSecondRlyDia(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetThirdRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetThirdRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
 
     (void) addr;
@@ -507,7 +509,7 @@ static uint16 MDBSgetThirdRlyIndex(const Modbus_RegistersRegionType *p, uint16 a
 
     return rc;
 }
-static uint16 MDBSgetThirdRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetThirdRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 2U;
     (void) addr;
@@ -518,7 +520,7 @@ static uint16 MDBSgetThirdRlyStatus(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetThirdRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetThirdRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 2U;
@@ -542,7 +544,7 @@ static uint16 MDBSgetThirdRlyDia(const Modbus_RegistersRegionType *p, uint16 add
     }
     return rc;
 }
-static uint16 MDBSgetFourthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFourthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
 
     (void) addr;
@@ -551,7 +553,7 @@ static uint16 MDBSgetFourthRlyIndex(const Modbus_RegistersRegionType *p, uint16 
 
     return rc;
 }
-static uint16 MDBSgetFourthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFourthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 3U;
     (void) addr;
@@ -562,7 +564,7 @@ static uint16 MDBSgetFourthRlyStatus(const Modbus_RegistersRegionType *p, uint16
     }
     return rc;
 }
-static uint16 MDBSgetFourthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFourthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 3U;
@@ -586,7 +588,7 @@ static uint16 MDBSgetFourthRlyDia(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetFifthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFifthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
 
     (void) addr;
@@ -595,7 +597,7 @@ static uint16 MDBSgetFifthRlyIndex(const Modbus_RegistersRegionType *p, uint16 a
 
     return rc;
 }
-static uint16 MDBSgetFifthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFifthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 4U;
     (void) addr;
@@ -606,7 +608,7 @@ static uint16 MDBSgetFifthRlyStatus(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetFifthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFifthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 4U;
@@ -630,7 +632,7 @@ static uint16 MDBSgetFifthRlyDia(const Modbus_RegistersRegionType *p, uint16 add
     }
     return rc;
 }
-static uint16 MDBSgetSixthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSixthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -638,7 +640,7 @@ static uint16 MDBSgetSixthRlyIndex(const Modbus_RegistersRegionType *p, uint16 a
 
     return rc;
 }
-static uint16 MDBSgetSixthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSixthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 5U;
     (void) addr;
@@ -649,7 +651,7 @@ static uint16 MDBSgetSixthRlyStatus(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetSixthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSixthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 5U;
@@ -673,7 +675,7 @@ static uint16 MDBSgetSixthRlyDia(const Modbus_RegistersRegionType *p, uint16 add
     }
     return rc;
 }
-static uint16 MDBSgetSeventhRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSeventhRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -681,7 +683,7 @@ static uint16 MDBSgetSeventhRlyIndex(const Modbus_RegistersRegionType *p, uint16
 
     return rc;
 }
-static uint16 MDBSgetSeventhRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSeventhRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 6U;
     (void) addr;
@@ -692,7 +694,7 @@ static uint16 MDBSgetSeventhRlyStatus(const Modbus_RegistersRegionType *p, uint1
     }
     return rc;
 }
-static uint16 MDBSgetSeventhRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSeventhRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 6U;
@@ -716,7 +718,7 @@ static uint16 MDBSgetSeventhRlyDia(const Modbus_RegistersRegionType *p, uint16 a
     }
     return rc;
 }
-static uint16 MDBSgetEighthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetEighthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -724,7 +726,7 @@ static uint16 MDBSgetEighthRlyIndex(const Modbus_RegistersRegionType *p, uint16 
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetEighthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetEighthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 7U;
     (void) addr;
@@ -735,7 +737,7 @@ static uint16 MDBSgetEighthRlyStatus(const Modbus_RegistersRegionType *p, uint16
     }
     return rc;
 }
-static uint16 MDBSgetEighthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetEighthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 7U;
@@ -759,7 +761,7 @@ static uint16 MDBSgetEighthRlyDia(const Modbus_RegistersRegionType *p, uint16 ad
     }
     return rc;
 }
-static uint16 MDBSgetNinthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetNinthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -767,7 +769,7 @@ static uint16 MDBSgetNinthRlyIndex(const Modbus_RegistersRegionType *p, uint16 a
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetNinthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetNinthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 8U;
     (void) addr;
@@ -778,7 +780,7 @@ static uint16 MDBSgetNinthRlyStatus(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetNinthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetNinthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 8U;
@@ -802,7 +804,7 @@ static uint16 MDBSgetNinthRlyDia(const Modbus_RegistersRegionType *p, uint16 add
     }
     return rc;
 }
-static uint16 MDBSgetTenthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTenthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -810,7 +812,7 @@ static uint16 MDBSgetTenthRlyIndex(const Modbus_RegistersRegionType *p, uint16 a
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetTenthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTenthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 9U;
     (void) addr;
@@ -821,7 +823,7 @@ static uint16 MDBSgetTenthRlyStatus(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetTenthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTenthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 9U;
@@ -845,7 +847,7 @@ static uint16 MDBSgetTenthRlyDia(const Modbus_RegistersRegionType *p, uint16 add
     }
     return rc;
 }
-static uint16 MDBSgetEleventhRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetEleventhRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -853,7 +855,7 @@ static uint16 MDBSgetEleventhRlyIndex(const Modbus_RegistersRegionType *p, uint1
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetEleventhRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetEleventhRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 10U;
     (void) addr;
@@ -864,7 +866,7 @@ static uint16 MDBSgetEleventhRlyStatus(const Modbus_RegistersRegionType *p, uint
     }
     return rc;
 }
-static uint16 MDBSgetEleventhRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetEleventhRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 10U;
@@ -888,7 +890,7 @@ static uint16 MDBSgetEleventhRlyDia(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetTwelfthRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTwelfthRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -896,7 +898,7 @@ static uint16 MDBSgetTwelfthRlyIndex(const Modbus_RegistersRegionType *p, uint16
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetTwelfthRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTwelfthRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 11U;
     (void) addr;
@@ -907,7 +909,7 @@ static uint16 MDBSgetTwelfthRlyStatus(const Modbus_RegistersRegionType *p, uint1
     }
     return rc;
 }
-static uint16 MDBSgetTwelfthRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTwelfthRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 11U;
@@ -931,7 +933,7 @@ static uint16 MDBSgetTwelfthRlyDia(const Modbus_RegistersRegionType *p, uint16 a
     }
     return rc;
 }
-static uint16 MDBSgetThirteenRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetThirteenRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -939,7 +941,7 @@ static uint16 MDBSgetThirteenRlyIndex(const Modbus_RegistersRegionType *p, uint1
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetThirteenRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetThirteenRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 12U;
     (void) addr;
@@ -950,7 +952,7 @@ static uint16 MDBSgetThirteenRlyStatus(const Modbus_RegistersRegionType *p, uint
     }
     return rc;
 }
-static uint16 MDBSgetThirteenRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetThirteenRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 12U;
@@ -974,7 +976,7 @@ static uint16 MDBSgetThirteenRlyDia(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetFourteenRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFourteenRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -982,7 +984,7 @@ static uint16 MDBSgetFourteenRlyIndex(const Modbus_RegistersRegionType *p, uint1
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetFourteenRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFourteenRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 13U;
     (void) addr;
@@ -993,7 +995,7 @@ static uint16 MDBSgetFourteenRlyStatus(const Modbus_RegistersRegionType *p, uint
     }
     return rc;
 }
-static uint16 MDBSgetFourteenRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFourteenRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 13U;
@@ -1017,7 +1019,7 @@ static uint16 MDBSgetFourteenRlyDia(const Modbus_RegistersRegionType *p, uint16 
     }
     return rc;
 }
-static uint16 MDBSgetFifteenRlyIndex(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFifteenRlyIndex(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -1025,7 +1027,7 @@ static uint16 MDBSgetFifteenRlyIndex(const Modbus_RegistersRegionType *p, uint16
     rc = 31U;
     return rc;
 }
-static uint16 MDBSgetFifteenRlyStatus(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFifteenRlyStatus(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 sn = 14U;
     (void) addr;
@@ -1036,7 +1038,7 @@ static uint16 MDBSgetFifteenRlyStatus(const Modbus_RegistersRegionType *p, uint1
     }
     return rc;
 }
-static uint16 MDBSgetFifteenRlyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetFifteenRlyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc = 0U;
     uint8 diag;
     uint8 sn = 14U;
@@ -1060,14 +1062,14 @@ static uint16 MDBSgetFifteenRlyDia(const Modbus_RegistersRegionType *p, uint16 a
     }
     return rc;
 }
-static uint16 MDBSgetRelayNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetRelayNum(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) p;
     (void) addr;
     rc = RELAYM_FN_NUM;
     return rc;
 }
-static uint16 MDBSgetChargeCapHigh(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChargeCapHigh(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 cap;
     uint16 rc;
     (void) addr;
@@ -1076,7 +1078,7 @@ static uint16 MDBSgetChargeCapHigh(const Modbus_RegistersRegionType *p, uint16 a
     rc = (uint16)(cap >> 16);
     return rc;
 }
-static uint16 MDBSgetChargeCapLow(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChargeCapLow(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 cap;
     uint16 rc;
     (void) addr;
@@ -1085,7 +1087,7 @@ static uint16 MDBSgetChargeCapLow(const Modbus_RegistersRegionType *p, uint16 ad
     rc = (uint16)(cap);
     return rc;
 }
-static uint16 MDBSgetDischargeCapHigh(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDischargeCapHigh(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 cap;
     uint16 rc;
     (void) addr;
@@ -1094,7 +1096,7 @@ static uint16 MDBSgetDischargeCapHigh(const Modbus_RegistersRegionType *p, uint1
     rc = (uint16)(cap >> 16);
     return rc;
 }
-static uint16 MDBSgetDischargeCapLow(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDischargeCapLow(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 cap;
     uint16 rc;
     (void) addr;
@@ -1103,29 +1105,29 @@ static uint16 MDBSgetDischargeCapLow(const Modbus_RegistersRegionType *p, uint16
     rc = (uint16)cap;
     return rc;
 }
-static uint16 MDBSgetTempSensorNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTempSensorNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
     return (uint16)SYSTEM_TEMP_CELL_NUM;
 }
-static uint16 MDBSgetHeatSensorNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetHeatSensorNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
     return (uint16)SYSTEM_HEAT_TEMP_NUM;
 }
-static uint16 MDBSgetPoleTempNum(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetPoleTempNum(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) addr;
     (void)p;
     return (uint16)SYSTEM_POLE_TEMP_NUM;
 }
 /*2000-2399*/
-static uint16 MDBSget_CellDataM_GetVoltage(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GetVoltage(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     rc = CellDataM_GetVoltage(addr - p->startaddr);
     return rc;
 }
 /*3000,3199*/
-static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     rc = (sint16)CellDataM_GetTemperature(addr - p->startaddr);
     if ((rc >= 0) && (rc <= 175)) {
@@ -1135,7 +1137,7 @@ static uint16 MDBSget_CellDataM_GetTemperature(const Modbus_RegistersRegionType 
     return (uint16)rc;
 }
 /*3500,3549,*/
-static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     rc = (sint16)CellDataM_GetHeatTemperature(addr - p->startaddr);
     if ((rc >= 0) && (rc <= 175)) {
@@ -1145,7 +1147,7 @@ static uint16 MDBSget_CellDataM_GetHeatTemperature(const Modbus_RegistersRegionT
     return (uint16)rc;
 }
 /*3600,3649,*/
-static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     rc = (sint16)CellDataM_GetPoleTemperature(addr - p->startaddr);
     if ((rc >= 0) && (rc <= 175)) {
@@ -1154,7 +1156,7 @@ static uint16 MDBSget_CellDataM_GettPoleTemperature(const Modbus_RegistersRegion
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetalarm(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetalarm(const Modbus_ReadRegionType *p, uint16 addr) {
     uint8 i, j;
     uint16 trc, rc = 0U;
     for (i = 0U; i < 16U; i++) {
@@ -1167,14 +1169,14 @@ static uint16 MDBSgetalarm(const Modbus_RegistersRegionType *p, uint16 addr) {
     rc = (trc << 8U) | j;
     return rc;
 }
-static uint16 MDBSgetBatDeltVolt(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetBatDeltVolt(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Statistic_GetBcuDeltaVoltage();
     return rc;
 }
-static uint16 MDBSgetBatDeltTemp(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetBatDeltTemp(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
@@ -1182,77 +1184,77 @@ static uint16 MDBSgetBatDeltTemp(const Modbus_RegistersRegionType *p, uint16 add
     rc -= 50U;
     return rc;
 }
-static uint16 MDBSgetBatCap(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetBatCap(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     (void)ParameterM_EeepRead(PARAMETERM_EEEP_TOTAL_CAP_INDEX, &rc);
     return rc;
 }
-static uint16 MDBSgetBatLeftCap(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetBatLeftCap(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     (void)ParameterM_EeepRead(PARAMETERM_EEEP_LEFT_CAP_INDEX, &rc);
     return rc;
 }
-static uint16 MDBSgetPoInsu(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetPoInsu(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Insu_GetPositive();
     return rc;
 }
-static uint16 MDBSgetNeInsu(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetNeInsu(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Insu_GetNegative();
     return rc;
 }
-static uint16 MDBSgetTotalVoltage100mV(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTotalVoltage100mV(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Statistic_GetBcu100mvTotalVoltage();
     return rc;
 }
-static uint16 MDBSgetTotalCurrent100mA(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTotalCurrent100mA(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     (void) addr;
     (void)p;
     rc = (sint16)CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     return (uint16)rc;
 }
-static uint16 MDBSgetSOCWithResolution(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSOCWithResolution(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Soc_Get();
     return rc;
 }
-static uint16 MDBSgetSOH(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSOH(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = Soh_Get();
     return rc;
 }
-static uint16 MDBSgetHeatCur(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetHeatCur(const Modbus_ReadRegionType *p, uint16 addr) {
     sint16 rc;
     (void) addr;
     (void)p;
     rc = (sint16)(CurrentM_GetCurrent(CURRENTM_CHANNEL_HEATER));
     return (uint16)rc;
 }
-static uint16 MDBSgetLevelMax(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetLevelMax(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)Diagnosis_GetDiagLevelMax();
     return rc;
 }
-static uint16 MDBSgetChgTime(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgTime(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     (void) addr;
     (void)p;
@@ -1260,7 +1262,7 @@ static uint16 MDBSgetChgTime(const Modbus_RegistersRegionType *p, uint16 addr) {
     rc = DIVISION(rc , 60U);
     return (uint16)rc;
 }
-static uint16 MDBSgetYear(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetYear(const Modbus_ReadRegionType *p, uint16 addr) {
     Datetime_DatetimeType date;
     uint32 rc;
     (void) addr;
@@ -1275,7 +1277,7 @@ static uint16 MDBSgetYear(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetMonth(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetMonth(const Modbus_ReadRegionType *p, uint16 addr) {
     Datetime_DatetimeType date;
     uint32 rc;
     (void) addr;
@@ -1289,7 +1291,7 @@ static uint16 MDBSgetMonth(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetDay(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDay(const Modbus_ReadRegionType *p, uint16 addr) {
     Datetime_DatetimeType date;
     uint32 rc;
     (void) addr;
@@ -1303,7 +1305,7 @@ static uint16 MDBSgetDay(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetHour(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetHour(const Modbus_ReadRegionType *p, uint16 addr) {
     Datetime_DatetimeType date;
     uint32 rc;
     (void) addr;
@@ -1317,7 +1319,7 @@ static uint16 MDBSgetHour(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetMinute(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetMinute(const Modbus_ReadRegionType *p, uint16 addr) {
     Datetime_DatetimeType date;
     uint32 rc;
     (void) addr;
@@ -1331,7 +1333,7 @@ static uint16 MDBSgetMinute(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetSeconds(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSeconds(const Modbus_ReadRegionType *p, uint16 addr) {
     Datetime_DatetimeType date;
     uint32 rc;
     (void) addr;
@@ -1345,7 +1347,7 @@ static uint16 MDBSgetSeconds(const Modbus_RegistersRegionType *p, uint16 addr) {
     }
     return (uint16)rc;
 }
-static uint16 MDBSgetCmuDchgTimeHigh(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetCmuDchgTimeHigh(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     uint32 temp;
     (void) addr;
@@ -1356,7 +1358,7 @@ static uint16 MDBSgetCmuDchgTimeHigh(const Modbus_RegistersRegionType *p, uint16
 
     return (uint16)(rc >> 16);
 }
-static uint16 MDBSgetCmuDchgTimeLow(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetCmuDchgTimeLow(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     uint32 temp;
     (void) addr;
@@ -1366,7 +1368,7 @@ static uint16 MDBSgetCmuDchgTimeLow(const Modbus_RegistersRegionType *p, uint16 
     rc = temp / 360U;
     return (uint16)(rc);
 }
-static uint16 MDBSgetCmuChgTimeHigh(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetCmuChgTimeHigh(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     uint32 temp;
     (void) addr;
@@ -1377,7 +1379,7 @@ static uint16 MDBSgetCmuChgTimeHigh(const Modbus_RegistersRegionType *p, uint16 
 
     return (uint16)(rc >> 16);
 }
-static uint16 MDBSgetCmuChgTimeLow(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetCmuChgTimeLow(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     uint32 temp;
     (void) addr;
@@ -1388,7 +1390,7 @@ static uint16 MDBSgetCmuChgTimeLow(const Modbus_RegistersRegionType *p, uint16 a
 
     return (uint16)(rc);
 }
-static uint16 MDBSgetTotalTimeHigh(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTotalTimeHigh(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     uint32 temp;
     (void) addr;
@@ -1399,7 +1401,7 @@ static uint16 MDBSgetTotalTimeHigh(const Modbus_RegistersRegionType *p, uint16 a
 
     return (uint16)(rc >> 16);
 }
-static uint16 MDBSgetTotalTimeLow(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetTotalTimeLow(const Modbus_ReadRegionType *p, uint16 addr) {
     uint32 rc;
     uint32 temp;
     (void) addr;
@@ -1410,98 +1412,106 @@ static uint16 MDBSgetTotalTimeLow(const Modbus_RegistersRegionType *p, uint16 ad
 
     return (uint16)(rc);
 }
-static uint16 MDBSgetSocFullDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSocFullDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)SocDiagCalib_GetFullReason();
     return rc;
 }
-static uint16 MDBSgetSocEmptyDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetSocEmptyDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)SocDiagCalib_GetEmptyReason();
     return rc;
 }
-static uint16 MDBSgetDchgStartDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDchgStartDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)DischargeM_GetStartDiagFault();
     return rc;
 }
-static uint16 MDBSgetDchgFlagDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDchgFlagDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)DischargeM_GetDiagFaultFlag();
     return rc;
 }
-static uint16 MDBSgetDchgActionDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDchgActionDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)DischargeM_GetDiagFaultAction();
     return rc;
 }
-static uint16 MDBSgetDchgOtherDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetDchgOtherDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)DischargeM_GetOthersFault();
     return rc;
 }
-static uint16 MDBSgetChgStartDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgStartDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)ChargeM_GetStartDiagFault();
     return rc;
 }
-static uint16 MDBSgetChgFlagDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgFlagDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)ChargeM_GetDiagFaultFlag();
     return rc;
 }
-static uint16 MDBSgetChgActionDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgActionDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)ChargeM_GetDiagFaultAction();
     return rc;
 }
-static uint16 MDBSgetChgOtherDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetChgOtherDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)ChargeM_GetOthersFault();
     return rc;
 }
-static uint16 MDBSgetGBDia(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 MDBSgetGBDia(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
     (void)p;
     rc = (uint16)ChargeM_GetChargerGBReadyFault();
     return rc;
 }
-static uint16 test_modbus_x01(const Modbus_RegistersRegionType *p, uint16 addr) {
+static uint16 test_modbus_x01(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) p;
     (void) addr;
     return 0x1234U;
 }
-static const Modbus_RegistersRegionType x01registerTable[] = {
+
+static void modbus_ctrl_mos(const struct Modbus_WriteRegion *regs, uint16 addr, const uint8 *dat, uint16 len) {
+    (void) regs;
+    (void) addr;
+    (void) dat;
+    (void) len;
+}
+
+static const Modbus_ReadRegionType x01registerTable[] = {
     {2000U, 2399U, test_modbus_x01},
 };
-static const Modbus_RegistersRegionType x02registerTable[] = {
+static const Modbus_ReadRegionType x02registerTable[] = {
     {2000U, 2399U, MDBSgetalarm},
 };
-static const Modbus_RegistersRegionType x03registerTable[] = {
+static const Modbus_ReadRegionType x03registerTable[] = {
     {2000U, 2399U, test_modbus_x01},
 };
-// static uint16 MDBSgetTestValue(const Modbus_RegistersRegionType *p, uint16 addr) {
+// static uint16 MDBSgetTestValue(const Modbus_ReadRegionType *p, uint16 addr) {
 //     static uint16 rc = 4U;
 //     uint32 nowTime = OSTimeGet();
 //     static uint32 lastTime = 0U;
@@ -1526,7 +1536,7 @@ static const Modbus_RegistersRegionType x03registerTable[] = {
 //     }
 //     return rc;
 // }
-static const Modbus_RegistersRegionType x04registerTable[] = {
+static const Modbus_ReadRegionType x04registerTable[] = {
     {2000U, 2399U, MDBSget_CellDataM_GetVoltage},
     /*  {2400, 2999, get2},*/
     {3000U, 3199U, MDBSget_CellDataM_GetTemperature},
@@ -1652,13 +1662,20 @@ static const Modbus_RegistersRegionType x04registerTable[] = {
     {1853U, 1853U, MDBSgetChgOtherDia},
     {1854U, 1854U, MDBSgetGBDia},
 };
+
+static const Modbus_WriteRegionType x16registerTable[] = {
+    {3001U, 3001U, modbus_ctrl_mos},
+};
+
 const Modbus_Cfg ModbusCfg = {
     0x01U, //uint8  slaveaddr;
     0x00U, //uint8  broadcastaddr;
     0xa001U, //uint16 CRCpolynomial;
     0xffffU, //uint16 CRCInit;
+    100U, //uint16 FrameTimeout
     {x01registerTable, (uint8)ARRAY_SIZE(x01registerTable), 16U}, //Modbus_RegistersTableType Modbus_X01registerTable;
     {x02registerTable, (uint8)ARRAY_SIZE(x02registerTable), 16U}, //Modbus_RegistersTableType Modbus_X02registerTable;
     {x03registerTable, (uint8)ARRAY_SIZE(x03registerTable), 1U}, //Modbus_RegistersTableType odbus_X03registerTable;
     {x04registerTable, (uint8)ARRAY_SIZE(x04registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X04registerTable;
+    {x16registerTable, (uint8)ARRAY_SIZE(x16registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X16registerTable;
 };
