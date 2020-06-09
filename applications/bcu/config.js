@@ -267,8 +267,8 @@ module.exports = {
 
     HVProcess: {
         notes: [
-            {section:"chg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Heater", "SamePort", "SamePort_Heater", "DiffPort_Mutex_MultiStep_Heater"'},
-            {section:"dchg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Precharge", "SamePort", "SamePort_Precharge", "SamePort_Heater"'},
+            {section:"chg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Heater", "SamePort", "SamePort_Heater", "DiffPort_Mutex_MultiStep_Heater", "DiffPort_Blind"'},
+            {section:"dchg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Precharge", "SamePort", "SamePort_Precharge", "SamePort_Heater", "SamePort_Blind", "SamePort_Blind_Precharge", "DiffPort_Blind", "DiffPort_Blind_Precharge"'},
         ],
         chg: "DiffPort_Mutex",
         dchg: "DiffPort_Mutex",
