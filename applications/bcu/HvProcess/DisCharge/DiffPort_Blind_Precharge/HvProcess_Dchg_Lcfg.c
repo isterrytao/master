@@ -21,11 +21,11 @@ const HvProcess_StateInfoType HvProcess_DchgStartInfoConfig[] = {
 };
 
 const HvProcess_StateInfoType HvProcess_DchgPrechargeInfoConfig[] = {
-    {
-        HvProcess_DchgChargeConnectionCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgChargeConnectionAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
-    },
+    // {
+    //     HvProcess_DchgChargeConnectionCond, /**< Cond: 条件函数指针 */
+    //     HvProcess_DchgChargeConnectionAction, /**< Action: 动作函数指针 */
+    //     (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
+    // },
     {
         HvProcess_DchgFaultCond, /**< Cond: 条件函数指针 */
         HvProcess_DchgFaultAction, /**< Action: 动作函数指针 */
@@ -39,11 +39,11 @@ const HvProcess_StateInfoType HvProcess_DchgPrechargeInfoConfig[] = {
 };
 
 const HvProcess_StateInfoType HvProcess_DchgHvOnInfoConfig[] = {
-    {
-        HvProcess_DchgChargeConnectionCond, /**< Cond: 条件函数指针 */
-        HvProcess_DchgChargeConnectionAction, /**< Action: 动作函数指针 */
-        (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
-    },
+    // {
+    //     HvProcess_DchgChargeConnectionCond, /**< Cond: 条件函数指针 */
+    //     HvProcess_DchgChargeConnectionAction, /**< Action: 动作函数指针 */
+    //     (uint16)HVPROCESS_DCHG_RELAY_OFF_DELAY, /**< Next: 下一状态 */
+    // },
     {
         HvProcess_DchgFaultCond, /**< Cond: 条件函数指针 */
         HvProcess_DchgFaultAction, /**< Action: 动作函数指针 */
