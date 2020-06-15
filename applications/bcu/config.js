@@ -258,8 +258,8 @@ module.exports = {
 
     CommProtocol: {
         notes: [
-            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1"'},
-            {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2"'},
+            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1", "CAN2.0C"'},
+            {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2", "RuYi_Vcu"'},
         ],
         chg: "UDAN",
         vcu: "UDAN",
