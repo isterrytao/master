@@ -23,7 +23,7 @@
 #include "Soc.h"
 #include "Statistic.h"
 #include "Diagnosis.h"
-#include "HvProcess_Dchg.h"
+#include "HvProcess_Chg.h"
 
 #define CHARGERCOMMUSER_MESSAGES_E_PARAM_INVALID_PTR         0U
 
@@ -277,23 +277,26 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     WRITE_LT_UINT16(Buffer, index, Volt);
     ChargerComm_SetChargeCurrentMax(current);
     WRITE_LT_UINT16(Buffer, index, current);
+    //SOC
+    temp = Soc_Get();
+    temp = (uint16)SOC_TO_PERCENT(temp);
+    WRITE_LT_UINT8(Buffer, index, temp);
+    temp = 0U;
     // 充电允许
     if (flag == E_NOT_OK)
     {
         ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
+        temp |= (uint16)1U;
     }
     else
     {
         ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
     }
-    // 状态标志
-    temp = 0U;
-    flag = Diagnosis_StartDiagIsFinish();
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
+    if (ChargeM_BatteryChargeIsFinish())
     {
         temp |= (uint16)1U << 1;
     }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_LT) == CHARGEM_CHARGE_DISABLE)
+    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 2;
     }
@@ -301,32 +304,18 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 3;
     }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
+    WRITE_LT_UINT8(Buffer, index,  temp);
+    // 模式
+    if (HvProcess_ChargerIsHeatMode())
     {
-        temp |= (uint16)1U << 4;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHARGER_COMM) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 5;
-    }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && flag == TRUE)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        temp |= (uint16)1U << 6;
+        temp = 1U;
     }
     else
     {
+        temp = 0U;
     }
-    WRITE_BT_UINT8(Buffer, index, temp);
-    // 保留
-    WRITE_BT_UINT16(Buffer, index, 0U);
+    WRITE_LT_UINT8(Buffer, index, temp);
+    WRITE_LT_UINT8(Buffer, index, 0xFFU);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
