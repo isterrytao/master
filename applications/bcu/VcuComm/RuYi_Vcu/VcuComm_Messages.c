@@ -152,19 +152,19 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
         u16val |= (uint16)1U << 7;
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
         {
-            u16val |= (uint16)3U << 6;
+            u16val |= (uint16)3U << 5;
         }
         else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LT) >= DIAGNOSIS_LEVEL_SECOND)
         {
-            u16val |= (uint16)2U << 6;
+            u16val |= (uint16)2U << 5;
         }
         else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
         {
-            u16val |= (uint16)3U << 6;
+            u16val |= (uint16)3U << 5;
         }
         else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_SECOND)
         {
-            u16val |= (uint16)2U << 6;
+            u16val |= (uint16)2U << 5;
         }
         else
         {}
@@ -173,19 +173,19 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     {
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
         {
-            u16val |= (uint16)3U << 6;
+            u16val |= (uint16)3U << 5;
         }
         else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_SECOND)
         {
-            u16val |= (uint16)2U << 6;
+            u16val |= (uint16)2U << 5;
         }
         else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
         {
-            u16val |= (uint16)3U << 6;
+            u16val |= (uint16)3U << 5;
         }
         else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_SECOND)
         {
-            u16val |= (uint16)2U << 6;
+            u16val |= (uint16)2U << 5;
         }
         else
         {}

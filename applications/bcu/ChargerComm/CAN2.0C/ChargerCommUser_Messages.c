@@ -270,6 +270,7 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         current = 0;
         Volt = 0U;
+        flag = E_NOT_OK;
     }
     else
     {}
@@ -303,6 +304,18 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 3;
+    }
+    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HV) == CHARGEM_CHARGE_DISABLE)
+    {
+        temp |= (uint16)1U << 4;
+    }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HTV) == CHARGEM_CHARGE_DISABLE)
+    {
+        temp |= (uint16)1U << 4;
+    }
+    else
+    {
+
     }
     WRITE_LT_UINT8(Buffer, index,  temp);
     // 模式
