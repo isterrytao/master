@@ -305,6 +305,12 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 3;
     }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_DC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    {
+        temp |= (uint16)1U << 3;
+    }
+    else
+    {}
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HV) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 4;
@@ -318,17 +324,9 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
 
     }
     WRITE_LT_UINT8(Buffer, index,  temp);
-    // 模式
-    if (HvProcess_ChargerIsHeatMode())
-    {
-        temp = 1U;
-    }
-    else
-    {
-        temp = 0U;
-    }
-    WRITE_LT_UINT8(Buffer, index, temp);
-    WRITE_LT_UINT8(Buffer, index, 0xFFU);
+    // 保留
+    temp = 0U;
+    WRITE_LT_UINT16(Buffer, index, temp);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
