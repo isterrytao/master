@@ -13,7 +13,7 @@
 #include "ChargeM.h"
 #include "TemperatureM.h"
 #include "UserStrategy_Cfg.h"
-#ifdef RELAYM_FN_HEATER
+#if USERSTRATEGY_CURRENT_FLAG == TRUE
 #include "RelayM_Lcfg.h"
 #include "HvProcess_Chg.h"
 #endif
