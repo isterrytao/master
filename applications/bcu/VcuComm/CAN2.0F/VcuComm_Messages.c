@@ -192,7 +192,7 @@ void VcuComm_GetStatusMsg_0x202(uint8 *buf, uint16 *Length) {
     u16val = Statistic_GetBcuLtLogicIndex(0U) + 1U;
     WRITE_BT_UINT8(buf, index, (uint8)u16val);
     /**< 继电器状态 */
-    if (CHARGECONNECTM_IS_CONNECT()) {
+    if (!CHARGECONNECTM_IS_CONNECT()) {
 #ifdef RELAYM_FN_POSITIVE_MAIN
         relay = RELAYM_FN_POSITIVE_MAIN;
 #else
@@ -287,6 +287,7 @@ void VcuComm_GetStatusMsg_0x190(uint8 *buf, uint16 *Length) {
     static uint8 life = 0U;
     Current_CurrentType tableCurrent, destCurrent;
     Diagnosis_LevelType level, level1;
+    Diagnosis_LevelType maxLevel = Diagnosis_GetDiagLevelMax();
 
     u8val = 0U;
     /**< BMS ERROR1 */
@@ -471,17 +472,20 @@ void VcuComm_GetStatusMsg_0x190(uint8 *buf, uint16 *Length) {
     tableCurrent /= 2;
     if (tableCurrent == destCurrent) {
         u8val |= (uint8)((uint8)1U << 1);
-        u8val |= (uint8)((uint8)1U << 3);
     }
 
-    if (DischargeM_DischargeIsAllowed() == E_NOT_OK) {
-        u8val |= (uint8)((uint8)1U << 1);
-        u8val |= (uint8)((uint8)1U << 3);
-    }
+    // if (DischargeM_DischargeIsAllowed() == E_NOT_OK) {
+    //     u8val |= (uint8)((uint8)1U << 1);
+    //     u8val |= (uint8)((uint8)1U << 3);
+    // }
     // 反馈限流50%
     // 限速
+    if (maxLevel >= DIAGNOSIS_LEVEL_SECOND)
+    {
+        u8val |= (uint8)((uint8)1U << 3);
+    }
     // 警告
-    if (Diagnosis_GetDiagLevelMax() != DIAGNOSIS_LEVEL_NONE) {
+    if (maxLevel != DIAGNOSIS_LEVEL_NONE) {
         u8val |= (uint8)((uint8)1U << 4);
     }
     // 预留

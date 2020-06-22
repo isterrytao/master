@@ -47,7 +47,7 @@ const VcuComm_SendIPduCfgType VcuComm_IPduSendConfigInfo[PDUR_CFG_VCUCOMM_TX_PDU
     {
         (uint16)PDUR_VCUCOMM_TX_PDUID_00000203, /**< IPdu */
         8U, /**< Length */
-        100U, /**< Cycle */
+        1000U, /**< Cycle */
         NULL, /**< CondFunc */
         VcuComm_GetStatusMsg_0x203, /**< Func */
     },
