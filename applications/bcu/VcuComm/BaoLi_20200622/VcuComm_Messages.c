@@ -191,6 +191,10 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
     else
     {
         temp = (uint16)BatteryInfo_BaseConfigInfo.NominalACCurrent;
+        if (temp == 0U)
+        {
+            temp = 3000U;
+        }
     }
     // temp = (uint16)PowerM_GetCurrent(POWERM_CUR_DCHARGE_FEEDBACK);
     if (ChargeM_ChargeIsAllowed() == E_OK)
