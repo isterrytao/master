@@ -100,30 +100,39 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) == DIAGNOSIS_LEVEL_SECOND &&
             alarmNum == 1U)
         {
+        }
+        else
+        {
             temp |= (uint16)1U << 3;
         }
     }
     else if (level == DIAGNOSIS_LEVEL_THIRD)
     {
-        alarmNum = Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_SECOND);
-        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) == DIAGNOSIS_LEVEL_SECOND &&
+        alarmNum = Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_THIRD);
+        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) == DIAGNOSIS_LEVEL_THIRD &&
             alarmNum == 1U)
+        {
+        }
+        else
         {
             temp |= (uint16)1U << 3;
         }
     }
     else if (level == DIAGNOSIS_LEVEL_FOURTH)
     {
-        alarmNum = Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_SECOND);
+        alarmNum = Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_FOURTH);
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) == DIAGNOSIS_LEVEL_FOURTH &&
             alarmNum == 1U)
+        {
+        }
+        else
         {
             temp |= (uint16)1U << 3;
         }
     }
     else
     {}
-    if (level == 0U)
+    if (level <= DIAGNOSIS_LEVEL_FIRST)
     {
         temp |= (uint16)1U << 4;
     }

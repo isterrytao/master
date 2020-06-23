@@ -361,6 +361,10 @@ void VcuComm_GetStatusMsg_0x190(uint8 *buf, uint16 *Length) {
     u8val |= (uint8)((uint8)level << 0);
     // 快充电流过大故障
     level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_AC_CHG_OC);
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC) >= level)
+    {
+        level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC);
+    }
     level = VcuComm_Bms2VcuSendLevel(level);
     u8val |= (uint8)((uint8)level << 2);
     // 回馈电流过大故障
