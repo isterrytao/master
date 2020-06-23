@@ -97,6 +97,14 @@ var VcuMsg = {
         tx: [0x2F0],
         rx: [0x12345678],
     },
+    "CAN2.0F": {
+        tx: [0x200, 0x201, 0x202, 0x203, 0x190, 0x5F2],
+        rx: [0x6F2],
+    },
+    BaoLi_20200622: {
+        tx: [0x241],
+        rx: [0x12345678],
+    },
 };
 
 if (!ChargerMsg.hasOwnProperty(cfg.chg)) {
