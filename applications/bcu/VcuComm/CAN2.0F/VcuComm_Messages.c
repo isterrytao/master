@@ -363,7 +363,7 @@ void VcuComm_GetStatusMsg_0x190(uint8 *buf, uint16 *Length) {
     level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_AC_CHG_OC);
     if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC) >= level)
     {
-        level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC);
+        level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC);
     }
     level = VcuComm_Bms2VcuSendLevel(level);
     u8val |= (uint8)((uint8)level << 2);

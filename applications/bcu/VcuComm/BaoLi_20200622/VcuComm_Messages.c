@@ -104,6 +104,7 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         else
         {
             temp |= (uint16)1U << 3;
+            temp |= (uint16)1U << 4;
         }
     }
     else if (level == DIAGNOSIS_LEVEL_THIRD)
@@ -112,10 +113,16 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) == DIAGNOSIS_LEVEL_THIRD &&
             alarmNum == 1U)
         {
+            if (Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_SECOND) != 0U)
+            {
+                temp |= (uint16)1U << 3;
+                temp |= (uint16)1U << 4;
+            }
         }
         else
         {
             temp |= (uint16)1U << 3;
+            temp |= (uint16)1U << 4;
         }
     }
     else if (level == DIAGNOSIS_LEVEL_FOURTH)
@@ -124,37 +131,75 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) == DIAGNOSIS_LEVEL_FOURTH &&
             alarmNum == 1U)
         {
+            if (Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_THIRD) != 0U)
+            {
+                temp |= (uint16)1U << 3;
+                temp |= (uint16)1U << 4;
+            }
+            else if (Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_SECOND) != 0U)
+            {
+                temp |= (uint16)1U << 3;
+                temp |= (uint16)1U << 4;
+            }
+            else
+            {}
         }
         else
         {
             temp |= (uint16)1U << 3;
+            temp |= (uint16)1U << 4;
         }
     }
     else
     {}
-    if (level <= DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= (uint16)1U << 4;
-    }
+    // if (level <= DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= (uint16)1U << 4;
+    // }
     WRITE_LT_UINT8(buf, index, temp);
     temp = Soc_Get();
     temp = (uint16)SOC_TO_PERCENT(temp);
     WRITE_LT_UINT8(buf, index, temp);
-    temp = (uint16)PowerM_GetCurrent(POWERM_CUR_DCHARGE_CONTINUE);
-    if (level >= DIAGNOSIS_LEVEL_SECOND)
+    // temp = (uint16)PowerM_GetCurrent(POWERM_CUR_DCHARGE_CONTINUE);
+    temp = (uint16)BatteryInfo_BaseConfigInfo.NominalDischargeCurrent;
+    if (DischargeM_DischargeIsAllowed() == E_OK)
     {
-        if (temp > 1500U)
+        if (level >= DIAGNOSIS_LEVEL_SECOND)
         {
-            temp = 1500U;
+            if (temp > 1500U)
+            {
+                temp = 1500U;
+            }
+        }
+    }
+    else
+    {
+        if (level >= DIAGNOSIS_LEVEL_SECOND)
+        {
+            if (temp > 1500U)
+            {
+                temp = 1500U;
+            }
         }
     }
     WRITE_BT_UINT16(buf, index, temp);
-    temp = (uint16)PowerM_GetCurrent(POWERM_CUR_DCHARGE_FEEDBACK);
-    if (level >= DIAGNOSIS_LEVEL_SECOND)
+    if (ChargeConnectM_GetConnectType() == CHARGE_TYPE_DC)
     {
-        if (temp > 2000U)
+        temp = (uint16)BatteryInfo_BaseConfigInfo.NominalDCCurrent;
+    }
+    else
+    {
+        temp = (uint16)BatteryInfo_BaseConfigInfo.NominalACCurrent;
+    }
+    // temp = (uint16)PowerM_GetCurrent(POWERM_CUR_DCHARGE_FEEDBACK);
+    if (ChargeM_ChargeIsAllowed())
+    {
+        if (level >= DIAGNOSIS_LEVEL_SECOND)
         {
-            temp = 2000U;
+            if (temp > 2000U)
+            {
+                temp = 2000U;
+            }
         }
     }
     WRITE_BT_UINT16(buf, index, temp);
