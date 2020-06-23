@@ -476,7 +476,7 @@ void VcuComm_GetStatusMsg_0x190(uint8 *buf, uint16 *Length) {
     tableCurrent = PowerM_GetCurrentWithoutDiag(POWERM_CUR_DCHARGE_CONTINUE);
     destCurrent = PowerM_GetDestCurrent(POWERM_CUR_DCHARGE_CONTINUE);
     tableCurrent /= 2;
-    if (tableCurrent == destCurrent) {
+    if (tableCurrent == destCurrent && tableCurrent != 0) {
         u8val |= (uint8)((uint8)1U << 1);
     }
 
