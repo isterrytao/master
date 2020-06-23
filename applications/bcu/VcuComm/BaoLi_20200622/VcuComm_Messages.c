@@ -68,13 +68,14 @@ void VcuComm_MessageInit(Async_LooperType *looper)
 }
 
 void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
-    uint16 temp = 0U;
+    uint16 temp;
     uint16 index = 0U;
     boolean isConn = CHARGECONNECTM_IS_CONNECT();
     uint8 level = Diagnosis_GetDiagLevelMax();
     uint16 alarmNum;
     sint16 current;
 
+    temp = 0x10U;
     if (isConn)
     {
         temp |= (uint16)1U << 0;
@@ -104,7 +105,8 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         else
         {
             temp |= (uint16)1U << 3;
-            temp |= (uint16)1U << 4;
+            temp &= 0xEFU;
+            // temp |= (uint16)1U << 4;
         }
     }
     else if (level == DIAGNOSIS_LEVEL_THIRD)
@@ -116,13 +118,15 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
             if (Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_SECOND) != 0U)
             {
                 temp |= (uint16)1U << 3;
-                temp |= (uint16)1U << 4;
+                temp &= 0xEFU;
+                // temp |= (uint16)1U << 4;
             }
         }
         else
         {
             temp |= (uint16)1U << 3;
-            temp |= (uint16)1U << 4;
+            temp &= 0xEFU;
+            // temp |= (uint16)1U << 4;
         }
     }
     else if (level == DIAGNOSIS_LEVEL_FOURTH)
@@ -134,12 +138,14 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
             if (Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_THIRD) != 0U)
             {
                 temp |= (uint16)1U << 3;
-                temp |= (uint16)1U << 4;
+                temp &= 0xEFU;
+                // temp |= (uint16)1U << 4;
             }
             else if (Diagnosis_GetAlarmNumWithLevel(DIAGNOSIS_LEVEL_SECOND) != 0U)
             {
                 temp |= (uint16)1U << 3;
-                temp |= (uint16)1U << 4;
+                temp &= 0xEFU;
+                // temp |= (uint16)1U << 4;
             }
             else
             {}
@@ -147,7 +153,8 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         else
         {
             temp |= (uint16)1U << 3;
-            temp |= (uint16)1U << 4;
+            temp &= 0xEFU;
+            // temp |= (uint16)1U << 4;
         }
     }
     else
