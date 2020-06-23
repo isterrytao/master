@@ -245,11 +245,13 @@ void VcuComm_GetStatusMsg_0x203(uint8 *buf, uint16 *Length) {
     static uint8 life = 0U;
 
     /**< 电池容量规格:和售前确认使用额定容量 */
-    if (ParameterM_EeepRead(PARAMETERM_EEEP_TOTAL_CAP_INDEX, &u16val) == E_OK){
-        u16val = u16val / 10U;
-    } else {
-        u16val = 0U;
-    }
+    u16val = BatteryInfo_BaseConfigInfo.DisplayCap;
+    u16val = u16val / 10U;
+    // if (ParameterM_EeepRead(PARAMETERM_EEEP_TOTAL_CAP_INDEX, &u16val) == E_OK){
+    //     u16val = u16val / 10U;
+    // } else {
+    //     u16val = 0U;
+    // }
     WRITE_BT_UINT16(buf, index, u16val);
 
     cumuChgTime = Statistic_GetCumuChgTime();
