@@ -181,13 +181,7 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
     }
     else
     {
-        if (level >= DIAGNOSIS_LEVEL_SECOND)
-        {
-            if (temp > 1500U)
-            {
-                temp = 1500U;
-            }
-        }
+        temp = 0U;
     }
     WRITE_BT_UINT16(buf, index, temp);
     if (ChargeConnectM_GetConnectType() == CHARGE_TYPE_DC)
@@ -199,7 +193,7 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
         temp = (uint16)BatteryInfo_BaseConfigInfo.NominalACCurrent;
     }
     // temp = (uint16)PowerM_GetCurrent(POWERM_CUR_DCHARGE_FEEDBACK);
-    if (ChargeM_ChargeIsAllowed())
+    if (ChargeM_ChargeIsAllowed() == E_OK)
     {
         if (level >= DIAGNOSIS_LEVEL_SECOND)
         {
@@ -208,6 +202,10 @@ void VcuComm_GetStatusMsg_0x241(uint8 *buf, uint16 *Length) {
                 temp = 2000U;
             }
         }
+    }
+    else
+    {
+        temp = 0U;
     }
     WRITE_BT_UINT16(buf, index, temp);
     current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
