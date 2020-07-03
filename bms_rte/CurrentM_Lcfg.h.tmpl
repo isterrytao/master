@@ -13,9 +13,12 @@ var hallparams = {
     FS700E2T: {name:"飞轩FS700E2T,700A量程", offset: -2500,  mul: 7, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-700A, 700A]" },
     FS300BT: {name:"飞轩FS300BT,300A量程", offset: -2500,  mul: 3, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-300A, 300A]" },
     FS600BT: {name:"飞轩FS600BT,600A量程", offset: -2500,  mul: 6, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-600A, 600A]" },
+    FS1200_EK2T: {name:"飞轩FS1200-EK2T,1200A量程", offset: -2500,  mul: 12, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-1200A, 1200A]" },
+    FS2000_EK2T: {name:"飞轩FS2000-EK2T,2000A量程", offset: -2500,  mul: 20, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-2000A, 2000A]" },
     WHK30_350DHAB5S2L_1: {name:"启东双赢30/350A大量程", offset: -2500,  mul: 7, div: 4, voltMin: 50, voltMax: 5200, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-350A, 350A]" },
     WHK30_350DHAB5S2L_2: {name:"启东双赢30/350A小量程", offset: -2500,  mul: 3, div: 20, voltMin: 50, voltMax: 5200, supplyVolAdj: true, lowerHallMaxValue: 30, comments: "[0.5V, 4.5V] <=> [-30A, 30A]" },
     EHMWX911C500: {name:"松下EHMWX911C500,500A量程", offset: -2500,  mul: 5, div: 2, voltMin: 240, voltMax: 4800, supplyVolAdj: false, comments: "[0.5V, 4.5V] <=> [-500A, 500A]" },
+    HAH1BVW_S01: {name:"LEM 100A单量程", offset: -2500,  mul: 1, div: 2, voltMin: 260, voltMax: 4740, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-100A, 100A]" },
     HAH1BVW_S02: {name:"LEM 200A单量程", offset: -2500,  mul: 2, div: 2, voltMin: 260, voltMax: 4740, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-200A, 200A]" },
     HAH1BVW_S03: {name:"LEM 300A单量程", offset: -2500,  mul: 3, div: 2, voltMin: 260, voltMax: 4740, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-300A, 300A]" },
     HAH1BVW_S12: {name:"LEM 1200A单量程", offset: -2500,  mul: 6, div: 1, voltMin: 260, voltMax: 4740, supplyVolAdj: true, comments: "[0.5V, 4.5V] <=> [-1200A, 1200A]" },
@@ -45,6 +48,7 @@ var shuntparams = {
     FL230A75mV: {name:"福来2型,30A,75mV", maxVol: 100000, resistor: 2500, tempDrift: 0},
     FL250A75mV: {name:"福来2型,50A,75mV", maxVol: 100000, resistor: 1500, tempDrift: 0},
     FL2100A75mV: {name:"福来2型,100A,75mV", maxVol: 100000, resistor: 750, tempDrift: 0},
+    FL2150A75mV: {name:"福来2型,150A,75mV", maxVol: 100000, resistor: 500, tempDrift: 0},
     FL2200A75mV: {name:"福来2型,200A,75mV", maxVol: 100000, resistor: 375, tempDrift: 0},
     FL2250A75mV: {name:"福来2型,250A,75mV", maxVol: 100000, resistor: 300, tempDrift: 0},
     FL2300A75mV: {name:"福来2型,300A,75mV", maxVol: 100000, resistor: 250, tempDrift: 0},
@@ -56,6 +60,7 @@ var shuntparams = {
     FL2800A75mV: {name:"福来2型,800A,75mV", maxVol: 100000, resistor: 93.75, tempDrift: 0},
     FL21000A75mV: {name:"福来2型,1000A,75mV", maxVol: 100000, resistor: 75, tempDrift: 0},
     FL21200A75mV: {name:"福来2型,1200A,75mV", maxVol: 100000, resistor: 62.5, tempDrift: 0},
+    FL22000A75mV: {name:"福来2型,2000A,75mV", maxVol: 100000, resistor: 37.5, tempDrift: 0},
 };
 
 if (!hallparams.hasOwnProperty(cfg.hall1.model)) {
