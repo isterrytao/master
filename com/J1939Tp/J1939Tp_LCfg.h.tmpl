@@ -42,25 +42,44 @@ var rxpduRelations = [];
 cfg.forEach(v => {
     v.pgs.forEach(pg => {
         if (pg.type == "tx") {
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
-            txsduids.push(v.name + "_PG_" + pgname);
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }txsduids.push(v.name + "_PG_" + pgname);
             rxsduids.push("None");
         }
 
         if (pg.type == "bam_tx") {
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             txsduids.push(v.name+"_PG_BAM_" + pgname);
             rxsduids.push("None");
         }
 
         if (pg.type == "rx") {
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             rxsduids.push(v.name + "_PG_" + pgname);
             txsduids.push("None");
         }
 
         if (pg.type == "bam_rx") {
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             rxsduids.push(v.name+"_PG_BAM_" + pgname);
             txsduids.push("None");
         }
@@ -220,7 +239,11 @@ for (var v of cfg) {
     v.pgs.forEach(function (pg, index) {
         if (pg.type == "rx") {
             let id;
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             if (((pg.pgn >> 8) & 0xFF) < 240) {
                 id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (v.self << 8) + v.remote
             } else {
@@ -238,7 +261,12 @@ for (var v of cfg) {
 
         if (pg.type == "bam_rx") {
             let id;
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             if (((pg.pgn >> 8) & 0xFF) < 240) {
                 id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (0xFF << 8) + v.remote
             } else {
@@ -270,7 +298,12 @@ for (var v of cfg) {
     v.pgs.forEach((pg, index) => {
         if (pg.type == "tx") {
             let id;
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             if (((pg.pgn >> 8) & 0xFF) < 240) {
                 id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (v.remote << 8) + v.self
             } else {
@@ -288,7 +321,12 @@ for (var v of cfg) {
 
         if (pg.type == "bam_tx") {
             let id;
-            var pgname =  ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             if (((pg.pgn >> 8) & 0xFF) < 240) {
                 id = 0x80000000 + (pg.pri << 26) + ((pg.pgn & 0xFF00) << 8) + (0xFF << 8) + v.self
             } else {
@@ -319,13 +357,23 @@ for (var v of cfg) {
 
     thispgs.forEach((pg, index) => {
         if (pg.type == "tx" || pg.type == "rx") {
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             pg.nsdu = "J1939TP_NSDU_" + pg.type.toUpperCase() + "_" + pg.name.toUpperCase() + "_PG_" + pgname;
         } else if (pg.type == "stx" || pg.type == "srx") {
             var idname = ("00000000" + pg.id.toString(16)).slice(-8).toUpperCase();
             pg.nsdu = ("J1939TP_NSDU_" + pg.type.slice(-2) + "_" + pg.name + "_ID_" + idname).toUpperCase();
         } else if  (pg.type == "bam_tx" || pg.type == "bam_rx") {
-            var pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            var pgname;
+            if (pg.pgn > 0xFFFF) {
+                pgname = ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+            } else {
+                pgname = ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+            }
             pg.nsdu = "J1939TP_NSDU_" + pg.type.slice(-2).toUpperCase() + "_" + pg.name.toUpperCase() + "_PG_BAM_" + pgname;
         }
     });
@@ -337,11 +385,19 @@ pgs.forEach(pg => {
     var x;
 
     if (pg.type == "tx" || pg.type == "rx") {
-        x = "CANIF_" + pg.type + "_J1939TP_NPDU_" + pg.name + "_PG_" + ("0000" + pg.pgn.toString(16)).slice(-4);
+        if (pg.pgn > 0xFFFF) {
+            x="CANIF_" + pg.type + "_J1939TP_NPDU_"+ pg.name +"_PG_" + ("000000" + pg.pgn.toString(16)).slice(-6);
+        } else {
+            x="CANIF_" + pg.type + "_J1939TP_NPDU_"+ pg.name +"_PG_" + ("0000" + pg.pgn.toString(16)).slice(-4);
+        }
     } else if (pg.type == "stx" || pg.type == "srx") {
         x = "CANIF_" + pg.type.slice(-2) + "_J1939TP_NPDU_" + pg.name + "_ID_" + ("00000000" + pg.id.toString(16)).slice(-8);
     } else if  (pg.type == "bam_tx" || pg.type == "bam_rx") {
-        x= "CANIF_" + pg.type.slice(-2) + "_J1939TP_NPDU_" + pg.name.toUpperCase() +"_PG_BAM_" + ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+        if (pg.pgn > 0xFFFF) {
+            x= "CANIF_" + pg.type.slice(-2) + "_J1939TP_NPDU_" + pg.name.toUpperCase() +"_PG_BAM_" + ("000000" + pg.pgn.toString(16)).slice(-6).toUpperCase();
+        } else {
+            x= "CANIF_" + pg.type.slice(-2) + "_J1939TP_NPDU_" + pg.name.toUpperCase() +"_PG_BAM_" + ("0000" + pg.pgn.toString(16)).slice(-4).toUpperCase();
+        }
     }
     pg.npdu = x.toUpperCase();
 });
