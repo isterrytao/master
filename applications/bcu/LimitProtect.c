@@ -46,62 +46,50 @@ static Async_EvnetCbkReturnType LimitProtect_Poll(Async_EventType *event, uint8 
 
 static void limitProtectCheck(void)
 {
-    uint8 i, para_is_valid = FALSE;
+    uint8 i, para_is_valid;
     boolean is_on = FALSE;
     App_VoltageType volt;
     App_TemperatureType temperature;
     static uint32 lastTick = 0UL;
     uint32 nowTick = OSTimeGet();
 
-    for (i = 0U; i < RELAYM_FN_NUM; ++i)
+    volt = Statistic_GetBcuHv(0U);
+    para_is_valid = CellDataM_VoltageIsValid(BatteryInfo_BaseConfigInfo.HighVoltLimit);
+    if (CellDataM_VoltageIsValid(volt) && para_is_valid && volt >= BatteryInfo_BaseConfigInfo.HighVoltLimit)
     {
-        if (HLSS_GetForce(RelayM_GetDriveHSSChannel(i)) == HLSS_FORCE_ON)
-        {
-            is_on = TRUE;
-            break;
-        }
+        is_on = TRUE;
     }
-    if (is_on)
+    else
     {
-        is_on = FALSE;
-        volt = Statistic_GetBcuHv(0U);
-        para_is_valid = CellDataM_VoltageIsValid(BatteryInfo_BaseConfigInfo.HighVoltLimit);
-        if (CellDataM_VoltageIsValid(volt) && para_is_valid && volt >= BatteryInfo_BaseConfigInfo.HighVoltLimit)
+        volt = Statistic_GetBcuLv(0U);
+        para_is_valid = CellDataM_VoltageIsValid(BatteryInfo_BaseConfigInfo.LowVoltLimit);
+        if (CellDataM_VoltageIsValid(volt) && para_is_valid && volt <= BatteryInfo_BaseConfigInfo.LowVoltLimit)
         {
             is_on = TRUE;
         }
         else
         {
-            volt = Statistic_GetBcuLv(0U);
-            para_is_valid = CellDataM_VoltageIsValid(BatteryInfo_BaseConfigInfo.LowVoltLimit);
-            if (CellDataM_VoltageIsValid(volt) && para_is_valid && volt <= BatteryInfo_BaseConfigInfo.LowVoltLimit)
+            temperature = Statistic_GetBcuHt(0U);
+            para_is_valid = CellDataM_TemperatureIsValid((uint16)BatteryInfo_BaseConfigInfo.HighTempLimit);
+            if (CellDataM_TemperatureIsValid((uint16)temperature) && para_is_valid && temperature >= (uint8)BatteryInfo_BaseConfigInfo.HighTempLimit)
             {
                 is_on = TRUE;
             }
-            else
-            {
-                temperature = Statistic_GetBcuHt(0U);
-                para_is_valid = CellDataM_TemperatureIsValid((uint16)BatteryInfo_BaseConfigInfo.HighTempLimit);
-                if (CellDataM_TemperatureIsValid((uint16)temperature) && para_is_valid && temperature >= (uint8)BatteryInfo_BaseConfigInfo.HighTempLimit)
-                {
-                    is_on = TRUE;
-                }
-            }
-        }
-        if (is_on)
-        {
-            if (MS_GET_INTERNAL(lastTick, nowTick) >= BatteryInfo_BaseConfigInfo.LimitProtectDelay)
-            {
-                LimitProtect_innerData.is_protect = TRUE;
-                for (i = 0U; i < RELAYM_FN_NUM; ++i)
-                {
-                    HLSS_Force(RelayM_GetDriveHSSChannel(i), HLSS_FORCE_OFF);
-                }
-                lastTick = nowTick;
-            }
         }
     }
-    if (!is_on)
+    if (is_on)
+    {
+        if (MS_GET_INTERNAL(lastTick, nowTick) >= BatteryInfo_BaseConfigInfo.LimitProtectDelay)
+        {
+            LimitProtect_innerData.is_protect = TRUE;
+            for (i = 0U; i < RELAYM_FN_NUM; ++i)
+            {
+                HLSS_Force(RelayM_GetDriveHSSChannel(i), HLSS_FORCE_OFF);
+            }
+            lastTick = nowTick;
+        }
+    }
+    else
     {
         lastTick = nowTick;
     }
