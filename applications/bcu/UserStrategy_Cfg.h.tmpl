@@ -51,6 +51,11 @@ var mdata = {
     chg_user_parameters_chg_end_time: cfg.chg_user_parameters.chg_end_time,
     chg_user_parameters_chg_stop_current: cfg.chg_user_parameters.chg_stop_current,
     chg_user_parameters_chg_stop_volt: cfg.chg_user_parameters.chg_stop_volt,
+    cur_integration_en: cfg.cur_integration.en,
+    cur_integration_current: cfg.cur_integration.current,
+    lv_power_down_en: cfg.lv_power_down.en,
+    lv_power_down_lv: cfg.lv_power_down.lv,
+    lv_power_down_time: cfg.lv_power_down.time,
 };
 
 
@@ -203,5 +208,24 @@ globalInfo.setReturn({processedcfg:processedcfg});
 
 <%}%>
 
+/**
+ * \brief 用户自定义电流积分策略
+ */
 
+ #define USERSTRATEGY_CUR_INTEGRATION_EN             <%- mdata.cur_integration_en %>
+
+<% if (mdata.cur_integration_en == 'STD_ON') {%>
+#define USERSTARTEGY_CUR_INTEGRATION_CURRENT            <%- (mdata.cur_integration_current*10)%> // 电流大小 0.1A
+<%}%>
+
+/**
+ * \brief 用户自定义单体电压低休眠策略
+ */
+
+ #define USERSTRATEGY_LV_POWER_DOWN_EN                <%- mdata.lv_power_down_en %>
+
+ <% if (mdata.lv_power_down_en == 'STD_ON') {%>
+#define USERSTRATEGY_LV_POWER_DOWN_VOLT                <%- mdata.lv_power_down_lv%>U // 低压休眠策略起始电压 mv
+#define USERSTRATEGY_LV_POWER_DOWN_TIME                 (<%- mdata.lv_power_down_time%>UL) // 低压休眠策略低压持续时间
+<%}%>
 #endif

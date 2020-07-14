@@ -304,47 +304,13 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
         ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
-    // 状态标志
-    temp = 0U;
-    flag = Diagnosis_StartDiagIsFinish();
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 1;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_LT) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 2;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 3;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 4;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHARGER_COMM) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 5;
-    }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && flag == TRUE)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else
-    {
-    }
+    // Soc
+    temp = Soc_Get();
+    temp = (uint16)SOC_TO_UINT8(temp);
     WRITE_BT_UINT8(Buffer, index,  temp);
     // 保留
-    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    temp = 0xFFFFU;
+    WRITE_BT_UINT16(Buffer, index, temp);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
@@ -354,7 +320,7 @@ cleanup:
 
 static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
 {
-    uint16 flag;
+    uint16 temp;
     uint16 index = 0U;
 
     ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
@@ -367,78 +333,18 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     WRITE_BT_UINT16(Buffer, index, 0U);
     // 充电允许
     WRITE_BT_UINT8(Buffer, index,  1U);
-    // 状态标志
-    flag = 0U;
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 1;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_LT) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 2;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 3;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 4;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHARGER_COMM) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 5;
-    }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && ChargerCommUser_MsgInnerData.isNeedToSendStop == TRUE)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else
-    {
-    }
-    WRITE_BT_UINT8(Buffer, index,  flag);
+    // Soc
+    temp = Soc_Get();
+    temp = (uint16)SOC_TO_UINT8(temp);
+    WRITE_BT_UINT8(Buffer, index,  temp);
     // 保留
-    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    temp = 0xFFFFU;
+    WRITE_BT_UINT16(Buffer, index, temp);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
 #endif
     return;
-}
-
-void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length)
-{
-    uint16 index = 0U;
-    uint8 soc;
-    uint16 temp;
-
-    // 单体最高
-    temp = Statistic_GetBcuHv(0U);
-    WRITE_BT_UINT16(Buffer, index, temp);
-    // 单体最低
-    temp = Statistic_GetBcuLv(0U);
-    WRITE_BT_UINT16(Buffer, index, temp);
-    // SOC
-    temp = Soc_Get();
-    soc = (uint8)SOC_TO_UINT8(temp);
-    WRITE_BT_UINT8(Buffer, index, soc);
-    // 最高温度
-    temp = Statistic_GetBcuHt(0U);
-    temp = TEMP_TO_40_OFFSET(temp);
-    WRITE_BT_UINT8(Buffer, index, temp);
-    // 电池组电压
-    temp = Statistic_GetBcu100mvTotalVoltage();
-    WRITE_BT_UINT16(Buffer, index, temp);
-
-    *Length = index;
 }
 
 void ChargerCommUser_RecTCTimeoutCbk(void)

@@ -57,6 +57,9 @@ Current_CurrentType Soc_CurrentHook(Current_CurrentType current)
     }
 #endif
 #endif
+#if USERSTRATEGY_CUR_INTEGRATION_EN == STD_ON
+    current -= USERSTARTEGY_CUR_INTEGRATION_CURRENT;
+#endif
     return current;
 }
 
