@@ -43,6 +43,7 @@ typedef struct{
     Async_EventType event; /**< 异步事件 */
     uint32 powerOffTick; /**< 下电计时 */
     boolean currentIsAllowToPowerOff; /**< 电流是否允许下电 */
+    boolean isBuzzer;
 }UserStrategy_InnerDataType;
 
 /**
@@ -205,5 +206,7 @@ boolean UserStrategy_ChgHvProcessRelayIsNormal(void);
 boolean UserStrategy_DchgIsReady(void);
 
 void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event);
+
+boolean UserStrategy_GetBuzzerSta(void);
 
 #endif

@@ -1087,6 +1087,7 @@ static void UserStrategy_BuzzerControl(void)
                 is_on = FALSE;
                 lastTime = nowTime;
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+                UserStrategy_innerData.isBuzzer = FALSE;
             }
         }
         else
@@ -1096,6 +1097,7 @@ static void UserStrategy_BuzzerControl(void)
                 is_on = TRUE;
                 lastTime = nowTime;
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_ON);
+                UserStrategy_innerData.isBuzzer = TRUE;
             }
         }
         if (AlarmLevel == 1U)
@@ -1123,6 +1125,7 @@ static void UserStrategy_BuzzerControl(void)
         onTime = 0U;
         offTime = 0U;
         (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+        UserStrategy_innerData.isBuzzer = FALSE;
     }
 #endif
 }
@@ -1672,3 +1675,8 @@ static void UserStrategy_LvPowerDown(void)
     }
 }
 #endif
+
+boolean UserStrategy_GetBuzzerSta(void)
+{
+    return UserStrategy_innerData.isBuzzer;
+}

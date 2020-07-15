@@ -162,8 +162,14 @@ void VcuComm_GetStatusMsg_0x1E4(uint8 *buf, uint16 *Length) {
     val8 = 0U;
     if (UserStrategy_DchgIsReady())
     {
-        val8 = 1U;
+        val8 |= (uint8)((uint8)1U << 0);
     }
+    // 主从模式
+#if SYSTEM_BMU_NUM > 1U
+    {
+        val8 |= (uint8)((uint8)1U << 2);
+    }
+#endif
     WRITE_BT_UINT8(buf, index, val8);
     *Length = index;
 }
@@ -981,16 +987,33 @@ void VcuComm_GetStatusMsg_0x208(uint8 *buf, uint16 *Length) {
     uint16 index = 0U;
     Current_CurrentType current;
 
-    // 加热电流(采集)
+    // 加热电流(采集无偏移)
     current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_HEATER);
     if (!CurrentM_IsValidCurrent(current)) {
         current = 0;
     }
     WRITE_BT_UINT16(buf, index, (uint16)current);
+    // 加热电流(采集有偏移 -1000)
+    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_HEATER);
+    if (!CurrentM_IsValidCurrent(current)) {
+        current = 0;
+    }
+    else {
+        current += 10000;
+    }
+    WRITE_BT_UINT16(buf, index, (uint16)current);
+    // 蜂鸣控制
+    if (UserStrategy_GetBuzzerSta())
+    {
+        WRITE_BT_UINT16(buf, index, 1U);
+    }
+    else
+    {
+        WRITE_BT_UINT16(buf, index, 0U);
+    }
 
     // 保留
-    WRITE_BT_UINT16(buf, index, 0xFFFFU);
-    WRITE_BT_UINT16(buf, index, 0xFFFFU);
+    // WRITE_BT_UINT8(buf, index, 0xFFU);
     WRITE_BT_UINT16(buf, index, 0xFFFFU);
     *Length = index;
 }

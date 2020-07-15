@@ -16,6 +16,8 @@
 #include "DischargeM.h"
 #include "ChargeM.h"
 #include "Insu.h"
+#include "UserStrategy.h"
+#include "TemperatureM.h"
 
 static uint16 MDBSgetTotalVoltage(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
@@ -1169,6 +1171,21 @@ static uint16 MDBSgetalarm(const Modbus_ReadRegionType *p, uint16 addr) {
     rc = (trc << 8U) | j;
     return rc;
 }
+
+static uint16 MDBSgetSysMode(const Modbus_ReadRegionType *p, uint16 addr) {
+    uint16 rc = 0U;
+    (void)addr;
+    (void)p;
+
+#if SYSTEM_BMU_NUM > 1U
+    {
+        rc = 1U;
+    }
+#endif
+
+    return rc;
+}
+
 static uint16 MDBSgetBatDeltVolt(const Modbus_ReadRegionType *p, uint16 addr) {
     uint16 rc;
     (void) addr;
@@ -1489,6 +1506,30 @@ static uint16 MDBSgetGBDia(const Modbus_ReadRegionType *p, uint16 addr) {
     rc = (uint16)ChargeM_GetChargerGBReadyFault();
     return rc;
 }
+static uint16 MDBSgetBuzzerSta(const Modbus_ReadRegionType *p, uint16 addr) {
+    uint16 rc = 0U;
+    (void) addr;
+    (void)p;
+    if (UserStrategy_GetBuzzerSta())
+    {
+        rc = 1U;
+    }
+
+    return rc;
+}
+
+static uint16 MDBSgetHeatSta(const Modbus_ReadRegionType *p, uint16 addr) {
+    uint16 rc = 0U;
+    (void) addr;
+    (void)p;
+    if (TemperatureM_GetHeatState() == TEMPERATUREM_HEAT_STATE_LT)
+    {
+        rc = 1U;
+    }
+
+    return rc;
+}
+
 static uint16 test_modbus_x01(const Modbus_ReadRegionType *p, uint16 addr) {
     (void) p;
     (void) addr;
@@ -1507,6 +1548,7 @@ static const Modbus_ReadRegionType x01registerTable[] = {
 };
 static const Modbus_ReadRegionType x02registerTable[] = {
     {2000U, 2399U, MDBSgetalarm},
+    {1000U, 1000U, MDBSgetSysMode},
 };
 static const Modbus_ReadRegionType x03registerTable[] = {
     {2000U, 2399U, test_modbus_x01},
@@ -1661,6 +1703,8 @@ static const Modbus_ReadRegionType x04registerTable[] = {
     {1852U, 1852U, MDBSgetChgActionDia},
     {1853U, 1853U, MDBSgetChgOtherDia},
     {1854U, 1854U, MDBSgetGBDia},
+    {102U, 102U, MDBSgetBuzzerSta},
+    {103U, 103U, MDBSgetHeatSta},
 };
 
 static const Modbus_WriteRegionType x16registerTable[] = {
