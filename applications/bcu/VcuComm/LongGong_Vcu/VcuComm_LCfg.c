@@ -24,6 +24,13 @@ const uint16 VcuComm_StageMax = (uint16)VCUCOMM_STAGE_MAX;
 const uint8 VcuComm_SendIPduNum = (uint8)PDUR_CFG_VCUCOMM_TX_PDUID_NUM;
 const VcuComm_SendIPduCfgType VcuComm_IPduSendConfigInfo[PDUR_CFG_VCUCOMM_TX_PDUID_NUM] = {
     {
+        (uint16)PDUR_VCUCOMM_TX_PDUID_00000460, /**< IPdu */
+        8U, /**< Length */
+        20U, /**< Cycle */
+        NULL, /**< CondFunc */
+        VcuComm_GetStatusMsg_0x460, /**< Func */
+    },
+    {
         (uint16)PDUR_VCUCOMM_TX_PDUID_00000244, /**< IPdu */
         8U, /**< Length */
         100U, /**< Cycle */
