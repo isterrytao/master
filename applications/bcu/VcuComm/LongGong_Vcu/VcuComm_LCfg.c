@@ -24,41 +24,6 @@ const uint16 VcuComm_StageMax = (uint16)VCUCOMM_STAGE_MAX;
 const uint8 VcuComm_SendIPduNum = (uint8)PDUR_CFG_VCUCOMM_TX_PDUID_NUM;
 const VcuComm_SendIPduCfgType VcuComm_IPduSendConfigInfo[PDUR_CFG_VCUCOMM_TX_PDUID_NUM] = {
     {
-        (uint16)PDUR_VCUCOMM_TX_PDUID_000002F4, /**< IPdu */
-        8U, /**< Length */
-        20U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetStatusMsg_0x2F4, /**< Func */
-    },
-    {
-        (uint16)PDUR_VCUCOMM_TX_PDUID_000004F4, /**< IPdu */
-        8U, /**< Length */
-        100U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetStatusMsg_0x4F4, /**< Func */
-    },
-    {
-        (uint16)PDUR_VCUCOMM_TX_PDUID_000005F4, /**< IPdu */
-        8U, /**< Length */
-        100U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetStatusMsg_0x5F4, /**< Func */
-    },
-    {
-        (uint16)PDUR_VCUCOMM_TX_PDUID_000007F4, /**< IPdu */
-        8U, /**< Length */
-        100U, /**< Cycle */
-        VcuComm_SendMsgCond_0x7F4, /**< CondFunc */
-        VcuComm_GetStatusMsg_0x7F4, /**< Func */
-    },
-    {
-        (uint16)PDUR_VCUCOMM_TX_PDUID_00000460, /**< IPdu */
-        8U, /**< Length */
-        20U, /**< Cycle */
-        NULL, /**< CondFunc */
-        VcuComm_GetStatusMsg_0x460, /**< Func */
-    },
-    {
         (uint16)PDUR_VCUCOMM_TX_PDUID_00000244, /**< IPdu */
         8U, /**< Length */
         100U, /**< Cycle */

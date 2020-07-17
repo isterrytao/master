@@ -302,7 +302,26 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
         ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
-    WRITE_BT_UINT8(Buffer, index, 4U);
+    // 电池型号 1:48V  2:80V  3:36V  4:24V
+    if (BatteryInfo_BaseConfigInfo.NominalTotalVolt <= 300U)
+    {
+        flag = 4U;
+    }
+    else if (BatteryInfo_BaseConfigInfo.NominalTotalVolt > 300U &&
+             BatteryInfo_BaseConfigInfo.NominalTotalVolt <= 420U)
+    {
+        flag = 3U;
+    }
+    else if (BatteryInfo_BaseConfigInfo.NominalTotalVolt > 420U &&
+             BatteryInfo_BaseConfigInfo.NominalTotalVolt <= 640U)
+    {
+        flag = 1U;
+    }
+    else
+    {
+        flag = 2U;
+    }
+    WRITE_BT_UINT8(Buffer, index, flag);
     flag = 0U;
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
     {
