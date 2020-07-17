@@ -46,6 +46,14 @@ var ChargerMsg = {
         tx: [{id: 0x246, def: "USER_TC"}],
         rx: [{id: 0x357, def: "USER_TC"}],
     },
+    TieCheng_Soc: {
+        tx: [{id: 0x9806E5F4, def: "USER_TC"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}],
+    },
+    LongGong_Chg: {
+        tx: [{id: 0x9807E5F4, def: "USER_TC"},{id: 0x9800FFF4, def: "USER_TC1"}],
+        rx: [{id: 0x98FD50E5, def: "USER_TC"}],
+    },
 };
 
 var VcuMsg = {
@@ -103,6 +111,18 @@ var VcuMsg = {
     },
     BaoLi_20200622: {
         tx: [0x241],
+        rx: [0x12345678],
+    },
+    Vcu_250k: {
+        tx: [0x630],
+        rx: [0x12345678],
+    },
+    "BMS_CAN_3.0": {
+        tx: [0x013],
+        rx: [0x12345678],
+    },
+    LongGong_Vcu: {
+        tx: [0x460, 0x244, 0x344, 0x444, 0x447, 0x446],
         rx: [0x12345678],
     },
 };

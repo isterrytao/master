@@ -41,7 +41,6 @@
 #endif
 
 static void getTCChgCtlData(uint8 *Buffer, uint16 *Length);
-static void getTCChgStopData(uint8 *Buffer, uint16 *Length);
 
 extern ChargerCommUser_InnerDataType ChargerCommUser_innerData;
 ChargerCommUser_MessageInnerDataType ChargerCommUser_MsgInnerData;
@@ -130,14 +129,7 @@ void ChargerCommUser_GetTCDataCbk(uint8 *Buffer, uint16 *Length)
     VALIDATE_PTR(Buffer, CHARGERCOMMUSER_MESSAGES_API_ID_GetTCDataCbk);
     VALIDATE_PTR(Length, CHARGERCOMMUSER_MESSAGES_API_ID_GetTCDataCbk);
 
-    if (ChargerCommUser_innerData.startFlag == TRUE)
-    {
-        getTCChgCtlData(Buffer, Length);
-    }
-    else
-    {
-        getTCChgStopData(Buffer, Length);
-    }
+    getTCChgCtlData(Buffer, Length);
 }
 
 void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
@@ -229,7 +221,6 @@ cleanup:
 static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
 {
     Std_ReturnType flag;
-    uint16 temp;
     uint16 index = 0U;
     App_Tv100mvType Volt;
     Current_CurrentType current, current_max;
@@ -283,11 +274,18 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         current = current_max;
     }
-    if (!UserStartegy_GBChargeRelayIsReady(relayType))
+    if (!CHARGECONNECTM_IS_CONNECT())
     {
         current = 0;
         Volt = 0U;
     }
+    else if (!UserStartegy_GBChargeRelayIsReady(relayType))
+    {
+        current = 0;
+        Volt = 0U;
+    }
+    else
+    {}
     ChargerComm_SetChargeVoltMax(Volt);
     WRITE_BT_UINT16(Buffer, index, Volt);
     ChargerComm_SetChargeCurrentMax(current);
@@ -304,109 +302,43 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
         ChargerCommUser_MsgInnerData.isNeedToSendStop = TRUE;
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
-    // 状态标志
-    temp = 0U;
-    flag = Diagnosis_StartDiagIsFinish();
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
+    // 电池型号 1:48V  2:80V  3:36V  4:24V
+    if (BatteryInfo_BaseConfigInfo.NominalTotalVolt <= 300U)
     {
-        temp |= (uint16)1U << 1;
+        flag = 4U;
     }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_LT) == CHARGEM_CHARGE_DISABLE)
+    else if (BatteryInfo_BaseConfigInfo.NominalTotalVolt > 300U &&
+             BatteryInfo_BaseConfigInfo.NominalTotalVolt <= 420U)
     {
-        temp |= (uint16)1U << 2;
+        flag = 3U;
     }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    else if (BatteryInfo_BaseConfigInfo.NominalTotalVolt > 420U &&
+             BatteryInfo_BaseConfigInfo.NominalTotalVolt <= 640U)
     {
-        temp |= (uint16)1U << 3;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 4;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHARGER_COMM) == CHARGEM_CHARGE_DISABLE)
-    {
-        temp |= (uint16)1U << 5;
-    }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && flag == TRUE)
-    {
-        temp |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        temp |= (uint16)1U << 6;
+        flag = 1U;
     }
     else
     {
+        flag = 2U;
     }
-    WRITE_BT_UINT8(Buffer, index,  temp);
-    // 保留
-    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
-    *Length = index;
-#if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
-cleanup:
-#endif
-    return;
-}
-
-static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
-{
-    uint16 flag;
-    uint16 index = 0U;
-
-    ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
-
-    // 充电需求总压
-    ChargerComm_SetChargeVoltMax(0U);
-    WRITE_BT_UINT16(Buffer, index, 0U);
-    // 充电需求电流
-    ChargerComm_SetChargeCurrentMax(0);
-    WRITE_BT_UINT16(Buffer, index, 0U);
-    // 充电允许
-    WRITE_BT_UINT8(Buffer, index,  1U);
-    // 状态标志
+    WRITE_BT_UINT8(Buffer, index, flag);
     flag = 0U;
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
     {
-        flag |= (uint16)1U << 1;
+        flag = 3U;
     }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_LT) == CHARGEM_CHARGE_DISABLE)
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_LT) == CHARGEM_CHARGE_DISABLE)
     {
-        flag |= (uint16)1U << 2;
+        flag = 5U;
     }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_DT) == CHARGEM_CHARGE_DISABLE)
     {
-        flag |= (uint16)1U << 3;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 4;
-    }
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHARGER_COMM) == CHARGEM_CHARGE_DISABLE)
-    {
-        flag |= (uint16)1U << 5;
-    }
-    if (ChargeM_DiagnosisIsFaultActionExcludeItem(DIAGNOSIS_ITEM_FULL_CHARGE) == E_OK)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else if (ChargeM_StartDiagIsNormal() == E_NOT_OK && ChargerCommUser_MsgInnerData.isNeedToSendStop == TRUE)
-    {
-        flag |= (uint16)1U << 6;
-    }
-    else if (ChargeM_OthersFaultIsNormal() == E_NOT_OK)
-    {
-        flag |= (uint16)1U << 6;
+        flag = 6U;
     }
     else
-    {
-    }
-    WRITE_BT_UINT8(Buffer, index,  flag);
-    // 保留
-    WRITE_BT_UINT16(Buffer, index, 0xFFFFU);
+    {}
+    WRITE_BT_UINT8(Buffer, index, flag);
+    WRITE_BT_UINT8(Buffer, index, 0U);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:

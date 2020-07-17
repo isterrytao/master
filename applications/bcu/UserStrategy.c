@@ -78,6 +78,10 @@ static void dchgLvProtectForCurrentCheck(void);
 static void dchgLtvProtectForCurrentCheck(void);
 #endif
 
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+static void UserStrategy_LvPowerDown(void);
+#endif
+
 #if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
 static const UserStrategy_BuzzerAlarmType Alarm_type_Lever1[] = {
     {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_FIRST},
@@ -419,6 +423,10 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 #if USERSTRATEGY_CHG_TRATEGY_EN == STD_ON
     UserStrategy_FullChgCheck();
     UserStrategy_StopChargeCheck();
+#endif
+
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+    UserStrategy_LvPowerDown();
 #endif
 
     return ASYNC_EVENT_CBK_RETURN_OK;
@@ -1079,6 +1087,7 @@ static void UserStrategy_BuzzerControl(void)
                 is_on = FALSE;
                 lastTime = nowTime;
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+                UserStrategy_innerData.isBuzzer = FALSE;
             }
         }
         else
@@ -1088,6 +1097,7 @@ static void UserStrategy_BuzzerControl(void)
                 is_on = TRUE;
                 lastTime = nowTime;
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_ON);
+                UserStrategy_innerData.isBuzzer = TRUE;
             }
         }
         if (AlarmLevel == 1U)
@@ -1115,6 +1125,7 @@ static void UserStrategy_BuzzerControl(void)
         onTime = 0U;
         offTime = 0U;
         (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+        UserStrategy_innerData.isBuzzer = FALSE;
     }
 #endif
 }
@@ -1627,4 +1638,45 @@ void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item,
     {
         DischargeM_DiagnosisCtlEnableEventCbk(item, level, event);
     }
+}
+
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+static void UserStrategy_LvPowerDown(void)
+{
+    uint16 lv = Statistic_GetBcuLvMax();
+    uint32 nowTime = OSTimeGet();
+    uint32 delay = USERSTRATEGY_LV_POWER_DOWN_TIME;
+    static uint32 lastTime = 0U;
+
+    if (!CHARGECONNECTM_IS_CONNECT())
+    {
+        if (CellDataM_VoltageIsValid(lv) && lv <= (uint16)USERSTRATEGY_LV_POWER_DOWN_VOLT)
+        {
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            else
+            {
+                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                {
+                    RuntimeM_RequestPowerDown();
+                }
+            }
+        }
+        else
+        {
+            lastTime = 0U;
+        }
+    }
+    else
+    {
+        lastTime = 0U;
+    }
+}
+#endif
+
+boolean UserStrategy_GetBuzzerSta(void)
+{
+    return UserStrategy_innerData.isBuzzer;
 }

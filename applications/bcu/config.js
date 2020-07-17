@@ -258,8 +258,8 @@ module.exports = {
 
     CommProtocol: {
         notes: [
-            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1", "CAN2.0C"'},
-            {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2", "RuYi_Vcu", "CAN2.0F", "BaoLi_20200622"'},
+            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1", "CAN2.0C", "TieCheng_Soc", "LongGong_Chg"'},
+            {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2", "RuYi_Vcu", "CAN2.0F", "BaoLi_20200622", "Vcu_250k", "BMS_CAN_3.0", "LongGong_Vcu"'},
         ],
         chg: "UDAN",
         vcu: "UDAN",
@@ -365,6 +365,8 @@ module.exports = {
             {section:"ltv_protect", chs: "放电总压低有放电电流时才保护使能"},
             {section:"chg_heat_parameters", chs: "充电加热策略相关参数"},
             {section:"chg_user_parameters", chs: "用户自定义充电策略相关参数"},
+            {section:"cur_integration", chs: "电流积分时减去其他功耗"},
+            {section:"lv_power_down", chs: "放电单体电压低休眠保护"},
         ],
         ota_tpye: "USERSTRATEGY_REALTIME_OTA",
         buzzer_alarm: {
@@ -477,6 +479,24 @@ module.exports = {
             chg_end_time: 8,
             chg_stop_current: 15,
             chg_stop_volt: 3700,
+        },
+        cur_integration: {
+            notes: [
+                {section: "en", chs: "用户自定义电流积分策略使能，若配置为使能则启用用户自定义电流积分策略", comments: '"STD_ON", "STDOFF"'},
+                {section: "current", chs: "电流大小"},
+            ],
+            en: "STD_OFF",
+            current: 1,
+        },
+        lv_power_down: {
+            notes: [
+                {section: "en", chs: "用户自定义单体电压低休眠策略使能，若配置为使能则启用用户自定义电压低休眠策略", comments: '"STD_ON", "STD_OFF"'},
+                {section: "lv", chs: "电压低阈值,单位mv"},
+                {section: "time", chs: "低电压休眠持续时间,单位S"},
+            ],
+            en: "STD_OFF",
+            lv: 2800,
+            time: 4 * 60 * 60 * 1000,
         }
     },
 
