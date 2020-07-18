@@ -323,7 +323,15 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     }
     WRITE_BT_UINT8(Buffer, index, flag);
     flag = 0U;
-    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
+    if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HV) == CHARGEM_CHARGE_DISABLE)
+    {
+        flag = 1U;
+    }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HTV) == CHARGEM_CHARGE_DISABLE)
+    {
+        flag = 2U;
+    }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_CHG_HT) == CHARGEM_CHARGE_DISABLE)
     {
         flag = 3U;
     }
