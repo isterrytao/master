@@ -35,7 +35,7 @@ const GB32960_ConfigType GB32960ConfigData = {
 
 
 <% if (apn != "") {%>
-const char *const apn_command = "AT+QICSGP=1,\"<%- apn %>\"";
+const char *const DtuM35_Apn = "<%- apn %>";
 <% } else { %>
-const char *const apn_command = NULL;
+const char *const DtuM35_Apn = NULL;
 <% } %>
