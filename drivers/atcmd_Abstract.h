@@ -31,6 +31,7 @@ typedef Std_ReturnType (*ATCMD_GetOPSType)(void *private_data, char *buf, uint8 
 typedef Std_ReturnType (*ATCMD_GetVoltageType)(void *private_data, uint16 *vol);
 typedef Std_ReturnType (*ATCMD_GetLacCiType)(void *private_data, uint32 lac_ci[2]);
 typedef Std_ReturnType (*ATCMD_GetCellLocType)(void *private_data, sint32 loc[2]);
+typedef Std_ReturnType (*ATCMD_SetApn)(void *private_data, const char *atcmd);
 
 
 typedef struct {
@@ -48,6 +49,7 @@ typedef struct {
     ATCMD_GetSignalQualityType GetSignalQuality;
     ATCMD_GetVoltageType GetVoltage;
     ATCMD_GetCellLocType GetCellLoc;
+    ATCMD_SetApn SetApn;
 } ATCmd_OperationsType;
 
 struct ATCmd_Data {
@@ -70,6 +72,7 @@ struct ATCmd_Data {
 #define ATCMD_GetVoltage(at,vol) (at)->ops->GetVoltage((at)->private_data, vol)
 #define ATCMD_GetLacCi(at,lac_ci) (at)->ops->GetLacCi((at)->private_data, lac_ci)
 #define ATCMD_GetCellLoc(at,loc) (at)->ops->GetCellLoc((at)->private_data, loc)
+#define ATCMD_SetApn(at,apn) (at)->ops->SetApn((at)->private_data, apn)
 
 Std_ReturnType ATCMD_RetryUntilExpect(const ATCmd_DataType *at, const char *atcmd, const char *expect, uint8 times, uint16 timeout);
 Std_ReturnType ATCMD_RetryUntilExpects(const ATCmd_DataType *at, const char *atcmd, const char *const *expects, uint16 times, uint16 timeout);
