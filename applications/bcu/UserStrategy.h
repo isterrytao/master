@@ -209,4 +209,6 @@ void UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk(Diagnosis_ItemType item,
 
 boolean UserStrategy_GetBuzzerSta(void);
 
+uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void);
+
 #endif

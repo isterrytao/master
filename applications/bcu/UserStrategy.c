@@ -33,6 +33,7 @@
 #include "DischargeM_Cfg.h"
 #include "PrechargeM_Lcfg.h"
 #include "ChargerComm_LCfg.h"
+#include "ChgSckTmpM.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -1040,7 +1041,7 @@ static void UserStrategy_AutoLostPower(void)
 #if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
 static void UserStrategy_BuzzerControl(void)
 {
-#ifdef RELAYM_FN_BUZZER
+// #ifdef RELAYM_FN_BUZZER
     uint8 AlarmLevel = 0U;
     uint32 nowTime = OSTimeGet();
     static uint32 onTime = 0U, offTime = 0U;
@@ -1086,7 +1087,9 @@ static void UserStrategy_BuzzerControl(void)
             {
                 is_on = FALSE;
                 lastTime = nowTime;
+#ifdef RELAYM_FN_BUZZER
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+#endif
                 UserStrategy_innerData.isBuzzer = FALSE;
             }
         }
@@ -1096,7 +1099,9 @@ static void UserStrategy_BuzzerControl(void)
             {
                 is_on = TRUE;
                 lastTime = nowTime;
+#ifdef RELAYM_FN_BUZZER
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_ON);
+#endif
                 UserStrategy_innerData.isBuzzer = TRUE;
             }
         }
@@ -1124,10 +1129,12 @@ static void UserStrategy_BuzzerControl(void)
         lastTime = nowTime;
         onTime = 0U;
         offTime = 0U;
+#ifdef RELAYM_FN_BUZZER
         (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
+#endif
         UserStrategy_innerData.isBuzzer = FALSE;
     }
-#endif
+// #endif
 }
 #endif
 
@@ -1679,4 +1686,63 @@ static void UserStrategy_LvPowerDown(void)
 boolean UserStrategy_GetBuzzerSta(void)
 {
     return UserStrategy_innerData.isBuzzer;
+}
+
+uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
+{
+    uint8 temperature;
+    uint16 i = 0U, num = 0U, count = 0U;
+    imask_t mask;
+    Charge_ChargeType type;
+
+    // if (SystemConnection_ConfigInfo.BcuType >= DEVICE_TYPE_A650 && SystemConnection_ConfigInfo.BcuType <= DEVICE_TYPE_A653)
+    // {
+    //     i = 0U;
+    //     num = i + 2U;
+    // }
+    // else
+    // {
+    //     type = ChargeConnectM_GetConnectType();
+    //     if (type == CHARGE_TYPE_DC)
+    //     {
+    //         i = 0U;
+    //         num = i + 2U;
+    //     }
+    //     else if (type == CHARGE_TYPE_AC)
+    //     {
+    //         i = 2U;
+    //         num = i + 3U;
+    //     }
+    //     else
+    //     {
+    //     }
+    // }
+    type = ChargeConnectM_GetConnectType();
+    if (type == CHARGE_TYPE_DC)
+    {
+        i = 0U;
+        num = i + 2U;
+    }
+    else if (type == CHARGE_TYPE_AC)
+    {
+        i = 2U;
+        num = i + 3U;
+    }
+    else
+    {
+    }
+    for (; i < num; i++)
+    {
+        if (ChgSckTmpM_ConfigInfo.temperature_config[i].enable == STD_ON)
+        {
+            Irq_Save(mask);
+            temperature = ChgSckTmpM_InternalStatusInfo[i].temperature;
+            Irq_Restore(mask);
+            if (CellDataM_TemperatureIsValid((uint16)temperature) == 0U)
+            {
+                count++;
+            }
+        }
+    }
+    return count;
 }
