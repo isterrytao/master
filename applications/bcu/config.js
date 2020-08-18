@@ -365,6 +365,7 @@ module.exports = {
         ota_tpye: "USERSTRATEGY_REALTIME_OTA",
         buzzer_alarm: {
             en: "STD_ON",
+            hmi_buzzer_en: "STD_OFF",
             level1_on_time: 2000,
             level1_off_time: 10000,
             level2_on_time: 1000,
