@@ -1090,7 +1090,9 @@ static void UserStrategy_BuzzerControl(void)
 #ifdef RELAYM_FN_BUZZER
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
 #endif
+#if USERSTRATEGY_HMI_BUZZER_ALARM_EN == STD_ON
                 UserStrategy_innerData.isBuzzer = FALSE;
+#endif
             }
         }
         else
@@ -1102,7 +1104,9 @@ static void UserStrategy_BuzzerControl(void)
 #ifdef RELAYM_FN_BUZZER
                 (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_ON);
 #endif
+#if USERSTRATEGY_HMI_BUZZER_ALARM_EN == STD_ON
                 UserStrategy_innerData.isBuzzer = TRUE;
+#endif
             }
         }
         if (AlarmLevel == 1U)
@@ -1132,7 +1136,9 @@ static void UserStrategy_BuzzerControl(void)
 #ifdef RELAYM_FN_BUZZER
         (void)RelayM_Control(RELAYM_FN_BUZZER, RELAYM_CONTROL_OFF);
 #endif
+#if USERSTRATEGY_HMI_BUZZER_ALARM_EN == STD_ON
         UserStrategy_innerData.isBuzzer = FALSE;
+#endif
     }
 // #endif
 }
