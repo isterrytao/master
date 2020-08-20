@@ -8,6 +8,7 @@ if (cfg.ota_tpye == "USERSTRATEGY_REALTIME_OTA") {
 var mdata = {
     ota_tpye: cfg.ota_tpye,
     buzzer_alarm_en: cfg.buzzer_alarm.en,
+    buzzer_hmi_alarm_en: cfg.buzzer_alarm.hmi_buzzer_en,
     buzzer_level1_on_time: cfg.buzzer_alarm.level1_on_time,
     buzzer_level1_off_time: cfg.buzzer_alarm.level1_off_time,
     buzzer_level2_on_time: cfg.buzzer_alarm.level2_on_time,
@@ -96,7 +97,12 @@ globalInfo.setReturn({processedcfg:processedcfg});
 /**
  * \brief 蜂鸣器报警功能开关
  */
-#define USERSTRATEGY_BUZZER_ALARM_EN                <%- mdata.buzzer_alarm_en%>
+<% if ((mdata.buzzer_alarm_en == "STD_ON") || (mdata.buzzer_hmi_alarm_en == "STD_ON")){%>
+#define USERSTRATEGY_BUZZER_ALARM_EN                STD_ON
+<%} else {%>
+#define USERSTRATEGY_BUZZER_ALARM_EN                STD_OFF
+<%}%>
+#define USERSTRATEGY_HMI_BUZZER_ALARM_EN            <%- mdata.buzzer_hmi_alarm_en%>
 
 /**
  * \brief 蜂鸣器报警等级延时时间定义
