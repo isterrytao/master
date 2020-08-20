@@ -199,5 +199,6 @@ boolean UserStrategy_DchgIsReady(void);
 
 boolean UserStrategy_GetBuzzerSta(void);
 
+uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void);
 
 #endif

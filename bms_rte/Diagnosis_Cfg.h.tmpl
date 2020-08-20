@@ -86,7 +86,7 @@ var diagnosisitems = [
     {name:"充电机通信", diagnosisType:"HIGH", condition:"CHG", def:"CHARGER_COMM", getval:"ChargerComm_DiagIsCommAbort"},
     {name:"整车通信", diagnosisType:"HIGH", condition:"ALL", def:"VCU_COMM", getval:"VcuComm_DiagIsCommAbort"},
     {name:"满充", diagnosisType:"HIGH", condition:"CHG", def:"FULL_CHARGE", getval:"FullCharge_GetStatus"},
-    {name:"充电插座温感异常", diagnosisType:"HIGH", condition:"CHG", def:"CHGSCKTMP_ABNORMAL", getval:"ChgSckTmpM_GetAbnormalTemperatureNum", validate:"CellDataM_TemperatureIsValid", valueReady:"ChgSckTmpM_AllTemperatureIsGet"},
+    {name:"充电插座温感异常", diagnosisType:"HIGH", condition:"CHG", def:"CHGSCKTMP_ABNORMAL", getval:"UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum", validate:"CellDataM_TemperatureIsValid", valueReady:"ChgSckTmpM_AllTemperatureIsGet"},
     {name:"预充失败", diagnosisType:"HIGH", condition:"DCHG", def:"PRECHARGE_FAILURE", getval:"PrechargeM_IsFailure"},
     {name:"电流异常", diagnosisType:"HIGH", condition:"ALL", def:"CURRENT_ABNORMAL", getval:"CurrentM_CurrentIsAbnormal"},
     {name:"BMS初始化故障", diagnosisType:"HIGH", condition:"ALL", def:"BMS_INIT_FAILURE", getval:"InitialDiagM_IsDiagFailure"},
