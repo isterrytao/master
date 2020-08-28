@@ -144,8 +144,7 @@ void VcuComm_GetStatusMsg_0x1AC(uint8 *buf, uint16 *Length)
     temperature = (sint16)Statistic_GetBcuLt(0U);
     if (CellDataM_TemperatureIsValid((uint16)ht))
     {
-        temperature -= 30;
-        if (temperature >= 0)
+        if (temperature >= 50)
         {
             WRITE_BT_UINT8(buf, index, 0U);
         }
@@ -153,7 +152,8 @@ void VcuComm_GetStatusMsg_0x1AC(uint8 *buf, uint16 *Length)
         {
             WRITE_BT_UINT8(buf, index, 1U);
         }
-        temperature = abs(temperature);
+        // temperature = abs(temperature);
+        temperature -= 30;
         WRITE_BT_UINT8(buf, index, temperature);
     }
     else
