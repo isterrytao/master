@@ -161,9 +161,9 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     /**< battery current exceeds 过流 */
     if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
-    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) > DIAGNOSIS_LEVEL_SECOND) {
+    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) >= DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
-    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) > DIAGNOSIS_LEVEL_SECOND) {
+    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) >= DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
     } else
     {}
