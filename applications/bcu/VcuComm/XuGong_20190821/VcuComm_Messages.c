@@ -117,6 +117,10 @@ static boolean DchgNotAllowFlg(void)
     {
         res = TRUE;
     }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) > DIAGNOSIS_LEVEL_FIRST)
+    {
+        res = TRUE;
+    }
     else
     {}
     return res;
@@ -158,6 +162,8 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
     } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) > DIAGNOSIS_LEVEL_SECOND) {
+        temp |= (uint16)1U << 2;
+    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) > DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
     } else
     {}
