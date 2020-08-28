@@ -130,33 +130,44 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     temp = 0U;
     /**< discharge allow 放电允许 */
     if (!CHARGECONNECTM_IS_CONNECT()) {
-        if (DchgNotAllowFlg() == FALSE) {
+        // if (DchgNotAllowFlg() == FALSE) {
+        //     temp |= (uint16)1U << 0;
+        // }
+#ifdef RELAYM_FN_POSITIVE_MAIN
+        if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_MAIN) == RELAYM_ACTUAL_ON)
+        {
             temp |= (uint16)1U << 0;
         }
+#endif
+#ifdef RELAYM_FN_DISCHARGE
+        if (RelayM_GetActualStatus(RELAYM_FN_DISCHARGE) == RELAYM_ACTUAL_ON)
+        {
+            temp |= (uint16)1U << 0;
+        }
+#endif
     }
     /**< over discharge 过放 */
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) >= DIAGNOSIS_LEVEL_FIRST) {
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) >= DIAGNOSIS_LEVEL_THIRD) {
         temp |= (uint16)1U << 1;
+    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_THIRD) {
+        temp |= (uint16)1U << 1;
+    } else {
+
     }
-    else
-    {}
     /**< battery current exceeds 过流 */
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_FIRST) {
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) > DIAGNOSIS_LEVEL_SECOND) {
+    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) > DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 2;
-    }
-    else
+    } else
     {}
     /**< 漏电 */
     u8temp = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK);
-    if (u8temp == DIAGNOSIS_LEVEL_FIRST  ||
-        u8temp == DIAGNOSIS_LEVEL_SECOND)
+    if (u8temp == DIAGNOSIS_LEVEL_SECOND)
     {
         temp|= (uint16)1U << 3;
     }
-    else if (u8temp == DIAGNOSIS_LEVEL_THIRD)
+    else if (u8temp >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)1U << 4;
     }
@@ -165,38 +176,41 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
 
     }
     /**< battery high voltage 电池过压 */
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV) >= DIAGNOSIS_LEVEL_FIRST)
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)1U << 5;
     }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HTV) >= DIAGNOSIS_LEVEL_FIRST)
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HTV) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)1U << 5;
     }
     else{
     }
     /**< cell voltage low 单体电压过低 */
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_FIRST) {
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1U << 6;
+    } else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) >= DIAGNOSIS_LEVEL_SECOND) {
+        temp |= (uint16)1U << 6;
+    } else {
+
     }
     WRITE_BT_UINT8(buf, index, temp);
 
     /**< battery low temperature  电池低温*/
     temp = 0U;
     u8temp = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT);
-    if (u8temp >= DIAGNOSIS_LEVEL_FIRST) {
+    if (u8temp >= DIAGNOSIS_LEVEL_THIRD) {
         temp |= (uint16)1U << 0;
     }
     /**< battery high temperature  电池高温 */
     u8temp = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT);
-    if (u8temp == DIAGNOSIS_LEVEL_FIRST || u8temp == DIAGNOSIS_LEVEL_SECOND) {
+    if (u8temp == DIAGNOSIS_LEVEL_SECOND) {
         temp |= (uint16)1 << 1;
-    }
-    else if (u8temp >= DIAGNOSIS_LEVEL_THIRD) {
+    } else if (u8temp >= DIAGNOSIS_LEVEL_THIRD) {
         temp |= (uint16)2 << 1;
+    } else {
+
     }
-    else
-    {}
     WRITE_BT_UINT8(buf, index, temp);
 
     /**< 预留 */

@@ -134,12 +134,12 @@ void VcuComm_GetStatusMsg_0x1AC(uint8 *buf, uint16 *Length)
     if (CurrentM_IsValidCurrent(current))
     {
         current += 4000;
+        temp = (uint16)current;
     }
     else
     {
-        current = 4000;
+        temp = 0xFFFFU;
     }
-    temp = (uint16)current;
     WRITE_BT_UINT16(buf, index, temp);
     temperature = (sint16)Statistic_GetBcuLt(0U);
     if (CellDataM_TemperatureIsValid((uint16)ht))

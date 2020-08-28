@@ -235,7 +235,6 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     Current_CurrentType current, current_max;
     RelayM_FunctionType relayType;
     Charge_ChargeType type = ChargeConnectM_GetConnectType();
-    uint32 ah,cumAh;
 
     if (type == CHARGE_TYPE_DC)
     {
@@ -352,13 +351,9 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
     }
     WRITE_BT_UINT8(Buffer, index,  temp);
-    // 充电循环次数
-    cumAh = Soc_GetCumuChgPower();
-    cumAh *= 50UL;
-    ah = BatteryInfo_BaseConfigInfo.NominalCap;
-    ah *= 3UL;
-    cumAh = (uint32)DIVISION(cumAh, ah);
-    WRITE_BT_UINT16(Buffer, index, cumAh);
+    // 预留
+    temp = 0xFFFFU;
+    WRITE_BT_UINT16(Buffer, index, temp);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:
@@ -370,7 +365,6 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
 {
     uint16 flag;
     uint16 index = 0U;
-    uint32 ah,cumAh;
 
     ChargerCommUser_MsgInnerData.isNeedToSendStop = FALSE;
 
@@ -428,13 +422,9 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     {
     }
     WRITE_BT_UINT8(Buffer, index,  flag);
-    // 充电循环次数
-    cumAh = Soc_GetCumuChgPower();
-    cumAh *= 50UL;
-    ah = BatteryInfo_BaseConfigInfo.NominalCap;
-    ah *= 3UL;
-    cumAh = (uint32)DIVISION(cumAh, ah);
-    WRITE_BT_UINT16(Buffer, index, cumAh);
+    // 预留
+    flag = 0xFFFFU;
+    WRITE_BT_UINT16(Buffer, index, flag);
     *Length = index;
 #if ( CHARGERCOMMUSER_DEV_ERROR_DETECT == STD_ON )
 cleanup:

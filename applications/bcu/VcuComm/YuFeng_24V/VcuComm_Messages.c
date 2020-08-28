@@ -103,7 +103,7 @@ void VcuComm_GetStatusMsg_0x1AC(uint8 *buf, uint16 *Length)
     ht = Statistic_GetBcuHt(0U);
     if (CellDataM_TemperatureIsValid((uint16)ht))
     {
-        if (ht >= (App_TemperatureType)TEMPERATURE_FROM_C(75))
+        if (ht >= (App_TemperatureType)TEMPERATURE_FROM_C(70))
         {
             temp |= ((uint16)1 << 4);
         }
@@ -130,7 +130,14 @@ void VcuComm_GetStatusMsg_0x1AC(uint8 *buf, uint16 *Length)
     temp = Statistic_GetBcu100mvTotalVoltage();
     if (Statistic_TotalVoltageIsValid(temp))
     {
-        temp *= 100U;
+        if (temp > 655U)
+        {
+            temp = 0xFFFFU;
+        }
+        else
+        {
+            temp *= 100U;
+        }
     }
     WRITE_BT_UINT16(buf, index, temp);
     /**< 总电流 */
@@ -138,13 +145,24 @@ void VcuComm_GetStatusMsg_0x1AC(uint8 *buf, uint16 *Length)
     if (CurrentM_IsValidCurrent(current))
     {
         temp = (uint16)abs(current);
-        temp *= 10U;
+        if (temp <= 6553U)
+        {
+            temp *= 10U;
+        }
+        else
+        {
+            temp = 0xFFFFU;
+        }
+    }
+    else
+    {
+        temp = 0xFFFFU;
     }
     WRITE_BT_UINT16(buf, index, temp);
     temperature = (sint16)Statistic_GetBcuLt(0U);
     if (CellDataM_TemperatureIsValid((uint16)ht))
     {
-        temperature -= 30;
+        temperature -= 50;
         if (temperature >= 0)
         {
             WRITE_BT_UINT8(buf, index, 0U);
