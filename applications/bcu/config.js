@@ -493,7 +493,7 @@ module.exports = {
             notes: [
                 {section: "en", chs: "用户自定义单体电压低休眠策略使能，若配置为使能则启用用户自定义电压低休眠策略", comments: '"STD_ON", "STD_OFF"'},
                 {section: "lv", chs: "电压低阈值,单位mv"},
-                {section: "time", chs: "低电压休眠持续时间,单位S"},
+                {section: "time", chs: "低电压休眠持续时间,单位ms"},
             ],
             en: "STD_OFF",
             lv: 2800,

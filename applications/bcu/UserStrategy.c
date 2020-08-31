@@ -217,15 +217,25 @@ static void pollPowerKeyState()
 #if (USERSTRATEGY_CHG_TRATEGY_EN == STD_ON)
 static void UserStrategy_ChgRelayOff(void)
 {
+    static boolean flag = FALSE;
 #ifdef RELAYM_FN_CHARGE
     (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_OFF);
+    flag = TRUE;
 #endif
 #ifdef RELAYM_FN_POSITIVE_AC_CHARGE
     (void)RelayM_Control(RELAYM_FN_POSITIVE_AC_CHARGE, RELAYM_CONTROL_OFF);
+    flag = TRUE;
 #endif
 #ifdef RELAYM_FN_POSITIVE_DC_CHARGE
     (void)RelayM_Control(RELAYM_FN_POSITIVE_DC_CHARGE, RELAYM_CONTROL_OFF);
+    flag = TRUE;
 #endif
+    if (!flag)
+    {
+#ifdef RELAYM_FN_POSITIVE_MAIN
+        (void)RelayM_Control(RELAYM_FN_POSITIVE_MAIN, RELAYM_CONTROL_OFF);
+#endif
+    }
 }
 
 static void UserStrategy_FullChgCheck(void)
