@@ -76,6 +76,10 @@ static void dchgLvProtectForCurrentCheck(void);
 static void dchgLtvProtectForCurrentCheck(void);
 #endif
 
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+static void UserStrategy_LvPowerDown(void);
+#endif
+
 #if USERSTRATEGY_BUZZER_ALARM_EN == STD_ON
 static const UserStrategy_BuzzerAlarmType alarmLevel1Cfg[] = {
     {DIAGNOSIS_ITEM_DCHG_LTV, DIAGNOSIS_LEVEL_FIRST},
@@ -233,6 +237,10 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 
 #if USERSTRATEGY_DCHG_LTV_PROTECT_WITH_CURRENT_EN == STD_ON
     dchgLtvProtectForCurrentCheck();
+#endif
+
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+    UserStrategy_LvPowerDown();
 #endif
 
     return ASYNC_EVENT_CBK_RETURN_OK;
@@ -1217,3 +1225,39 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
     }
     return count;
 }
+
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+static void UserStrategy_LvPowerDown(void)
+{
+    uint16 lv = Statistic_GetBcuLvMax();
+    uint32 nowTime = OSTimeGet();
+    uint32 delay = USERSTRATEGY_LV_POWER_DOWN_TIME;
+    static uint32 lastTime = 0U;
+
+    if (!CHARGECONNECTM_IS_CONNECT())
+    {
+        if (CellDataM_VoltageIsValid(lv) && lv <= (uint16)USERSTRATEGY_LV_POWER_DOWN_VOLT)
+        {
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            else
+            {
+                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                {
+                    RuntimeM_RequestPowerDown();
+                }
+            }
+        }
+        else
+        {
+            lastTime = 0U;
+        }
+    }
+    else
+    {
+        lastTime = 0U;
+    }
+}
+#endif

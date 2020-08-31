@@ -30,6 +30,9 @@ var mdata = {
     lv_protect_level: cfg.lv_protect.level,
     ltv_protect_en: cfg.ltv_protect.en,
     ltv_protect_level: cfg.ltv_protect.level,
+    lv_power_down_en: cfg.lv_power_down.en,
+    lv_power_down_lv: cfg.lv_power_down.lv,
+    lv_power_down_time: cfg.lv_power_down.time,
 };
 
 var processedcfg = {mdata: mdata};
@@ -139,5 +142,15 @@ globalInfo.setReturn({processedcfg:processedcfg});
 #define USERSTRATEGY_DCHG_LTV_PROTECT_WITH_CURRENT_EN   <%- mdata.ltv_protect_en%>
 #define USERSTRATEGY_DCHG_LTV_PROTECT_LEVEL             <%- mdata.ltv_protect_level%>
 
+/**
+ * \brief 用户自定义单体电压低休眠策略
+ */
+
+ #define USERSTRATEGY_LV_POWER_DOWN_EN                <%- mdata.lv_power_down_en %>
+
+ <% if (mdata.lv_power_down_en == 'STD_ON') {%>
+#define USERSTRATEGY_LV_POWER_DOWN_VOLT                <%- mdata.lv_power_down_lv%>U // 低压休眠策略起始电压 mv
+#define USERSTRATEGY_LV_POWER_DOWN_TIME                 (<%- mdata.lv_power_down_time%>UL) // 低压休眠策略低压持续时间
+<%}%>
 
 #endif
