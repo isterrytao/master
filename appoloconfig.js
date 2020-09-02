@@ -192,6 +192,9 @@ var appendCalibrate = (cfgfile, calfile) => {
     cfgParamterM = cfg.ParameterM;
     cfg.ParameterM = require(calfile);
     cfg.ParameterM.Diagnosis = cfg.ParameterM.Diagnosis.concat(cfgParamterM.Diagnosis);
+    if (!cfg.hasOwnProperty('BatteryInfo')) return cfg;
+    calInfo = require(calfile);
+    cfg.BatteryInfo.Diagnosis = calInfo.Diagnosis;
     return cfg;
 }
 
