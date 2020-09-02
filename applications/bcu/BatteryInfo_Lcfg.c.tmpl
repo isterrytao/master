@@ -47,6 +47,50 @@ globalInfo.setReturn({
         dcchargecurrent: cfg.nominal.dcchargecurrent
     });
 
+var colors = require('colors');
+var lvparam = new Array();
+var htparam = new Array();
+lvparam = lvparam.concat(cfg.Diagnosis.find(x=>x.name == "充电单体电压低"));
+lvparam = lvparam.concat(cfg.Diagnosis.find(x=>x.name == "放电单体电压低"));
+htparam = htparam.concat(cfg.Diagnosis.find(x=>x.name == "充电高温"));
+htparam = htparam.concat(cfg.Diagnosis.find(x=>x.name == "放电高温"));
+var lv = 65535;
+var ht = 255;
+var haveWarn = false;
+var warnInfo = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Warning!!! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+for (var param of lvparam) {
+    if (param) {
+        for (var level of param.levels) {
+            lv = level[0] * 1000;
+            if (lv != 65535 && lowVoltLimit != 65535) {
+                if (lv <= lowVoltLimit) {
+                    haveWarn = true;
+                    warnInfo += "\n                     " + param.name + ": " + lv + "mV <= limit " + lowVoltLimit + "mV";
+                    break;
+                }
+            }
+        }
+    }
+}
+for (var param of htparam) {
+    if (param) {
+        for (var level of param.levels) {
+            ht = level[0];
+            if (ht != 205 && highTempLimit != 255) {
+                if (ht >= highTempLimit) {
+                    haveWarn = true;
+                    warnInfo += "\n                     " + param.name + ":         "+ ht + "°C >= limit " + highTempLimit + "°C";
+                    break;
+                }
+            }
+        }
+    }
+}
+if (haveWarn == true) {
+    warnInfo += "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    console.warn(warnInfo.yellow);
+}
+
 delete cfg.notes;
 delete cfg.nominal.notes;
 
