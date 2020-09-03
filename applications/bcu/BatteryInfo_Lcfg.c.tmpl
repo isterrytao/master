@@ -47,7 +47,6 @@ globalInfo.setReturn({
         dcchargecurrent: cfg.nominal.dcchargecurrent
     });
 
-
 var lvparam = new Array();
 var htparam = new Array();
 lvparam = lvparam.concat(cfg.Diagnosis.find(x=>x.name == "充电单体电压低"));
@@ -88,7 +87,7 @@ for (var param of htparam) {
 }
 if (haveWarn == true) {
     warnInfo += "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
-    console.warn(warnInfo);
+    console.warn(warnInfo.yellow);
 }
 
 delete cfg.notes;
