@@ -165,6 +165,7 @@ var mkdir = require('mkdir-recursive');
 var path = require('path');
 var program = require('commander');
 var codeg = require('./codegenerator');
+var colors = require('colors');
 
 var libconfig = {};
 try {
