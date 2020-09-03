@@ -50,7 +50,7 @@ if (!releaseName) {
 var appVersion = "";
 
 if (cfg.pid != "" || cfg.requireVer != "") {
-    if (!/^[C,S]\d{3}\.\d{3}\.\d{3}\.\d{2}$/.test(cfg.pid)) throw "AppInfo.pid has wrong format";
+    if (!/^[C,S,D]\d{3}\.\d{3}\.\d{3}\.\d{2}$/.test(cfg.pid)) throw "AppInfo.pid has wrong format";
     if (!/^\d+\.\d+$/.test(cfg.requireVer)) throw "AppInfo.requireVer has wrong format";
 
     releaseName += "_" + cfg.pid;
