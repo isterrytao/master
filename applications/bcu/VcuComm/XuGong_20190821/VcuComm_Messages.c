@@ -73,11 +73,11 @@ void VcuComm_GetStatusMsg_0x444(uint8 *buf, uint16 *Length) {
     /**< 预留 */
     WRITE_BT_UINT16(buf, index, VCUCOMM_MESSAGE_RESERVE_UINT16);
     WRITE_BT_UINT16(buf, index, VCUCOMM_MESSAGE_RESERVE_UINT16);
-    WRITE_BT_UINT8(buf, index, VCUCOMM_MESSAGE_RESERVE_UINT8);
+    WRITE_BT_UINT16(buf, index, VCUCOMM_MESSAGE_RESERVE_UINT16);
     uval = Soc_Get();
     uval = (uint16)SOC_TO_PERCENT(uval);
     WRITE_BT_UINT8(buf, index, uval);
-    WRITE_BT_UINT16(buf, index, VCUCOMM_MESSAGE_RESERVE_UINT16);
+    WRITE_BT_UINT8(buf, index, VCUCOMM_MESSAGE_RESERVE_UINT8);
     *Length = index;
 }
 
