@@ -182,7 +182,7 @@ void UserStrategy_DchgSpOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType 
  * \param level 报警等级
  * \param para 获取到的参数保存位置指针
  */
-void UserStrategy_DchgFbOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
+void UserStrategy_DchgFeedBackCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
 
 /**
  * \brief 放电高压流程启动相关继电器粘连检测接口函数

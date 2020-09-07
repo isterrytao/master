@@ -1113,7 +1113,7 @@ module.exports = {
                 name: "回馈过流",
                 levels: [],
                 cycle:100,
-                levelParaGetFunc: "UserStrategy_DchgFbOverCurrentParaGet",
+                levelParaGetFunc: "UserStrategy_DchgFeedBackCurrentParaGet",
             }, {
                 name: "持续放电过流",
                 levels: [1,2,3,4],

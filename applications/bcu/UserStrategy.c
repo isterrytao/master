@@ -1059,7 +1059,7 @@ void UserStrategy_DchgSpOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType 
     }
 }
 
-void UserStrategy_DchgFbOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+void UserStrategy_DchgFeedBackCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
 {
 #if USERSTRATEGH_DCHG_FB_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
     uint32 temp;
