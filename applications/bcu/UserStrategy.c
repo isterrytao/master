@@ -1832,39 +1832,3 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
     }
     return count;
 }
-
-#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
-static void UserStrategy_LvPowerDown(void)
-{
-    uint16 lv = Statistic_GetBcuLvMax();
-    uint32 nowTime = OSTimeGet();
-    uint32 delay = USERSTRATEGY_LV_POWER_DOWN_TIME;
-    static uint32 lastTime = 0U;
-
-    if (!CHARGECONNECTM_IS_CONNECT())
-    {
-        if (CellDataM_VoltageIsValid(lv) && lv <= (uint16)USERSTRATEGY_LV_POWER_DOWN_VOLT)
-        {
-            if (lastTime == 0U)
-            {
-                lastTime = nowTime;
-            }
-            else
-            {
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
-                {
-                    RuntimeM_RequestPowerDown();
-                }
-            }
-        }
-        else
-        {
-            lastTime = 0U;
-        }
-    }
-    else
-    {
-        lastTime = 0U;
-    }
-}
-#endif
