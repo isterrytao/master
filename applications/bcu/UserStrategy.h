@@ -169,6 +169,22 @@ void UserStrategy_ChgDcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *
 void UserStrategy_DchgOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
 
 /**
+ * \brief 瞬时放电过流报警阈值获取函数
+ *
+ * \param level 报警等级
+ * \param para 获取到的参数保存位置指针
+ */
+void UserStrategy_DchgSpOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
+
+/**
+ * \brief 回馈过流报警阈值获取函数
+ *
+ * \param level 报警等级
+ * \param para 获取到的参数保存位置指针
+ */
+void UserStrategy_DchgFbOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para);
+
+/**
  * \brief 放电高压流程启动相关继电器粘连检测接口函数
  */
 void UserStrategy_DchgHvProcessAdhesiveDetect(void);

@@ -418,6 +418,8 @@ module.exports = {
             ac_chg_oc_type: "CURRENT_OFFSET",
             dc_chg_oc_type: "CURRENT_OFFSET",
             dchg_oc_type: "CURRENT",
+            dchg_sp_type: "CURRENT",
+            dchg_fb_type: "CURRENT",
         },
         lv_protect: {
             en: "STD_OFF",
@@ -1111,6 +1113,7 @@ module.exports = {
                 name: "回馈过流",
                 levels: [],
                 cycle:100,
+                levelParaGetFunc: "UserStrategy_DchgFbOverCurrentParaGet",
             }, {
                 name: "持续放电过流",
                 levels: [1,2,3,4],
@@ -1124,6 +1127,7 @@ module.exports = {
                 name: "瞬时放电过流",
                 levels: [],
                 cycle:100,
+                levelParaGetFunc: "UserStrategy_DchgSpOverCurrentParaGet",
             }, {
                 name: "充电电流异常",
                 levels: [],
