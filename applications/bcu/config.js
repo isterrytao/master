@@ -426,6 +426,7 @@ module.exports = {
             dc_chg_oc_type: "CURRENT_OFFSET",
             dchg_oc_type: "CURRENT",
             dchg_sp_type: "CURRENT",
+            dchg_fb_type: "CURRENT",
         },
         lv_protect: {
             en: "STD_OFF",
@@ -1177,6 +1178,7 @@ module.exports = {
                 name: "回馈过流",
                 levels: [],
                 cycle:100,
+                levelParaGetFunc: "UserStrategy_DchgFeedBackCurrentParaGet",
             }, {
                 name: "持续放电过流",
                 levels: [1,2,3,4],
@@ -1191,10 +1193,6 @@ module.exports = {
                 levels: [1,2,3,4],
                 cycle:100,
                 levelParaGetFunc: "UserStrategy_DchgSpOverCurrentParaGet",
-                events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
-                ],
             }, {
                 name: "充电电流异常",
                 levels: [],

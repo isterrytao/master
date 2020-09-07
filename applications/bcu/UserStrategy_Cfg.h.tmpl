@@ -29,6 +29,7 @@ var mdata = {
     dc_chg_oc_type: cfg.oc_type.dc_chg_oc_type,
     dchg_oc_type: cfg.oc_type.dchg_oc_type,
     dchg_sp_type: cfg.oc_type.dchg_sp_type,
+    dchg_fb_type: cfg.oc_type.dchg_fb_type,
     lv_protect_en: cfg.lv_protect.en,
     lv_protect_level: cfg.lv_protect.level,
     ltv_protect_en: cfg.ltv_protect.en,
@@ -159,6 +160,7 @@ globalInfo.setReturn({processedcfg:processedcfg});
 #define USERSTRATEGH_DC_CHG_OC_TYPE                 USERSTRATEGY_OC_TYPE_<%- mdata.dc_chg_oc_type%> //快充过流配置类型
 #define USERSTRATEGH_DCHG_OC_TYPE                   USERSTRATEGY_OC_TYPE_<%- mdata.dchg_oc_type%> //放电过流配置类型
 #define USERSTRATEGH_DCHG_SP_TYPE                   USERSTRATEGY_OC_TYPE_<%- mdata.dchg_sp_type%> //瞬时放电过流配置类型
+#define USERSTRATEGH_DCHG_FB_TYPE                   USERSTRATEGY_OC_TYPE_<%- mdata.dchg_fb_type%> //回馈过流配置类型
 
 
 /**

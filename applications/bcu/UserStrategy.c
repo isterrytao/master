@@ -1433,6 +1433,76 @@ void UserStrategy_DchgSpOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType 
     }
 }
 
+void UserStrategy_DchgFeedBackCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+{
+#if USERSTRATEGH_DCHG_FB_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+    uint32 temp;
+#endif
+    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
+    Current_CurrentType current;
+
+    current = PowerM_GetCurrent(POWERM_CUR_DCHARGE_FEEDBACK);
+    if (para != NULL)
+    {
+        if (CurrentM_IsValidCurrent(current))
+        {
+            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_FB_OC, level, 0U);
+            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_FB_OC, level, 1U);
+
+#if USERSTRATEGH_DCHG_FB_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
+            triggerThreshold += (uint16)current;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                releaseThreshold += (uint16)current;
+            }
+            else
+            {
+                releaseThreshold = 0U;
+            }
+#elif USERSTRATEGH_DCHG_FB_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+            temp = (uint16)current;
+            temp = temp * triggerThreshold;
+            temp = DIVISION(temp, 1000U);
+            if (temp > 0x7FFFU)
+            {
+                temp = 0x7FFFU;
+            }
+            if (temp == 0U)
+            {
+                temp = CURRENT_100MA_FROM_A(2U);
+            }
+            triggerThreshold = (uint16)temp;
+
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                temp = (uint16)current;
+                temp = temp * releaseThreshold;
+                temp = DIVISION(temp, 1000U);
+                if (temp > 0x7FFFU)
+                {
+                    temp = 0x7FFFU;
+                }
+                if (temp == 0U)
+                {
+                    temp = CURRENT_100MA_FROM_A(2U);
+                }
+            }
+            else
+            {
+                temp = 0U;
+            }
+            releaseThreshold = (uint16)temp;
+#else
+            // do nothing
+#endif
+        }
+        para->triggerThreshold = triggerThreshold;
+        para->releaseThreshold = releaseThreshold;
+        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_FB_OC, level, 2U);
+        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_FB_OC, level, 3U);
+    }
+}
+
 void UserStrategy_DchgHvProcessAdhesiveDetect(void)
 {
     if (RelayMConfigData[RELAYM_FN_POSITIVE_MAIN].GetInstantVoltage != NULL)
@@ -1762,3 +1832,39 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
     }
     return count;
 }
+
+#if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
+static void UserStrategy_LvPowerDown(void)
+{
+    uint16 lv = Statistic_GetBcuLvMax();
+    uint32 nowTime = OSTimeGet();
+    uint32 delay = USERSTRATEGY_LV_POWER_DOWN_TIME;
+    static uint32 lastTime = 0U;
+
+    if (!CHARGECONNECTM_IS_CONNECT())
+    {
+        if (CellDataM_VoltageIsValid(lv) && lv <= (uint16)USERSTRATEGY_LV_POWER_DOWN_VOLT)
+        {
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            else
+            {
+                if (MS_GET_INTERNAL(lastTime, nowTime) >= delay)
+                {
+                    RuntimeM_RequestPowerDown();
+                }
+            }
+        }
+        else
+        {
+            lastTime = 0U;
+        }
+    }
+    else
+    {
+        lastTime = 0U;
+    }
+}
+#endif
