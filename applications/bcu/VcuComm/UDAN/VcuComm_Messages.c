@@ -710,6 +710,12 @@ void VcuComm_GetStatusMsg_0x360(uint8 *buf, uint16 *Length)
             u8val |= (uint8)(16U << 3);
         }
 #endif
+#ifdef RELAYM_FN_HMI
+        if (RELAYM_FN_HMI == temp)
+        {
+            u8val |= (uint8)(12U << 3);
+        }
+#endif
         WRITE_BT_UINT8(buf, index, u8val);
     }
 

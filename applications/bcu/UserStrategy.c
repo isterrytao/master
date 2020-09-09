@@ -151,6 +151,7 @@ void UserStrategy_Init(Async_LooperType *looper)
     if(mode == RUNTIMEM_RUNMODE_NORMAL || mode == RUNTIMEM_RUNMODE_DATA || mode == RUNTIMEM_RUNMODE_CALIBRATE){
         HLSS_Drive(RelayMConfigData[RELAYM_FN_HMI].DriveHSS, HLSS_DRIVE_ON);
     }
+    (void)RelayM_Control(RELAYM_FN_HMI, RELAYM_CONTROL_ON);
 #endif
 
     if (looper != NULL)
