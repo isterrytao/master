@@ -94,6 +94,7 @@ static const UserStrategy_BuzzerAlarmType Alarm_type_Lever1[] = {
     {DIAGNOSIS_ITEM_DCHG_LT, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_DCHG_DT, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_SP_OC, DIAGNOSIS_LEVEL_SECOND},
+    {DIAGNOSIS_ITEM_FB_OC, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_DCHG_OC, DIAGNOSIS_LEVEL_SECOND},
     {DIAGNOSIS_ITEM_LSOC, DIAGNOSIS_LEVEL_FIRST},
     {DIAGNOSIS_ITEM_VOLT_LINE, DIAGNOSIS_LEVEL_SECOND},
@@ -144,13 +145,13 @@ void UserStrategy_Init(Async_LooperType *looper)
 #ifdef RELAYM_FN_HMI
     RuntimeM_RunModeType mode = RuntimeM_GetMode();
 #endif
-
     UserStrategy_innerData.currentIsAllowToPowerOff = TRUE;
 
 #ifdef RELAYM_FN_HMI
     if(mode == RUNTIMEM_RUNMODE_NORMAL || mode == RUNTIMEM_RUNMODE_DATA || mode == RUNTIMEM_RUNMODE_CALIBRATE){
         HLSS_Drive(RelayMConfigData[RELAYM_FN_HMI].DriveHSS, HLSS_DRIVE_ON);
     }
+    (void)RelayM_Control(RELAYM_FN_HMI, RELAYM_CONTROL_ON);
 #endif
 
     if (looper != NULL)
