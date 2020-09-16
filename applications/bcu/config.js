@@ -361,6 +361,7 @@ module.exports = {
             {section:"oc_type", chs: "过流配置类型定义", comments: '"CURRENT", "CURRENT_OFFSET", "PERCENT "'},
             {section:"lv_protect", chs: "放电单体电压低有放电电流时才保护使能"},
             {section:"ltv_protect", chs: "放电总压低有放电电流时才保护使能"},
+            {section:"lv_power_down", chs: "放电单体电压低休眠保护"},
         ],
         ota_tpye: "USERSTRATEGY_REALTIME_OTA",
         buzzer_alarm: {
@@ -417,6 +418,8 @@ module.exports = {
             ac_chg_oc_type: "CURRENT_OFFSET",
             dc_chg_oc_type: "CURRENT_OFFSET",
             dchg_oc_type: "CURRENT",
+            dchg_sp_type: "CURRENT",
+            dchg_fb_type: "CURRENT",
         },
         lv_protect: {
             en: "STD_OFF",
@@ -426,6 +429,16 @@ module.exports = {
             en: "STD_OFF",
             level: "DIAGNOSIS_LEVEL_THIRD",
         },
+        lv_power_down: {
+            notes: [
+                {section: "en", chs: "用户自定义单体电压低休眠策略使能，若配置为使能则启用用户自定义电压低休眠策略", comments: '"STD_ON", "STD_OFF"'},
+                {section: "lv", chs: "电压低阈值,单位mv"},
+                {section: "time", chs: "低电压休眠持续时间,单位ms"},
+            ],
+            en: "STD_OFF",
+            lv: 2800,
+            time: 4 * 60 * 60 * 1000,
+        }
     },
 
     FullCharge: {
@@ -1100,6 +1113,7 @@ module.exports = {
                 name: "回馈过流",
                 levels: [],
                 cycle:100,
+                levelParaGetFunc: "UserStrategy_DchgFeedBackCurrentParaGet",
             }, {
                 name: "持续放电过流",
                 levels: [1,2,3,4],
@@ -1113,6 +1127,7 @@ module.exports = {
                 name: "瞬时放电过流",
                 levels: [],
                 cycle:100,
+                levelParaGetFunc: "UserStrategy_DchgSpOverCurrentParaGet",
             }, {
                 name: "充电电流异常",
                 levels: [],
