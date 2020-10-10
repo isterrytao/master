@@ -251,6 +251,10 @@ static const Modbus_ReadRegionType x04registerTable[] = {
     {1050U, 1080U, MDBSgetRelaystate},
 };
 
+static const Modbus_WriteRegionType x06registerTable[] = {
+    {3001U, 3001U, modbus_ctrl_mos},
+};
+
 static const Modbus_WriteRegionType x16registerTable[] = {
     {3001U, 3001U, modbus_ctrl_mos},
 };
@@ -265,6 +269,7 @@ const Modbus_Cfg ModbusCfg = {
     {x02registerTable, (uint8)ARRAY_SIZE(x02registerTable), 16U}, //Modbus_RegistersTableType Modbus_X02registerTable;
     {x03registerTable, (uint8)ARRAY_SIZE(x03registerTable), 1U}, //Modbus_RegistersTableType odbus_X03registerTable;
     {x04registerTable, (uint8)ARRAY_SIZE(x04registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X04registerTable;
+    {x06registerTable, (uint8)ARRAY_SIZE(x06registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X06registerTable;
     {x16registerTable, (uint8)ARRAY_SIZE(x16registerTable), 1U}, //Modbus_RegistersTableType *Modbus_X16registerTable;
 };
 
