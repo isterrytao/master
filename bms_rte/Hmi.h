@@ -43,6 +43,7 @@ typedef struct {
     Modbus_ReadTableType Modbus_X02registerTable;/*02功能码的处理结构体*/
     Modbus_ReadTableType Modbus_X03registerTable;/*03功能码的处理结构体*/
     Modbus_ReadTableType Modbus_X04registerTable;/*04功能码的处理结构体*/
+    Modbus_WriteTableType Modbus_X06registerTable;/*06功能码的处理结构体*/
     Modbus_WriteTableType Modbus_X16registerTable;/*16功能码的处理结构体*/
 } Modbus_Cfg;
 
