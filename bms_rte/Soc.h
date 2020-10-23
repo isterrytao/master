@@ -93,6 +93,7 @@ typedef struct{
     uint8 start; /**< 启动标志 */
     uint8 clrEeepIntegralFlag; /**< 增强EEPROM积分值清零标志 */
     App_SocType soc; /**< 当前SOC */
+    App_CapType leftCap; /**< 剩余容量 */
     Soc_IntegralType integral; /**< 积分值 精度：100UAs/bit */
     Soc_IntegralType rtcRamIntegralLast; /**< 上次记录RTC RAM中存储的积分值 */
     uint32 lastTime; /**< 上次积分时间 */
@@ -108,6 +109,8 @@ typedef struct{
     uint32 DchgPowerIntegral; /**< 放电能量积分值 精度：1wh/bit */
     uint32 thisCumuChgPower; /**< 本次上电充电能量累计 精度：与配置精度一致 */
     uint32 thisCumuDchgPower; /**< 本次上电放电能量累计 精度：与配置精度一致 */
+    App_CapType chgHoldSocLeftCap; /**< 充电保持SOC值对应的剩余容量值 */
+    Soc_IntegralType chgHoldSocIntegral; /**< 充电保持SOC值对应的剩余容量小数值 */
 }Soc_InnerDataType;
 
 
