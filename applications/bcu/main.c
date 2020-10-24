@@ -475,6 +475,8 @@ static void start_task(void *pdata) {
             mode == RUNTIMEM_RUNMODE_CALIBRATE ||
             mode == RUNTIMEM_RUNMODE_DTU) {
         Statistic_Init(&extLooper);
+    } else {
+        Statistic_Init(NULL);
     }
     CellDataM_Init();
     if (isNeedStartSampleTask()) {
