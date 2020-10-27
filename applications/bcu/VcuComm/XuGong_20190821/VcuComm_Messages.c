@@ -34,6 +34,7 @@
 #include "VcuComm_Types.h"
 #include "PduR_LCfg.h"
 #include "Diagnosis.h"
+#include "RelayM_Lcfg.h"
 #if ( VCUCOMM_DEV_ERROR_DETECT == STD_ON )
 #include "Modules.h"
 #endif
