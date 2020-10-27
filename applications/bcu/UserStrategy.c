@@ -627,8 +627,9 @@ static void UserStrategy_ManualPowerDownCheck(void)
     static uint32 lastTime = 0U;
     static boolean is_manual = FALSE;
     uint32 nowTime = OSTimeGet();
+    RuntimeM_RunModeType mode = RuntimeM_GetMode();
 
-    if (nowTime >= 10000U)
+    if (nowTime >= 10000U && (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL))
     {
         if (USERSTRATEGY_IS_MANUAL_POWER_DOWN())
         {
@@ -1386,8 +1387,9 @@ static void UserStrategy_LvPowerDown(void)
     uint32 nowTime = OSTimeGet();
     uint32 delay = USERSTRATEGY_LV_POWER_DOWN_TIME;
     static uint32 lastTime = 0U;
+    RuntimeM_RunModeType mode = RuntimeM_GetMode();
 
-    if (!CHARGECONNECTM_IS_CONNECT())
+    if (!CHARGECONNECTM_IS_CONNECT() && (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL))
     {
         if (CellDataM_VoltageIsValid(lv) && lv <= (uint16)USERSTRATEGY_LV_POWER_DOWN_VOLT)
         {
