@@ -1741,8 +1741,9 @@ static void UserStrategy_LvPowerDown(void)
     uint32 nowTime = OSTimeGet();
     uint32 delay = USERSTRATEGY_LV_POWER_DOWN_TIME;
     static uint32 lastTime = 0U;
+    RuntimeM_RunModeType mode = RuntimeM_GetMode();
 
-    if (!CHARGECONNECTM_IS_CONNECT())
+    if (!CHARGECONNECTM_IS_CONNECT() && (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL))
     {
         if (CellDataM_VoltageIsValid(lv) && lv <= (uint16)USERSTRATEGY_LV_POWER_DOWN_VOLT)
         {
