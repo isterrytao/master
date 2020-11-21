@@ -48,6 +48,7 @@ typedef struct{
     isAllowCalibFuncPtr isAllowFuncPtr; /**< 是否允许校正函数指针 */
     boolean temperature_linear; /**< 温度是否线性查表 */
     App_VoltageType diffVoltMin; /**< 允许校正最小压差 */
+    boolean chargeReset; /**< 是否充电模式重置 */
 }SocOcvCalib_ConfigType;
 
 /**
