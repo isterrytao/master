@@ -23,6 +23,10 @@
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
+#ifndef LONG_IS_OVERFLOW
+#define LONG_IS_OVERFLOW(v_old, v_new) ((!((unsigned long)(v_new) & 0x80000000UL)) && ((unsigned long)(v_old) & 0x80000000UL))
+#endif
+
 #define CPU_TYPE_8        8
 #define CPU_TYPE_16       16
 #define CPU_TYPE_32       32
