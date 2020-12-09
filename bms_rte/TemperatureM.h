@@ -20,6 +20,7 @@
 
 #include "Std_Types.h"
 #include "Charge_Types.h"
+#include "Async_Looper.h"
 
 
 #define TEMPERATUREM_ONLY_HEAT_CURRENT_DEF  STD_ON
@@ -83,15 +84,59 @@ typedef struct{
     TemperatureM_RefrigerationConfigType dchgRefrigerationPara; /**< 放电制冷参数 */
 }TemperatureM_ConfigType;
 
+/**
+ * \brief 热失控管理配置参数类型
+ */
+typedef struct{
+    uint8 limitTemperature; /**< 触发温度 */
+    uint8 deltaTemperature; /**< 触发温差 */
+    uint8 temperatureRise; /**< 触发温升 */
+    uint16 temperatureRiseConditionDelay; /**< 触发温升延时 10ms/bit */
+    uint16 temperatureRiseValidDelay; /**< 温升生效时间 10ms/bit */
+    uint16 voltageDrop; /**< 单体压降, 单位0.1%/s */
+    uint16 voltageDropConditionDelay; /**< 触发压降延时 10ms/bit */
+    uint16 voltageDropValidDelay; /**< 压降生效时间 10ms/bit */
+}ThermalRunaway_CalibConfigType;
+
+typedef struct{
+    uint8 currentRise;
+    uint8 maxRise;
+    uint8 lastTemp;
+    uint32 lastTime;
+    boolean riseMark;
+    boolean riseCondition;
+    uint32 riseConditionTime;
+    uint16 riseConditionValue;
+    boolean overTempCondition;
+    uint32 overTempConditionTime;
+    boolean deltaTempCondition;
+    uint32 deltaTempConditionTime;
+}TemperatureM_ThermalTempDataType;
+
+typedef struct{
+    uint16 currentDrop;
+    uint16 maxDrop;
+    uint16 lastVolt;
+    uint32 lastTime;
+    boolean dropMark;
+    boolean dropCondition;
+    uint32 dropConditionTime;
+    uint16 dropconditionValue;
+}TemperatureM_ThermalVoltDataType;
+
 typedef struct{
     TemperatureM_HeatStateType heatState; /**< 加热状态 */
     TemperatureM_RefrigerationStateType refrigerationState; /**< 制冷状态 */
+    ThermalRunaway_CalibConfigType thermalPara;
+    uint16 thermalDiagResults;
+    TemperatureM_ThermalTempDataType thermalTempData;
+    TemperatureM_ThermalVoltDataType thermalVoltData;
 }TemperatureM_InnerDataType;
 
 /**
  * \brief 温度管理初始化
  */
-void TemperatureM_Init(void);
+void TemperatureM_Init(Async_LooperType *looper);
 
 /**
  * \brief 设置加热状态
@@ -218,6 +263,14 @@ uint16 TemperatureM_GetDchgHeatTemperatureMax(void);
  * \return 当前最大加热温差
  */
 uint16 TemperatureM_GetDchgHeatDeltaTemperatureMax(void);
+
+/**
+ * \brief 热失控故障
+ * \details 国标热失控故障判断
+ *
+ * \return 0-无故障 1-有故障
+ */
+uint16 TemperatureM_IsThermalRunawayFault(void);
 
 #endif
 

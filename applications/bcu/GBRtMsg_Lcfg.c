@@ -904,6 +904,7 @@ static const Diagnosis_ItemType UnfixedAlarmList[] = {
 
     DIAGNOSIS_ITEM_SUPPLY_VOL_ABNOMAL, /**< 供电电压异常 */
     DIAGNOSIS_ITEM_CRASH_FAULT, /**< 碰撞故障 */
+    DIAGNOSIS_ITEM_THERMAL_RUNAWAY, /**< 热失控 */
 };
 
 static uint32 unfixed_get_cycle(void) {

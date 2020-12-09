@@ -103,7 +103,9 @@ var diagnosisitems = [
     {name:"电池数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_BAT_NUM",getval:"Statistic_ActureBatNumIsNotMatch", valueReady:"CellDataM_AllSlaveVoltageIsValid"},
     {name:"温感数不匹配", diagnosisType:"HIGH", condition:"ALL", def:"ACT_TMP_NUM", getval:"Statistic_ActureTemperatureNumIsNotMatch", valueReady:"CellDataM_AllSlaveTemperatureIsValid"},
     {name:"供电电压异常", diagnosisType:"HIGH", condition:"ALL", def:"SUPPLY_VOL_ABNOMAL", getval:"HWDiagnosis_SupplyVoltageIsAbnomal"},
-    {name:"碰撞故障", diagnosisType:"HIGH", condition:"ALL", def:"CRASH_FAULT",altdef:["NONE_CALIBRATE_STOP"], getval:"UserStrategy_GetCrashFault"},
+    {name:"碰撞故障", diagnosisType:"HIGH", condition:"ALL", def:"CRASH_FAULT", getval:"UserStrategy_GetCrashFault"},
+    {name:"热失控", diagnosisType:"HIGH", condition:"ALL", def:"THERMAL_RUNAWAY", altdef:["NONE_CALIBRATE_STOP"], getval:"TemperatureM_IsThermalRunawayFault"},
+
 ];
 
 var noneCalibrateStart = '电压排线脱落';
