@@ -26,6 +26,7 @@
 #include "SocDiagCalib.h"
 #include "Charge_Types.h"
 #include "RuntimeM.h"
+#include "TemperatureM.h"
 
 #define PARAMETERM_DEV_ERROR_DETECT         STD_OFF
 
@@ -147,6 +148,7 @@ typedef struct{
     Soc_CalibConfigType SocPara; /**< SOC标定参数 */
     SocDiagCalib_CalibConfigType SocDiagPara; /**< SOC诊断校正参数 */
     Charge_CalibConfigInfoType ChargePara; /**< 充电参数 */
+    ThermalRunaway_CalibConfigType ThermalRunawayPara; /**< 热失控策略参数 */
 }ParameterM_CalibParaType;
 
 /**
