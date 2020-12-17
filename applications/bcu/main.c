@@ -67,6 +67,10 @@
 #include "BridgeInsu.h"
 #include "LimitProtect.h"
 #include "SlaveProcessor.h"
+#include "TemperatureM.h"
+#ifdef UPC6000
+#include "SystemConnection_Lcfg.h"
+#endif
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
 #include "Rs485Shell.h"
 #endif
@@ -534,6 +538,7 @@ static void start_task(void *pdata) {
         ChargeConnectM_Init(&extLooper);
         FullCharge_Init(&extLooper);
         PrechargeM_Init(&extLooper);
+        TemperatureM_Init(&extLooper);
         (void)Hmi_Init(&extLooper, 9600UL);
     }
     UserStrategy_Init(&extLooper);
