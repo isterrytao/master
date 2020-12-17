@@ -505,6 +505,26 @@
             "deltaTemperatureOff_comment": "关闭温差,℃",
             "temperatureOffDelay_comment": "关闭温度延时, 秒",
             "deltaTemperatureOffDelay_comment": "关闭温差延时, 秒"
+        },
+        {
+            "name": "热失控",
+            "limitTemperature": 65,
+            "deltaTemperature": 20,
+            "temperatureRise": 2,
+            "temperatureRiseConditionDelay": 5,
+            "temperatureRiseValidDelay": 180,
+            "voltageDrop": 25,
+            "voltageDropConditionDelay": 5,
+            "voltageDropValidDelay": 180,
+
+            "limitTemperature_comment": "触发温度, ℃",
+            "deltaTemperature_comment": "触发温差, ℃",
+            "temperatureRise_comment": "触发温升, ℃/s",
+            "temperatureRiseConditionDelay_comment": "触发温升延时, 秒",
+            "temperatureRiseValidDelay_comment": "温升生效时间, 秒",
+            "voltageDrop_comment": "单体压降, 单位1%/s",
+            "voltageDropConditionDelay_comment": "触发压降延时, 秒",
+            "voltageDropValidDelay_comment": "压降生效时间, 秒"
         }
     ]
 }

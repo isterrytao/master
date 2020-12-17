@@ -88,6 +88,7 @@ var diagnosisitems = [
     {name:"温感数不匹配", mapper: nomapper, default:defaultDefault, calibrate: false},
     {name:"供电电压异常", mapper: nomapper, default:defaultDefault, calibrate: false},
     {name:"碰撞故障", mapper: nomapper, default:defaultDefault, calibrate: false},
+    {name:"热失控", mapper: nomapper, default:defaultDefault, calibrate: false},
 ]
 
 var calibrateparam = JSON.parse(JSON.stringify(cfg));
@@ -125,6 +126,20 @@ var tempmparammapper = x => {
     }
 }
 
+var thermalRunawaymparammapper = x => {
+    return {
+        name: x.name,
+        limitTemperature: Math.round(x.limitTemperature+50),
+        deltaTemperature: Math.round(x.deltaTemperature+50),
+        temperatureRise: Math.round(x.temperatureRise+50),
+        temperatureRiseConditionDelay: Math.round(x.temperatureRiseConditionDelay*100),
+        temperatureRiseValidDelay: Math.round(x.temperatureRiseValidDelay*100),
+        voltageDrop: Math.round(x.voltageDrop*10),
+        voltageDropConditionDelay: Math.round(x.voltageDropConditionDelay*100),
+        voltageDropValidDelay: Math.round(x.voltageDropValidDelay*100),
+    }
+}
+
 
 var EeepParaDefault = {
         totalCap: globalInfo.BatteryInfo.totalCap,
@@ -135,6 +150,7 @@ var SocEfficiency = calibrateparam.SocEfficiency;
 var SocCalibParam = calibrateparam.SocCalibParam;
 var DCChargeParam = calibrateparam.ChargeParam.find(x=>x.name == "直流快充");
 var ACChargeParam = calibrateparam.ChargeParam.find(x=>x.name == "交流慢充");
+var ThermalRunaway = thermalRunawaymparammapper(calibrateparam.TemperatureMParam.find(x=>x.name == "热失控"));
 var TemperatureMPara =  {
         ChargeHeat: tempmparammapper(calibrateparam.TemperatureMParam.find(x=>x.name == "充电加热")),
         DischargeHeat: tempmparammapper(calibrateparam.TemperatureMParam.find(x=>x.name == "放电加热")),
@@ -335,6 +351,16 @@ static const AppParameterM_CalibParaType AppParameterM_CalibParaConfigInfo = {
             <%- DCChargeParam.chargeCurrentMin *10 %>U, /**< chargeCurrentMin: 最小允许充电电流(截止充电电流) */
             <%- DCChargeParam.fullChargeRelTotalVolt * 10 %>U, /**< fullChargeRelTotalVolt: 满充释放总压 */ /*lint !e524 */
         },
+    },
+    {/* <%- JSON.stringify(ThermalRunaway) %> */
+        <%- ThermalRunaway.limitTemperature %>U, /**< 触发温度 */
+        <%- ThermalRunaway.deltaTemperature %>U, /**< 触发温差 */
+        <%- ThermalRunaway.temperatureRise %>U, /**< 触发温升 */
+        <%- ThermalRunaway.temperatureRiseConditionDelay %>U, /**< 触发温升延时 */
+        <%- ThermalRunaway.temperatureRiseValidDelay %>U, /**< 温升生效时间 */
+        <%- ThermalRunaway.voltageDrop %>U, /**< 单体压降 */
+        <%- ThermalRunaway.voltageDropConditionDelay %>U, /**< 触发压降延时 */
+        <%- ThermalRunaway.voltageDropValidDelay %>U, /**< 压降生效时间 */
     },
 },
 {
