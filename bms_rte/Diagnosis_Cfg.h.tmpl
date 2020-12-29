@@ -125,6 +125,10 @@ for (var index = 0; index < diagnosisitems.length; index++) {
     var item = diagnosisitems[index];
     var cfgItem = cfg.configs.find(x=>x.name == item.name);
     var enableFlag = cfgItem ? cfgItem.levels.toLevelMask() : 0;
+    var reportFlag = 15;
+    if (cfgItem && cfgItem.report_levels) {
+        reportFlag = cfgItem.report_levels.toLevelMask();
+    }
     var startDiagnosis = {};
     if (cfgItem && cfgItem.startDiagnosis) {
         startDiagnosis = cfgItem.startDiagnosis;
@@ -151,6 +155,7 @@ for (var index = 0; index < diagnosisitems.length; index++) {
         conditionFlag: item.condition,
         diagnosisType: item.diagnosisType,
         enableFlag: enableFlag,
+        reportFlag: reportFlag,
         itemDef: item.def,
         itemDefVal: (index >= noneCalibrateStartIndex) ? index - noneCalibrateStartIndex + 128 : index,
         itemAltdef: item.hasOwnProperty('altdef') ? item.altdef : [],
