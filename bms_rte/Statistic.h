@@ -131,10 +131,17 @@ typedef enum{
 	STATISTIC_TV_TYPE_SAMPLE_ONLY, /**< 仅使用采样总压类型 */
 }Statistic_TvTypeType;
 
+/**
+ * \brief 充放电计时状态条件函数接口类型
+ */
+typedef boolean (*isTimingConditionFuncPtr)(void);
+
 typedef struct{
 	Statistic_TvTypeType prior_tv_type; /**< 优先使用总压类型 */
 	uint8 cumuChgTimeEnable; /**< 累计充电时间使能 */
 	uint8 cumuDchgTimeEnable; /**< 累计放电时间使能 */
+    isTimingConditionFuncPtr isChgStatusFuncPtr;/**< 是否充电计时状态函数指针 */
+    isTimingConditionFuncPtr isDchgStatusFuncPtr;/**< 是否放电计时状态函数指针 */
 }Statistic_ConfigInfoType;
 
 #pragma pop
