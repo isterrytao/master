@@ -19,5 +19,7 @@ const Statistic_ConfigInfoType Statistic_ConfigInfo = {
 #endif
     STD_ON, /**< cumuChgTimeEnable: 累计充电时间使能 */
     STD_ON, /**< cumuDchgTimeEnable: 累计放电时间使能 */
+    NULL, /**< isChgStatusFuncPtr:是否充电开启计时函数指针 */
+    NULL, /**< isDchgStatusFuncPtr:是否放电开启计时函数指针 */
 };
 
