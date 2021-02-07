@@ -51,9 +51,11 @@ typedef enum{
  * \brief 均衡类型定义
  */
 typedef enum{
-    BALANCE_CHARGE_BALANCE, /**< 充电均衡 */
-    BALANCE_STATIC_BALANCE, /**< 静态均衡 */
-    BALANCE_REMOTE_BALANCE, /**< 远程均衡 */
+    BALANCEM_TYPE_NONE, /*无均衡*/
+    BALANCEM_TYPE_CHARGE_BALANCE, /**< 充电均衡 */
+    BALANCEM_TYPE_STATIC_BALANCE, /**< 静态均衡 */
+    BALANCEM_TYPE_REMOTE_BALANCE, /**< 远程均衡 */
+    BALANCEM_TYPE_FORCE_BALANCE, /**< 强控命令 */
 }BalanceM_BalanceTypeType;
 
 typedef enum{
@@ -93,18 +95,10 @@ typedef struct{
 }BalanceM_ConfigType;
 
 /**
- * \brief 均衡控制命令类型定义
- */
-typedef enum{
-    BALANCEM_COMMAND_NORMAL, /**< 正常策略命令 */
-    BALANCEM_COMMAND_FORCE, /**< 强控命令 */
-}BalanceM_CommandTypeType;
-
-/**
  * \brief 均衡控制命令参数类型定义
  */
 typedef struct{
-    BalanceM_CommandTypeType type; /**< 均衡命令类型 */
+    BalanceM_BalanceTypeType type; /**< 均衡命令类型 */
     uint8 command[BALANCEM_BALANCE_COMMAND_BUFFER_SIZE]; /**< 均衡开启命令缓存，存放均衡电池编号 */
 }BalanceM_CommandInfoType;
 
@@ -134,14 +128,20 @@ void BalanceM_RegisterLooper(Async_LooperType *looper);
 void BalanceM_Deinit(void);
 
 /**
+ * /brief 均衡管理模块处于远程均衡状态
+ *
+ * return TRUE-是  FALSE-否
+ */
+boolean BalanceM_IsInRemoteBalanceState(void);
+
+/**
  * \brief 更新从机均衡控制状态
  * \details 当此从机不在强控均衡状态下，可更新此从机正常均衡控制状态，由内网通信主动获取此状态来控制从机均衡
  *
  * \param SlaveNum 从机号
- * \param DataPtr 从机内均衡控制电池编号缓存
- * \param Length 缓存长度
+ * \param DataPtr 从机内均衡控制信息
  */
-void BalanceM_SlaveBalanceDrive(App_SlaveIdType SlaveNum, const uint8 *DataPtr, uint8 Length);
+void BalanceM_SlaveBalanceDrive(App_SlaveIdType SlaveNum, const BalanceM_CommandInfoType *DataPtr);
 
 /**
  * \brief 更新从机均衡强制控制状态
@@ -210,6 +210,11 @@ void InternalComm_GetSlaveBalanceBitmapSendData_Cbk(App_SlaveIdType SlaveNum, In
  */
 void BalanceM_RxBalanceNewStatusBitmapIndication(App_SlaveIdType SlaveNum, const uint8 *DataPtr, uint16 Length);
 
+/**
+ * \brief 是否远程均衡
+ * \return 0-本地均衡 1-远程均衡
+ */
+const uint8 *BlanceM_IsRemoteBalancePtr(void);
 #endif
 
 /**

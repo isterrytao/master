@@ -213,6 +213,7 @@ typedef struct {
 #define MSG_LENGTH_CUMU_INFO           (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(powerInfo))
 #define MSG_LENGTH_GB32960_SUPPORT_CMDID  (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId) + GB32960_SUPPORT_COMMAND_NUMBER)
 #define MSG_LENGTH_DEVICE_CHADISCHATIME   (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(chargeDischargeTime))
+#define MSG_LENGTH_BALANCE2_STATUS     (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U + 1U/*LOCAL/REMOTE*/)
 
 
 static GBRt_MsgBufferWithHeartbeat headerBufferWithHeartbeat;
@@ -549,11 +550,16 @@ static void fillBalanceStatus(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.balanceStatus.totalCellNum = SYSTEM_BATTERY_CELL_NUM;
 }
 
-static const GB32960_CopySegmentType copySegmentsBalanceStatus[] = {
+// static const GB32960_CopySegmentType copySegmentsBalanceStatus[] = {
+//     {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
+//     {1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U, PTR_TYPE_GET_DATA, {BalanceM_GetBalanceStatusPtr}},
+// };
+
+static const GB32960_CopySegmentType copySegmentsBalance2Status[] = {
     {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus), 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U, PTR_TYPE_GET_DATA, {BalanceM_GetBalanceStatusPtr}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U, 1U + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U + 1U, PTR_TYPE_GET_DATA, {BlanceM_IsRemoteBalancePtr}},
 };
-
 
 static Diagnosis_LevelType alarms[DIAGNOSIS_ITEM_DEFAULT_NUM];
 static uint8 alaramLengthCaculated = 0U;
@@ -638,7 +644,8 @@ const GB32960_RTMessageItemType intervalData[] = {
     {0x09U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillCellTemperatures, copySegmentsCellTemperatures, (uint8)ARRAY_SIZE(copySegmentsCellTemperatures)},
     {0x9BU, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_PEAK_DATA, NULL, (GB32960_FillMessageFuncType)fillCellPeakData, copySegmentsCellPeakData, (uint8)ARRAY_SIZE(copySegmentsCellPeakData)},
     {0x96U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DTU_STATUS, NULL, (GB32960_FillMessageFuncType)fillDtuStatus, copySegmentsDtuStatus, (uint8)ARRAY_SIZE(copySegmentsDtuStatus)},
-    {0x86U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalanceStatus, (uint8)ARRAY_SIZE(copySegmentsBalanceStatus)},
+    // {0x86U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalanceStatus, (uint8)ARRAY_SIZE(copySegmentsBalanceStatus)},
+    {0x9CU, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE2_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalance2Status, (uint8)ARRAY_SIZE(copySegmentsBalance2Status)},
     {0x99U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copySegmentsChargerStatus, (uint8)ARRAY_SIZE(copySegmentsChargerStatus)},
     {0x87U, TRUE, LEN_TYPE_GET_LENGTH, 0U, getAlarmLength, (GB32960_FillMessageFuncType)fillAlarmStatus, copySegmentsAlarmStatus, (uint8)ARRAY_SIZE(copySegmentsAlarmStatus)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}

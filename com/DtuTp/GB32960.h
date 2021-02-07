@@ -50,6 +50,7 @@ typedef struct {
     Std_ReturnType (*tcpTransmit)(uint16 length, uint16 (*CopyData)(uint8 *buf, uint16 len), void (*TxConfirm)(NotifResultType Result));
     Std_ReturnType (*tcpDisconnect)(void (*ack)(Std_ReturnType Result));
     uint32 rtMessageInterval;
+    uint32 rtMessageAlarmIntervals[4];
 } GB32960_ConfigType;
 
 
@@ -131,6 +132,7 @@ Std_ReturnType DtuTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType *TpTxInf
 extern const GB32960_ConfigType GB32960ConfigData;
 boolean GB32960_BalanceRemoteIsConnect(void);
 const uint8 *GB32960_GetBalanceRemote(void);
+uint16 GB32960_GetBalnceRemoteLength(void);
 boolean GB32960_IsDchgAllowed(void);
 
 #endif

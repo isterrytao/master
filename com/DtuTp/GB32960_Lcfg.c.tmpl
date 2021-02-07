@@ -11,6 +11,16 @@ var apn = "";
 if (cfg.hasOwnProperty('apn')) {
     apn = cfg.apn;
 }
+
+var rtMsgAlarmIntervals = "{";
+rtMsgAlarmIntervals += Math.round(cfg.rtmsg_alarm_intervals[0] * 1000);
+rtMsgAlarmIntervals += "UL, ";
+rtMsgAlarmIntervals += Math.round(cfg.rtmsg_alarm_intervals[1] * 1000);
+rtMsgAlarmIntervals += "UL, ";
+rtMsgAlarmIntervals += Math.round(cfg.rtmsg_alarm_intervals[2] * 1000);
+rtMsgAlarmIntervals += "UL, ";
+rtMsgAlarmIntervals += Math.round(cfg.rtmsg_alarm_intervals[3] * 1000);
+rtMsgAlarmIntervals += "UL}";
 %>
 
 #include "GB32960.h"
@@ -31,6 +41,7 @@ const GB32960_ConfigType GB32960ConfigData = {
     GB32960_TCP_TRANSMIT,    // Std_ReturnType (*tcpTransmit)(uint16 length, uint16 (*)(uint8 *, uint16), void (*)(NotifResultType));
     GB32960_TCP_DISCONNECT,    // Std_ReturnType (*tcpDisconnect)(void);
     <%- rtMsgInterval %>UL,    // uint32 rtMessageInterval;
+    <%- rtMsgAlarmIntervals %>,    // uint32 rtMessageAlarmIntervals[4];
 };
 
 
