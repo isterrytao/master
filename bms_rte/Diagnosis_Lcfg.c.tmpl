@@ -21,6 +21,7 @@
 #include "HWDiagnosis.h"
 #include "CellDataM.h"
 #include "EL.h"
+#include "GBRtMsg.h"
 
 extern Diagnosis_LevelsStatusType Diagnosis_LevelsStatus[];
 
@@ -30,7 +31,18 @@ extern Diagnosis_LevelsStatusType Diagnosis_LevelsStatus[];
 <%for (var cfg of globalInfo.Diagnosis.processedcfg) {%>
 /* <%- cfg.name %> */<%
     if (!cfg.events || cfg.events.length == 0) {%>
-#define Diagnosis_<%- cfg.itemDef %>DefaultEventConfig NULL
+static const Diagnosis_DefaultEventCbkItemType Diagnosis_<%- cfg.itemDef %>DefaultEventConfig[] = {
+    {
+        DIAGNOSIS_EVENT_MASK_ASSERT, /**< eventMask 关心的事件 */
+        0xFU, /**< levelMask 关心的级别 */
+        GBRtMsg_UpdateDtuSendIntervalCbk, /**< cbk 回调函数 */
+    },
+    {
+        0U | DIAGNOSIS_EVENT_MASK_DEASSERT, /**< eventMask 关心的事件 */
+        0xFU, /**< levelMask 关心的级别 */
+        GBRtMsg_UpdateDtuSendIntervalCbk, /**< cbk 回调函数 */
+    },
+};
 <%
         continue;
     }
@@ -43,6 +55,16 @@ static const Diagnosis_DefaultEventCbkItemType Diagnosis_<%- cfg.itemDef %>Defau
         <%- event.action %>, /**< cbk 回调函数 */
     },<%
     }%>
+    {
+        DIAGNOSIS_EVENT_MASK_ASSERT, /**< eventMask 关心的事件 */
+        0xFU, /**< levelMask 关心的级别 */
+        GBRtMsg_UpdateDtuSendIntervalCbk, /**< cbk 回调函数 */
+    },
+    {
+        0U | DIAGNOSIS_EVENT_MASK_DEASSERT, /**< eventMask 关心的事件 */
+        0xFU, /**< levelMask 关心的级别 */
+        GBRtMsg_UpdateDtuSendIntervalCbk, /**< cbk 回调函数 */
+    },
 };
 <%
 }%>
@@ -64,7 +86,7 @@ for (var cfg of globalInfo.Diagnosis.processedcfg) {%>
         <%-cfg.getDataFunc%>, /**< getDataFunc: 诊断数据状态获取函数 */
         <%-cfg.isvalidFunc%>, /**< DataIsvalidFunc: 数据是否有效函数指针 */
         <%-cfg.levelParaGetFunc%>, /**< levelParaGetFunc: 报警参数获取函数,使用此函数后标定及配置参数将无效 */
-        <%- cfg.events? cfg.events.length:0 %>U, /* defaultEventCbkNum: 默认事件回调事件个数 */
+        <%- cfg.events? cfg.events.length + 2:2 %>U, /* defaultEventCbkNum: 默认事件回调事件个数 */
         Diagnosis_<%-cfg.itemDef%>DefaultEventConfig, /**< defaultEvent: 默认事件列表 */
     },<%
     i++;

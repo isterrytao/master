@@ -2086,6 +2086,8 @@ module.exports = {
         apn: "",
         server: "dtu.udantech.com:30097",
         rtmsg_interval: 30,
+        /* 发生故障时故障等级对应发送周期,单位S*/
+        rtmsg_alarm_intervals: [5, 3, 2, 2],
     },
 
     /* DtuTp的配置, 目前只支持UDS的物理寻址数据连接 */

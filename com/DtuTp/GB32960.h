@@ -35,6 +35,10 @@ typedef struct {
 #define GB32960_ACKFLAG_VIN_DUPLICATED  0x03U
 #define GB32960_ACKFLAG_CMD             0xFEU
 
+#define NOT_FOTA_COMMAND            0U
+#define NORMAL_FOTA_COMMAND         1U
+#define FORCE_FOTA_COMMAND          2U
+
 #define GB32960_REMOTE_DISABLE_VALUE    0x56ABU
 
 typedef struct {
@@ -50,6 +54,7 @@ typedef struct {
     Std_ReturnType (*tcpTransmit)(uint16 length, uint16 (*CopyData)(uint8 *buf, uint16 len), void (*TxConfirm)(NotifResultType Result));
     Std_ReturnType (*tcpDisconnect)(void (*ack)(Std_ReturnType Result));
     uint32 rtMessageInterval;
+    uint32 rtMessageAlarmIntervals[4];
 } GB32960_ConfigType;
 
 
@@ -97,7 +102,7 @@ typedef struct {
 } GB32960_PACKED GB32960_CommandHeaderType;
 
 
-#define GB32960_SUPPORT_COMMAND_NUMBER 5U
+#define GB32960_SUPPORT_COMMAND_NUMBER 6U
 extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);
@@ -118,6 +123,8 @@ void GB32960_Init(Async_LooperType *looper, boolean isRmoteDcm);
 void GB32960_TcpConnectAck(Std_ReturnType result);
 void GB32960_TcpDisconnectAck(Std_ReturnType result);
 void GB32960_StopRtMessage(void);
+void GB32960_TaskStop(void);
+void GB32960_TaskRecover(void);
 
 BufReq_ReturnType GB32960_StartOfReception(PduLengthType length);
 BufReq_ReturnType GB32960_CopyRxData(const uint8 *dat, PduLengthType length);
@@ -131,6 +138,12 @@ Std_ReturnType DtuTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType *TpTxInf
 extern const GB32960_ConfigType GB32960ConfigData;
 boolean GB32960_BalanceRemoteIsConnect(void);
 const uint8 *GB32960_GetBalanceRemote(void);
+uint16 GB32960_GetBalnceRemoteLength(void);
 boolean GB32960_IsDchgAllowed(void);
+uint8 GB32960_FotaCommandGet(void);
+void GB32960_FotaCommandSet(uint8 flag);
+const char *GB32960_FotaPackageUrlGet(void);
+boolean GB32960_IsRmoteDcm(void);
+boolean GB32960_IsLoggedIn(void);
 
 #endif

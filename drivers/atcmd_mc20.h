@@ -34,6 +34,9 @@ typedef struct ATCMDMC20_PrivateData {
     uint8 mIPDataRxIndex;
     uint8 *head_recv_buf;
     void (*serial_recv_func)(struct ATCMDMC20_PrivateData *data, uint8 b);
+    char *ird_recv_versions_buf;
+    uint8 ird_recv_versions_len;
+    uint8 ird_recv_versions_index;
 } ATCMDMC20_PrivateDataType;
 
 
