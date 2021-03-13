@@ -68,6 +68,7 @@
 #include "LimitProtect.h"
 #include "SlaveProcessor.h"
 #include "TemperatureM.h"
+#include "DtuModelFota.h"
 #ifdef UPC6000
 #include "SystemConnection_Lcfg.h"
 #endif
@@ -543,6 +544,7 @@ static void start_task(void *pdata) {
     }
     UserStrategy_Init(&extLooper);
     LimitProtect_Init(&extLooper);
+    DtuModelFota_Init(&extLooper);
 
     HardwareSn_Init();
 

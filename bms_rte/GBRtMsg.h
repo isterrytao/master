@@ -4,6 +4,7 @@
 #include "Async_Looper.h"
 #include "GB32960.h"
 #include "RelayM.h"
+#include "Diagnosis.h"
 
 void GBRtMsg_Init(Async_LooperType *looper);
 void GBRtMsg_Start(void);
@@ -74,5 +75,5 @@ extern const GB32960_RtMessageConfigDataType GB32960RtMessageConfigData;
 
 uint16 GBRtMsg_CopyFromSegment(const GB32960_CopySegmentType *segs, uint8 segNum, uint16 offset, uint8 *buf, uint16 len);
 uint16 GBRtMsg_GetRecordLength(const GB32960_RecordItemType *item);
-
+void GBRtMsg_UpdateDtuSendIntervalCbk(Diagnosis_ItemType item, Diagnosis_LevelType level, Diagnosis_EventType event);
 #endif
