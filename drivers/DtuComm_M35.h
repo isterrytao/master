@@ -45,9 +45,15 @@ typedef struct {
     uint16 fota_fota_error_code;
 }FotaParameterType;
 
+typedef struct {
+    uint16 mcc;
+    uint8 mnc[4];
+}CountryDataType;
+
 typedef struct{
     DtuVersionsType mVersions;
     FotaParameterType mFotaParameter;
+    CountryDataType mCountryData;
 }DtuComm_M35_InnerDataType;
 extern DtuComm_M35_InnerDataType DtuComm_M35_innerData;
 
@@ -107,7 +113,13 @@ void DtuM35_GetLoc(sint32 loc[2]);
 ///
 /// \param ccid CCID存储在这个指针指向的内存.
 /// \param len ccid这个内存的长度, 防止越界操作.
+
 void DtuM35_GetCCID(char *ccid, uint8 len);
+/// \brief DtuM35_GetCIMI 获取CIMI
+///
+/// \param CIMI CIMI存储在这个指针指向的内存.
+/// \param len CIMI这个内存的长度, 防止越界操作.
+void DtuM35_GetCIMI(char *cimi, uint8 len);
 
 /// \brief DtuM35_GetIMEI 获取GSM模块的唯一标识.
 ///
@@ -137,5 +149,6 @@ Std_ReturnType DtuM35_TcpTransmit(uint16 length, uint16 (*copyTxData)(uint8 *buf
 Std_ReturnType DtuM35_TcpConnect(const char *host, uint16 port, void (*ack)(Std_ReturnType Result));
 Std_ReturnType DtuM35_TcpDisconnect(void (*ack)(Std_ReturnType Result));
 Std_ReturnType DtuM35_FotaStart(const char *url, uint16 len);
+boolean DtuM35_GetCountryInfo(uint16 *mmc, uint8 *mnc, uint8 mnclen);
 
 #endif

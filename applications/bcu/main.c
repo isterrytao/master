@@ -145,7 +145,7 @@ static void start_dtu_task(void) {
         (void *)&DtuCommM35ConfigGB32960MC20,
 #elif defined(A601) || defined(A603) || defined(C601) || defined(C603)
         (void *)&C600DtuCommM35ConfigGB32960MC20,
-#elif defined(A655)|| defined(A657)|| defined(A665)
+#elif defined(A655)|| defined(A657)|| defined(A665) ||defined(A605) || defined(A607)
         (void *)&DtuCommM35ConfigGB32960EC20,
 #elif defined(A641)
         (void *)&A640DtuCommM35ConfigGB32960MC20,
@@ -548,7 +548,8 @@ static void start_task(void *pdata) {
 
     HardwareSn_Init();
 
-#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641)
+#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641) \
+    ||defined(A605) || defined(A607)
     if (isNeedStartSampleTask()) {
         GBRtMsg_Init(&driverLooper);
         GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
