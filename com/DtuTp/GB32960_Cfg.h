@@ -6,6 +6,7 @@
 
 void GBRtMsg_Start(void);
 void GBRtMsg_Cancel(void);
+void App_SetDcmConfigTp(boolean isDtu);
 
 #define GB32960_DCM_TX_PDUID           0U
 #define GB32960_DCM_RX_PDUID           0U
@@ -16,5 +17,6 @@ void GBRtMsg_Cancel(void);
 #define GB32960_TCP_CONNECT            DtuM35_TcpConnect
 #define GB32960_TCP_TRANSMIT           DtuM35_TcpTransmit
 #define GB32960_TCP_DISCONNECT         DtuM35_TcpDisconnect
+#define GB32960_SET_DCM_CONFIG_TP      App_SetDcmConfigTp
 
 #endif

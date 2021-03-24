@@ -132,8 +132,33 @@ static OS_STK start_task_stack[500];
 #else
 static OS_STK hvadc_task_stack[300];
 #endif
+static OS_STK dcm_task_stack[300];
 // static OS_STK shunt_task_stack[400];
 
+
+static void dcm_task(void *pdata)
+{
+    (void)pdata;
+
+    for (;;) {
+        Dcm_MainFunction();
+        OSTimeDly(2U);
+    }
+}
+
+static void start_dcm_task(void)
+{
+    (void)OSTaskCreateExt(
+        dcm_task,
+        (void *)NULL,
+        &dcm_task_stack[ARRAY_SIZE(dcm_task_stack) - 1U],
+        DCM_TASK_PRI,
+        DCM_TASK_PRI,
+        &dcm_task_stack[0],
+        (uint32)ARRAY_SIZE(dcm_task_stack),
+        NULL,
+        OS_TASK_OPT_NONE);
+}
 
 static void start_dtu_task(void) {
 
@@ -145,7 +170,7 @@ static void start_dtu_task(void) {
         (void *)&DtuCommM35ConfigGB32960MC20,
 #elif defined(A601) || defined(A603) || defined(C601) || defined(C603)
         (void *)&C600DtuCommM35ConfigGB32960MC20,
-#elif defined(A655)|| defined(A657)|| defined(A665)
+#elif defined(A655)|| defined(A657)|| defined(A665) ||defined(A605) || defined(A607)
         (void *)&DtuCommM35ConfigGB32960EC20,
 #elif defined(A641)
         (void *)&A640DtuCommM35ConfigGB32960MC20,
@@ -548,7 +573,8 @@ static void start_task(void *pdata) {
 
     HardwareSn_Init();
 
-#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641)
+#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641) \
+    ||defined(A605) || defined(A607)
     if (isNeedStartSampleTask()) {
         GBRtMsg_Init(&driverLooper);
         GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);
@@ -558,10 +584,11 @@ static void start_task(void *pdata) {
 
     WatchdogM_Enable();
 
+    start_dcm_task();
+
     if (mode == RUNTIMEM_RUNMODE_DATA) {
         for (;;) {
             CanTp_MainFunction();
-            Dcm_MainFunction();
             WatchdogM_Run();
             OSTimeDly(1U);
         }
@@ -569,7 +596,6 @@ static void start_task(void *pdata) {
         for (;;) {
             Det_MainFunction();
             CanTp_MainFunction();
-            Dcm_MainFunction();
             J1939Tp_MainFunction();
             WatchdogM_Run();
             OSTimeDly(OS_TICKS_PER_SEC / 500U);
@@ -618,5 +644,11 @@ void main(void) {
 void App_TaskIdleHook(void);
 void App_TaskIdleHook(void) {
     Can_MainFunction_Error();
+}
+
+void App_SetDcmConfigTp(boolean isDtu)
+{ /*lint !e957 */
+    const Dcm_ConfigType *config = isDtu ? &DcmConfigDtuTp : &DcmConfigCanTp;
+    Dcm_SetConfig(config);
 }
 #endif

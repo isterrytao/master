@@ -19,6 +19,7 @@ typedef struct ATCmd_Data ATCmd_DataType;
 
 typedef Std_ReturnType (*ATCMD_InitType)(const void *private_data);
 typedef Std_ReturnType (*ATCMD_ExecCommandType)(void *private_data, const char *atcmd, const ATCMD_Expect *exp, uint32 timeoutTick) ;
+typedef Std_ReturnType (*ATCMD_GetCCIDType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_GetCIMIType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_GetIMEIType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_ConnectTcpServerType)(ATCmd_DataType *ATCmd_Data, void *private_data, const char *addr, uint16 port);
@@ -43,6 +44,7 @@ typedef struct {
     ATCMD_GetOPSType GetOPS;
     ATCMD_GetLacCiType GetLacCi;
     ATCMD_ExecCommandType ExecCommand;
+    ATCMD_GetCCIDType GetCCID;
     ATCMD_GetCIMIType GetCIMI;
     ATCMD_GetIMEIType GetIMEI;
     ATCMD_DisconnectTcpServerType DisconnectTcpServer;
@@ -63,6 +65,7 @@ struct ATCmd_Data {
 
 #define ATCMD_Init(at) (at)->ops->Init((at)->private_data)
 #define ATCMD_ExecCommand(at,atcmd,exp, timeoutTick) (at)->ops->ExecCommand((at)->private_data, atcmd, exp, timeoutTick)
+#define ATCMD_GetCCID(at,buf,len) (at)->ops->GetCCID((at)->private_data,buf,len)
 #define ATCMD_GetCIMI(at,buf,len) (at)->ops->GetCIMI((at)->private_data,buf,len)
 #define ATCMD_GetIMEI(at,buf, len) (at)->ops->GetIMEI((at)->private_data,buf, len)
 #define ATCMD_ConnectTcpServer(at,addr, port) (at)->ops->ConnectTcpServer((ATCmd_DataType *)(at),(at)->private_data,addr, port)
