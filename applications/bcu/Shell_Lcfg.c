@@ -52,7 +52,7 @@ SHELL_PROTYPE(shunt);
 SHELL_PROTYPE(cppwm);
 SHELL_PROTYPE(cantest);
 SHELL_PROTYPE(onboardt);
-#if defined(A600) || defined(A601) || defined(A602) || defined(A603)
+#if defined(A600) || defined(A601) || defined(A602) || defined(A603) ||defined(A605) || defined(A607)
 SHELL_PROTYPE(ltc);
 #endif
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
@@ -118,7 +118,7 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("cppwm", cppwm),
     SHELL_COMMAND("cantest", cantest),
     SHELL_COMMAND("onboardt", onboardt),
-#if defined(A600) || defined(A601) || defined(A602) || defined(A603)
+#if defined(A600) || defined(A601) || defined(A602) || defined(A603) ||defined(A605) || defined(A607)
     SHELL_COMMAND("ltc", ltc),
 #endif
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
