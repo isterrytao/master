@@ -31,7 +31,6 @@
 #define EXT_LOOPER_TASK_PRI                 (14U)
 #define SHUNT_LOOPER_TASK_PRI               (15U)
 #define SAVE_M_TASK_PRI               		(16U)
-#define DCM_TASK_PRI                        (24U)
 
 #endif
 

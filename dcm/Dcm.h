@@ -177,7 +177,6 @@ extern uint8 /*DCM_NOINIT_DATA*/gDynamicalDidCounter;
 #define Make16Bit(HiByte,LoByte)  ((uint16)((((uint16)(HiByte)) << 8u)|((uint16)(LoByte))))
 #define Make32Bit(HiByte,MiByte,LoByte)  ((uint32)((((uint32)(HiByte)) << 16)|((uint32)(MiByte) << 8)|((uint32)(LoByte))))
 
-extern void Dcm_SetConfig(const Dcm_ConfigType *const ConfigPtr);
 extern void Dcm_Init(const Dcm_ConfigType *const ConfigPtr);
 extern void Dsd_InteralInit(void);
 
