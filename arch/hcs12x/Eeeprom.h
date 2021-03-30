@@ -131,6 +131,13 @@ Std_ReturnType Eeep_Read(Eeep_RamAddressType Eeep_RamOffset, Eeep_DataType *Data
 void Eeep_GetDiagnosisStatus(Eeep_ErrorStatusType* status);
 
 /**
+ * \brief 等待Eeeprom空闲
+ *
+ * \return E_OK: 已空闲 E_NOT_OK: Eeeprom忙
+ */
+Std_ReturnType Eeep_WaitIdle(void);
+
+/**
  * \brief 检查Eeeprom是否全部同步到DFLASH
  *
  * \retval TRUE 全部同步到DFLASH
