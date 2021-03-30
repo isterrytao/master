@@ -546,6 +546,14 @@ void App_ProgrammingPost(Std_ReturnType Result) {
         /* Reset MCU and go to bootloader at here. */
         /* Below codes are demo, can be removed */
         Set_SesCtrl(DCM_SESSION_PROGRAMMING);
+        (void)AllInOneComm_Stop();
+        (void)Can_SetControllerMode(0U, CAN_T_STOP);
+        (void)Can_SetControllerMode(1U, CAN_T_STOP);
+#if defined(A640) || defined(A641)
+#else
+            (void)Can_SetControllerMode(2U, CAN_T_STOP);
+            (void)Can_SetControllerMode(3U, CAN_T_STOP);
+#endif
         for (i = 0U; i < KIND_OF_SECURITY_LEVEL; i++) {
             gSecurityAcessSequence[i] = 0U;
         }
@@ -5121,7 +5129,7 @@ void App_Request_Seed_L1(Dcm_MsgContextType *pMsgContext) {
 
     (void)Dcm_GetSessionType(&type);
     mode = RuntimeM_GetMode();
-    if (type == DCM_PROGRAMMING_SESSION) {
+    if (type == DCM_PROGRAMMING_SESSION && mode == RUNTIMEM_RUNMODE_DTU) {
         enable = TRUE;
     } else if (type == DCM_EXTENDED_DIAGNOSTIC_SESSION && mode == RUNTIMEM_RUNMODE_DATA) {
         enable = TRUE;
