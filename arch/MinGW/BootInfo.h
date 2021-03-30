@@ -18,7 +18,7 @@
 #define Boot_RunFlagTag_ADDR              (0x3FF8u)
 #define BOOT_EXP100_FBL_DRIVER_ADDR       (0x3A00u)
 #define BOOT_EXP100_FBL_DRIVER_MAX_SIZE   (0x05f8u)
-#define BOOT_EXP100_FBL_TAG_VERSION       (0x02u)
+#define BOOT_EXP100_FBL_TAG_VERSION       (0x01u)
 
 #define Boot_FlagUnbeliveableApp 0xFF
 #define Boot_FlagRequestRunFBL   0x01

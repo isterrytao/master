@@ -33,7 +33,6 @@ typedef struct ATCMDEC20_PrivateData {
     uint8 auto_reply_buffer[50];
     uint8 mIPDDataBuffer[50];
     uint8 mIPDataRxIndex;
-    uint8 mIPDataRxErr;
     uint8 *head_recv_buf;
     void (*serial_recv_func)(struct ATCMDEC20_PrivateData *data, uint8 b);
     char *ird_recv_versions_buf;
