@@ -201,6 +201,7 @@ typedef struct {
     uint16 cycle; /**< 更新周期 */
     Diagnosis_ConditionMaskType conditionFlag; /**< 诊断条件标识 */
     Diagnosis_LevelMaskType enableFlag; /**< 诊断使能标记*/
+    Diagnosis_LevelMaskType reportFlag; /**< 用户报告诊断使能标记*/
     Diagnosis_DiagnosisTypeType diagnosisType; /**< 诊断类型 */
     Diagnosis_LevelsStatusType *status; /**< 各等级状态指针 */
     const Diagnosis_GetParaValue getDataFunc; /**< 获取诊断项状态值函数指针 */
@@ -359,6 +360,7 @@ void Diagnosis_GetAllLevelByIndex(Diagnosis_LevelType *buf, uint16 bufSize);
  * \return 正在报警的下一诊断项，返回DIAGNOSIS_ITEM_INVALID_INDEX表示无正在报警项
  */
 Diagnosis_ItemType Diagnosis_GetNextAlarmingItem(Diagnosis_ItemType startItem);
+Diagnosis_ItemType Diagnosis_GetNextAlarmingItemBaseReport(Diagnosis_ItemType startItem);
 
 /**
  * \brief 查找已注册的诊断项
@@ -398,6 +400,7 @@ Std_ReturnType Diagnosis_UnRegisterEvent(Diagnosis_ItemType item, Diagnosis_Even
  * \return 诊断状态 参见\link Diagnosis_LevelType \endlink
  */
 Diagnosis_LevelType Diagnosis_GetLevel(Diagnosis_ItemType item);
+Diagnosis_LevelType Diagnosis_GetLevelBaseReport(Diagnosis_ItemType item);
 
 /**
  * \brief 上电自检是否完成全部初次检测
@@ -451,6 +454,7 @@ Std_ReturnType Diagnosis_CondAsyncEventCancle(Diagnosis_CondAsyncEventType *Even
  * \return 最高报警等级
  */
 Diagnosis_LevelType Diagnosis_GetDiagLevelMax(void);
+Diagnosis_LevelType Diagnosis_GetDiagLevelMaxBaseReport(void);
 
 /**
  * \brief 获取所有报警的数量，不区分报警等级
@@ -458,6 +462,7 @@ Diagnosis_LevelType Diagnosis_GetDiagLevelMax(void);
  * \return 报警数量
  */
 uint16 Diagnosis_GetAllAlarmNum(void);
+uint16 Diagnosis_GetAllAlarmNumBaseReport(void);
 
 /**
  * \brief 获取指定报警等级的报警数量
@@ -465,6 +470,7 @@ uint16 Diagnosis_GetAllAlarmNum(void);
  * \return 报警数量
  */
 uint16 Diagnosis_GetAlarmNumWithLevel(Diagnosis_LevelType level);
+uint16 Diagnosis_GetAlarmNumWithLevelBaseReport(Diagnosis_LevelType level);
 
 /**
  * \brief 将诊断项编号转换为连续数组使用的索引号

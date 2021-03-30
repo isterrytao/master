@@ -58,6 +58,7 @@ extern const uint16 CellDataM_BmuVoltageLogicIdMax[];
  * \note 每个采集板逻辑编号最大值为本采集板最后一串电池的逻辑编号+1
  */
 extern const uint8 CellDataM_BmuBoardVoltageLogicIdMax[];
+extern const uint8 CellDataM_BmuBoardVoltageLogicIdMaxBufSize;
 
 /**
  * \brief 电池电压逻辑编号到物理编号映射表定义
@@ -143,6 +144,16 @@ uint8 SysteConnection_GetSlaveBoardNum(App_SlaveIdType SlaveId);
  * \return 采集电池个数，异常返回0
  */
 uint16 SysteConnection_GetSlaveCellNum(App_SlaveIdType SlaveId);
+
+/**
+ * \brief 获取从机对应采集板的采集电池数量
+ *
+ * \param SlaveId 从机号 0,1,2...
+ * \param BoardId 从机内采集板编号 0,1,2...
+ *
+ * \return 采集电池个数，异常返回0
+ */
+uint8 SysteConnection_GetSlaveBoardCellNum(App_SlaveIdType SlaveId, uint8 BoardId);
 
 /**
  * \brief 获取从机采集温感个数

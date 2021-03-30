@@ -56,6 +56,8 @@ const uint8 CellDataM_BmuBoardVoltageLogicIdMax[SYSTEM_BATTERY_SAMPLE_BOARD_NUM]
     <%- processedcfg.BmuBatt.BoardLogicIdMax%>
 };
 
+const uint8 CellDataM_BmuBoardVoltageLogicIdMaxBufSize = (uint8)SYSTEM_BATTERY_SAMPLE_BOARD_NUM;
+
 const uint8 CellDataM_VoltageLogicIdToPhysicalIdMap[SYSTEM_BATTERY_CELL_NUM] = {
     <%for (var v of processedcfg.BmuBatt.LogicToPhyIdMap) {%><%- v %><%}%>
 };

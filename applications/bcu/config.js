@@ -187,7 +187,7 @@ module.exports = {
             // 通道1
             notes:[
                 {section:"model", chs:"传感器型号", comments:'可选: "DHAB_S124_1"(DHAB_S124大量程), "DHAB_S124_2"(DHAB_S124小量程), DHAB_S118_1"(DHAB_S118大量程), "DHAB_S118_2"(DHAB_S118小量程), DHAB_S133_1"(DHAB_S133大量程 750A), "DHAB_S133_2"(DHAB_S133小量程 75A), DHAB_S137_1"(DHAB_S137大量程 1000A), "DHAB_S137_2"(DHAB_S137小量程 75A), "FS300E2T"(飞轩FS300E2T,300A量程), "FS500E2T"(飞轩FS500E2T,500A量程), "FS600E2T"(飞轩FS600E2T,600A量程), "FS700E2T"(飞轩FS700E2T,700A量程), "FS1200_EK2T"(飞轩FS1200_EK2T,1200A量程), "FS1500_EK4T"(飞轩FS1500_EK4T,1500A量程), "FS2000_EK2T"(飞轩FS2000_EK2T,2000A量程), "WHK30_350DHAB5S2L_1"(启东双赢30/350A大量程), "WHK30_350DHAB5S2L_2"(启东双赢30/350A小量程), "EHMWX911C500"(松下EHMWX911C500,500A量程), "HAH1BVW_S01"(LEM 100A单量程),  "HAH1BVW_S02"(LEM 200A单量程), "HAH1BVW_S03"(LEM 300A单量程), "HAH1BV_S02"(LEM 500A单量程),'
-                                                                    +'"WHK20BS5S2"(启东双赢 20A单量程), "WHK50BS5S2"(启东双赢 50A单量程), "WHK100EA5S2S"(启东双赢 100A单量程), "WHK200EA5S2S"(启东双赢 200A单量程), "WHK300EA5S2S"(启东双赢300A单量程), "WHK400EA5S2S"(启东双赢400A单量程), "WHK500EA5S2S"(启东双赢500A单量程), "WHK600EA5S2S"(启东双赢600A单量程), "FS300BT"(飞轩300A单量程), "FS600BT"(飞轩600A单量程), "CS1000BT5"(茶花港联1000A单量程) '},
+                                                                    +'"HAH1BVW_S08"(LEM 800A单量程), "HAH1BVW_S12"(LEM 1200A单量程), "WHK20BS5S2"(启东双赢 20A单量程), "WHK50BS5S2"(启东双赢 50A单量程), "FS300BT"(飞轩300A单量程), "FS600BT"(飞轩600A单量程), "WHK300EA5S2S"(启东双赢300A单量程), "WHK500EA5S2S"(启东双赢500A单量程), "CS1000BT5"(茶花港联1000A单量程)'},
                 {section:"filterNum", chs:"滤波的采集次数"},
                 {section:"dropNum", chs:"极值丢弃的个数"},
             ],
@@ -866,6 +866,7 @@ module.exports = {
                 levels: [1,2,3],
                 cycle:100,
                 //levelParaGetFunc: "NULL",
+                //report_levels: [],
                 events:[
                     {levels:[3,], event: "assert", action: "SocDiagCalib_FullCalibCbk"},
                     {levels:[1,], event: "deassert", action: "SocDiagCalib_FullCalibRelCbk"},
@@ -1721,7 +1722,7 @@ module.exports = {
             }, {
                 name: "热失控",
                 levels: [],
-                cycle:1000,
+                cycle:100,
             },
         ],
     },
@@ -2085,6 +2086,8 @@ module.exports = {
         apn: "",
         server: "dtu.udantech.com:30097",
         rtmsg_interval: 30,
+        /* 发生故障时故障等级对应发送周期,单位S*/
+        rtmsg_alarm_intervals: [5, 3, 2, 2],
     },
 
     /* DtuTp的配置, 目前只支持UDS的物理寻址数据连接 */

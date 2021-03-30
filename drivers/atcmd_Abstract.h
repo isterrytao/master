@@ -19,6 +19,7 @@ typedef struct ATCmd_Data ATCmd_DataType;
 
 typedef Std_ReturnType (*ATCMD_InitType)(const void *private_data);
 typedef Std_ReturnType (*ATCMD_ExecCommandType)(void *private_data, const char *atcmd, const ATCMD_Expect *exp, uint32 timeoutTick) ;
+typedef Std_ReturnType (*ATCMD_GetCCIDType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_GetCIMIType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_GetIMEIType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_ConnectTcpServerType)(ATCmd_DataType *ATCmd_Data, void *private_data, const char *addr, uint16 port);
@@ -32,7 +33,8 @@ typedef Std_ReturnType (*ATCMD_GetVoltageType)(void *private_data, uint16 *vol);
 typedef Std_ReturnType (*ATCMD_GetLacCiType)(void *private_data, uint32 lac_ci[2]);
 typedef Std_ReturnType (*ATCMD_GetCellLocType)(void *private_data, sint32 loc[2]);
 typedef Std_ReturnType (*ATCMD_SetApn)(void *private_data, const char *atcmd);
-
+typedef Std_ReturnType (*ATCMD_GetDevInfoType)(void *private_data, char *buf, uint8 len);
+typedef Std_ReturnType (*ATCMD_SetOtaUrlType)(void *private_data, const char *url, uint8 len, void *fotaPtr);
 
 typedef struct {
     ATCMD_InitType Init;
@@ -42,6 +44,7 @@ typedef struct {
     ATCMD_GetOPSType GetOPS;
     ATCMD_GetLacCiType GetLacCi;
     ATCMD_ExecCommandType ExecCommand;
+    ATCMD_GetCCIDType GetCCID;
     ATCMD_GetCIMIType GetCIMI;
     ATCMD_GetIMEIType GetIMEI;
     ATCMD_DisconnectTcpServerType DisconnectTcpServer;
@@ -50,6 +53,8 @@ typedef struct {
     ATCMD_GetVoltageType GetVoltage;
     ATCMD_GetCellLocType GetCellLoc;
     ATCMD_SetApn SetApn;
+    ATCMD_GetDevInfoType GetDevInfo;
+    ATCMD_SetOtaUrlType SetOtaUrl;
 } ATCmd_OperationsType;
 
 struct ATCmd_Data {
@@ -60,6 +65,7 @@ struct ATCmd_Data {
 
 #define ATCMD_Init(at) (at)->ops->Init((at)->private_data)
 #define ATCMD_ExecCommand(at,atcmd,exp, timeoutTick) (at)->ops->ExecCommand((at)->private_data, atcmd, exp, timeoutTick)
+#define ATCMD_GetCCID(at,buf,len) (at)->ops->GetCCID((at)->private_data,buf,len)
 #define ATCMD_GetCIMI(at,buf,len) (at)->ops->GetCIMI((at)->private_data,buf,len)
 #define ATCMD_GetIMEI(at,buf, len) (at)->ops->GetIMEI((at)->private_data,buf, len)
 #define ATCMD_ConnectTcpServer(at,addr, port) (at)->ops->ConnectTcpServer((ATCmd_DataType *)(at),(at)->private_data,addr, port)
@@ -73,6 +79,8 @@ struct ATCmd_Data {
 #define ATCMD_GetLacCi(at,lac_ci) (at)->ops->GetLacCi((at)->private_data, lac_ci)
 #define ATCMD_GetCellLoc(at,loc) (at)->ops->GetCellLoc((at)->private_data, loc)
 #define ATCMD_SetApn(at,apn) (at)->ops->SetApn((at)->private_data, apn)
+#define ATCMD_GetDevInfo(at, buf, len) (at)->ops->GetDevInfo((at)->private_data,buf, len)
+#define ATCMD_SetOtaUrl(at, url, len, fotaPtr) (at)->ops->SetOtaUrl((at)->private_data, url, len, fotaPtr)
 
 Std_ReturnType ATCMD_RetryUntilExpect(const ATCmd_DataType *at, const char *atcmd, const char *expect, uint8 times, uint16 timeout);
 Std_ReturnType ATCMD_RetryUntilExpects(const ATCmd_DataType *at, const char *atcmd, const char *const *expects, uint16 times, uint16 timeout);

@@ -21,6 +21,7 @@
 #include "Std_Types.h"
 #include "Charge_Types.h"
 #include "Async_Looper.h"
+#include "Async_Event.h"
 
 
 #define TEMPERATUREM_ONLY_HEAT_CURRENT_DEF  STD_ON
@@ -125,6 +126,8 @@ typedef struct{
 }TemperatureM_ThermalVoltDataType;
 
 typedef struct{
+    Async_EventType ev_temp_rise; /**< 异步事件 */
+    Async_EventType ev_volt_drop; /**< 异步事件 */
     TemperatureM_HeatStateType heatState; /**< 加热状态 */
     TemperatureM_RefrigerationStateType refrigerationState; /**< 制冷状态 */
     ThermalRunaway_CalibConfigType thermalPara;

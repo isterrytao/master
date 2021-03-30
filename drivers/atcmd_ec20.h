@@ -5,6 +5,7 @@
 #include "ucos_ii.h"
 #include "Uart.h"
 #include "ComStack_Types.h"
+#include "DtuComm_M35.h"
 
 typedef struct ATCMDEC20_IPDataConfig {
     BufReq_ReturnType (*StartOfReception)(PduLengthType length);
@@ -32,9 +33,18 @@ typedef struct ATCMDEC20_PrivateData {
     uint8 auto_reply_buffer[50];
     uint8 mIPDDataBuffer[50];
     uint8 mIPDataRxIndex;
+    uint8 mIPDataRxErr;
     uint8 *head_recv_buf;
     void (*serial_recv_func)(struct ATCMDEC20_PrivateData *data, uint8 b);
+    char *ird_recv_versions_buf;
+    uint8 ird_recv_versions_len;
+    uint8 ird_recv_versions_index;
+    char fota_rxbuf[40];
+    uint8 fota_rxbuf_index;
+    uint32 fota_last_rec_tick;
+    FotaParameterType *fotaParameter;
 } ATCMDEC20_PrivateDataType;
+
 
 
 extern const ATCmd_OperationsType ATCmd_Operations_EC20;
