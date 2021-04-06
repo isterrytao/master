@@ -25,6 +25,11 @@ const Soc_ConfigInfoType Soc_ConfigInfo = {
         Soc_CumuTypeCap, /**< type: 累计类型 */
         100U, /**< resoltion: 存储分辨率(仅用于能量累计类型) 精度: 瓦时(wh) 范围: 100~1000 */
     },
+    /**< FeedbackCumuInfo: 回馈累计配置信息,开启此项需充电积分不包含回馈电流 */
+    {
+        Soc_CumuTypeCap, /**< type: 累计类型 */
+        100U, /**< resoltion: 存储分辨率(仅用于能量累计类型) 精度: 瓦时(wh) 范围: 100~1000 */
+    },
     {
         PERCENT_TO_SOC(10U), /**< socJumpMax: SOC最大跳变值，注：此值需要不大于SOC跳变缓存大小SOC_JUMP_BUFF_SIZE */
         NULL, /**< 获取最大跳变SOC值，包含释放值，此函数有效时 socJumpMax 和 socJumpRel不启作用 */
