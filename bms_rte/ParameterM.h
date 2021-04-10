@@ -140,11 +140,13 @@ typedef enum{
     PARAMETERM_EEEP_DCHARGE_INTEGRAL_EFFICIENCY = 127, /**< 放电效率因子 精度：0.1% */
 }ParameterM_EeepParaIndexType;
 
+#define PARAMETERM_FWID_SIZE    16U
+
 /**
  * \brief 标定参数类型定义
  */
 typedef struct{
-    char FWID[16]; /**< 与之对应的FWID */
+    char FWID[PARAMETERM_FWID_SIZE]; /**< 与之对应的FWID */
     Diagnosis_AllItemParaType diagnosisPara; /**< 故障诊断参数 */
     Soc_CalibConfigType SocPara; /**< SOC标定参数 */
     SocDiagCalib_CalibConfigType SocDiagPara; /**< SOC诊断校正参数 */

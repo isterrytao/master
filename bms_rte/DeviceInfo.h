@@ -76,6 +76,8 @@ typedef enum{
     DEVICE_TYPE_A661 = 0xA5U, /**< 36路电压检测、12路温度检测、100mA被动均衡 */
     DEVICE_TYPE_A640 = 0xB0U, /**< 12路电压检测、4路温度检测、100mA被动均衡 */
     DEVICE_TYPE_A641 = 0xB1U, /**< 12路电压检测、4路温度检测、100mA被动均衡 */
+    DEVICE_TYPE_A630 = 0xC0U, /**< 12路电压检测、4路温度检测、100mA被动均衡 */
+    DEVICE_TYPE_A635 = 0xC5U, /**< 12路电压检测、4路温度检测、100mA被动均衡 */
     DEVICE_TYPE_A655 = 0xA6U, /**< 24路电压检测、8路温度检测、100mA被动均衡 */
     DEVICE_TYPE_A657 = 0xA7U, /**< 48路电压检测、16路温度检测、100mA被动均衡 */
     DEVICE_TYPE_A665 = 0xA8U, /**< 36路电压检测、12路温度检测、100mA被动均衡 */

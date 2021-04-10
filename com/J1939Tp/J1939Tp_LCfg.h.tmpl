@@ -101,14 +101,17 @@ cfg.forEach(v => {
 for (var v of cfg) {
     var hascm = false;
 
+    if (globalInfo.SystemConnection.PCBA == "UPA630" && (v.hw != 0 && v.hw != 1)) {
+        throw "UPA630 can hw must be 0 or 1 !"
+    }
     if (globalInfo.SystemConnection.PCBA == "UPA640" && (v.hw != 0 && v.hw != 1)) {
         throw "UPA640 can hw must be 0 or 1 !"
     }
     if (globalInfo.SystemConnection.PCBA == "UPA650" && (v.hw != 0 && v.hw != 1 && v.hw != 2)) {
-        throw "UPA640 can hw must be 0,1 or 2!"
+        throw "UPA650 can hw must be 0,1 or 2!"
     }
     if (globalInfo.SystemConnection.PCBA == "UPC6000" && (v.hw != 0 && v.hw != 1 && v.hw != 2 && v.hw != 3)) {
-        throw "UPA640 can hw must be 0,1,2 or 3!"
+        throw "UPA600 can hw must be 0,1,2 or 3!"
     }
 
 

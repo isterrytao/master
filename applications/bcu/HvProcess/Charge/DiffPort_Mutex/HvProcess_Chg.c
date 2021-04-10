@@ -224,7 +224,7 @@ boolean HvProcess_ChgReStartJudgeCond(void)
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-#if defined(A640)||defined(A641)
+#if defined(A640)||defined(A641)||defined(A630)||defined(A635)
     bat_tv = Statistic_GetBcu100mvTotalVoltage();
 #else
     bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
