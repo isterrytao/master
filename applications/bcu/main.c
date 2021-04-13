@@ -77,7 +77,7 @@
 #endif
 #define LOG_LEVEL LOG_LEVEL_OFF
 #include "logger.h"
-#if defined(A640)||defined(A641)
+#if defined(A640)||defined(A641) || defined(A630)||defined(A635)
 #else
 #include "BridgeInsu_Cfg.h"
 #endif
@@ -92,6 +92,16 @@
 #endif
 #endif
 
+
+#if defined(A630)||defined(A635)
+
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+#include "a63pwrfix_self_return_kl15_strategy.h"
+#elif (KEY_TYPE == KEY_TYPE_IS_SELFLOCK)
+#include "a63pwrfix_self_hold_kl15_strategy.h"
+#endif
+
+#endif
 
 static boolean DcmOnCanTp_RxPduIdIsValid(PduIdType RxPduId) {
     boolean ret;
@@ -128,12 +138,37 @@ static const Dcm_ConfigType DcmConfigDtuTp = {
 static OS_STK currentm_task_stack[400];
 static OS_STK heat_current_task_stack[300];
 static OS_STK start_task_stack[500];
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635)|| defined(A640) || defined(A641)
 #else
 static OS_STK hvadc_task_stack[300];
 #endif
+static OS_STK dcm_task_stack[300];
 // static OS_STK shunt_task_stack[400];
 
+
+static void dcm_task(void *pdata)
+{
+    (void)pdata;
+
+    for (;;) {
+        Dcm_MainFunction();
+        OSTimeDly(2U);
+    }
+}
+
+static void start_dcm_task(void)
+{
+    (void)OSTaskCreateExt(
+        dcm_task,
+        (void *)NULL,
+        &dcm_task_stack[ARRAY_SIZE(dcm_task_stack) - 1U],
+        DCM_TASK_PRI,
+        DCM_TASK_PRI,
+        &dcm_task_stack[0],
+        (uint32)ARRAY_SIZE(dcm_task_stack),
+        NULL,
+        OS_TASK_OPT_NONE);
+}
 
 static void start_dtu_task(void) {
 
@@ -145,7 +180,7 @@ static void start_dtu_task(void) {
         (void *)&DtuCommM35ConfigGB32960MC20,
 #elif defined(A601) || defined(A603) || defined(C601) || defined(C603)
         (void *)&C600DtuCommM35ConfigGB32960MC20,
-#elif defined(A655)|| defined(A657)|| defined(A665) ||defined(A605) || defined(A607)
+#elif defined(A635) || defined(A655)|| defined(A657)|| defined(A665) ||defined(A605) || defined(A607)
         (void *)&DtuCommM35ConfigGB32960EC20,
 #elif defined(A641)
         (void *)&A640DtuCommM35ConfigGB32960MC20,
@@ -219,7 +254,7 @@ static void start_looper_tasks(void) {
     }
 }
 
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635) || defined(A640) || defined(A641)
 #else
 static void start_hvadc_task(void(*task_func)(void *param)) {
     (void)OSTaskCreateExt(
@@ -303,7 +338,7 @@ static void startHvSample(void) {
 }
 
 extern const Adc_ConfigType AdcConfigTestMode;
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635)|| defined(A640) || defined(A641)
 extern void init_AiShellNamedAiSignal_Table(void);
 #else
 #endif
@@ -316,12 +351,12 @@ static void run_test_mode(void) {
         (void)Can_SetControllerMode(1U, CAN_T_START);
     }
 
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635)|| defined(A640) || defined(A641)
     init_AiShellNamedAiSignal_Table();
 #else
 #endif
 
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635) || defined(A640) || defined(A641)
 #else
     (void)Can_SetControllerMode(2U, CAN_T_START);
     (void)Can_SetControllerMode(3U, CAN_T_START);
@@ -334,7 +369,7 @@ static void run_test_mode(void) {
     OSTimeDly(2U);
     HC12XIrq_InstallVector(IRQ_ATD0, ADT0_Isr, 0U);
     Adc_StartGroupConversion(ADC_GROUP_ADT0);
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635) || defined(A640) || defined(A641)
 #else
     start_hvadc_task(hvadc_test_task_testmode);
 #endif
@@ -347,7 +382,7 @@ static void run_test_mode(void) {
     Shunt_Init(&shuntLooper, 1000U);
 #endif
     (void)AllInOneComm_Init(LTC6804COMM_SAMPLE_TASK_PRI, TRUE);
-#if defined(A640)||defined(A641)
+#if defined(A630) || defined(A635) || defined(A640)||defined(A641)
     Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_LOW);
     //        Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_HIGH);
 #else
@@ -383,13 +418,13 @@ static void start_task(void *pdata) {
     }
 #endif
 
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635) || defined(A640) || defined(A641)
 #else
     (void)Can_SetControllerMode(2U, CAN_T_START);
     (void)Can_SetControllerMode(3U, CAN_T_START);
 #endif
 
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635) || defined(A640) || defined(A641)
 #else
     HC12XIrq_InstallVector(IRQ_IIC1, IIC1_Isr, 0U);
 #endif
@@ -400,6 +435,8 @@ static void start_task(void *pdata) {
     {
         HC12XIrq_InstallVector(IRQ_SCI0, SCI0_Isr, 0U);
     }
+#elif defined(A630) || defined(A635)
+    HC12XIrq_InstallVector(IRQ_SCI0, SCI0_Isr, 0U);
 #endif
 
     start_looper_tasks();
@@ -414,6 +451,13 @@ static void start_task(void *pdata) {
 
     DigitalInput_Init();
     HWDiagnosis_Init();
+#if defined(A630) || defined(A635)
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
+        (void)SlaveProcessor_Init(&extLooper, (uint8 *)&a63pwrfix_self_return_kl15_strategy[0], a63pwrfix_self_return_kl15_strategy_CODE_LENGTH, a63pwrfix_self_return_kl15_strategy_CODE_CRC);
+#elif (KEY_TYPE == KEY_TYPE_IS_SELFLOCK)
+        (void)SlaveProcessor_Init(&extLooper, (uint8 *)&a63pwrfix_self_hold_kl15_strategy[0], a63pwrfix_self_hold_kl15_strategy_CODE_LENGTH, a63pwrfix_self_hold_kl15_strategy_CODE_CRC);
+#endif
+#endif
 #if defined(A640)||defined(A641)
     if (HardWareIO_GetVersion() == 6U /*0b001*/)
     {
@@ -500,13 +544,13 @@ static void start_task(void *pdata) {
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A650);
 #elif defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A657) || defined(A665)
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData_A652);
-#elif defined(A640)||defined(A641)
+#elif defined(A630) || defined(A635) || defined(A640)||defined(A641)
     BridgeInsu_Init(&driverLooper, NULL);
 #else
     BridgeInsu_Init(&driverLooper, &BridgeInsuConfigData);
 #endif
 
-#if defined(A640)||defined(A641)
+#if defined(A630) || defined(A635) || defined(A640)||defined(A641)
 #else
     if (isNeedStartSampleTask()) {
         BridgeInsu_Start(BRIDGEINSU_TYPE);
@@ -514,7 +558,7 @@ static void start_task(void *pdata) {
 #endif
     if (isNeedStartSampleTask()) {
         startHvSample();
-#if defined(A640) || defined(A641)
+#if defined(A630) || defined(A635) || defined(A640) || defined(A641)
 #else
         start_hvadc_task(hvadc_test_task);
 #endif
@@ -548,7 +592,7 @@ static void start_task(void *pdata) {
 
     HardwareSn_Init();
 
-#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641) \
+#if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641) || defined(A635) \
     ||defined(A605) || defined(A607)
     if (isNeedStartSampleTask()) {
         GBRtMsg_Init(&driverLooper);
@@ -559,10 +603,11 @@ static void start_task(void *pdata) {
 
     WatchdogM_Enable();
 
+    start_dcm_task();
+
     if (mode == RUNTIMEM_RUNMODE_DATA) {
         for (;;) {
             CanTp_MainFunction();
-            Dcm_MainFunction();
             WatchdogM_Run();
             OSTimeDly(1U);
         }
@@ -570,7 +615,6 @@ static void start_task(void *pdata) {
         for (;;) {
             Det_MainFunction();
             CanTp_MainFunction();
-            Dcm_MainFunction();
             J1939Tp_MainFunction();
             WatchdogM_Run();
             OSTimeDly(OS_TICKS_PER_SEC / 500U);
@@ -583,7 +627,11 @@ void main(void) {
     Mcu_Init(&MCU_DEFAULT_CONFIG);
     (void)Mcu_InitClock(MCU_DEFAULT_CONFIG.McuDefaultClockSettings);
     Port_Init(&PortConfigData);
-#if defined(A640)||defined(A641)
+#if defined(A630)||defined(A635)
+    Dio_WriteChannel(DIO_CAHNNEL_KL30_FB_ON, STD_HIGH);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_HIGH);
+    Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_OFF, STD_LOW);
+#elif defined(A640)||defined(A641)
     if (HardWareIO_GetVersion() == 6U /*0b001*/)
     {
         Port_Init(&PortConfigData_HW_105);
@@ -596,7 +644,7 @@ void main(void) {
     Dio_WriteChannel(DIO_CHANNEL_SYSTEM_POWER_LATCH, STD_LOW);
 #endif
     Dio_WriteChannel(DIO_CHANNEL_8V_HALL_EN, STD_LOW);
-#if defined(A640)||defined(A641)
+#if defined(A630) || defined(A635) || defined(A640)||defined(A641)
 #else
     Dio_WriteChannel(DIO_CHANNEL_CAN2_EN, STD_HIGH);
 #endif
@@ -619,5 +667,11 @@ void main(void) {
 void App_TaskIdleHook(void);
 void App_TaskIdleHook(void) {
     Can_MainFunction_Error();
+}
+
+void App_SetDcmConfigTp(boolean isDtu)
+{ /*lint !e957 */
+    const Dcm_ConfigType *config = isDtu ? &DcmConfigDtuTp : &DcmConfigCanTp;
+    Dcm_SetConfig(config);
 }
 #endif

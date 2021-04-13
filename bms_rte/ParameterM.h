@@ -122,10 +122,11 @@ typedef enum{
     PARAMETERM_EEEP_HV5_GAIN_ERROR_INDEX = 32, /**< HV_CHANNEL_HV5增益误差 */
     PARAMETERM_EEEP_DCHG_OLV_CNT_STATE_INDEX = 33, /**< 电池过放电计数状态变化，用于记录需掉电保存的状态 */
     PARAMETERM_EEEP_DCHG_OLV_CNT_INDEX = 34, /**< 电池过放电计数 */
-
     PARAMETERM_EEEP_LOWER_INDEX_END = 34, /**< 低段参数索引结束(不单独占用一个索引)， 注：处于PARAMETERM_EEEP_LOWER_INDEX_END和PARAMETERM_EEEP_HIGHER_INDEX_START之间的参数不进行存储有效性校验 */
 
-    PARAMETERM_EEEP_HIGHER_INDEX_START = 117, /**< 高段参数索引起始(不单独占用一个索引) */
+    PARAMETERM_EEEP_HIGHER_INDEX_START = 115, /**< 高段参数索引起始(不单独占用一个索引) */
+    PARAMETERM_EEEP_CUMULATIVE_FEEDBACK_CAP_L_INDEX = 115, /**< 累计回馈容量低字节 */
+    PARAMETERM_EEEP_CUMULATIVE_FEEDBACK_CAP_H_INDEX = 116, /**< 累计回馈容量高字节 */
     PARAMETERM_EEEP_FOTA_COMMAND_INDEX = 117, /*远程FOTA命令*/
     PARAMETERM_EEEP_REMOTEABLE_COMMAND_INDEX = 118, /*远程使能命令*/
     PARAMETERM_EEEP_REMOTELINK_TIME_HIGH_INDEX = 119,/**< 远程均衡命令下发时间高字 精度：1S/bit */
@@ -139,11 +140,13 @@ typedef enum{
     PARAMETERM_EEEP_DCHARGE_INTEGRAL_EFFICIENCY = 127, /**< 放电效率因子 精度：0.1% */
 }ParameterM_EeepParaIndexType;
 
+#define PARAMETERM_FWID_SIZE    16U
+
 /**
  * \brief 标定参数类型定义
  */
 typedef struct{
-    char FWID[16]; /**< 与之对应的FWID */
+    char FWID[PARAMETERM_FWID_SIZE]; /**< 与之对应的FWID */
     Diagnosis_AllItemParaType diagnosisPara; /**< 故障诊断参数 */
     Soc_CalibConfigType SocPara; /**< SOC标定参数 */
     SocDiagCalib_CalibConfigType SocDiagPara; /**< SOC诊断校正参数 */

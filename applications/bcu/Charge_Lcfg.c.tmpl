@@ -57,6 +57,14 @@ el.lockFeedback = cfg.el.lockFeedback;
 el.unlockFeedback = cfg.el.unlockFeedback;
 el.ctlMax = cfg.el.ctlMax ? cfg.el.ctlMax : 1;
 
+if (globalInfo.SystemConnection.PCBA == 'UPA630') {
+    if (el.enable) {
+        throw 'A63X dose not support EL.';
+    }
+    el.lockFeedback = ['NONE', 'HIGH'];
+    el.unlockFeedback = ['NONE', 'HIGH'];
+}
+
 if (globalInfo.SystemConnection.PCBA == 'UPA640') {
     if (el.enable) {
         throw 'A64X dose not support EL.';

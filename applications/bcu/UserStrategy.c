@@ -161,7 +161,7 @@ void UserStrategy_Init(Async_LooperType *looper)
     }
 }
 
-#if defined(A640)||defined(A641)
+#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
 static void pollPowerKeyState()
 {
@@ -219,7 +219,7 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
     UserStrategy_ResetToOTA();
 #endif
 
-#if defined(A640)||defined(A641)
+#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
     if (RuntimeM_GetMode() != RUNTIMEM_RUNMODE_TEST) {
         pollPowerKeyState();
@@ -491,7 +491,7 @@ static void UserStrategy_ResetToOTA(void)
 #endif
 
 boolean UserStrategy_Wakeup(void){
-#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A640)||defined(A641))
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A630)||defined(A635)||defined(A640)||defined(A641))
     return TRUE;/*不关机*/
 #else
     return FALSE;/*关机*/
@@ -547,7 +547,7 @@ static void UserStrategy_SelfLockRelayControl(void)
                 is_on = TRUE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
             }
-#elif !defined(A640) && !defined(A641)
+#elif !defined(A640) && !defined(A641) && !defined(A630) && !defined(A635)
             if (Dio_ReadChannel(DIO_CHANNEL_OBC_POWER) == STD_LOW)
             {
                 is_on = FALSE;
@@ -576,7 +576,7 @@ static void UserStrategy_SelfLockRelayControl(void)
                 is_on = TRUE;
                 (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
             }
-#elif !defined(A640) && !defined(A641)
+#elif !defined(A640) && !defined(A641) && !defined(A630) && !defined(A635)
             if (Dio_ReadChannel(DIO_CHANNEL_CHARGER_READY) == STD_LOW)
             {
                 is_on = FALSE;

@@ -23,7 +23,7 @@ static Async_EvnetCbkReturnType cbk(Async_EventType *event, uint8  byWhat) {
         } else if (byWhat == CANIF_RX_CANECHO_1) {
             (void)CanIf_Transmit(CANIF_TX_CANECHO_1, &info);
         }
-#if defined(UPA640)
+#if defined(UPA630) || defined(UPA640)
 #else
         else if (byWhat == CANIF_RX_CANECHO_2) {
             (void)CanIf_Transmit(CANIF_TX_CANECHO_2, &info);
@@ -50,7 +50,7 @@ void CanEcho_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr) {
     } else if (RxPduId == CANIF_RX_CANECHO_1) {
         count[1]++;
     }
-#if defined(UPA640)
+#if defined(UPA630) || defined(UPA640)
 #else
     else if (RxPduId == CANIF_RX_CANECHO_2) {
         count[2]++;
@@ -122,7 +122,7 @@ int shell_func_cantest(int argc, const char *const *argv) {
                 arg_err = FALSE;
                 ret = (int)Async_EventTrigger(&thisEvent, CANIF_RX_CANECHO_1);
             }
-#if defined(UPA640)
+#if defined(UPA630) || defined(UPA640)
 #else
             else if (index == 3U) {
                 arg_err = FALSE;

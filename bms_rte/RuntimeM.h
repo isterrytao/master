@@ -128,6 +128,12 @@ RuntimeM_RunModeType RuntimeM_GetMode(void);
  * \return E_OK:启动成功 E_NOT_OK:启动失败
  */
 Std_ReturnType RuntimeM_StartReset(RuntimeM_RunModeType mode);
+/**
+ * \brief 强制系统复位,无视当前回路是否存在电流
+
+ * \return E_OK:启动成功 E_NOT_OK:启动失败
+ */
+Std_ReturnType RuntimeM_ForceReset(RuntimeM_RunModeType mode);
 
 /**
  * \brief 获取系统复位或下电需要等待的标记.
