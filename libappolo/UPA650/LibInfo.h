@@ -18,17 +18,17 @@
 #define LIB_INFO_FWVERSION                "4.0.0.0"
 
 
-#define LIB_INFO_SOURCE_COMMIT_ID        "549799941c7b0ae61b7b7e183e8f2b5f7739070c"
-#define LIB_INFO_CONFIG_COMMIT_ID        "549799941c7b0ae61b7b7e183e8f2b5f7739070c"
-#define LIB_INFO_BUILD_TIME              "20210410191449"
+#define LIB_INFO_SOURCE_COMMIT_ID        "51c4e9a6c048e906c06117c65e4c229bd869fcab"
+#define LIB_INFO_CONFIG_COMMIT_ID        "51c4e9a6c048e906c06117c65e4c229bd869fcab"
+#define LIB_INFO_BUILD_TIME              "20210415144706"
 
 #define LIB_INFO_BUILD_DATE_Y            2021
 #define LIB_INFO_BUILD_DATE_M            4
-#define LIB_INFO_BUILD_DATE_D            10
+#define LIB_INFO_BUILD_DATE_D            15
 
-#define LIB_INFO_BUILD_TIME_H            19
-#define LIB_INFO_BUILD_TIME_M            14
-#define LIB_INFO_BUILD_TIME_S            49
+#define LIB_INFO_BUILD_TIME_H            14
+#define LIB_INFO_BUILD_TIME_M            47
+#define LIB_INFO_BUILD_TIME_S            6
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO
