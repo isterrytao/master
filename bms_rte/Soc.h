@@ -68,6 +68,11 @@ typedef enum {
 typedef struct {
     Soc_CumuLativeTypeType type; /**< 累计类型 */
     uint16 resoltion; /**< 存储分辨率(仅用于能量累计类型) */
+}Soc_FeedbackCumuInfoType;
+
+typedef struct {
+    Soc_CumuLativeTypeType type; /**< 累计类型 */
+    uint16 resoltion; /**< 存储分辨率(仅用于能量累计类型) */
 }Soc_DchgCumuInfoType;
 
 typedef struct {
@@ -82,6 +87,7 @@ typedef struct {
 typedef struct{
     Soc_ChgCumuInfoType ChgCumuInfo; /**< 充电累计配置信息 */
     Soc_DchgCumuInfoType DchgCumuInfo; /**< 放电累计配置信息 */
+    Soc_FeedbackCumuInfoType FeedbackCumuInfo; /**< 回馈累计配置信息 */
     Soc_JumpConfigType jumpPara; /**< SOC跳变参数 */
     App_SocType socMaxForCharging; /**< 充电中最大SOC值 */
 }Soc_ConfigInfoType;
@@ -107,8 +113,10 @@ typedef struct{
     uint32 jumpTimeBuff[SOC_JUMP_BUFF_SIZE]; /**< 跳变时间缓存 */
     uint32 ChgPowerIntegral; /**< 充电能量积分值 精度：1wh/bit */
     uint32 DchgPowerIntegral; /**< 放电能量积分值 精度：1wh/bit */
+    uint32 FeedbackPowerIntegral; /**< 回馈能量积分值 精度：1wh/bit */
     uint32 thisCumuChgPower; /**< 本次上电充电能量累计 精度：与配置精度一致 */
     uint32 thisCumuDchgPower; /**< 本次上电放电能量累计 精度：与配置精度一致 */
+    uint32 thisCumuFeedbackPower; /**< 本次上电回馈能量累计 精度：与配置精度一致 */
     App_CapType chgHoldSocLeftCap; /**< 充电保持SOC值对应的剩余容量值 */
     Soc_IntegralType chgHoldSocIntegral; /**< 充电保持SOC值对应的剩余容量小数值 */
 }Soc_InnerDataType;
@@ -287,6 +295,13 @@ uint32 Soc_GetChgPower(void);
 uint32 Soc_GetDchgPower(void);
 
 /**
+ * \brief 获取本次上电回馈能量值
+ * \details 根据配置信息，能量有两类：容量or电量，容量分辨率为1AH，电量分辨率由配置决定
+ * \return 能量值
+ */
+uint32 Soc_GetFeedbackPower(void);
+
+/**
  * \brief 获取累计充电能量值
  * \details 根据配置信息，充电能量有两类：容量or电量，容量分辨率为1AH，电量分辨率由配置决定
  * \return 能量值
@@ -299,6 +314,14 @@ uint32 Soc_GetCumuChgPower(void);
  * \return 能量值
  */
 uint32 Soc_GetCumuDchgPower(void);
+
+/**
+ * \brief 获取累计回馈能量值
+ * \details 根据配置信息，能量有两类：容量or电量，容量分辨率为1AH，电量分辨率由配置决定
+ * \return 能量值
+ *
+ */
+uint32 Soc_GetCumuFeedbackPower(void);
 
 /**
  * @brief 外部依赖函数声明

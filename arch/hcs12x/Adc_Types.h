@@ -139,7 +139,17 @@ typedef struct {
 } Adc_GroupDefType;
 
 
+/**
+ * \brief AD转换为电压参数
+ */
 typedef struct {
+    sint16 offset;
+    sint16 mul;
+    sint16 div;
+} Adc_AdcToVoltParamType;
+
+typedef struct {
+    Adc_AdcToVoltParamType adcPara;
     uint8 groupNum;
     Adc_GroupDefType *groupDefPtr;
 } Adc_ConfigType;

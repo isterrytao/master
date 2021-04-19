@@ -40,7 +40,9 @@ typedef struct {
 #define FORCE_FOTA_COMMAND          2U
 
 #define GB32960_REMOTE_DISABLE_VALUE    0x56ABU
-
+#define GB32960_RESET_MODE_FORCE_CMD    0x55U
+#define GB32960_RESET_MODE_CMD          0x1U
+#define GB32960_RESET_MODE_CANCEL_CMD   0U
 typedef struct {
     uint16 serverPort;
     const char *serverAddr;
@@ -102,7 +104,7 @@ typedef struct {
 } GB32960_PACKED GB32960_CommandHeaderType;
 
 
-#define GB32960_SUPPORT_COMMAND_NUMBER 6U
+#define GB32960_SUPPORT_COMMAND_NUMBER 7U
 extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);

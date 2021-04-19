@@ -18,7 +18,7 @@
 #define Boot_RunFlagTag_ADDR              (0x3FF8U)
 #define BOOT_EXP100_FBL_DRIVER_ADDR       (0x3A00U)
 #define BOOT_EXP100_FBL_DRIVER_MAX_SIZE   (0x05f8U)
-#define BOOT_EXP100_FBL_TAG_VERSION       (0x01U)
+#define BOOT_EXP100_FBL_TAG_VERSION       (0x02U)
 
 #define Boot_FlagUnbeliveableApp ((uint8)0xFFU)
 #define Boot_FlagRequestRunFBL   ((uint8)0x01U)
@@ -65,15 +65,19 @@ typedef struct {
 typedef uint8 FlashDriverReturnType;
 #define FLASH_DRIVER_OK   0U
 #define FLASH_DRIVER_ERR  1U
+#define FLASH_DRIVER_BUSY  2U
+#define FLASH_DRIVER_BAD_ADDR 3U
 
 typedef struct {
     uint8 TagVersion;
     uint8 ValidFlag;
     FlashDriverReturnType (*__near Init)(uint32 oscFreq); //<! 初始化FLASH控制器.
-    FlashDriverReturnType (*__near Erase)(uint32 eraseAddr, uint16 eraseSize); //<! 擦除FLASH.
-    FlashDriverReturnType (*__near Write)(uint32 writeAddr, const uint8 *__far pSrcDataAddr, uint16 writeSize); //<! 写入数据.
+    FlashDriverReturnType (*__near EraseSector)(uint16 cmd, uint32 address); //<! 擦除一个FLASH sector.
+    FlashDriverReturnType (*__near WritePhrase)(uint16 cmd, uint32 address, const uint16 *__far ptr); //<! 写入一个phrase.
     FlashDriverReturnType (*__near Read)(uint32 readAddr, uint8 *__far pDestDataAddr, uint16 readSize); //<! 读取数据
     FlashDriverReturnType (*__near DFlashPartion)(uint16 dfpart, uint16 erpart); //!< DFLASH分区.
+    FlashDriverReturnType (*Erase)(uint32 eraseAddr, uint16 eraseSize); //<! 擦除FLASH.
+    FlashDriverReturnType (*Write)(uint32 writeAddr, const uint8 *__far pSrcDataAddr, uint16 writeSize); //<! 写入数据.
 } Boot_FlashDriverTagType;
 
 extern const Boot_FlashDriverTagType *__near const BootFlashDriverPtr;

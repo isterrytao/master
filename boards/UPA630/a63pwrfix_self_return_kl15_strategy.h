@@ -1,0 +1,7 @@
+#ifndef a63pwrfix_self_return_kl15_strategy_H__
+#define a63pwrfix_self_return_kl15_strategy_H__
+
+extern const unsigned char a63pwrfix_self_return_kl15_strategy[];
+#define a63pwrfix_self_return_kl15_strategy_CODE_LENGTH 644U
+#define a63pwrfix_self_return_kl15_strategy_CODE_CRC 0XD9C7C4E2UL
+#endif

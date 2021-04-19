@@ -36,7 +36,7 @@ extern AiShell_BufferType aiShellBuf##name;
 void AiShell_AdcValue(AiShell_BufferType *ab, uint16 val);
 uint16 Analog_GetSingalValue(const char *name);
 
-#if defined(UPA640)
+#if defined(UPA630)||defined(UPA640)
 extern const AiShell_NamedAiSignalType *AiShellNamedAiSignal;
 #else
 extern const AiShell_NamedAiSignalType AiShellNamedAiSignal[];

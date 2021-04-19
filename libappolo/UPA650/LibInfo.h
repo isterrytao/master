@@ -11,24 +11,24 @@
 
 #include "BootInfo.h"
 
-#define FWVERSION_MAJOR                   3
+#define FWVERSION_MAJOR                   4
 #define FWVERSION_MINOR                   0
-#define FWVERSION_REVISION                5
-#define FWVERSION_BUILD                   1
-#define LIB_INFO_FWVERSION                "3.0.5.1"
+#define FWVERSION_REVISION                0
+#define FWVERSION_BUILD                   0
+#define LIB_INFO_FWVERSION                "4.0.0.0"
 
 
-#define LIB_INFO_SOURCE_COMMIT_ID        "1a2fea9c118731f5cff43bc8d369b2f18c9e285a"
-#define LIB_INFO_CONFIG_COMMIT_ID        "1a2fea9c118731f5cff43bc8d369b2f18c9e285a"
-#define LIB_INFO_BUILD_TIME              "20210313164007"
+#define LIB_INFO_SOURCE_COMMIT_ID        "51c4e9a6c048e906c06117c65e4c229bd869fcab"
+#define LIB_INFO_CONFIG_COMMIT_ID        "51c4e9a6c048e906c06117c65e4c229bd869fcab"
+#define LIB_INFO_BUILD_TIME              "20210415144706"
 
 #define LIB_INFO_BUILD_DATE_Y            2021
-#define LIB_INFO_BUILD_DATE_M            3
-#define LIB_INFO_BUILD_DATE_D            13
+#define LIB_INFO_BUILD_DATE_M            4
+#define LIB_INFO_BUILD_DATE_D            15
 
-#define LIB_INFO_BUILD_TIME_H            16
-#define LIB_INFO_BUILD_TIME_M            40
-#define LIB_INFO_BUILD_TIME_S            7
+#define LIB_INFO_BUILD_TIME_H            14
+#define LIB_INFO_BUILD_TIME_M            47
+#define LIB_INFO_BUILD_TIME_S            6
 
 #pragma push
 #pragma CONST_SEG __GPAGE_SEG APP_INFO

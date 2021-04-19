@@ -109,6 +109,9 @@ var currentChannelTable = ['hall1', 'hall2', 'shunt', 'userdef1', 'userdef2'];
 if (globalInfo.SystemConnection.PCBA == "UPA640") {
     currentChannelTable = ['hall1', 'userdef1', 'userdef2'];
 }
+if (globalInfo.SystemConnection.PCBA == "UPA630") {
+    currentChannelTable = ['shunt', 'userdef1', 'userdef2'];
+}
 
 
 var mainIndex = currentChannelTable.indexOf(cfg.main.channel);

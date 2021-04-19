@@ -344,7 +344,11 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.systemStatus.HV5 = HV_GetVoltage(HV_CHANNEL_HV5);
     msgHeader->dataHeader.systemStatus.DI1 = DigitalInput_GetDinLevel(DIGITALINPUT_BCU_DIN1);
 
-#if defined(A640)||defined(A641)
+#if defined(A630)||defined(A635)
+    msgHeader->dataHeader.systemStatus.DI2 = 0U;
+    msgHeader->dataHeader.systemStatus.SW1 = getIsl78600Fault();
+    msgHeader->dataHeader.systemStatus.SW2 = 0U;
+#elif defined(A640)||defined(A641)
     msgHeader->dataHeader.systemStatus.DI2 = 0U;
     msgHeader->dataHeader.systemStatus.SW1 = getIsl78600Fault();
     msgHeader->dataHeader.systemStatus.SW2 = 0U;
@@ -373,7 +377,7 @@ static void fillSystemStatus(GBRt_MsgBuffer *msgHeader) {
     }
     msgHeader->dataHeader.systemStatus.soc = Soc_Get();
     msgHeader->dataHeader.systemStatus.soh = Soh_Get();
-#if defined(A640)||defined(A641)
+#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
     msgHeader->dataHeader.systemStatus.insuResSys = 0xFFFFU;
     msgHeader->dataHeader.systemStatus.insuResPos = 0xFFFFU;
     msgHeader->dataHeader.systemStatus.insuResNeg = 0xFFFFU;
@@ -562,7 +566,7 @@ static void fillChargerStatus(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.chargerStatus.cc2Resistor = ChargerConnectM_GetCCxResistanceStatus(CHARGECONNECTM_ADC_CC2_CHANNEL);
     msgHeader->dataHeader.chargerStatus.cpFreq = CP_GetFrequence();
     msgHeader->dataHeader.chargerStatus.cpDuty = CP_GetDuty();
-#if defined(A640)||defined(A641)
+#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
     msgHeader->dataHeader.chargerStatus.elStatus = (uint8)EL_Diagnosis_Disabled;
 #else
     msgHeader->dataHeader.chargerStatus.elStatus = (uint8)EL_GetDiagnosisStatus(0U);
@@ -860,9 +864,9 @@ static const GB32960_CopySegmentType copyRecordSegmentsAlarmStatus[] = {
 };
 
 static boolean has_dtu_module(void) {
-#if defined(A640)
+#if defined(A630) || defined(A640)
     return FALSE;
-#elif defined(A641)
+#elif defined(A635) || defined(A641)
     return TRUE;
 #else
     return DIO_CHANNEL_DTU_IS_PRESENT() ? TRUE : FALSE;
