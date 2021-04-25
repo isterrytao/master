@@ -269,6 +269,9 @@ boolean HvProcess_DchgFaultCond(void)
 void HvProcess_DchgFaultAction(void)
 {
     HvProcess_DchgInnerData.RelayOffTick = OSTimeGet();
+#ifdef RELAYM_FN_PRECHARGE
+    PrechargeM_Stop();
+#endif
 }
 
 boolean HvProcess_DchgRelayOffDelayCond(void)
