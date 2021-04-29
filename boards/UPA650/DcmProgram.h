@@ -9,7 +9,7 @@ typedef uint8 DcmProgram_AppTagType;
 #define DCM_PROGRAM_APP_TAG_B 0x02U
 
 Std_ReturnType DcmProgram_RequestDownload(uint32 addr, uint16 length);
-Std_ReturnType DcmProgram_ProgramData(uint8 seq, const uint8 *data, uint16 length);
+Std_ReturnType DcmProgram_ProgramData(uint8 seq, uint8 *data, uint16 length);
 Std_ReturnType DcmProgram_ExitTransfer(void);
 Std_ReturnType DcmProgram_ClearAppTag(DcmProgram_AppTagType which);
 
