@@ -5,7 +5,7 @@
 
 #define APP_INFO_FLAG_0         (0x123ABCF0UL)
 #define APP_INFO_FLAG_1         (0x456DE789UL)
-#define APP_TAG_VERSION         (0U)
+#define APP_TAG_VERSION         (1U)
 
 #define BOOT_ResetVectorSource_RST  0x01U
 #define BOOT_ResetVectorSource_CMF  0x02U

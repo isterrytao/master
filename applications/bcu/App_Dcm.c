@@ -1099,9 +1099,8 @@ void App_Read0x0620(Dcm_MsgContextType *pMsgContext) {
     length += strlen((const sint8 *)&pMsgContext->resData[length]) + 1U;
 
     DtuM35_GetLacCi(lacci);
-    pMsgContext->resData[length++] = (uint8)(lacci[0]);
     pMsgContext->resData[length++] = (uint8)(lacci[0] >> 8);
-
+    pMsgContext->resData[length++] = (uint8)(lacci[0]);
     (void)memcpy(&pMsgContext->resData[length], &lacci[1], 4U);
     length += 4U;
 
