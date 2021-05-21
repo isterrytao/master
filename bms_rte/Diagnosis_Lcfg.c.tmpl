@@ -23,7 +23,10 @@
 #include "EL.h"
 #include "GBRtMsg.h"
 
+#pragma push
+#pragma DATA_SEG __GPAGE_SEG F2_STACK
 extern Diagnosis_LevelsStatusType Diagnosis_LevelsStatus[];
+#pragma pop
 
 /*lint -save*/
 /*lint -e778*/
