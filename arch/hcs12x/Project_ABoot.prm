@@ -152,8 +152,13 @@ PLACEMENT /* here all predefined and user segments are placed into the SEGMENTS 
 
       PAGED_RAM,
       TASK_STACK,
-                        INTO RAM_F0, RAM_F1, RAM_F2, RAM_F3, RAM_F4, RAM_F5, RAM_F6, RAM_F7,
-                             RAM_F8, RAM_F9;
+                        INTO RAM_F5, RAM_F6, RAM_F7, RAM_F8, RAM_F9;
+
+      F0_STACK,         INTO RAM_F0;
+      F1_STACK,         INTO RAM_F1;
+      F2_STACK,         INTO RAM_F2;
+      F3_STACK,         INTO RAM_F3;
+      F4_STACK,         INTO RAM_F4;
 
       XGATE_VECTORS,          /* XGATE vector table is allocated in FLASH */
       XGATE_STRING,           /* XGATE string literals */

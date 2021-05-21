@@ -32,11 +32,14 @@ static const struct StorageMPartitionType partitions[PARTITION_NUM] = {
     },
 };
 
+#pragma push
+#pragma DATA_SEG __GPAGE_SEG F4_STACK
 /**
  * \note [128] => 1GBit
  *       [256] => 2GBit
  */
 static uint8 bad_block_flags[256];
+#pragma pop
 
 const struct StorageMConfigType StorageMConfig = {
     &nand_device,
