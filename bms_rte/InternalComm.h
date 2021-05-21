@@ -269,11 +269,6 @@ typedef struct{
  */
 extern Async_LooperType InternalComm_TxLooper;
 
-/**
- * \brief 内网通信消息上下文类型定义
- */
-extern InternalComm_ReqChannelCxtType InternalComm_ReqChannelCxt[INTERNALCOMM_REQUIRE_CHANNEL_NUM];
-
 #pragma push
 #pragma DATA_SEG __GPAGE_SEG XGATE_DATA
 #pragma CONST_SEG __GPAGE_SEG XGATE_CONST
@@ -290,10 +285,23 @@ extern uint32 InternalComm_CommAbortFlag;
 
 #pragma pop
 
+#pragma push
+#pragma DATA_SEG __GPAGE_SEG F0_STACK
+
 /**
  * \brief 内网通信发送缓存定义
  */
 extern InternalComm_MsgItemType InternalComm_TxMsgBuffer[INTERNALCOMM_REQUIRE_CHANNEL_NUM][INTERNALCOMM_TX_BUFF_SIZE];
+
+/**
+ * \brief 内网通信DID异步事件
+ */
+extern Async_EventType InternalComm_ScheduleItemEvent[INTERNALCOMM_SLAVE_DID_NUM];
+/**
+ * \brief 内网通信消息上下文类型定义
+ */
+extern InternalComm_ReqChannelCxtType InternalComm_ReqChannelCxt[INTERNALCOMM_REQUIRE_CHANNEL_NUM];
+#pragma pop
 
 /**
  * \brief 内网通信从机通信计时
@@ -326,11 +334,6 @@ extern const uint8 InternalComm_ReqChannelToXgate[];
  */
 extern const uint8 InternalComm_XgateSoftwareIsrChlToReq[];
 
-
-/**
- * \brief 内网通信DID异步事件
- */
-extern Async_EventType InternalComm_ScheduleItemEvent[INTERNALCOMM_SLAVE_DID_NUM];
 
 extern InternalComm_DidTypes InternalComm_SlaveFirstDID;
 

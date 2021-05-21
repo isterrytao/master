@@ -17,7 +17,7 @@ if (globalInfo.SystemConnection.BcuIsAllInOne) {
 }
 
 var UseLtcAllInOne = (globalInfo.SystemConnection.BcuIsAllInOne || globalInfo.SystemConnection.M36Num) && (globalInfo.SystemConnection.PCBA == 'UPC6000' || globalInfo.SystemConnection.PCBA == 'UPA630');
-var UseIslAllInOne = globalInfo.SystemConnection.BcuIsAllInOne && (globalInfo.SystemConnection.PCBA == 'UPA650' || globalInfo.SystemConnection.PCBA == 'UPA640');
+var UseIslAllInOne = globalInfo.SystemConnection.BcuIsAllInOne && (globalInfo.SystemConnection.PCBA == 'UPA650' || globalInfo.SystemConnection.PCBA == 'UPA640' || globalInfo.SystemConnection.PCBA == 'UPA630');
 var M36Num = globalInfo.SystemConnection.M36Num;
 
 globalInfo.setReturn({rxsduids:rxsduids, txsduids:txsduids});
@@ -26,7 +26,11 @@ globalInfo.setReturn({rxsduids:rxsduids, txsduids:txsduids});
 #include "InnerTp_Lcfg.h"
 #include "AllInOneComm.h"
 
-<% if (UseIslAllInOne) {%>
+<% if (UseIslAllInOne && UseLtcAllInOne) {%>
+#include "Isl78600Comm.h"
+#include "Ltc6804Comm.h"
+#include "HardWareIO.h"
+<% } else if (UseIslAllInOne) {%>
 #include "Isl78600Comm.h"
 <% } else if (UseLtcAllInOne || M36Num > 0) {%>
 #include "Ltc6804Comm.h"
@@ -38,7 +42,37 @@ RINGBUFFER_DEFINE_STATIC(cmdRingBuffer, 40U);
 static uint8 requestDataBuffer[40];
 
 
-<% if (UseIslAllInOne) {%>
+<% if (UseIslAllInOne && UseLtcAllInOne && M36Num == 0) {%>
+
+static const InnerTp_RequestHandlerType Isl78600_handlerAllInOne = {
+    0U, /* PduIdType cmdPduId */
+    0U, /* PduIdType replyPduId */
+    Isl78600Comm_HandlerAllInOne, /* void (*handle)(const struct InnerTp_RequestHandler* requestHandler, PduInfoType *InfoPtr); */
+};
+
+static const InnerTp_ConfigDataType Isl78600_InnerTpConfigData = {
+    1U, /* uint8 requestHandlerNumber */
+    &Isl78600_handlerAllInOne, /* InnerTp_RequestHandlerType *requestHandlers; */
+    &cmdRingBuffer, /* RingBuffer_Type *requestRingBuffer; */
+    (uint8)sizeof(requestDataBuffer), /* uint8 requestDataBufferLength; */
+    requestDataBuffer, /* uint8 *requestDataBuffer; */
+};
+
+static const InnerTp_RequestHandlerType Ltc6804_handlerAllInOne = {
+    0U, /* PduIdType cmdPduId */
+    0U, /* PduIdType replyPduId */
+    Ltc6804Comm_HandlerAllInOne, /* void (*handle)(const struct InnerTp_RequestHandler* requestHandler, PduInfoType *InfoPtr); */
+};
+
+static const InnerTp_ConfigDataType Ltc6804_InnerTpConfigData = {
+    1U, /* uint8 requestHandlerNumber */
+    &Ltc6804_handlerAllInOne, /* InnerTp_RequestHandlerType *requestHandlers; */
+    &cmdRingBuffer, /* RingBuffer_Type *requestRingBuffer; */
+    (uint8)sizeof(requestDataBuffer), /* uint8 requestDataBufferLength; */
+    requestDataBuffer, /* uint8 *requestDataBuffer; */
+};
+
+<% } else if (UseIslAllInOne) {%>
 
 static const InnerTp_RequestHandlerType handlerAllInOne = {
     0U, /* PduIdType cmdPduId */
@@ -102,7 +136,24 @@ const InnerTp_ConfigDataType InnerTpConfigData = {
 extern Async_LooperType InternalComm_TxLooper;
 <% } %>
 Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode) {
-<% if (UseIslAllInOne) {%>
+<% if (UseIslAllInOne && UseLtcAllInOne) {%>
+    Std_ReturnType ret = E_NOT_OK;
+    Async_LooperType *looper;
+#if defined(A630)||defined(A635)
+    if (HardWareIO_GetVersion() == 0U /*0b111*/) {
+        looper = Isl78600Comm_Init(pri, istestmode);
+        if (looper != NULL) {
+            ret = InnerTp_Init(&InternalComm_TxLooper, &Isl78600_InnerTpConfigData);
+        }
+    } else {
+        looper = Ltc6804Comm_Init(pri, istestmode);
+        if (looper != NULL) {
+            ret = InnerTp_Init(&InternalComm_TxLooper, &Ltc6804_InnerTpConfigData);
+        }
+    }
+#endif
+    return ret;
+<% } else if (UseIslAllInOne) {%>
     Std_ReturnType ret = E_NOT_OK;
     Async_LooperType *looper;
     looper = Isl78600Comm_Init(pri, istestmode);
@@ -127,7 +178,19 @@ Std_ReturnType AllInOneComm_Init(uint8 pri, boolean istestmode) {
 
 
 Std_ReturnType AllInOneComm_Stop(void) {
-<% if (UseIslAllInOne) {%>
+<% if (UseIslAllInOne && UseLtcAllInOne) {%>
+    Std_ReturnType ret;
+#if defined(A630)||defined(A635)
+    if (HardWareIO_GetVersion() == 0U /*0b111*/) {
+        ret = Isl78600Comm_Stop();
+    } else {
+        ret = Ltc6804Comm_Stop();
+    }
+#else
+    ret = E_NOT_OK;
+#endif
+    return ret;
+<% } else if (UseIslAllInOne) {%>
     return Isl78600Comm_Stop();
 <% } else if (UseLtcAllInOne) {%>
     return Ltc6804Comm_Stop();
