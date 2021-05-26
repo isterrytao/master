@@ -22,7 +22,10 @@ const uint32 dtc_list[STORAGE_DTC_CODE_NUM] = {
 
 uint16 dtc_last_page_addr_list[STORAGE_DTC_CODE_NUM];
 
+#pragma push
+#pragma DATA_SEG __GPAGE_SEG F4_STACK
 static uint8 dtc_data_cache[512];
+#pragma pop
 static struct StorageCycleContextType dtc_ctx_w = {
     dtc_data_cache,
     {

@@ -88,7 +88,10 @@ typedef struct {
 /*******************************************************************************
 *  Global variables(Scope:global)
 *******************************************************************************/
+#pragma push
+#pragma DATA_SEG __GPAGE_SEG F3_STACK
 extern Dcm_MsgItemType /*DCM_NOINIT_DATA*/gUDS_Physical_DiagBuffer[UDS_PHYS_BUFFER_SIZE];
+#pragma pop
 extern Dcm_MsgItemType /*DCM_NOINIT_DATA*/gUDS_Functional_DiagBuffer[UDS_FUNC_BUFFER_SIZE];
 
 #if(ISO_15031_5_MultiChannel == STD_ON)

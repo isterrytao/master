@@ -56,7 +56,7 @@ SHELL_PROTYPE(shunt);
 SHELL_PROTYPE(cppwm);
 SHELL_PROTYPE(cantest);
 SHELL_PROTYPE(onboardt);
-#if defined(A630) || defined(A635) || defined(A600) || defined(A601) || defined(A602) || defined(A603) ||defined(A605) || defined(A607)
+#if defined(A600) || defined(A601) || defined(A602) || defined(A603) ||defined(A605) || defined(A607)
 SHELL_PROTYPE(ltc);
 #endif
 #if defined(A650) || defined(A651) || defined(A652) || defined(A653) || defined(A660) || defined(A661) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665)
@@ -65,6 +65,11 @@ SHELL_PROTYPE(rs485);
 #endif
 #if defined(A640) || defined(A641)
 SHELL_PROTYPE(isl);
+#endif
+#if defined(A630) || defined(A635)
+SHELL_PROTYPE(ltc_isl);
+extern int shell_func_isl(int argc, const char *const *argv);
+extern int shell_func_ltc(int argc, const char *const *argv);
 #endif
 #if defined(A630) || defined(A640)
 #else
@@ -137,7 +142,7 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("ltc", isl),
 #endif
 #if defined(A630) || defined(A635)
-    SHELL_COMMAND("ltc", ltc),
+    SHELL_COMMAND("ltc", ltc_isl),
 #endif
 
 #endif
@@ -150,3 +155,28 @@ const struct shell_command shell_commands[] = {
     SHELL_COMMAND("help", help),
     SHELL_COMMAND_END(),
 };
+
+#if defined(A630) || defined(A635)
+#include "HardWareIO.h"
+
+const char shell_summary_ltc_isl[] = "Ltc/Isl about";
+const char shell_help_ltc_isl[] = "\
+stop/start/t/v/bon/boff [num]\n\
+    t  Output tempreate value;\n\
+    v  Output voltage value;\n\
+    stop  Stop sample;\n\
+    start Start sample;\n\
+    b index flag   Set balance flag at on board;\n\
+    boff  Set all balance off;\n\
+";
+
+int shell_func_ltc_isl(int argc, const char *const *argv) {
+    int ret;
+    if (HardWareIO_GetVersion() == 0U /*0b111*/) {
+        ret = shell_func_isl(argc, argv);
+    } else {
+        ret = shell_func_ltc(argc, argv);
+    }
+    return ret;
+}
+#endif

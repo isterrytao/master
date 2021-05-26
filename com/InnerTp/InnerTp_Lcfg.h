@@ -3,6 +3,6 @@
 
 #include "InnerTp.h"
 
-extern const InnerTp_ConfigDataType InnerTpConfigData;
+// extern const InnerTp_ConfigDataType InnerTpConfigData;
 
 #endif
