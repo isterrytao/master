@@ -65,7 +65,7 @@ void HvProcess_DchgPoll(void)
 static boolean WakeupSignalIsOk(void)
 {
     boolean res = TRUE;
-#if defined(A640)||defined(A641)
+#if defined(A640)||defined(A641)||defined(A630)||defined(A635)
 #else
     boolean flag = FALSE;
     uint8 wakeup;
