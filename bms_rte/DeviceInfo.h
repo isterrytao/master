@@ -150,6 +150,14 @@ Std_ReturnType DeviceInfo_HWIDIsValid(DeviceInfo_HwIDChannelType channel);
  */
 Std_ReturnType DeviceInfo_FWVersionIDIsValid(DeviceInfo_HwIDChannelType channel);
 
+boolean DeviceInfo_HWIDIsChanged(DeviceInfo_HwIDChannelType channel);
+
+uint16 DeviceInfo_GetHWIDUpdateFlag(void);
+
+void DeviceInfo_ClearHWIDUpdateFlag(DeviceInfo_HwIDChannelType channel);
+
+void DeviceInfo_ClearAllHWIDUpdateFlag(void);
+
 
 #endif
 

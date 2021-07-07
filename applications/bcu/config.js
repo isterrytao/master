@@ -2003,7 +2003,7 @@ module.exports = {
 
     GB32960: {
         apn: "",
-        server: "dtu.udantech.com:30097",
+        server: "dtu-2021.ievdata.com:30097",
         rtmsg_interval: 30,
         /* 发生故障时故障等级对应发送周期,单位S*/
         rtmsg_alarm_intervals: [5, 3, 2, 2],

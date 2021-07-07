@@ -193,6 +193,13 @@ typedef struct {
             uint32 dischargedTime;
         } chargeDischargeTime;
 
+        struct {
+            uint8 totalSysNum;
+            uint8 sysNumOfThisFrame;
+            uint16 totalHeatTempNum;
+            uint16 totalPoleTempNum;
+        } heatPoleTemperatures;
+
     } dataHeader;
 } GB32960_PACKED GBRt_MsgBuffer;
 
@@ -227,7 +234,7 @@ typedef struct {
 #define MSG_LENGTH_GB32960_SUPPORT_CMDID  (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(gb32960SupportCmdId) + GB32960_SUPPORT_COMMAND_NUMBER)
 #define MSG_LENGTH_DEVICE_CHADISCHATIME   (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(chargeDischargeTime))
 #define MSG_LENGTH_BALANCE2_STATUS     (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(balanceStatus) + (uint16)(7UL + SYSTEM_BATTERY_CELL_NUM) / 8U + 1U/*LOCAL/REMOTE*/)
-
+#define MSG_LENGTH_HEAT_POLE_TEMPERATURES   (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(heatPoleTemperatures) + (uint16)(SYSTEM_HEAT_TEMP_NUM + SYSTEM_POLE_TEMP_NUM))
 
 static GBRt_MsgBufferWithHeartbeat headerBufferWithHeartbeat;
 static void fillDeviceInfo(GBRt_MsgBuffer *msgHeader) {
@@ -502,6 +509,48 @@ static const GB32960_CopySegmentType copySegmentsCellTemperatures[] = {
     {1U + MEMBER_SIZEOF_MSG_HEADER(cellTemperatures), 1U + MEMBER_SIZEOF_MSG_HEADER(cellTemperatures) + (uint16)(1UL * SYSTEM_TEMP_CELL_NUM), PTR_TYPE_COPY_DATA, {copyTempData}}
 };
 
+static void fillHeatPoleTemperatures(GBRt_MsgBuffer *msgHeader) {
+    msgHeader->dataHeader.heatPoleTemperatures.totalSysNum = 1U;
+    msgHeader->dataHeader.heatPoleTemperatures.sysNumOfThisFrame = 1U;
+    msgHeader->dataHeader.heatPoleTemperatures.totalHeatTempNum = SYSTEM_HEAT_TEMP_NUM;
+    msgHeader->dataHeader.heatPoleTemperatures.totalPoleTempNum = SYSTEM_POLE_TEMP_NUM;
+}
+
+static uint16 copyHeatTempData(uint16 offset, uint8 *buf, uint16 len) {
+    uint16 i;
+    uint8 tmpPtr;
+
+    for (i = 0U; i < len; i++) {
+        tmpPtr = CellDataM_GetHeatTemperature(i + offset);
+        if (tmpPtr > 10U && tmpPtr < 250U) {
+            *buf++  = tmpPtr - 10U;
+        } else {
+            *buf++ = tmpPtr;
+        }
+    }
+    return i;
+}
+
+static uint16 copyPoleTempData(uint16 offset, uint8 *buf, uint16 len) {
+    uint16 i;
+    uint8 tmpPtr;
+
+    for (i = 0U; i < len; i++) {
+        tmpPtr = CellDataM_GetPoleTemperature(i + offset);
+        if (tmpPtr > 10U && tmpPtr < 250U) {
+            *buf++  = tmpPtr - 10U;
+        } else {
+            *buf++ = tmpPtr;
+        }
+    }
+    return i;
+}
+
+static const GB32960_CopySegmentType copySegmentsHeatPoleTemperatures[] = {
+    {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(heatPoleTemperatures), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(heatPoleTemperatures), 1U + MEMBER_SIZEOF_MSG_HEADER(heatPoleTemperatures) + (uint16)(1UL * SYSTEM_HEAT_TEMP_NUM), PTR_TYPE_COPY_DATA, {copyHeatTempData}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(heatPoleTemperatures) + (uint16)(1UL * SYSTEM_HEAT_TEMP_NUM), 1U + MEMBER_SIZEOF_MSG_HEADER(heatPoleTemperatures) + (uint16)(1UL * SYSTEM_HEAT_TEMP_NUM) + (uint16)(1UL * SYSTEM_POLE_TEMP_NUM), PTR_TYPE_COPY_DATA, {copyPoleTempData}}
+};
 
 static void fillCellPeakData(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.cellPeakData.highVoltageSysNum = 1U;
@@ -716,6 +765,7 @@ const GB32960_RTMessageItemType intervalData[] = {
     {0x9CU, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_BALANCE2_STATUS, NULL, (GB32960_FillMessageFuncType)fillBalanceStatus, copySegmentsBalance2Status, (uint8)ARRAY_SIZE(copySegmentsBalance2Status)},
     {0x99U, FALSE, LEN_TYPE_LENGTH, MSG_LENGTH_CHARGER_STATUS, NULL, (GB32960_FillMessageFuncType)fillChargerStatus, copySegmentsChargerStatus, (uint8)ARRAY_SIZE(copySegmentsChargerStatus)},
     {0x87U, TRUE, LEN_TYPE_GET_LENGTH, 0U, getAlarmLength, (GB32960_FillMessageFuncType)fillAlarmStatus, copySegmentsAlarmStatus, (uint8)ARRAY_SIZE(copySegmentsAlarmStatus)},
+    {0x0AU, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_HEAT_POLE_TEMPERATURES, NULL, (GB32960_FillMessageFuncType)fillHeatPoleTemperatures, copySegmentsHeatPoleTemperatures, (uint8)ARRAY_SIZE(copySegmentsHeatPoleTemperatures)},
     {0xFFU, TRUE, LEN_TYPE_LENGTH, 0x00U, NULL, NULL, NULL, 0U}
 };
 
