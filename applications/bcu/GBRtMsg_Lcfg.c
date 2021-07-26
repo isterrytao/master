@@ -1071,6 +1071,12 @@ uint16 GBRtMsg_GetRecordLength(const GB32960_RecordItemType *item) {
     return length - sizeof(((GBRt_MsgBuffer *)0)->GBRtHeader);
 }
 
+boolean GBRtMsg_SetBatCalibRes(const uint8 *buf) {
+    //数据格式：len(2字节) + [ bat x num(2字节) , bat x calib resistor(2字节 mohm) ]
+    (void)buf;
+    return TRUE;
+}
+
 const SaveM_RecordConfigDataType SaveMRecordConfigData = {
     /* GBRt_MsgBuffer *headerData; */ &recordHeaderWithHeartbeat.msgBuf.GBRtHeader,
     /* onPowerUpOnceData = */ {
