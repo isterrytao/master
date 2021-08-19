@@ -752,8 +752,8 @@ const GB32960_RTMessageItemType loginOnceData[] = {
 };
 
 const GB32960_RTMessageItemType intervalData[] = {
-    {0x95U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_CHADISCHATIME, NULL, (GB32960_FillMessageFuncType)fillCharDisTime, copySegmentschargeDischargeTime, (uint8)ARRAY_SIZE(copySegmentschargeDischargeTime)},
     {0x93U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_SYSTEM_STATUS, NULL, (GB32960_FillMessageFuncType)fillSystemStatus, copySegmentsSystemStatus, (uint8)ARRAY_SIZE(copySegmentsSystemStatus)},
+    {0x95U, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_DEVICE_CHADISCHATIME, NULL, (GB32960_FillMessageFuncType)fillCharDisTime, copySegmentschargeDischargeTime, (uint8)ARRAY_SIZE(copySegmentschargeDischargeTime)},
     {0x9AU, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_VOLTAGES, NULL, (GB32960_FillMessageFuncType)fillCellVoltage, copySegmentsCellVoltage, (uint8)ARRAY_SIZE(copySegmentsCellVoltage)},
 #if SYSTEM_BATTERY_CELL_NUM >= 256U
     {0x9AU, TRUE, LEN_TYPE_LENGTH, MSG_LENGTH_CELL_VOLTAGES2, NULL, (GB32960_FillMessageFuncType)fillCellVoltage2, copySegmentsCellVoltage2, (uint8)ARRAY_SIZE(copySegmentsCellVoltage2)},

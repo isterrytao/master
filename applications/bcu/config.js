@@ -149,7 +149,7 @@ module.exports = {
 
     RuntimeM: {
         powerDownConfirmCount: 10,
-        maxTimeForWaitTaskPowerdown: 10,
+        maxTimeForWaitTaskPowerdown: 1,
         wakeupTimeForOTA: 90,
         wakeupTimeForData: "02:00",
         maxOnTimeForOTA: 60*60,
