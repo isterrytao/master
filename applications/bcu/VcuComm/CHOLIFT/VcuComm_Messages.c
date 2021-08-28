@@ -83,11 +83,15 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     }
     uval |= (uint16)level1 << 4;
     level1 = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK);
-    if (level1 >= DIAGNOSIS_LEVEL_SECOND)
+    // if (level1 >= DIAGNOSIS_LEVEL_SECOND)
+    // {
+    //     level1 = DIAGNOSIS_LEVEL_SECOND;
+    // }
+    // uval |= (uint16)level1 << 6;
+    if (level1 != DIAGNOSIS_LEVEL_NONE)
     {
-        level1 = DIAGNOSIS_LEVEL_SECOND;
+        uval |= 1U << 6;
     }
-    uval |= (uint16)level1 << 6;
     WRITE_LT_UINT8(buf, index, uval);
     WRITE_LT_UINT8(buf, index, 0U);
     uval = 0U;
