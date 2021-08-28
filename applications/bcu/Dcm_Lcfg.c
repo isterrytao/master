@@ -1480,6 +1480,24 @@ const Dcm_22_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_22[] = {
         PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
     },
     {
+        (uint32)0x8008U, /* DID */
+        STD_ON, /* Switch */
+        DCM_DID_SIZE_UNUSED, /* Data Size */
+        App_Read0x8008, /* App Callback Funtion */
+        (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1), /* Supported Security Level */
+        (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
+        PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
+    },
+    {
+        (uint32)0x8009U, /* DID */
+        STD_ON, /* Switch */
+        DCM_DID_SIZE_UNUSED, /* Data Size */
+        App_Read0x8009, /* App Callback Funtion */
+        (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1), /* Supported Security Level */
+        (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
+        PHYSICAL_AND_FUNCTIONAL_REQ_SUPPORTED, /* Supported Address Type */
+    },
+    {
         (uint32)0xA500U, /* DID */
         STD_ON, /* Switch */
         DCM_DID_SIZE_UNUSED, /* Data Size */
@@ -2399,6 +2417,24 @@ const Dcm_2E_ServiceInfoType/*DCM_CONFIG_CONST*/ gDcmDsdSubService_2E[] = {
         STD_ON, /* Switch */
         8U, /* Data Size */
         App_Write0x4019, /* App Callback Funtion */
+        (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1), /* Supported Security Level */
+        (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
+        PHYSICAL_REQ_SUPPORTED, /* Supported Address Type */
+    },
+    {
+        (uint32)0x8008U, /* DID */
+        STD_ON, /* Switch */
+        4U, /* Data Size */
+        App_Write0x8008, /* App Callback Funtion */
+        (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1), /* Supported Security Level */
+        (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
+        PHYSICAL_REQ_SUPPORTED, /* Supported Address Type */
+    },
+    {
+        (uint32)0x8009U, /* DID */
+        STD_ON, /* Switch */
+        4U, /* Data Size */
+        App_Write0x8009, /* App Callback Funtion */
         (DCM_SEC_LEV_LOCK | DCM_SEC_LEV_L1), /* Supported Security Level */
         (DCM_SESSION_DEFAULT | DCM_SESSION_EXTENDED_DIAGNOSTIC), /* Supported Session */
         PHYSICAL_REQ_SUPPORTED, /* Supported Address Type */

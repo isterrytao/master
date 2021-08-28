@@ -222,49 +222,51 @@ uint8 gDTCSwitch;
 #define ReadHandle_0x4018   (151u)
 #define ReadHandle_0x4019   (152u)
 #define ReadHandle_0x401A   (153u)
-#define ReadHandle_0xA500   (154u)
-#define ReadHandle_0xA501   (155u)
-#define ReadHandle_0xA502   (156u)
-#define ReadHandle_0xA503   (157u)
-#define ReadHandle_0xA504   (158u)
-#define ReadHandle_0xA505   (159u)
-#define ReadHandle_0xA506   (160u)
-#define ReadHandle_0xA507   (161u)
-#define ReadHandle_0xA508   (162u)
-#define ReadHandle_0xA509   (163u)
-#define ReadHandle_0xA50A   (164u)
-#define ReadHandle_0xA50B   (165u)
-#define ReadHandle_0xA50C   (166u)
-#define ReadHandle_0xA50D   (167u)
-#define ReadHandle_0xA50E   (168u)
-#define ReadHandle_0xA50F   (169u)
-#define ReadHandle_0xDFEF   (170u)
-#define ReadHandle_0xF101   (171u)
-#define ReadHandle_0xF110   (172u)
-#define ReadHandle_0xF112   (173u)
-#define ReadHandle_0xF113   (174u)
-#define ReadHandle_0xF180   (175u)
-#define ReadHandle_0xF181   (176u)
-#define ReadHandle_0xF182   (177u)
-#define ReadHandle_0xF184   (178u)
-#define ReadHandle_0xF185   (179u)
-#define ReadHandle_0xF186   (180u)
-#define ReadHandle_0xF187   (181u)
-#define ReadHandle_0xF189   (182u)
-#define ReadHandle_0xF18A   (183u)
-#define ReadHandle_0xF18B   (184u)
-#define ReadHandle_0xF18C   (185u)
-#define ReadHandle_0xF18E   (186u)
-#define ReadHandle_0xF190   (187u)
-#define ReadHandle_0xF192   (188u)
-#define ReadHandle_0xF193   (189u)
-#define ReadHandle_0xF194   (190u)
-#define ReadHandle_0xF195   (191u)
-#define ReadHandle_0xF197   (192u)
-#define ReadHandle_0xF198   (193u)
-#define ReadHandle_0xF199   (194u)
-#define ReadHandle_0xF19D   (195u)
-#define ReadHandle_0xF19E   (196u)
+#define ReadHandle_0x8008   (154u)
+#define ReadHandle_0x8009   (155u)
+#define ReadHandle_0xA500   (156u)
+#define ReadHandle_0xA501   (157u)
+#define ReadHandle_0xA502   (158u)
+#define ReadHandle_0xA503   (159u)
+#define ReadHandle_0xA504   (160u)
+#define ReadHandle_0xA505   (161u)
+#define ReadHandle_0xA506   (162u)
+#define ReadHandle_0xA507   (163u)
+#define ReadHandle_0xA508   (164u)
+#define ReadHandle_0xA509   (165u)
+#define ReadHandle_0xA50A   (166u)
+#define ReadHandle_0xA50B   (167u)
+#define ReadHandle_0xA50C   (168u)
+#define ReadHandle_0xA50D   (169u)
+#define ReadHandle_0xA50E   (170u)
+#define ReadHandle_0xA50F   (171u)
+#define ReadHandle_0xDFEF   (172u)
+#define ReadHandle_0xF101   (173u)
+#define ReadHandle_0xF110   (174u)
+#define ReadHandle_0xF112   (175u)
+#define ReadHandle_0xF113   (176u)
+#define ReadHandle_0xF180   (177u)
+#define ReadHandle_0xF181   (178u)
+#define ReadHandle_0xF182   (179u)
+#define ReadHandle_0xF184   (180u)
+#define ReadHandle_0xF185   (181u)
+#define ReadHandle_0xF186   (182u)
+#define ReadHandle_0xF187   (183u)
+#define ReadHandle_0xF189   (184u)
+#define ReadHandle_0xF18A   (185u)
+#define ReadHandle_0xF18B   (186u)
+#define ReadHandle_0xF18C   (187u)
+#define ReadHandle_0xF18E   (188u)
+#define ReadHandle_0xF190   (189u)
+#define ReadHandle_0xF192   (190u)
+#define ReadHandle_0xF193   (191u)
+#define ReadHandle_0xF194   (192u)
+#define ReadHandle_0xF195   (193u)
+#define ReadHandle_0xF197   (194u)
+#define ReadHandle_0xF198   (195u)
+#define ReadHandle_0xF199   (196u)
+#define ReadHandle_0xF19D   (197u)
+#define ReadHandle_0xF19E   (198u)
 
 /* For 0x24*/
 
@@ -330,15 +332,17 @@ uint8 gDTCSwitch;
 #define WriteHandle_0x3152  (38u)
 #define WriteHandle_0x4011  (39u)
 #define WriteHandle_0x4019  (40u)
-#define WriteHandle_0xDFEF  (41u)
-#define WriteHandle_0xF101  (42u)
-#define WriteHandle_0xF110  (43u)
-#define WriteHandle_0xF112  (44u)
-#define WriteHandle_0xF190  (45u)
-#define WriteHandle_0xF197  (46u)
-#define WriteHandle_0xF198  (47u)
-#define WriteHandle_0xF199  (48u)
-#define WriteHandle_0xF19D  (49u)
+#define WriteHandle_0x8008  (41u)
+#define WriteHandle_0x8009  (42u)
+#define WriteHandle_0xDFEF  (43u)
+#define WriteHandle_0xF101  (44u)
+#define WriteHandle_0xF110  (45u)
+#define WriteHandle_0xF112  (46u)
+#define WriteHandle_0xF190  (47u)
+#define WriteHandle_0xF197  (48u)
+#define WriteHandle_0xF198  (49u)
+#define WriteHandle_0xF199  (50u)
+#define WriteHandle_0xF19D  (51u)
 
 /* For 0x2F*/
 #define IOcontrolHandle_0x0489  (0u)
@@ -3534,6 +3538,36 @@ void App_Read0x401A(Dcm_MsgContextType *pMsgContext) {
 #endif
 }
 
+void App_Read0x8008(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = DCM_INDEX_2;
+    uint32 time = Statistic_GetCumuChgTime();
+
+    WRITE_BT_UINT32(pMsgContext->resData, length, time);
+
+#if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
+    DsdInternal_DidProcessingDone();
+#else
+    pMsgContext->resData += length;
+    pMsgContext->resDataLen += length;
+    DsdInternal_ProcessingDone(pMsgContext);
+#endif
+}
+
+void App_Read0x8009(Dcm_MsgContextType *pMsgContext) {
+    uint16 length = DCM_INDEX_2;
+    uint32 time = Statistic_GetCumuDchgTime();
+
+    WRITE_BT_UINT32(pMsgContext->resData, length, time);
+
+#if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
+    DsdInternal_DidProcessingDone();
+#else
+    pMsgContext->resData += length;
+    pMsgContext->resDataLen += length;
+    DsdInternal_ProcessingDone(pMsgContext);
+#endif
+}
+
 void App_Read0xA500(Dcm_MsgContextType *pMsgContext) {
     uint16 length = DCM_INDEX_2;
     pMsgContext->resData[length++] = AppInfoTag.FWAddrSpace;
@@ -4587,6 +4621,28 @@ void App_Write0x4019(Dcm_MsgContextType *pMsgContext) {
     if (E_OK == ParameterM_CalibWrite(PARAMETERM_GET_DFLASH_CALIB_PARA_ADDR(ChargePara.DC_Para.chargeTotalVoltMax),
                                       &pMsgContext->reqData[3],
                                       gDcmDsdSubService_2E[WriteHandle_0x4019].DcmDspDataSize)) {
+        gMsgContextType.resDataLen = 3U;
+        DsdInternal_ProcessingDone(pMsgContext);
+    } else {
+        DsdInternal_SetNegResponse(pMsgContext, DCM_E_GENERALPROGRAMMINGFAILURE);
+    }
+}
+void App_Write0x8008(Dcm_MsgContextType *pMsgContext) {
+    uint16 index = DCM_INDEX_3;
+    uint32 time = READ_BT_UINT32(pMsgContext->reqData, index);
+
+    if (E_OK == Statistic_ConfigCumuChgTime(time)) {
+        gMsgContextType.resDataLen = 3U;
+        DsdInternal_ProcessingDone(pMsgContext);
+    } else {
+        DsdInternal_SetNegResponse(pMsgContext, DCM_E_GENERALPROGRAMMINGFAILURE);
+    }
+}
+void App_Write0x8009(Dcm_MsgContextType *pMsgContext) {
+    uint16 index = DCM_INDEX_3;
+    uint32 time = READ_BT_UINT32(pMsgContext->reqData, index);
+
+    if (E_OK == Statistic_ConfigCumuDchgTime(time)) {
         gMsgContextType.resDataLen = 3U;
         DsdInternal_ProcessingDone(pMsgContext);
     } else {
