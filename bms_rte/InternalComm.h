@@ -262,6 +262,7 @@ typedef void (*InternalComm_RecSlaveDataHook)(App_SlaveIdType SlaveId, uint8* co
 typedef struct{
     InternalComm_RecSlaveDataHook recVoltHook; /**< 接收到电压数据钩子函数 */
     InternalComm_RecSlaveDataHook recTempHook; /**< 接收到温度数据钩子函数 */
+    boolean readSlaveHwidAlways; /**< 周期读取从机HWID标志 */
 }InternalComm_ConfigInfoType;
 
 /**

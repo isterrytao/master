@@ -1,5 +1,5 @@
 <%
-var xx = cfg.server.match(/([\.0-9_a-zA-Z]*):([0-9]*)/);
+var xx = cfg.server.match(/([\.0-9_a-zA-Z\-]*):([0-9]*)/);
 if (!xx || parseInt(xx[2]) >= 65535) {
     throw "server format error:" + server;
 }
@@ -48,5 +48,5 @@ const GB32960_ConfigType GB32960ConfigData = {
 <% if (apn != "") {%>
 const char *const DtuM35_Apn = "<%- apn %>";
 <% } else { %>
-const char *const DtuM35_Apn = NULL;
+const char *const DtuM35_Apn = "cmnet";
 <% } %>
