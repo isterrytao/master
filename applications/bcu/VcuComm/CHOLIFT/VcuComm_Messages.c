@@ -111,7 +111,7 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length) {
     }
     else
     {
-        if (DischargeM_DischargeIsAllowed() == E_NOT_OK)
+        if (DischargeM_DiagnosisIsFaultAction() == E_OK)
         {
             uval |= (uint16)1U << 2;
         }
