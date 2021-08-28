@@ -164,4 +164,5 @@ const uint8 InternalComm_XgateSoftwareIsrChlToReq[] = {
 const InternalComm_ConfigInfoType InternalComm_ConfigInfo = {
     NULL, /**< recVoltHook: 接收到电压数据钩子函数 */
     NULL, /**< recTempHook: 接收到温度数据钩子函数 */
+    FALSE, /**< readSlaveHwidAlways: 周期读取从机HWID标志 */
 };

@@ -874,6 +874,15 @@ void Statistic_SetCumuChgTime(uint32 time);
 Std_ReturnType Statistic_SaveCumuChgTime(uint32 time);
 
 /**
+ * \brief 配置累计充电时间
+ * \details 功能同Statistic_SetCumuChgTime + Statistic_SaveCumuChgTime
+ *
+ * \param time 充电时间
+ * \return E_OK: 成功 E_NOT_OK: 失败
+ */
+Std_ReturnType Statistic_ConfigCumuChgTime(uint32 time);
+
+/**
  * \brief 获取累计放电时间 单位:S
  * \details 时间溢出后自动清零
  *
@@ -897,6 +906,15 @@ void Statistic_SetCumuDchgTime(uint32 time);
  * \return E_OK: 成功 E_NOT_OK: 失败
  */
 Std_ReturnType Statistic_SaveCumuDchgTime(uint32 time);
+
+/**
+ * \brief 配置累计放电时间
+ * \details 功能同Statistic_SetCumuDchgTime + Statistic_SaveCumuDchgTime
+ *
+ * \param time 放电时间
+ * \return E_OK: 成功 E_NOT_OK: 失败
+ */
+Std_ReturnType Statistic_ConfigCumuDchgTime(uint32 time);
 
 /**
  * \brief 获取累计运行时间 单位:S

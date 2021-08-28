@@ -149,6 +149,7 @@ Std_ReturnType DtuM35_TcpTransmit(uint16 length, uint16 (*copyTxData)(uint8 *buf
 Std_ReturnType DtuM35_TcpConnect(const char *host, uint16 port, void (*ack)(Std_ReturnType Result));
 Std_ReturnType DtuM35_TcpDisconnect(void (*ack)(Std_ReturnType Result));
 Std_ReturnType DtuM35_FotaStart(const char *url, uint16 len);
+boolean DtuM35_NetworkStatusIsNormal(void);
 boolean DtuM35_GetCountryInfo(uint16 *mmc, uint8 *mnc, uint8 mnclen);
 
 #endif
