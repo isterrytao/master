@@ -105,7 +105,7 @@ boolean HvProcess_DchgStateStartCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
-    uint32 delay = 500UL;
+    uint32 delay = 5000UL;
     Std_ReturnType allow;
     if (WakeupSignalIsOk())
     {

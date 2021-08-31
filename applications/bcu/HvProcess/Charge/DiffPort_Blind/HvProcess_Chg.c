@@ -68,7 +68,7 @@ boolean HvProcess_ChgStateStartCond(void)
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
 
-    if (nowTime >= 500U)
+    if (nowTime >= 5000U)
     {
         if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 500UL)
         {

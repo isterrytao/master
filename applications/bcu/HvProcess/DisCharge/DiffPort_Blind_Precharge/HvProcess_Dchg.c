@@ -141,7 +141,7 @@ boolean HvProcess_DchgStateStartCond(void)
 
     if (WakeupSignalIsOk())
     {
-        if (nowtime >= 300U)
+        if (nowtime >= 5000U)
         {
             if (!HvProcess_DchgInnerData.RelayAdhesCheckFlag)
             {

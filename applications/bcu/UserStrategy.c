@@ -34,6 +34,8 @@
 #include "PrechargeM_Lcfg.h"
 #include "ChargerComm_LCfg.h"
 #include "ChgSckTmpM.h"
+#include "Insu.h"
+#include "BridgeInsu.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -393,6 +395,7 @@ static void UserStrategy_StopChargeCheck(void)
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)
 {
+    static boolean flag = FALSE;
     (void)event;
     (void)byWhat;
 #if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
@@ -440,6 +443,12 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 #if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
     UserStrategy_LvPowerDown();
 #endif
+
+    if (OSTimeGet() >= 5000UL && !flag)
+    {
+        BridgeInsu_Stop();
+        flag = TRUE;
+    }
 
     return ASYNC_EVENT_CBK_RETURN_OK;
 }
@@ -1833,4 +1842,25 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
         }
     }
     return count;
+}
+
+uint16 UserStrategy_GetInsuLeak(void)
+{
+    uint16 leak = 0xFFFFU;
+    uint16 totalVol = HV_GetVoltage(HV_CHANNEL_BPOS);
+    uint16 insu = Insu_GetPositive();
+    uint32 insuFact;
+
+    if (Insu_ResIsValid(insu))
+    {
+        insuFact = (uint32)insu * 1000U;
+        if (Statistic_TotalVoltageIsValid(totalVol))
+        {
+            totalVol = (uint16)V_FROM_100MV(totalVol);
+            insuFact = DIVISION(insuFact, (uint32)totalVol);
+            leak = (uint16)insuFact;
+        }
+    }
+
+    return leak;
 }

@@ -73,7 +73,7 @@ boolean HvProcess_ChgStateStartCond(void)
     {
         if (HvProcess_GetDchgState() == HVPROCESS_DCHG_START)
         {
-            if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 500UL)
+            if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 5000UL)
             {
                 HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
                 UserStrategy_ChgHvProcessAdhesiveDetect();

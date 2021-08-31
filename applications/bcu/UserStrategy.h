@@ -219,4 +219,10 @@ boolean UserStrategy_GetBuzzerSta(void);
 
 uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void);
 
+/**
+ * \brief 获取漏电率 单位ohm/v
+ * \details 根据当前B+总压和正极绝缘阻值计算漏电率
+ */
+uint16 UserStrategy_GetInsuLeak(void);
+
 #endif

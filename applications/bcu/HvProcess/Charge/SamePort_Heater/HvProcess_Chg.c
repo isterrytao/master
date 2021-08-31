@@ -72,7 +72,7 @@ boolean HvProcess_ChgStateStartCond(void)
     HvProcess_DchgStateType dchgState;
 
     dchgState = HvProcess_GetDchgState();
-    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= 500U)
+    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= 5000U)
     {
         if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag)
         {

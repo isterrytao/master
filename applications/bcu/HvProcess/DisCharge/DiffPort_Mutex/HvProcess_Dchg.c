@@ -105,7 +105,7 @@ boolean HvProcess_DchgStateStartCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
-    uint32 delay = 500UL;
+    uint32 delay = 5000UL;
     HvProcess_ChgStateType chgState;
     Std_ReturnType allow;
     if (WakeupSignalIsOk())
@@ -123,22 +123,22 @@ boolean HvProcess_DchgStateStartCond(void)
                 allow = DischargeM_DischargeIsAllowed();
                 if (UserStrategy_DchgHvProcessRelayIsNormal() && allow == E_OK)
                 {
-                    if (ChargerComm_ConfigInfo.DC_Protocol != CHARGERCOMM_PROTOCOL_NONE &&
-                        ChargeConnectM_ConfigInfo.DC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION &&
-                        ChargeConnectM_ConfigInfo.DC_Para.Wakeup == RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
-                    {
-                        delay = 1500UL;
-                    }
-                    else if (ChargerComm_ConfigInfo.AC_Protocol != CHARGERCOMM_PROTOCOL_NONE &&
-                             ChargeConnectM_ConfigInfo.AC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION &&
-                             ChargeConnectM_ConfigInfo.AC_Para.Wakeup == RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
-                    {
-                        delay = 1500UL;
-                    }
-                    else
-                    {
+                    // if (ChargerComm_ConfigInfo.DC_Protocol != CHARGERCOMM_PROTOCOL_NONE &&
+                    //     ChargeConnectM_ConfigInfo.DC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION &&
+                    //     ChargeConnectM_ConfigInfo.DC_Para.Wakeup == RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
+                    // {
+                    //     delay = 1500UL;
+                    // }
+                    // else if (ChargerComm_ConfigInfo.AC_Protocol != CHARGERCOMM_PROTOCOL_NONE &&
+                    //          ChargeConnectM_ConfigInfo.AC_Para.type == CHARGECONNECTM_CONNECT_COMMUNICATION &&
+                    //          ChargeConnectM_ConfigInfo.AC_Para.Wakeup == RUNTIMEM_WAKEUP_SIGNAL_BIT_KEY_ON)
+                    // {
+                    //     delay = 1500UL;
+                    // }
+                    // else
+                    // {
 
-                    }
+                    // }
                     if (nowTime >= delay)
                     {
                         res = TRUE;

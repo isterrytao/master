@@ -67,7 +67,7 @@ boolean HvProcess_DchgStateStartCond(void)
 {
     boolean res = FALSE;
 
-    if (OSTimeGet() >= 300U)
+    if (OSTimeGet() >= 5000U)
     {
         if (!HvProcess_DchgInnerData.RelayAdhesCheckFlag)
         {
