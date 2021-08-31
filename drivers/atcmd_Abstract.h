@@ -32,7 +32,7 @@ typedef Std_ReturnType (*ATCMD_GetOPSType)(void *private_data, char *buf, uint8 
 typedef Std_ReturnType (*ATCMD_GetVoltageType)(void *private_data, uint16 *vol);
 typedef Std_ReturnType (*ATCMD_GetLacCiType)(void *private_data, uint32 lac_ci[2]);
 typedef Std_ReturnType (*ATCMD_GetCellLocType)(void *private_data, sint32 loc[2]);
-typedef Std_ReturnType (*ATCMD_SetApn)(void *private_data, const char *atcmd);
+typedef Std_ReturnType (*ATCMD_SetApnType)(void *private_data, const char *atcmd);
 typedef Std_ReturnType (*ATCMD_GetDevInfoType)(void *private_data, char *buf, uint8 len);
 typedef Std_ReturnType (*ATCMD_SetOtaUrlType)(void *private_data, const char *url, uint8 len, void *fotaPtr);
 
@@ -52,7 +52,7 @@ typedef struct {
     ATCMD_GetSignalQualityType GetSignalQuality;
     ATCMD_GetVoltageType GetVoltage;
     ATCMD_GetCellLocType GetCellLoc;
-    ATCMD_SetApn SetApn;
+    ATCMD_SetApnType SetApn;
     ATCMD_GetDevInfoType GetDevInfo;
     ATCMD_SetOtaUrlType SetOtaUrl;
 } ATCmd_OperationsType;
