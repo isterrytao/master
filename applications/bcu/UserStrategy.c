@@ -1847,14 +1847,14 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
 uint16 UserStrategy_GetInsuLeak(void)
 {
     uint16 leak = 0xFFFFU;
-    uint16 totalVol = HV_GetVoltage(HV_CHANNEL_BPOS);
+    uint16 totalVol = Statistic_GetBcu100mvTotalVoltage();
     uint16 insu = Insu_GetPositive();
     uint32 insuFact;
 
     if (Insu_ResIsValid(insu))
     {
         insuFact = (uint32)insu * 1000U;
-        if (Statistic_TotalVoltageIsValid(totalVol))
+        if (Statistic_TotalVoltageIsValid(totalVol) && totalVol != 0U)
         {
             totalVol = (uint16)V_FROM_100MV(totalVol);
             insuFact = DIVISION(insuFact, (uint32)totalVol);
