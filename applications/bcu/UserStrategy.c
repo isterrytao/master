@@ -166,7 +166,7 @@ void UserStrategy_Init(Async_LooperType *looper)
     }
 }
 
-#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
 static void pollPowerKeyState()
 {
@@ -395,14 +395,16 @@ static void UserStrategy_StopChargeCheck(void)
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)
 {
+#if defined(UPA550)||defined(UPA650)
     static boolean flag = FALSE;
+#endif
     (void)event;
     (void)byWhat;
 #if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
     UserStrategy_ResetToOTA();
 #endif
 
-#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
     if (RuntimeM_GetMode() != RUNTIMEM_RUNMODE_TEST) {
         pollPowerKeyState();
@@ -444,11 +446,13 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
     UserStrategy_LvPowerDown();
 #endif
 
+#if defined(UPA550)||defined(UPA650)
     if (OSTimeGet() >= 5000UL && !flag)
     {
         BridgeInsu_Stop();
         flag = TRUE;
     }
+#endif
 
     return ASYNC_EVENT_CBK_RETURN_OK;
 }
@@ -1847,6 +1851,7 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
 uint16 UserStrategy_GetInsuLeak(void)
 {
     uint16 leak = 0xFFFFU;
+#if defined(UPA550)||defined(UPA650)
     uint16 totalVol = Statistic_GetBcu100mvTotalVoltage();
     uint16 insu = Insu_GetPositive();
     uint32 insuFact;
@@ -1861,6 +1866,7 @@ uint16 UserStrategy_GetInsuLeak(void)
             leak = (uint16)insuFact;
         }
     }
+#endif
 
     return leak;
 }

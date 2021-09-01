@@ -66,8 +66,12 @@ void HvProcess_DchgPoll(void)
 boolean HvProcess_DchgStateStartCond(void)
 {
     boolean res = FALSE;
+    uint32 delay = 5000U;
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
+    delay = 500U;
+#endif
 
-    if (OSTimeGet() >= 5000U)
+    if (OSTimeGet() >= delay)
     {
         if (!HvProcess_DchgInnerData.RelayAdhesCheckFlag)
         {
@@ -211,7 +215,7 @@ boolean HvProcess_DchgReStartJudgeCond(void)
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-#if defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
     bat_tv = Statistic_GetBcu100mvTotalVoltage();
 #else
     bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
