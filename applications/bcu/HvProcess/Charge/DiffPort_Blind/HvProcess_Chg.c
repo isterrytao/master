@@ -26,6 +26,7 @@
 #include "ChargerCommUser_Messages.h"
 #include "ChargerComm_LCfg.h"
 #include "UserStrategy.h"
+#include "BridgeInsu_Cfg.h"
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
 
@@ -70,6 +71,10 @@ boolean HvProcess_ChgStateStartCond(void)
     uint32 delay = 5000U;
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
     delay = 500U;
+#else
+#if BRIDGEINSU_TYPE == BRIDGEINSU_MOS_OFF
+    delay = 500U;
+#endif
 #endif
 
     if (nowTime >= delay)

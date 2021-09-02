@@ -25,6 +25,7 @@
 #include "ChargerComm_LCfg.h"
 #include "PrechargeM.h"
 #include "TemperatureM.h"
+#include "BridgeInsu_Cfg.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
@@ -173,6 +174,10 @@ boolean HvProcess_DchgStateStartCond(void)
     uint32 delay = 5000U;
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
     delay = 500U;
+#else
+#if BRIDGEINSU_TYPE == BRIDGEINSU_MOS_OFF
+    delay = 500U;
+#endif
 #endif
 
     if (WakeupSignalIsOk())
