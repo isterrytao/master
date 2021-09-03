@@ -34,6 +34,8 @@
 #include "PrechargeM_Lcfg.h"
 #include "ChargerComm_LCfg.h"
 #include "ChgSckTmpM.h"
+#include "Insu.h"
+#include "BridgeInsu.h"
 
 #if ( USERSTRATEGY_DEV_ERROR_DETECT == STD_ON )
 #define VALIDATE_PTR(_ptr, _api) \
@@ -164,7 +166,7 @@ void UserStrategy_Init(Async_LooperType *looper)
     }
 }
 
-#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
 static void pollPowerKeyState()
 {
@@ -393,13 +395,16 @@ static void UserStrategy_StopChargeCheck(void)
 
 static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 byWhat)
 {
+#if defined(UPA550)||defined(UPA650)
+    static boolean flag = FALSE;
+#endif
     (void)event;
     (void)byWhat;
 #if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
     UserStrategy_ResetToOTA();
 #endif
 
-#if defined(A630)||defined(A635)||defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
     if (RuntimeM_GetMode() != RUNTIMEM_RUNMODE_TEST) {
         pollPowerKeyState();
@@ -439,6 +444,14 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 
 #if USERSTRATEGY_LV_POWER_DOWN_EN == STD_ON
     UserStrategy_LvPowerDown();
+#endif
+
+#if defined(UPA550)||defined(UPA650)
+    if (OSTimeGet() >= 5000UL && !flag)
+    {
+        BridgeInsu_Stop();
+        flag = TRUE;
+    }
 #endif
 
     return ASYNC_EVENT_CBK_RETURN_OK;
@@ -1833,4 +1846,27 @@ uint16 UserStrategy_ChgSckTmpM_GetAbnormalTemperatureNum(void)
         }
     }
     return count;
+}
+
+uint16 UserStrategy_GetInsuLeak(void)
+{
+    uint16 leak = 0xFFFFU;
+#if defined(UPA550)||defined(UPA650)
+    uint16 totalVol = Statistic_GetBcu100mvTotalVoltage();
+    uint16 insu = Insu_GetPositive();
+    uint32 insuFact;
+
+    if (Insu_ResIsValid(insu))
+    {
+        insuFact = (uint32)insu * 1000U;
+        if (Statistic_TotalVoltageIsValid(totalVol) && totalVol != 0U)
+        {
+            totalVol = (uint16)V_FROM_100MV(totalVol);
+            insuFact = DIVISION(insuFact, (uint32)totalVol);
+            leak = (uint16)insuFact;
+        }
+    }
+#endif
+
+    return leak;
 }

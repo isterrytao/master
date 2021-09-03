@@ -25,6 +25,7 @@
 #include "ChargerComm_LCfg.h"
 #include "PrechargeM.h"
 #include "TemperatureM.h"
+#include "BridgeInsu_Cfg.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
@@ -66,7 +67,7 @@ void HvProcess_DchgPoll(void)
 static boolean WakeupSignalIsOk(void)
 {
     boolean res = TRUE;
-#if defined(A640)||defined(A641)||defined(A630)||defined(A635)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
 #else
     boolean flag = FALSE;
     uint8 wakeup;
@@ -170,11 +171,19 @@ boolean HvProcess_DchgStateStartCond(void)
     Std_ReturnType allow;
     uint32 nowtime = OSTimeGet();
     HvProcess_ChgStateType chgState;
+    uint32 delay = 5000U;
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
+    delay = 500U;
+#else
+#if BRIDGEINSU_TYPE == BRIDGEINSU_MOS_OFF
+    delay = 500U;
+#endif
+#endif
 
     if (WakeupSignalIsOk())
     {
         chgState = HvProcess_GetChgState();
-        if ((!CHARGECONNECTM_IS_CONNECT()) && chgState == HVPROCESS_CHG_START && nowtime >= 300U)
+        if ((!CHARGECONNECTM_IS_CONNECT()) && chgState == HVPROCESS_CHG_START && nowtime >= delay)
         {
             if (!HvProcess_DchgInnerData.RelayAdhesCheckFlag)
             {
@@ -359,7 +368,7 @@ boolean HvProcess_DchgReStartJudgeCond(void)
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-#if defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
     bat_tv = Statistic_GetBcu100mvTotalVoltage();
 #else
     bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);

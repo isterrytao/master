@@ -24,6 +24,7 @@
 #include "ChargerComm_LCfg.h"
 #include "UserStrategy.h"
 #include "TemperatureM.h"
+#include "BridgeInsu_Cfg.h"
 
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 static boolean HvProcess_DchgIsFaultDirectRelayOff(void);
@@ -65,7 +66,7 @@ void HvProcess_DchgPoll(void)
 static boolean WakeupSignalIsOk(void)
 {
     boolean res = TRUE;
-#if defined(A640)||defined(A641)||defined(A630)||defined(A635)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
 #else
     boolean flag = FALSE;
     uint8 wakeup;
@@ -105,8 +106,15 @@ boolean HvProcess_DchgStateStartCond(void)
 {
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
-    uint32 delay = 500UL;
+    uint32 delay = 5000UL;
     Std_ReturnType allow;
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
+    delay = 500U;
+#else
+#if BRIDGEINSU_TYPE == BRIDGEINSU_MOS_OFF
+    delay = 500U;
+#endif
+#endif
     if (WakeupSignalIsOk())
     {
         if (nowTime >= delay)
@@ -250,7 +258,7 @@ boolean HvProcess_DchgRestartAllowedCond(void)
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-#if defined(A640)||defined(A641)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
     bat_tv = Statistic_GetBcu100mvTotalVoltage();
 #else
     bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);

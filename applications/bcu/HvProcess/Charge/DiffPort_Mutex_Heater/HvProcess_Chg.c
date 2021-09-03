@@ -28,6 +28,7 @@
 #include "CellDataM.h"
 #include "PowerM.h"
 #include "UserStrategy_Cfg.h"
+#include "BridgeInsu_Cfg.h"
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
 
@@ -70,9 +71,17 @@ boolean HvProcess_ChgStateStartCond(void)
     Std_ReturnType chargeReady;
     uint32 nowtime = OSTimeGet();
     HvProcess_DchgStateType dchgState;
+    uint32 delay = 5000U;
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
+    delay = 500U;
+#else
+#if BRIDGEINSU_TYPE == BRIDGEINSU_MOS_OFF
+    delay = 500U;
+#endif
+#endif
 
     dchgState = HvProcess_GetDchgState();
-    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= 300U)
+    if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowtime >= delay)
     {
         if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag)
         {
@@ -674,7 +683,7 @@ boolean HvProcess_ChgReStartJudgeCond(void)
     uint32 delay = 30000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
-#if defined(A640)||defined(A641)||defined(A630)||defined(A635)
+#if defined(UPA530)||defined(UPA630)||defined(UPA640)
     bat_tv = Statistic_GetBcu100mvTotalVoltage();
 #else
     bat_tv = HV_GetVoltage(HV_CHANNEL_BPOS);
