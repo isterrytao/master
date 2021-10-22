@@ -87,6 +87,11 @@ typedef enum{
     DEVICE_TYPE_M602 = 0x03U, /**< 2路高边输出、48路电压检测、12路温度检测、100mA被动均衡 */
     DEVICE_TYPE_M603 = 0x04U, /**< 2路高边输出、60路电压检测、12路温度检测、100mA被动均衡 */
     DEVICE_TYPE_M630 = 0x20U,
+
+    DEVICE_TYPE_M500 = 0x40U, /**< 24路电压检测、12路温度检测、100mA被动均衡 */
+    DEVICE_TYPE_M501 = 0x41U, /**< 36路电压检测、12路温度检测、100mA被动均衡 */
+    DEVICE_TYPE_M502 = 0x42U, /**< 48路电压检测、12路温度检测、100mA被动均衡 */
+    DEVICE_TYPE_M503 = 0x43U, /**< 60路电压检测、12路温度检测、100mA被动均衡 */
 }DeviceInfo_DeviceTypeType;
 
 /**
@@ -114,6 +119,11 @@ typedef struct{
 
 extern uint16 DeviceInfo_ReceiveHWIDFlag;
 extern uint16 DeviceInfo_ReceiveFWVersionFlag;
+
+/**
+ * \brief 从机支持M500型号软件版本
+ */
+#define DEVICEINFO_SUPPORT_M500_SLAVE_FWVERSION       "2.0.0.0"
 
 /**
  * \brief 获取对应通道的HWID
@@ -158,6 +168,13 @@ void DeviceInfo_ClearHWIDUpdateFlag(DeviceInfo_HwIDChannelType channel);
 
 void DeviceInfo_ClearAllHWIDUpdateFlag(void);
 
+/**
+ * \brief 检查对应通道从机设备是否无效
+ *
+ * \param channel 通道号
+ * \return TRUE: 无效 FALSE: 有效
+ */
+boolean DeviceInfo_SlaveBoardIsInvalid(DeviceInfo_HwIDChannelType channel);
 
 #endif
 
