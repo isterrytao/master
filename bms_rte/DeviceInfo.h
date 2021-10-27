@@ -123,7 +123,8 @@ extern uint16 DeviceInfo_ReceiveFWVersionFlag;
 /**
  * \brief 从机支持M500型号软件版本
  */
-#define DEVICEINFO_SUPPORT_M500_SLAVE_FWVERSION       "2.0.0.0"
+#define DEVICEINFO_SUPPORT_M500_SLAVE_FWVERSION_MIN       "2.0.0.0"
+#define DEVICEINFO_SUPPORT_M500_SLAVE_FWVERSION_MAX       "3.9.9.9"
 
 /**
  * \brief 获取对应通道的HWID
