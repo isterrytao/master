@@ -71,7 +71,7 @@ boolean HvProcess_ChgStateStartCond(void)
     Std_ReturnType chargeReady;
     uint32 nowtime = OSTimeGet();
     HvProcess_DchgStateType dchgState;
-    uint32 delay = 5000U;
+    uint32 delay = 2000U;
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
     delay = 500U;
 #else

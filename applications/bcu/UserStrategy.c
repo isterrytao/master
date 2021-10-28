@@ -447,7 +447,7 @@ static Async_EvnetCbkReturnType UserStrategy_Poll(Async_EventType *event, uint8 
 #endif
 
 #if defined(UPA550)||defined(UPA650)
-    if (OSTimeGet() >= 5000UL && !flag)
+    if (OSTimeGet() >= 2500UL && !flag)
     {
         BridgeInsu_Stop();
         flag = TRUE;
