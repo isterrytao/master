@@ -171,7 +171,7 @@ boolean HvProcess_DchgStateStartCond(void)
     Std_ReturnType allow;
     uint32 nowtime = OSTimeGet();
     HvProcess_ChgStateType chgState;
-    uint32 delay = 2000U;
+    uint32 delay = 2500U;
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
     delay = 500U;
 #else
