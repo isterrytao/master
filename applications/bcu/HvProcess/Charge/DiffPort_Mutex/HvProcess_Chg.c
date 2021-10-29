@@ -69,7 +69,7 @@ boolean HvProcess_ChgStateStartCond(void)
     boolean res = FALSE;
     uint32 nowTime = OSTimeGet();
     uint8 chargerIsComm;
-    uint32 delay = 5000U;
+    uint32 delay = 2000U;
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
     delay = 500U;
 #else
