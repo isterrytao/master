@@ -90,6 +90,7 @@ typedef struct{
     Soc_FeedbackCumuInfoType FeedbackCumuInfo; /**< 回馈累计配置信息 */
     Soc_JumpConfigType jumpPara; /**< SOC跳变参数 */
     App_SocType socMaxForCharging; /**< 充电中最大SOC值 */
+    uint8 dchgCntRatio;  /**< 放电循环次数计算比率，分辨率1% */
 }Soc_ConfigInfoType;
 
 /**
