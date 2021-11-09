@@ -39,7 +39,7 @@ extern const struct Ltc6804 ltc6804_dev;
 /**
  * \brief 主从一体机从机软件版本
  */
-#define LTC6804_SLAVE_FWVERSION       "1.0.0.0"
+#define LTC6804_SLAVE_FWVERSION       "4.0.0.0"
 
 /**
  * \brief LTC6804通信初始化
