@@ -42,6 +42,7 @@ const Soc_ConfigInfoType Soc_ConfigInfo = {
         MIN_TO_S(1U), /**< socJumpTime: SOC跳变时间 单位：S */
     },
     SOC_MAX_FOR_FULL_CHARGE, /**< 充电中最大SOC值 0.1% */
+    80U,  /**< 放电循环次数计算比率，分辨率1% */
 };
 
 Std_ReturnType Soc_IsChargeFinish(void)

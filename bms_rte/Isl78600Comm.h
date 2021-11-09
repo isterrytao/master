@@ -11,6 +11,11 @@
 #define ISL78600SN_LEN 4U
 extern uint8 isl78600SN[ISL78600SN_LEN] ;
 
+/**
+ * \brief 主从一体机从机软件版本
+ */
+#define ISL78600_SLAVE_FWVERSION       "4.0.1.0"
+
 Async_LooperType *Isl78600Comm_Init(uint8 pri, boolean istestmode);
 void Isl78600Comm_HandlerAllInOne(const InnerTp_RequestHandlerType* requestHandler, const PduInfoType *InfoPtr);
 uint8* Isl78600Comm_GetBalanceStateBitMapBuffPtr(void);

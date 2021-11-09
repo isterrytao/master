@@ -119,6 +119,8 @@ extern const uint8 CellDataM_PoleTemperatureLogicIdToPhysicalIdMap[];
 
 extern const uint8 SystemConnection_SlaveSampleBoardNumTable[];
 
+extern const uint16 CellDataM_BmuCellsSetup[];
+
 #pragma pop
 
 extern const uint8 SystemConnection_SlaveCellNumTable[];
