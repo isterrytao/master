@@ -29,6 +29,20 @@
 typedef uint16 App_SohType;
 
 /**
+ * \brief SOH与充放电次数关系表
+ */
+typedef struct {
+    uint16 dischgCnt; /**< 放电次数 */
+    App_SohType soh; /**< soh值 */
+} Soh_DischgCntType;
+
+typedef struct {
+    Soh_DischgCntType *dischgCntSoh;
+    uint8 dischgCntSohNum;
+    boolean isLerp; /**< 是否线性插值 */
+} Soh_DischgCntInfoType;
+
+/**
  * \brief SOH配置参数类型定义
  */
 typedef struct{
@@ -41,7 +55,6 @@ typedef struct{
 typedef struct{
     App_SohType soh; /**< soh值 */
 }Soh_InnerDataType;
-
 
 extern const Soh_ConfigInfoType Soh_ConfigInfo;
 
@@ -77,8 +90,32 @@ Std_ReturnType Soh_Set(App_SohType Soh_Value);
  */
 App_SohType Soh_FormCap(App_CapType totalCap, App_CapType nominalCap);
 
+/**
+ * \brief 根据充放电次数配置soh
+ *
+ * \param dischgCnt 充放电次数
+ *
+ * \return E_OK:配置成功 E_NOT_OK:配置失败
+ */
+Std_ReturnType Soh_ConfigByDischgCnt(uint16 dischgCnt);
 
+/**
+ * \brief 根据给定的soh值配置soh
+ *
+ * \param soh 给定的soh值
+ *
+ * \return E_OK:配置成功 E_NOT_OK:配置失败
+ */
+Std_ReturnType Soh_ConfigBySoh(App_SohType soh);
 
+/**
+ * \brief 根据总容量配置soh
+ *
+ * \param totalCap 总容量
+ *
+ * \return E_OK:配置成功 E_NOT_OK:配置失败
+ */
+Std_ReturnType Soh_ConfigByTotalCap(App_CapType totalCap);
 
 #endif
 

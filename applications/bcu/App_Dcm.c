@@ -4484,7 +4484,7 @@ void App_Write0x30E0(Dcm_MsgContextType *pMsgContext) {
     Std_ReturnType res;
     uint16 index = 3U;
 
-    res = Soc_ConfigTotalCap(READ_BT_UINT16(pMsgContext->reqData, index));
+    res = Soh_ConfigByTotalCap(READ_BT_UINT16(pMsgContext->reqData, index));
     if (res == E_OK) {
         res = Soc_ConfigLeftCap(READ_BT_UINT16(pMsgContext->reqData, index));
     }
