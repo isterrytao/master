@@ -4495,7 +4495,7 @@ void App_Write0x30E0(Dcm_MsgContextType *pMsgContext) {
     temp = (uint32)READ_BT_UINT16(pMsgContext->reqData, index);
     temp *= BatteryInfo_BaseConfigInfo.NominalCap;
     temp = DIVISION(temp, BatteryInfo_BaseConfigInfo.DisplayCap);
-    res = Soc_ConfigTotalCap((uint16)temp);
+    res = Soh_ConfigByTotalCap((uint16)temp);
     if (res == E_OK) {
         temp = (uint32)READ_BT_UINT16(pMsgContext->reqData, index);
         temp *= BatteryInfo_BaseConfigInfo.NominalCap;

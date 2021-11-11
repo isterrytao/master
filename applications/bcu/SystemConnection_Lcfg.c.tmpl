@@ -52,6 +52,12 @@ const uint8 CellDataM_TempsSetup[SYSTEM_SAMPLE_BOARD_NUM_ON_DAISY_CHAIN]={
 };
 <% } %>
 
+<% if (processedcfg.Bmus.length > 0) {%>
+const uint16 CellDataM_BmuCellsSetup[SYSTEM_BATTERY_SAMPLE_BOARD_NUM]={
+    <%for (var vs of processedcfg.SlaveCellsSetup){%><%for (var v of vs){%><%- Number('0b' + v) %>U,<%}%><%}%>
+};
+<% } %>
+
 const uint8 CellDataM_BmuBoardVoltageLogicIdMax[SYSTEM_BATTERY_SAMPLE_BOARD_NUM] ={
     <%- processedcfg.BmuBatt.BoardLogicIdMax%>
 };
