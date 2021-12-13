@@ -160,7 +160,7 @@ void VcuComm_GetStatusMsg_0x2F2(uint8 *buf, uint16 *Length) {
     uint16 index = 0U, temp;
     uint32 cap;
     cap = Soc_GetDchgPower();
-    cap = cap * 10U;
+    cap = cap * 100U;
     WRITE_LT_UINT16(buf, index, cap);
     cap = Soc_GetCumuChgPower();
     WRITE_LT_UINT32(buf, index, cap);
@@ -228,6 +228,10 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length)
         temp |= (uint16)0x1U << 2;
     }
     else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) >= DIAGNOSIS_LEVEL_FIRST)
+    {
+        temp |= (uint16)0x1U << 2;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) >= DIAGNOSIS_LEVEL_FIRST)
     {
         temp |= (uint16)0x1U << 2;
     }
@@ -305,11 +309,11 @@ void VcuComm_GetStatusMsg_0x444(uint8 *buf, uint16 *Length)
 {
     uint16 index = 0U, temp ;
     WRITE_LT_UINT32(buf, index, 0U);
-    WRITE_LT_UINT8(buf, index, 0U);
+    WRITE_LT_UINT16(buf, index, 0U);
     temp = Soc_Get();
     temp = (uint16)SOC_TO_PERCENT(temp);
     WRITE_LT_UINT8(buf, index, temp);
-    WRITE_LT_UINT16(buf, index, 0U);
+    WRITE_LT_UINT8(buf, index, 0U);
     *Length = index;
 }
 

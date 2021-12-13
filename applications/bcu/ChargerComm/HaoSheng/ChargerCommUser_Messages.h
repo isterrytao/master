@@ -22,6 +22,7 @@
 
 typedef struct{
     boolean isNeedToSendStop; /**< 充电连接断开后，是否需要发送停止充电报文 */
+    boolean ishandshake;
 }ChargerCommUser_MessageInnerDataType;
 
 /**
@@ -50,6 +51,8 @@ Std_ReturnType ChargerCommUser_TCSendConditionCheck(void);
  */
 void ChargerCommUser_GetTCDataCbk(uint8 *Buffer, uint16 *Length);
 void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length);
+void ChargerCommUser_GetTC770DataCbk(uint8 *Buffer, uint16 *Length);
+void ChargerCommUser_GetTC2F0DataCbk(uint8 *Buffer, uint16 *Length);
 
 
 /**
@@ -59,6 +62,7 @@ void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length);
  * \param Length 数据长度
  */
 void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length);
+void ChargerCommUser_Receive000Cbk(const uint8 *Buffer, uint16 Length);
 
 /**
  * \brief TC接收超时处理回调函数

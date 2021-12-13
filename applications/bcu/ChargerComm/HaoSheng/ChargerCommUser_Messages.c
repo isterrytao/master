@@ -319,6 +319,12 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 3;
     }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    {
+        temp |= (uint16)1U << 3;
+    }
+    else
+    {}
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 4;
@@ -381,6 +387,12 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     {
         flag |= (uint16)1U << 3;
     }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_DC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    {
+        flag |= (uint16)1U << 3;
+    }
+    else
+    {}
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
     {
         flag |= (uint16)1U << 4;
@@ -441,6 +453,157 @@ void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length)
     *Length = index;
 }
 
+void ChargerCommUser_GetTC770DataCbk(uint8 *Buffer, uint16 *Length)
+{
+    uint16 index = 0U, temp;
+    temp = 0x7FU;
+    if (ChargerCommUser_MsgInnerData.ishandshake)
+    {
+        temp = 0x5U;
+    }
+    WRITE_LT_UINT8(Buffer, index, temp);
+    WRITE_LT_UINT24(Buffer, index, 0U);
+    WRITE_LT_UINT32(Buffer, index, 0U);
+    *Length = index;
+}
+
+void ChargerCommUser_GetTC2F0DataCbk(uint8 *Buffer, uint16 *Length)
+{
+    uint16 index = 0U;
+    uint16 u16val;
+    Current_CurrentType current;
+    // Current_CurrentType cur_offset = VCUCOMM_CURRENT_OFFSET;
+    /**< 总电压 */
+    u16val = Statistic_GetBcu100mvTotalVoltage();
+    if (!Statistic_TotalVoltageIsValid(u16val)){
+        u16val = 0U;
+    }
+    WRITE_LT_UINT16(Buffer, index, u16val);
+    /**< 总电流 */
+    current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+    if (!CurrentM_IsValidCurrent(current))
+    {
+        u16val = 0xFFFFU;
+        // current = 0;
+    }
+    else
+    {
+        current = current + 3000;
+        u16val = (uint16)current;
+    }
+    // if (current < (-1) * cur_offset)
+    // {
+    //     u16val = 0U;
+    // }
+    // else if (current > cur_offset)
+    // {
+    //     u16val = (uint16)cur_offset * 2U;
+    // }
+    // else
+    // {
+    //     u16val = (uint16)current + (uint16)cur_offset;
+    // }
+    WRITE_LT_UINT16(Buffer, index, u16val);
+    /**< SOC */
+    u16val = (uint16)SOC_TO_UINT8(Soc_Get());
+    WRITE_LT_UINT8(Buffer, index, (uint8)u16val);
+    /**< 电池容量规格:和售前确认使用额定容量 */
+    u16val = BatteryInfo_BaseConfigInfo.DisplayCap / 20U;
+    WRITE_LT_UINT8(Buffer, index, u16val);
+    u16val = 0U;
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HTV) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 0;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HTV) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 0;
+    }
+    else
+    {}
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 1;
+    }
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_VCU_COMM) != DIAGNOSIS_LEVEL_NONE)
+    {
+        u16val |= (uint16)1U << 2;
+    }
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_SECOND)
+    {
+        u16val |= (uint16)1U << 3;
+    }
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 4;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 4;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 4;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_AC_CHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 4;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 4;
+    }
+    else
+    {}
+    if (CHARGECONNECTM_IS_CONNECT())
+    {
+        u16val |= (uint16)1U << 7;
+        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            u16val |= (uint16)3U << 5;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LT) >= DIAGNOSIS_LEVEL_SECOND)
+        {
+            u16val |= (uint16)2U << 5;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            u16val |= (uint16)3U << 5;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_SECOND)
+        {
+            u16val |= (uint16)2U << 5;
+        }
+        else
+        {}
+    }
+    else
+    {
+        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            u16val |= (uint16)3U << 5;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_SECOND)
+        {
+            u16val |= (uint16)2U << 5;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            u16val |= (uint16)3U << 5;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_SECOND)
+        {
+            u16val |= (uint16)2U << 5;
+        }
+        else
+        {}
+    }
+    WRITE_LT_UINT8(Buffer, index, u16val);
+    u16val = 0U;
+    WRITE_LT_UINT8(Buffer, index, u16val);
+    *Length = index;
+}
+
 void ChargerCommUser_RecTCTimeoutCbk(void)
 {
     ChargerCommUser_SetCommunication(FALSE);
@@ -450,4 +613,19 @@ void ChargerCommUser_RecTCTimeoutCbk(void)
         // ChargerCommUser_CommStop();
     }
     ChargerComm_SetCommunicationStatus(FALSE);
+}
+
+void ChargerCommUser_Receive000Cbk(const uint8 *Buffer, uint16 Length)
+{
+    uint16 index = 0U, temp;
+
+    if (Length >= 1U)
+    {
+        temp = READ_BT_UINT8(Buffer, index);
+        if (temp == 1U)
+        {
+            ChargerCommUser_MsgInnerData.ishandshake = TRUE;
+        }
+    }
+
 }

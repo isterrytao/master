@@ -40,13 +40,7 @@ extern VcuComm_MsgDataType VcuComm_MsgData;
  */
 void VcuComm_MessageInit(Async_LooperType *looper);
 
-/**
- * \brief 参考BMS-CAN标准帧通信协议V1.01_20171202协议
- */
 void VcuComm_GetStatusMsg_0x181(uint8 *buf, uint16 *Length);
-/**
- * \brief 参考BMS-CAN标准帧通信协议V1.01_20171202协议
- */
 void VcuComm_GetStatusMsg_0x281(uint8 *buf, uint16 *Length);
 
 void VcuComm_RecTimeoutCbk(void);

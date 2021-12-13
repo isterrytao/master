@@ -314,14 +314,16 @@ void VcuComm_GetStatusMsg_0x281(uint8 *buf, uint16 *Length) {
     val8 = 0U;
     WRITE_BT_UINT8(buf, index, val8);
     temp = 0U;
-    // chg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HV);
-    // if(chg_level > DIAGNOSIS_LEVEL_SECOND)
-    // {
-    //     temp |= (uint16)((uint16)1 << 0);
-    // }
+    chg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HV);
+    dchg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV);
+    if(chg_level > DIAGNOSIS_LEVEL_SECOND || dchg_level > DIAGNOSIS_LEVEL_SECOND)
+    {
+        temp |= (uint16)((uint16)1 << 0);
+    }
 
-    chg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV);
-    if(chg_level >= DIAGNOSIS_LEVEL_FIRST)
+    chg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV);
+    dchg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV);
+    if(chg_level >= DIAGNOSIS_LEVEL_FIRST || dchg_level >= DIAGNOSIS_LEVEL_FIRST)
     {
         temp |= (uint16)((uint16)1 << 1);
     }
