@@ -91,6 +91,10 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     }
     else
     {
+        if (current < -3000)
+        {
+            current = -3000;
+        }
         current = current + 3000;
         u16val = (uint16)current;
     }
@@ -128,6 +132,12 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     {
         u16val |= (uint16)1U << 1;
     }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        u16val |= (uint16)1U << 1;
+    }
+    else
+    {}
     if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_VCU_COMM) != DIAGNOSIS_LEVEL_NONE)
     {
         u16val |= (uint16)1U << 2;
@@ -136,6 +146,12 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     {
         u16val |= (uint16)1U << 3;
     }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV) >= DIAGNOSIS_LEVEL_SECOND)
+    {
+        u16val |= (uint16)1U << 1;
+    }
+    else
+    {}
     if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
     {
         u16val |= (uint16)1U << 4;

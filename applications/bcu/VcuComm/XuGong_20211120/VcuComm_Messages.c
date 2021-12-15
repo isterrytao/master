@@ -77,6 +77,10 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     sval = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     if (CurrentM_IsValidCurrent(sval))
     {
+        if (sval < -6000)
+        {
+            sval = -6000;
+        }
         sval = sval + 6000;
         uval = (uint16)sval;
     }
@@ -163,7 +167,7 @@ void VcuComm_GetStatusMsg_0x2F2(uint8 *buf, uint16 *Length) {
     cap = Soc_GetDchgPower();
     temp = BatteryInfo_BaseConfigInfo.NominalTotalVolt;
     cap *= (uint32)temp;
-    cap /= 1000UL; // 0.01Kwh
+    cap /= 100UL; // 0.01Kwh
     WRITE_LT_UINT16(buf, index, cap);
     cap = Soc_GetCumuChgPower();
     WRITE_LT_UINT32(buf, index, cap);
