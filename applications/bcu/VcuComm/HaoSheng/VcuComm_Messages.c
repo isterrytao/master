@@ -148,7 +148,7 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     }
     else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV) >= DIAGNOSIS_LEVEL_SECOND)
     {
-        u16val |= (uint16)1U << 1;
+        u16val |= (uint16)1U << 3;
     }
     else
     {}
