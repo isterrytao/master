@@ -63,8 +63,8 @@ var ChargerMsg = {
         rx: [{id: 0x98FF50E5, def: "USER_TC"}],
     },
     HaoSheng: {
-        tx: [{id: 0x9806E5F4, def: "USER_TC"},{id: 0x9800FFF4, def: "USER_TC1"},{id: 0x770, def: "USER_770"},{id: 0x2F0, def: "USER_2F0"}],
-        rx: [{id: 0x98FF50E5, def: "USER_TC"},{id: 0x370, def: "USER_370"},{id: 0x000, def: "USER_000"}],
+        tx: [{id: 0x9806E5F4, def: "USER_TC"},{id: 0x9800FFF4, def: "USER_TC1"}],
+        rx: [{id: 0x98FF50E5, def: "USER_TC"}],
     },
 };
 
@@ -160,6 +160,10 @@ var VcuMsg = {
     Megamette_V1: {
         tx: [0x181, 0x281],
         rx: [0x394],
+    },
+    HaoSheng: {
+        tx: [0x770,0x2F0],
+        rx: [0x370,0x000],
     },
 };
 

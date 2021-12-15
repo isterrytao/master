@@ -130,20 +130,6 @@ const ChargerComm_SendIPduCfgType ChargerComm_IPduSendConfigInfo[] = {
         ChargerCommUser_TCSendConditionCheck, /**< CondFunc */
         ChargerCommUser_GetTC1DataCbk, /**< Func */
     },
-    {
-        PDUR_CHARGERCOMM_TX_PDUID_USER_770, /**< IPdu */
-        8U, /**< Length */
-        50U, /**< Cycle */
-        NULL, /**< CondFunc */
-        ChargerCommUser_GetTC770DataCbk, /**< Func */
-    },
-    {
-        PDUR_CHARGERCOMM_TX_PDUID_USER_2F0, /**< IPdu */
-        8U, /**< Length */
-        50U, /**< Cycle */
-        NULL, /**< CondFunc */
-        ChargerCommUser_GetTC2F0DataCbk, /**< Func */
-    },
 };
 
 static const ChargerComm_RecIPduInfoType ChargerComm_StageIdleRecItem[] = {
@@ -169,22 +155,6 @@ static const ChargerComm_RecIPduInfoType ChargerComm_StageIdleRecItem[] = {
         CHARGERCOMM_REC_TIMEOUT_USER, /**< Timeout: 接收超时时间 */
         NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
         ChargerCommUser_ReceiveTCCbk, /**< RecFunc: 数据接收回调函数 */
-        NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
-    },
-    {
-        PDUR_CHARGERCOMM_RX_PDUID_USER_370, /**< IPdu */
-        8U,
-        CHARGERCOMM_REC_TIMEOUT_USER, /**< Timeout: 接收超时时间 */
-        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
-        NULL, /**< RecFunc: 数据接收回调函数 */
-        NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
-    },
-    {
-        PDUR_CHARGERCOMM_RX_PDUID_USER_000, /**< IPdu */
-        8U,
-        CHARGERCOMM_REC_TIMEOUT_USER, /**< Timeout: 接收超时时间 */
-        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
-        ChargerCommUser_Receive000Cbk, /**< RecFunc: 数据接收回调函数 */
         NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
     },
 };
@@ -398,22 +368,6 @@ static const ChargerComm_RecIPduInfoType ChargerComm_StageUserTCRecItem[] = {
         NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
         ChargerCommUser_ReceiveTCCbk, /**< RecFunc: 数据接收回调函数 */
         ChargerCommUser_RecTCTimeoutCbk, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
-    },
-    {
-        PDUR_CHARGERCOMM_RX_PDUID_USER_370, /**< IPdu */
-        8U,
-        CHARGERCOMM_REC_TIMEOUT_USER, /**< Timeout: 接收超时时间 */
-        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
-        NULL, /**< RecFunc: 数据接收回调函数 */
-        NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
-    },
-    {
-        PDUR_CHARGERCOMM_RX_PDUID_USER_000, /**< IPdu */
-        8U,
-        CHARGERCOMM_REC_TIMEOUT_USER, /**< Timeout: 接收超时时间 */
-        NULL, /**< TimeoutFunc: 获取IPdu接收超时时间回调函数 */
-        ChargerCommUser_Receive000Cbk, /**< RecFunc: 数据接收回调函数 */
-        NULL, /**< TimeoutEventFunc: 数据接收超时事件回调函数 */
     },
 };
 

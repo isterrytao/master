@@ -342,8 +342,9 @@ void VcuComm_GetStatusMsg_0x281(uint8 *buf, uint16 *Length) {
     {
         temp |= (uint16)((uint16)1 << 5);
     }
-    chg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV);
-    if(chg_level > DIAGNOSIS_LEVEL_SECOND)
+    chg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV);
+    dchg_level = Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV);
+    if(chg_level > DIAGNOSIS_LEVEL_SECOND || dchg_level > DIAGNOSIS_LEVEL_SECOND)
     {
         temp |= (uint16)((uint16)1 << 6);
     }

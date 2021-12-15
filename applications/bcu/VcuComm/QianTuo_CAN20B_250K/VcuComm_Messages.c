@@ -208,7 +208,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -231,7 +231,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -254,7 +254,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -277,7 +277,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
@@ -302,7 +302,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -325,7 +325,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -353,7 +353,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -376,7 +376,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
@@ -401,7 +401,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -424,7 +424,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {
         diaLevel = diaChgLevel;
     }
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -442,7 +442,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     }
     //soc过低
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_LSOC);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -460,7 +460,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     }
     //BMS自检硬件故障
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_BMS_INIT_FAILURE);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
@@ -480,7 +480,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     temp = 0U;
     //电压排线脱落故障
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_VOLT_LINE);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 0);
     }
@@ -496,7 +496,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {}
     //温感排线脱落故障
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_TEMP_LINE);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 2);
     }
@@ -512,7 +512,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     {}
     //继电器粘连故障
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_RELAY_ABNORMAL);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 4);
     }
@@ -530,7 +530,7 @@ Std_ReturnType VcuComm_SendMsgCond_0x18FFAFF4(uint16 IPdu)
     }
     //预充失败
     diaLevel = Diagnosis_GetLevel(DIAGNOSIS_ITEM_PRECHARGE_FAILURE);
-    if (diaLevel == DIAGNOSIS_LEVEL_THIRD)
+    if (diaLevel >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= ((uint16)1U << 6);
     }
