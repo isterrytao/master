@@ -42,8 +42,6 @@
 
 static void getTCChgCtlData(uint8 *Buffer, uint16 *Length);
 static void getTCChgStopData(uint8 *Buffer, uint16 *Length);
-static void ChargerCommUser_ReceiveCbk(const uint8 *Buffer, uint16 Length);
-static void ChargerCommUser_RecTimeoutCbk(void);
 
 extern ChargerCommUser_InnerDataType ChargerCommUser_innerData;
 ChargerCommUser_MessageInnerDataType ChargerCommUser_MsgInnerData;
@@ -60,13 +58,12 @@ Std_ReturnType ChargerCommUser_ChargeIsAllowed(void)
 
 Std_ReturnType ChargerCommUser_TCSendConditionCheck(void)
 {
-    Std_ReturnType res;
 #if CHARGERCOMMUSER_SEND_ALWAYS_EN == STD_ON
-    res = E_OK;
+    return E_OK;
 #else
+    Std_ReturnType res = E_NOT_OK;
     Charge_ChargeType type;
 
-    res = E_NOT_OK;
     type = ChargerCommUser_GetCurrentChargeType();
     if (ChargerCommUser_innerData.startFlag == TRUE)
     {
@@ -88,52 +85,8 @@ Std_ReturnType ChargerCommUser_TCSendConditionCheck(void)
             res = E_OK;
         }
     }
-#endif
-
-    if (ChargerCommUser_MsgInnerData.snHaveRecved == TRUE)
-    {
-        res = E_NOT_OK;
-    }
     return res;
-}
-
-Std_ReturnType ChargerCommUser_SNSendConditionCheck(void)
-{
-    Std_ReturnType res;
-#if CHARGERCOMMUSER_SEND_ALWAYS_EN == STD_ON
-    res = E_OK;
-#else
-    Charge_ChargeType type;
-
-    res = E_NOT_OK;
-    type = ChargerCommUser_GetCurrentChargeType();
-    if (ChargerCommUser_innerData.startFlag == TRUE)
-    {
-        if (type != CHARGE_TYPE_NONE)
-        {
-            if (ChargeConnectM_GetConnectType() == type)
-            {
-                if (ChargerComm_GetCurrentRecStage() == CHARGERCOMM_STAGE_USER_TC)
-                {
-                    res = E_OK;
-                }
-            }
-        }
-    }
-    else
-    {
-        if (ChargerCommUser_MsgInnerData.isNeedToSendStop)
-        {
-            res = E_OK;
-        }
-    }
 #endif
-
-    if (ChargerCommUser_MsgInnerData.tcHaveRecved == TRUE)
-    {
-        res = E_NOT_OK;
-    }
-    return res;
 }
 
 static Std_ReturnType ChargerCommUser_TCRecConditionCheck(void)
@@ -188,18 +141,6 @@ void ChargerCommUser_GetTCDataCbk(uint8 *Buffer, uint16 *Length)
 }
 
 void ChargerCommUser_ReceiveTCCbk(const uint8 *Buffer, uint16 Length)
-{
-    ChargerCommUser_MsgInnerData.tcHaveRecved = TRUE;
-    ChargerCommUser_ReceiveCbk(Buffer, Length);
-}
-
-void ChargerCommUser_ReceiveSNCbk(const uint8 *Buffer, uint16 Length)
-{
-    ChargerCommUser_MsgInnerData.snHaveRecved = TRUE;
-    ChargerCommUser_ReceiveCbk(Buffer, Length);
-}
-
-static void ChargerCommUser_ReceiveCbk(const uint8 *Buffer, uint16 Length)
 {
     uint16 index = 0U;
     uint16 temp;
@@ -383,9 +324,7 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
         temp |= (uint16)1U << 3;
     }
     else
-    {
-
-    }
+    {}
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 4;
@@ -453,9 +392,7 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
         flag |= (uint16)1U << 3;
     }
     else
-    {
-
-    }
+    {}
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
     {
         flag |= (uint16)1U << 4;
@@ -518,23 +455,6 @@ void ChargerCommUser_GetTC1DataCbk(uint8 *Buffer, uint16 *Length)
 
 void ChargerCommUser_RecTCTimeoutCbk(void)
 {
-    if (ChargerCommUser_MsgInnerData.tcHaveRecved == TRUE || ChargerCommUser_MsgInnerData.snHaveRecved == FALSE)
-    {
-        ChargerCommUser_RecTimeoutCbk();
-    }
-}
-void ChargerCommUser_RecSNTimeoutCbk(void)
-{
-    if (ChargerCommUser_MsgInnerData.snHaveRecved == TRUE)
-    {
-        ChargerCommUser_RecTimeoutCbk();
-    }
-}
-
-static void ChargerCommUser_RecTimeoutCbk(void)
-{
-    ChargerCommUser_MsgInnerData.tcHaveRecved = FALSE;
-    ChargerCommUser_MsgInnerData.snHaveRecved = FALSE;
     ChargerCommUser_SetCommunication(FALSE);
     ChargerComm_ClrChargerStatus();
     if (ChargerConnectM_GetConnectMode(ChargerCommUser_GetCurrentChargeType()) == CHARGECONNECTM_CONNECT_COMMUNICATION)
@@ -543,3 +463,4 @@ static void ChargerCommUser_RecTimeoutCbk(void)
     }
     ChargerComm_SetCommunicationStatus(FALSE);
 }
+

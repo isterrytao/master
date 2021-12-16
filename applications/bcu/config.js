@@ -258,8 +258,8 @@ module.exports = {
 
     CommProtocol: {
         notes: [
-            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1", "CAN2.0C", "TieCheng_Soc", "LongGong_Chg", "ShiNeng_Heat", "XuGong_20190821"'},
-            {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2", "RuYi_Vcu", "CAN2.0F", "BaoLi_20200622", "Vcu_250k", "BMS_CAN_3.0", "LongGong_Vcu", "XuGong_20190821", "YuFeng_24V", "YuFeng_80V", "KaTe_20200812"'},
+            {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1", "CAN2.0C", "TieCheng_Soc", "LongGong_Chg", "ShiNeng_Heat", "XuGong_20190821", "HaoSheng"'},
+            {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2", "RuYi_Vcu", "CAN2.0F", "BaoLi_20200622", "Vcu_250k", "BMS_CAN_3.0", "LongGong_Vcu", "XuGong_20190821", "YuFeng_24V", "YuFeng_80V", "KaTe_20200812", "XuGong_20211120", "Megamette_V1", "HaoSheng"'},
         ],
         chg: "UDAN",
         vcu: "UDAN",

@@ -320,6 +320,14 @@ static void getTCChgCtlData(uint8 *Buffer, uint16 *Length)
     {
         temp |= (uint16)1U << 3;
     }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_DC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    {
+        temp |= (uint16)1U << 3;
+    }
+    else
+    {
+
+    }
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
     {
         temp |= (uint16)1U << 4;
@@ -396,6 +404,14 @@ static void getTCChgStopData(uint8 *Buffer, uint16 *Length)
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_AC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
     {
         flag |= (uint16)1U << 3;
+    }
+    else if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_DC_CHG_OC) == CHARGEM_CHARGE_DISABLE)
+    {
+        flag |= (uint16)1U << 3;
+    }
+    else
+    {
+
     }
     if (ChargeM_GetDiagnosisChargeCtlFlag(DIAGNOSIS_ITEM_LEAK) == CHARGEM_CHARGE_DISABLE)
     {
