@@ -33,6 +33,7 @@
 #define INTERNALCOMM_REQUIRE_SLAVE_FW_VERSION_EN        STD_ON
 #define INTERNALCOMM_REUQIRE_SLAVE_HWID_EN              STD_ON
 #define INTERNALCOMM_REQUIRE_SLAVE_BALANCE_BITMAP_EN    STD_ON
+#define INTERNALCOMM_REQUIRE_SLAVE_FW_NAME_EN           STD_ON
 
 /**
  * \brief 内网通信发送缓存大小定义
@@ -47,7 +48,7 @@
 /**
  * \brief 内网通信从机请求DID个数
  */
-#define INTERNALCOMM_SLAVE_DID_NUM              (0x0FU)
+#define INTERNALCOMM_SLAVE_DID_NUM              (17U)
 
 /**
  * \内网通信请求通道个数，代表主机请求从机数据并发能力

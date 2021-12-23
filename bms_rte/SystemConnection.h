@@ -128,6 +128,7 @@ extern const uint8 SystemConnection_SlaveTempNumTable[];
 extern uint8 BalanceM_BalanceStatus[];
 extern uint8 BalanceM_BalanceCmdBits[];
 extern const uint8 BalanceM_BalanceBuffSize;
+extern const uint16 CellsSample_RestartJumpVolt;
 
 /**
  * \brief 获取从机采集电池个数

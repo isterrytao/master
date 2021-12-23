@@ -23,8 +23,11 @@
 #include "Async_Looper.h"
 #include "Async_Event.h"
 
+extern const uint8 TemperatureM_ThermRunawayStrategy;
 
 #define TEMPERATUREM_ONLY_HEAT_CURRENT_DEF  STD_ON
+#define TEMPERATUREM_THERMALRUNAWAY_STRATEGY_1 (1U)
+#define TEMPERATUREM_THERMALRUNAWAY_STRATEGY_2 (2U)
 
 /**
  * \brief 加热状态类型定义
@@ -92,6 +95,8 @@ typedef struct{
     uint8 limitTemperature; /**< 触发温度 */
     uint8 deltaTemperature; /**< 触发温差 */
     uint8 temperatureRise; /**< 触发温升 */
+    uint16 limitTemperatureDelay; /**< 触发温度延时 10ms/bit */
+    uint16 deltaTemperatureDelay; /**< 触发温差延时 10ms/bit */
     uint16 temperatureRiseConditionDelay; /**< 触发温升延时 10ms/bit */
     uint16 temperatureRiseValidDelay; /**< 温升生效时间 10ms/bit */
     uint16 voltageDrop; /**< 单体压降, 单位0.1%/s */

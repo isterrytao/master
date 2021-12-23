@@ -48,6 +48,7 @@
 #define DEVICE_BOARD_SAMPLE_TEMP_NUM_MAX    4U
 
 #define DEVICEINFO_FWVERSION_BUFFER_LENGTH      10U
+#define DEVICEINFO_FWNAME_BUFFER_LENGTH         10U
 
 /**
  * \brief 设备型号类型定义
@@ -114,17 +115,13 @@ typedef uint8 DeviceInfo_FwVersionChannelType;
 typedef struct{
     uint8 HwID[AT24_HW_SERIAL_NUMBER_SIZE];
     uint8 FWVersion[DEVICEINFO_FWVERSION_BUFFER_LENGTH];
+    uint8 FWName[DEVICEINFO_FWNAME_BUFFER_LENGTH];
 }DeviceInfo_DeviceInfoType;
 
 
 extern uint16 DeviceInfo_ReceiveHWIDFlag;
 extern uint16 DeviceInfo_ReceiveFWVersionFlag;
-
-/**
- * \brief 从机支持M500型号软件版本
- */
-#define DEVICEINFO_SUPPORT_M500_SLAVE_FWVERSION_MIN       "2.0.0.0"
-#define DEVICEINFO_SUPPORT_M500_SLAVE_FWVERSION_MAX       "2.9.9.9"
+extern uint16 DeviceInfo_ReceiveFWNameFlag;
 
 /**
  * \brief 获取对应通道的HWID
@@ -146,6 +143,15 @@ const DeviceInfo_DeviceInfoType *DeviceInfo_GetPtr(void);
 void DeviceInfo_GetFWVersion(DeviceInfo_HwIDChannelType channel, uint8 *DataPtr, uint16 *Length);
 
 /**
+ * \brief 获取对应通道的FW Name
+ *
+ * \param channel 通道号
+ * \param DataPtr 缓存指针
+ * \param Length 缓存大小，返回实际写入长度
+ */
+void DeviceInfo_GetFWName(DeviceInfo_HwIDChannelType channel, uint8 *DataPtr, uint16 *Length);
+
+/**
  * \brief 检查对应通道HWID是否有效
  *
  * \param channel 通道号
@@ -160,6 +166,14 @@ Std_ReturnType DeviceInfo_HWIDIsValid(DeviceInfo_HwIDChannelType channel);
  * \return E_OK: 有效 E_NOT_OK: 无效
  */
 Std_ReturnType DeviceInfo_FWVersionIDIsValid(DeviceInfo_HwIDChannelType channel);
+
+/**
+ * \brief 检查对应通道FW Name是否有效
+ *
+ * \param channel 通道号
+ * \return E_OK: 有效 E_NOT_OK: 无效
+ */
+Std_ReturnType DeviceInfo_FWNameIDIsValid(DeviceInfo_HwIDChannelType channel);
 
 boolean DeviceInfo_HWIDIsChanged(DeviceInfo_HwIDChannelType channel);
 

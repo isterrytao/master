@@ -27,6 +27,8 @@
 #define INTERNALCOMM_SLAVE_BOARD_TEMPERATURE_DID        0x1620U
 #define INTERNALCOMM_FW_VERSION_DID                     0xA50CU
 #define INTERNALCOMM_HW_ID_DID                          0xA50DU
+#define INTERNALCOMM_FW_NAME_DID                        0xA503U
+#define INTERNALCOMM_SLAVE_SAMPLE_PARA_DID              0x4C4U
 
 
 typedef enum{
@@ -45,7 +47,9 @@ typedef enum{
   INTERNALCOMM_SCHEDULE_ITEM_0x48B = 12,
   INTERNALCOMM_SCHEDULE_ITEM_0x48C = 13,
   INTERNALCOMM_SCHEDULE_ITEM_0x48D = 14,
-  INTERNALCOMM_SCHEDULE_ITEM_MAX = 15,
+  INTERNALCOMM_SCHEDULE_ITEM_0xA503 = 15,
+  INTERNALCOMM_SCHEDULE_ITEM_0x4C4 = 16,
+  INTERNALCOMM_SCHEDULE_ITEM_MAX = 17,
   INTERNALCOMM_SCHEDULE_ITEM_INVALID = 0xFF
 }InternalComm_ScheduleItemIndexType;
 
@@ -184,6 +188,17 @@ Std_ReturnType InternalComm_ReceiveSidDispatch(InternalComm_ReqChannelCxtType *C
 void InternalComm_GetTemperatureTypeSendData_Cbk(App_SlaveIdType SlaveId, InternalComm_DidTypes Did, InternalComm_MsgType DataBufferPtr, InternalComm_MsgLenType *Length);
 
 /**
+ * \brief 获取从机采样配置数据回调函数
+ * \details 通过从机号及DID将配置从机采样的数据组包到DataBufferPtr中，并将组包的长度通过Length返回
+ *
+ * \param SlaveNum 从机号
+ * \param Did 控制DID
+ * \param DataBufferPtr 组包数据存放缓存
+ * \param Length 返回实际组包长度
+ */
+void InternalComm_GetSlaveSampleParaSendData_Cbk(App_SlaveIdType SlaveId, InternalComm_DidTypes Did, InternalComm_MsgType DataBufferPtr, InternalComm_MsgLenType *Length);
+
+/**
  * \brief 内网通信DID异步超时回调函数
  * \details 此函数会将DID写入各发送通道的发送缓存中，当前发送接收通道不空闲，则置为Pending状态，否则直接触发请求报文发送
  *
@@ -207,6 +222,8 @@ Async_EvnetCbkReturnType InternalComm_RequestDID0xA50D_Cbk(Async_EventType *Even
 Async_EvnetCbkReturnType InternalComm_RequestDID0x48B_Cbk(Async_EventType *Event, uint8 byWhat);
 Async_EvnetCbkReturnType InternalComm_RequestDID0x48C_Cbk(Async_EventType *Event, uint8 byWhat);
 Async_EvnetCbkReturnType InternalComm_RequestDID0x48D_Cbk(Async_EventType *Event, uint8 byWhat);
+Async_EvnetCbkReturnType InternalComm_RequestDID0xA503_Cbk(Async_EventType *Event, uint8 byWhat);
+Async_EvnetCbkReturnType InternalComm_RequestDID0x4C4_Cbk(Async_EventType *Event, uint8 byWhat);
 
 
 
