@@ -132,6 +132,8 @@ var thermalRunawaymparammapper = x => {
         limitTemperature: Math.round(x.limitTemperature+50),
         deltaTemperature: Math.round(x.deltaTemperature+50),
         temperatureRise: Math.round(x.temperatureRise+50),
+        limitTemperatureDelay: Math.round(x.limitTemperatureDelay*100),
+        deltaTemperatureDelay: Math.round(x.deltaTemperatureDelay*100),
         temperatureRiseConditionDelay: Math.round(x.temperatureRiseConditionDelay*100),
         temperatureRiseValidDelay: Math.round(x.temperatureRiseValidDelay*100),
         voltageDrop: Math.round(x.voltageDrop*10),
@@ -356,6 +358,8 @@ static const AppParameterM_CalibParaType AppParameterM_CalibParaConfigInfo = {
         <%- ThermalRunaway.limitTemperature %>U, /**< 触发温度 */
         <%- ThermalRunaway.deltaTemperature %>U, /**< 触发温差 */
         <%- ThermalRunaway.temperatureRise %>U, /**< 触发温升 */
+        <%- ThermalRunaway.limitTemperatureDelay %>U, /**< 触发温度延时 */
+        <%- ThermalRunaway.deltaTemperatureDelay %>U, /**< 触发温差延时 */
         <%- ThermalRunaway.temperatureRiseConditionDelay %>U, /**< 触发温升延时 */
         <%- ThermalRunaway.temperatureRiseValidDelay %>U, /**< 温升生效时间 */
         <%- ThermalRunaway.voltageDrop %>U, /**< 单体压降 */
