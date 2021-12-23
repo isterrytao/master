@@ -214,7 +214,7 @@ typedef struct {
 #define MEMBER_SIZEOF_MSG_HEADER(_member_) sizeof(((GBRt_MsgBuffer *)0)->dataHeader._member_)
 
 #define MSG_LENGTH_DEVICE_INFO         (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(deviceInfo) + 16U/*FWID*/ + 16U/*BurnID*/)
-#define MSG_LENGTH_DEVICE_LIST         (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(deviceList) + (uint16)(1U + SYSTEM_BMU_NUM) * sizeof(DeviceInfo_DeviceInfoType) /*HWIDs*/)
+#define MSG_LENGTH_DEVICE_LIST         (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(deviceList) + (uint16)(1U + SYSTEM_BMU_NUM) * (AT24_HW_SERIAL_NUMBER_SIZE + DEVICEINFO_FWVERSION_BUFFER_LENGTH) /*HWIDs*/)
 #define MSG_LENGTH_ABLE_COMMDEND       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(ableCommand))
 #define MSG_LENGTH_FOTA_PARAMETER       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(fotaParameter))
 #define MSG_LENGTH_SYSTEM_STATUS       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + RELAYM_FN_NUM)
@@ -321,7 +321,7 @@ const GB32960_CopySegmentType copySegmentsDeviceList[] = {
     {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList), 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, PTR_TYPE_GET_DATA, {HardwareSn_GetPtr}},
     {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, PTR_TYPE_DATA, {AppInfoTag.FWVersion}},
-    {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * sizeof(DeviceInfo_DeviceInfoType), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, 1U + MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * (AT24_HW_SERIAL_NUMBER_SIZE + DEVICEINFO_FWVERSION_BUFFER_LENGTH), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
 };
 
 static void fillCharDisTime(GBRt_MsgBuffer *msgHeader) {
@@ -805,7 +805,7 @@ const GB32960_CopySegmentType copyRecordSegmentsDeviceList[] = {
     {0U, MEMBER_SIZEOF_MSG_HEADER(deviceList), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceList), MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, PTR_TYPE_GET_DATA, {HardwareSn_GetPtr}},
     {MEMBER_SIZEOF_MSG_HEADER(deviceList) + 16U, MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, PTR_TYPE_DATA, {AppInfoTag.FWVersion}},
-    {MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * sizeof(DeviceInfo_DeviceInfoType), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
+    {MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U, MEMBER_SIZEOF_MSG_HEADER(deviceList) + 26U + SYSTEM_BMU_NUM * (AT24_HW_SERIAL_NUMBER_SIZE + DEVICEINFO_FWVERSION_BUFFER_LENGTH), PTR_TYPE_GET_DATA, {DeviceInfo_GetPtr}},
 };
 
 static const GB32960_CopySegmentType copyRecordSegmentsSystemStatus[] = {

@@ -35,6 +35,11 @@
 #define INTERNALCOMM_TEMP_TYPE_CFG_RETRY_NUM            (5U)
 
 /**
+ * \brief 从机采样参数配置失败重试次数
+ */
+#define INTERNALCOMM_SAMPLE_PARA_TYPE_CFG_RETRY_NUM     (2U)
+
+/**
  * \brief 发送会话状态
  */
 #define INTERNALCOMM_DIAG_IDLE                          (0x00U)
@@ -342,8 +347,12 @@ extern const InternalComm_ConfigInfoType InternalComm_ConfigInfo;
 
 extern uint8 InternalComm_TempTypeCfgCntBuff[];
 
+extern uint8 InternalComm_SampleJumpVoltTypeCfgCntBuff[];
+
 extern InternalComm_SlaveBitMaskType InternalComm_DID0x488Bit;
 extern InternalComm_SlaveBitMaskType InternalComm_DID0x48DBit;
+extern InternalComm_SlaveBitMaskType InternalComm_DID0x4C4Bit;
+extern InternalComm_SlaveBitMaskType InternalComm_GetDID0x4C4Bit;
 
 /**
  * \brief 内网通信初始化

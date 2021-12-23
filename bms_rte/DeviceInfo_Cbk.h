@@ -38,7 +38,15 @@ void DeviceInfo_FeedbackNewHWIDIndication(App_SlaveIdType SlaveId, const uint8* 
  */
 void DeviceInfo_FeedbackNewFwVersionIndication(App_SlaveIdType SlaveId, const uint8* DataPtr, uint16 Length);
 
-
+/**
+ * \brief FwName回调函数
+ * \details 从主从CAN接收到从机反馈的FwName时可以使用该回调函数
+ *
+ * \param SlaveId 从机号
+ * \param DataPtr 数据缓存
+ * \param Length 数据长度
+ */
+void DeviceInfo_FeedbackNewFwNameIndication(App_SlaveIdType SlaveId, const uint8* DataPtr, uint16 Length);
 
 
 #endif
