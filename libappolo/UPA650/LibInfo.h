@@ -13,21 +13,21 @@
 
 #define FWVERSION_MAJOR                   4
 #define FWVERSION_MINOR                   0
-#define FWVERSION_REVISION                0
+#define FWVERSION_REVISION                1
 #define FWVERSION_BUILD                   0
-#define LIB_INFO_FWVERSION                "4.0.0.0"
+#define LIB_INFO_FWVERSION                "4.0.1.0"
 
 
-#define LIB_INFO_SOURCE_COMMIT_ID        "4b3eef59556e3e5dec08c8f3be40a553e3de43ef"
-#define LIB_INFO_CONFIG_COMMIT_ID        "4b3eef59556e3e5dec08c8f3be40a553e3de43ef"
-#define LIB_INFO_BUILD_TIME              "20211214110315"
+#define LIB_INFO_SOURCE_COMMIT_ID        "38a747c75100bc0fc82525d8a3db187e90b772b9"
+#define LIB_INFO_CONFIG_COMMIT_ID        "38a747c75100bc0fc82525d8a3db187e90b772b9"
+#define LIB_INFO_BUILD_TIME              "20211223153015"
 
 #define LIB_INFO_BUILD_DATE_Y            2021
 #define LIB_INFO_BUILD_DATE_M            12
-#define LIB_INFO_BUILD_DATE_D            14
+#define LIB_INFO_BUILD_DATE_D            23
 
-#define LIB_INFO_BUILD_TIME_H            11
-#define LIB_INFO_BUILD_TIME_M            3
+#define LIB_INFO_BUILD_TIME_H            15
+#define LIB_INFO_BUILD_TIME_M            30
 #define LIB_INFO_BUILD_TIME_S            15
 
 #pragma push

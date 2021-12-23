@@ -145,6 +145,20 @@ const InternalComm_ScheduleItemType InternalComm_ScheduleItem[INTERNALCOMM_SLAVE
         InternalComm_GetSlaveBalanceBitmapSendData_Cbk, /**< 获取通信数据回调函数 */
         InternalComm_RequestDID0x48D_Cbk /**< Request */
     },
+    /* 15 */
+    {
+        INTERNALCOMM_FW_NAME_DID, /**< 从机名称DID */
+        3000U, /**< Interval */
+        InternalComm_GetRequireDidData, /**< 获取通信数据回调函数 */
+        InternalComm_RequestDID0xA503_Cbk /**< Request */
+    },
+    /* 16 */
+    {
+        INTERNALCOMM_SLAVE_SAMPLE_PARA_DID, /**< 从机采样参数DID */
+        1000U, /**< Interval */
+        InternalComm_GetSlaveSampleParaSendData_Cbk, /**< 获取通信数据回调函数 */
+        InternalComm_RequestDID0x4C4_Cbk /**< Request */
+    },
 };
 
 /**

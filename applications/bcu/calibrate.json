@@ -508,23 +508,27 @@
         },
         {
             "name": "热失控",
-            "limitTemperature": 65,
-            "deltaTemperature": 20,
+            "limitTemperature": 72,
+            "limitTemperatureDelay": 2,
+            "deltaTemperature": 30,
+            "deltaTemperatureDelay": 2,
             "temperatureRise": 2,
-            "temperatureRiseConditionDelay": 5,
-            "temperatureRiseValidDelay": 180,
+            "temperatureRiseConditionDelay": 2,
+            "temperatureRiseValidDelay": 60,
             "voltageDrop": 25,
-            "voltageDropConditionDelay": 5,
-            "voltageDropValidDelay": 180,
+            "voltageDropConditionDelay": 2,
+            "voltageDropValidDelay": 60,
 
-            "limitTemperature_comment": "触发温度, ℃",
-            "deltaTemperature_comment": "触发温差, ℃",
-            "temperatureRise_comment": "触发温升, ℃/s",
-            "temperatureRiseConditionDelay_comment": "触发温升延时, 秒",
-            "temperatureRiseValidDelay_comment": "温升生效时间, 秒",
-            "voltageDrop_comment": "单体压降, 单位1%/s",
-            "voltageDropConditionDelay_comment": "触发压降延时, 秒",
-            "voltageDropValidDelay_comment": "压降生效时间, 秒"
+            "limitTemperature_comment": "触发温度, ℃；默认值：策略1，65，策略2，72",
+            "limitTemperatureDelay_comment": "触发温度延时, 秒, 策略2专用；默认值：2",
+            "deltaTemperature_comment": "触发温差, ℃；默认值：策略1，20，策略2，30",
+            "deltaTemperatureDelay_comment": "触发温差延时, 秒, 策略2专用；默认值：2",
+            "temperatureRise_comment": "触发温升, ℃/s；默认值：策略1，2，策略2，2",
+            "temperatureRiseConditionDelay_comment": "触发温升延时, 秒；默认值：策略1，5，策略2，2",
+            "temperatureRiseValidDelay_comment": "温升生效时间, 秒；默认值：策略1，180，策略2，60",
+            "voltageDrop_comment": "单体压降, 单位1%/s；默认值：策略1，25，策略2，25",
+            "voltageDropConditionDelay_comment": "触发压降延时, 秒；默认值：策略1，5，策略2，2",
+            "voltageDropValidDelay_comment": "压降生效时间, 秒；默认值：策略1，180，策略2，60"
         }
     ]
 }
