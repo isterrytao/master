@@ -1923,6 +1923,20 @@ void App_Read0x2810(Dcm_MsgContextType *pMsgContext) {
         }
     }
     WRITE_BT_UINT32(pMsgContext->resData, length, cumuCap);
+    if (Soc_ConfigInfo.ChgCumuInfo.type == Soc_CumuTypePower) {
+        if (Soc_ConfigInfo.ChgCumuInfo.resoltion == 1U) {
+            cumuCap = 50U;
+        } else if (Soc_ConfigInfo.ChgCumuInfo.resoltion == 10U) {
+            cumuCap = 51U;
+        } else if (Soc_ConfigInfo.ChgCumuInfo.resoltion == 100U) {
+            cumuCap = 52U;
+        } else/* if (Soc_ConfigInfo.ChgCumuInfo.resoltion == 1000U) */{
+            cumuCap = 53U;
+        }
+    } else {
+        cumuCap = 0U;
+    }
+    WRITE_BT_UINT8(pMsgContext->resData, length, (uint8)cumuCap);
 
 #if(DCM_SERVICE_22_COMBINED_DID == STD_ON)
     DsdInternal_DidProcessingDone();
