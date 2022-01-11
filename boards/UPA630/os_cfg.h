@@ -53,7 +53,7 @@
                                        /* --------------------- TASK STACK SIZE ---------------------- */
 #define OS_TASK_TMR_STK_SIZE    128    /* Timer      task stack size (# of OS_STK wide entries)        */
 #define OS_TASK_STAT_STK_SIZE   128    /* Statistics task stack size (# of OS_STK wide entries)        */
-#define OS_TASK_IDLE_STK_SIZE   40     /* Idle       task stack size (# of OS_STK wide entries)        */
+#define OS_TASK_IDLE_STK_SIZE   60     /* Idle       task stack size (# of OS_STK wide entries)        */
 #define OS_TASK_IDLE_STK_SIZE_HARD 28
 
                                        /* --------------------- TASK MANAGEMENT ---------------------- */

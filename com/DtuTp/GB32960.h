@@ -43,6 +43,13 @@ typedef struct {
 #define GB32960_RESET_MODE_FORCE_CMD    0x55U
 #define GB32960_RESET_MODE_CMD          0x1U
 #define GB32960_RESET_MODE_CANCEL_CMD   0U
+
+#define GB32960_LOCK_CAR_CMD_NONE        0U
+#define GB32960_LOCK_CAR_CMD_LEVEL1      1U
+#define GB32960_LOCK_CAR_CMD_LEVEL2      2U
+#define GB32960_LOCK_CAR_CMD_LEVEL3      3U
+
+
 typedef struct {
     uint16 serverPort;
     const char *serverAddr;
@@ -104,7 +111,7 @@ typedef struct {
 } GB32960_PACKED GB32960_CommandHeaderType;
 
 
-#define GB32960_SUPPORT_COMMAND_NUMBER 8U
+#define GB32960_SUPPORT_COMMAND_NUMBER 9U
 extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);
@@ -145,6 +152,7 @@ boolean GB32960_IsDchgAllowed(void);
 uint8 GB32960_FotaCommandGet(void);
 void GB32960_FotaCommandSet(uint8 flag);
 const char *GB32960_FotaPackageUrlGet(void);
+uint8 GB32960_LockCarCommandGet(void);
 boolean GB32960_IsRmoteDcm(void);
 boolean GB32960_IsLoggedIn(void);
 
