@@ -1118,6 +1118,27 @@ boolean GBRtMsg_SetBatCalibRes(const uint8 *buf) {
     return TRUE;
 }
 
+boolean GBRtMsg_SetCumuInfo(const uint8 *buf) {
+    Std_ReturnType res = E_NOT_OK;
+    uint16 index = 0U, len;
+    uint32 temp;
+    //数据格式：len(2字节) + [ Chg cumu time(4字节) , Dchg cumu time(4字节), cumu cap cumu(1字节), Chg cumu cap(4字节), Dchg cumu cap(4字节), feedback cumu cap(4字节)]
+    len = READ_BT_UINT16(buf, index);
+    if (len >= 4U) {
+        temp = READ_BT_UINT32(buf, index);
+        if (temp != 0xFFFFFFFFUL) {
+            res = Statistic_ConfigCumuDchgTime(temp);
+        }
+        if (len >= 8U) {
+            temp = READ_BT_UINT32(buf, index);
+            if (temp != 0xFFFFFFFFUL) {
+                res = Statistic_ConfigCumuChgTime(temp);
+            }
+        }
+    }
+    return res == E_OK ? TRUE : FALSE;
+}
+
 const SaveM_RecordConfigDataType SaveMRecordConfigData = {
     /* GBRt_MsgBuffer *headerData; */ &recordHeaderWithHeartbeat.msgBuf.GBRtHeader,
     /* onPowerUpOnceData = */ {
