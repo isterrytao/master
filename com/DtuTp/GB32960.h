@@ -111,7 +111,7 @@ typedef struct {
 } GB32960_PACKED GB32960_CommandHeaderType;
 
 
-#define GB32960_SUPPORT_COMMAND_NUMBER 9U
+#define GB32960_SUPPORT_COMMAND_NUMBER 10U
 extern const uint8 GB32960_SupportCommandId[GB32960_SUPPORT_COMMAND_NUMBER];
 
 typedef uint16 (*GB32960_CopyDataBody)(uint8 *buf, uint16 len);
@@ -157,5 +157,6 @@ boolean GB32960_IsRmoteDcm(void);
 boolean GB32960_IsLoggedIn(void);
 
 extern boolean GBRtMsg_SetBatCalibRes(const uint8 *buf);
+extern boolean GBRtMsg_SetCumuInfo(const uint8 *buf);
 
 #endif

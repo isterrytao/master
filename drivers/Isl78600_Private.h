@@ -93,6 +93,7 @@ Isl_ReturnType Isl78600_DaisySendCmd(const struct Isl78600 *dev, uint8 addr, uin
 Isl_ReturnType Isl78600_DaisyReadData(const struct Isl78600 *dev, uint8 addr, uint8 page, uint8 reg, uint16 *value);
 Isl_ReturnType Isl78600_DaisyWriteData(const struct Isl78600 *dev, uint8 addr, uint8 page, uint8 reg, uint16 value);
 Isl_ReturnType Isl78600_DaisyIdentify(const struct Isl78600 *dev);
+Isl_ReturnType Isl78600_DaisyResetDevice(const struct Isl78600 *dev, uint8 addr);
 
 Isl_ReturnType Isl78600_NonDaisySendCmd(const struct Isl78600 *dev, uint8 add, uint8 page, uint8 reg, uint8 suffix);
 Isl_ReturnType Isl78600_NonDaisyReadData(const struct Isl78600 *dev, uint8 addr, uint8 page, uint8 reg, uint16 *value);
