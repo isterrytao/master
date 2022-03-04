@@ -24,6 +24,7 @@
 #include "Async_Event.h"
 #include "HLSS.h"
 #include "Hv.h"
+#include "CurrentM.h"
 
 
 /**
@@ -105,6 +106,7 @@ typedef struct {
     uint16 detectTimeout; /**< 开路或黏连检测超时时间 */
     Dio_ChannelType AuxContact; /**< 辅助触点IO */
     Dio_LevelType IoLevelOfAuxContactWhenOn; /**< 闭合是辅助触点的状态 */
+    boolean DoUnsaftyOffMonitor; /**< 是否监控非安全切断 */
 } RelayM_ConfigType;
 
 /**
@@ -261,6 +263,18 @@ boolean RelayM_IsInOpProcess(void);
  */
 uint16 RelayM_IsDiagAbnormal(void);
 
+/**
+ * \brief 获取继电器安全切断电流
+ *
+ * \param fn 继电器名
+ * \return 安全切断电流
+ */
+Current_CurrentType RelayM_GetSaftyOffCurrent(RelayM_FunctionType fn);
+
+
+Std_ReturnType RelayM_ReadUnSaftyOffCount(RelayM_FunctionType fn, uint16 *count);
+
+Std_ReturnType RelayM_WriteUnSaftyOffCount(RelayM_FunctionType fn, uint16 count);
 
 
 #endif

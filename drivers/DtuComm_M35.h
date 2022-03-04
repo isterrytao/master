@@ -30,6 +30,31 @@ enum {
     DTUM35_RUNTIME_STATUS_SIM_INIT,
 };
 
+typedef enum {
+    DTUM35_CMD_NONE = 0U,
+    DTUM35_CMD_ATE0 = 1U,
+    DTUM35_CMD_CREG_EQ_2 = 2U,
+    DTUM35_CMD_CGREG_EQ_0 = 3U,
+    DTUM35_CMD_CSDH_EQ_0 = 4U,
+    DTUM35_CMD_CPIN_QUERY_READY = 5U,
+    DTUM35_CMD_CNMI_CFG = 6U,
+    DTUM35_CMD_CREG_QUERY_1_OR_5 = 7U,
+    DTUM35_CMD_CGREG_QUERY_1_OR_5 = 8U,
+    DTUM35_CMD_CMGF_EQ_1 = 9U,
+    DTUM35_CMD_CSCS_EQ_GSM = 10U,
+    DTUM35_CMD_QIHEAD_EQ_1 = 11U,
+    DTUM35_CMD_QIPROMPT_EQ_0 = 12U,
+    DTUM35_CMD_APN_SET = 13U,
+    DTUM35_CMD_LACCI_UPDATE = 14U,
+    DTUM35_CMD_LOC_UPDATE = 15U,
+    DTUM35_CMD_SIGNAL_QUALITY_UPDATE = 16U,
+    DTUM35_CMD_SUPPLY_VOLT_UPDATE = 17U,
+    DTUM35_CMD_CONNECTION_CHECK = 18U,
+    DTUM35_CMD_TCP_SEND = 19U,
+    DTUM35_CMD_TCP_CONNECT = 20U,
+    DTUM35_CMD_TCP_DISCONNECT = 21U,
+} DtuComm_M35_CmdType;
+
 typedef struct{
     char rxbuf[60];
     boolean VersionIsGet;
@@ -151,5 +176,7 @@ Std_ReturnType DtuM35_TcpDisconnect(void (*ack)(Std_ReturnType Result));
 Std_ReturnType DtuM35_FotaStart(const char *url, uint16 len);
 boolean DtuM35_NetworkStatusIsNormal(void);
 boolean DtuM35_GetCountryInfo(uint16 *mmc, uint8 *mnc, uint8 mnclen);
+
+DtuComm_M35_CmdType DtuM35_GetErrorCmdNum(void);
 
 #endif

@@ -324,12 +324,20 @@ uint32 Soc_GetCumuDchgPower(void);
  */
 uint32 Soc_GetCumuFeedbackPower(void);
 
+typedef uint32 (*CumCap2LoopCntType)(uint32 cumCap);
+
 /**
  * \brief 配置利用累计放电量计算循环放电次数的方法；
  * \details 参数method为计算方法，输入累计放电量，返回循环放电次数；
  * \return 无
  */
 void Soc_SetCumuDchg2DchgCntMethod(uint32 (*method)(uint32 cumCap));
+
+/**
+ * \brief 获取当前使用的从累计放电量计算循环放电次数的方法；
+ * \return 方法入口地址;
+ */
+CumCap2LoopCntType Soc_GetCumuDchg2DchgCntMethod(void);
 
 /**
  * @brief 外部依赖函数声明
