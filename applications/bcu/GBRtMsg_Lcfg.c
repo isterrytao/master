@@ -237,7 +237,7 @@ typedef struct {
 #define MSG_LENGTH_DEVICE_LIST         (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(deviceList) + (uint16)(1U + SYSTEM_BMU_NUM) * (AT24_HW_SERIAL_NUMBER_SIZE + DEVICEINFO_FWVERSION_BUFFER_LENGTH) /*HWIDs*/)
 #define MSG_LENGTH_ABLE_COMMDEND       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(ableCommand))
 #define MSG_LENGTH_FOTA_PARAMETER       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(fotaParameter))
-#define MSG_LENGTH_SYSTEM_STATUS       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM)
+#define MSG_LENGTH_SYSTEM_STATUS       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM + 3U)
 #if SYSTEM_BATTERY_CELL_NUM <= 255U
 #define MSG_LENGTH_CELL_VOLTAGES       (1U/*信息类型标识*/ + MEMBER_SIZEOF_MSG_HEADER(cellVoltages) + (uint16)(2UL * SYSTEM_BATTERY_CELL_NUM))
 #else
@@ -466,6 +466,21 @@ static uint16 copyRelayData(uint16 offset, uint8 *buf, uint16 len) {
     return len;
 }
 
+static uint16 copySocDiagCntState(uint16 offset, uint8 *buf, uint16 len) {
+    uint16 temp;
+
+    (void)offset;
+    temp = (uint16)Soc_DiagGetCountState(SOC_DIAG_CNT_STATE_LOCAL_SET) & 0x0FU;
+    temp |= ((uint16)Soc_DiagGetCountState(SOC_DIAG_CNT_STATE_CLOUD_SET) << 4) & 0xF0U;
+    *buf++ = (uint8)temp;
+    temp = (uint16)Soc_DiagGetCountState(SOC_DIAG_CNT_STATE_UPPER_SET) & 0x0FU;
+    temp |= ((uint16)Soc_DiagGetCountState(SOC_DIAG_CNT_STATE_PARA_ERR) << 4) & 0xF0U;
+    *buf++ = (uint8)temp;
+    temp = (uint16)Soc_DiagGetCountState(SOC_DIAG_CNT_STATE_OCV_SET) & 0x0FU;
+    *buf++ = (uint8)temp;
+    return len;
+}
+
 static const GB32960_CopySegmentType copySegmentschargeDischargeTime[] = {
     {0U, 1U + MEMBER_SIZEOF_MSG_HEADER(chargeDischargeTime), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
 };
@@ -478,7 +493,8 @@ static const GB32960_CopySegmentType copySegmentsSystemStatus[] = {
     {0U, 1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)), PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf}},
     {1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)), 1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + RELAYM_FN_NUM, PTR_TYPE_COPY_DATA, {copyRelayData}},
     {1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + RELAYM_FN_NUM, 1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + 3U * RELAYM_FN_NUM, PTR_TYPE_GET_DATA, {getRlyUnsaftyOffCountPtr}},
-    {1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + 3U * RELAYM_FN_NUM, 1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM, PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf.dataHeader.systemStatus.extMsg.slaveCommAbortFlags}}
+    {1U + (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + 3U * RELAYM_FN_NUM, 1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM, PTR_TYPE_DATA, {&headerBufferWithHeartbeat.msgBuf.dataHeader.systemStatus.extMsg.slaveCommAbortFlags}},
+    {1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM, 1U + MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM + 3U, PTR_TYPE_COPY_DATA, {copySocDiagCntState}}
 };
 
 
@@ -894,7 +910,8 @@ static const GB32960_CopySegmentType copyRecordSegmentsSystemStatus[] = {
     {0U, (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)), PTR_TYPE_DATA, {&recordHeaderWithHeartbeat.msgBuf.dataHeader}},
     {(MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)), (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + RELAYM_FN_NUM, PTR_TYPE_COPY_DATA, {copyRelayData}},
     {(MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + RELAYM_FN_NUM, (MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + 3U * RELAYM_FN_NUM, PTR_TYPE_GET_DATA, {getRlyUnsaftyOffCountPtr}},
-    {(MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + 3U * RELAYM_FN_NUM, MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM, PTR_TYPE_DATA, {(uint8*)(&recordHeaderWithHeartbeat.msgBuf.dataHeader.systemStatus.extMsg.slaveCommAbortFlags)}}
+    {(MEMBER_SIZEOF_MSG_HEADER(systemStatus) - MEMBER_SIZEOF_MSG_HEADER(systemStatus.extMsg)) + 3U * RELAYM_FN_NUM, MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM, PTR_TYPE_DATA, {(uint8*)(&recordHeaderWithHeartbeat.msgBuf.dataHeader.systemStatus.extMsg.slaveCommAbortFlags)}},
+    {MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM, MEMBER_SIZEOF_MSG_HEADER(systemStatus) + 3U * RELAYM_FN_NUM + 3U, PTR_TYPE_COPY_DATA, {copySocDiagCntState}}
 };
 
 #if SYSTEM_BATTERY_CELL_NUM < 256U

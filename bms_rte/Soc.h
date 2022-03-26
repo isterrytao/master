@@ -94,6 +94,18 @@ typedef struct{
 }Soc_ConfigInfoType;
 
 /**
+ * \brief SOC诊断状态计数类型定义
+ */
+typedef enum {
+    SOC_DIAG_CNT_STATE_LOCAL_SET = 0, /**< 本地策略更新计数 */
+    SOC_DIAG_CNT_STATE_CLOUD_SET, /**< 云端策略更新计数 */
+    SOC_DIAG_CNT_STATE_UPPER_SET, /**< 上位机标定计数 */
+    SOC_DIAG_CNT_STATE_PARA_ERR, /**< 参数读取失败计数 */
+    SOC_DIAG_CNT_STATE_OCV_SET, /**< OCV策略更新计数 */
+    SOC_DIAG_CNT_STATE_MAX, /**< 状态最大值 */
+} Soc_DiagCountStateType;
+
+/**
  * \brief SOC内部参数类型定义
  */
 typedef struct{
@@ -120,6 +132,7 @@ typedef struct{
     uint32 thisCumuFeedbackPower; /**< 本次上电回馈能量累计 精度：与配置精度一致 */
     App_CapType chgHoldSocLeftCap; /**< 充电保持SOC值对应的剩余容量值 */
     Soc_IntegralType chgHoldSocIntegral; /**< 充电保持SOC值对应的剩余容量小数值 */
+    uint8 socDiagCntStates[SOC_DIAG_CNT_STATE_MAX];
 }Soc_InnerDataType;
 
 
@@ -346,6 +359,8 @@ extern Std_ReturnType Soc_IsChargeFinish(void);
 extern Current_CurrentType Soc_CurrentHook(Current_CurrentType current);
 extern boolean Soc_IsBatteryCurrent(void);
 
+void Soc_DiagCountStateAdd(Soc_DiagCountStateType type);
+uint8 Soc_DiagGetCountState(Soc_DiagCountStateType type);
 
 #endif
 
