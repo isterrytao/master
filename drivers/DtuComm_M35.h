@@ -31,28 +31,35 @@ enum {
 };
 
 typedef enum {
-    DTUM35_CMD_NONE = 0U,
-    DTUM35_CMD_ATE0 = 1U,
-    DTUM35_CMD_CREG_EQ_2 = 2U,
-    DTUM35_CMD_CGREG_EQ_0 = 3U,
-    DTUM35_CMD_CSDH_EQ_0 = 4U,
-    DTUM35_CMD_CPIN_QUERY_READY = 5U,
-    DTUM35_CMD_CNMI_CFG = 6U,
-    DTUM35_CMD_CREG_QUERY_1_OR_5 = 7U,
-    DTUM35_CMD_CGREG_QUERY_1_OR_5 = 8U,
-    DTUM35_CMD_CMGF_EQ_1 = 9U,
-    DTUM35_CMD_CSCS_EQ_GSM = 10U,
-    DTUM35_CMD_QIHEAD_EQ_1 = 11U,
-    DTUM35_CMD_QIPROMPT_EQ_0 = 12U,
-    DTUM35_CMD_APN_SET = 13U,
-    DTUM35_CMD_LACCI_UPDATE = 14U,
-    DTUM35_CMD_LOC_UPDATE = 15U,
-    DTUM35_CMD_SIGNAL_QUALITY_UPDATE = 16U,
-    DTUM35_CMD_SUPPLY_VOLT_UPDATE = 17U,
-    DTUM35_CMD_CONNECTION_CHECK = 18U,
-    DTUM35_CMD_TCP_SEND = 19U,
-    DTUM35_CMD_TCP_CONNECT = 20U,
-    DTUM35_CMD_TCP_DISCONNECT = 21U,
+    DTUM35_CMD_NONE = 0U, //无
+    DTUM35_CMD_ATE0 = 1U, //确认DTU是否正常通信
+    DTUM35_CMD_CREG_EQ_2 = 2U, //设置AT+CREG?的输出格式
+    DTUM35_CMD_CGREG_EQ_0 = 3U, //设置AT+CGREG?的输出格式.
+    DTUM35_CMD_CSDH_EQ_0 = 4U, //设置短信文本模式
+    DTUM35_CMD_CPIN_QUERY_READY = 5U, //查询PIN是否READY
+    DTUM35_CMD_CNMI_CFG = 6U, //设置CNMI（SMS Event Reporting Configuration）
+    DTUM35_CMD_CREG_QUERY_1_OR_5 = 7U, //查询是否注册基站网络成功
+    DTUM35_CMD_CGREG_QUERY_1_OR_5 = 8U, //查询是否注册GPRS网络成功
+    DTUM35_CMD_CMGF_EQ_1 = 9U, //设置消息为文本模式
+    DTUM35_CMD_CSCS_EQ_GSM = 10U, //设置TE字符集为GSM
+    DTUM35_CMD_QIHEAD_EQ_1 = 11U, //设置接收到的消息中增加IP头
+    DTUM35_CMD_QIPROMPT_EQ_0 = 12U, //设置发送数据格式无>且有SEND OK
+    DTUM35_CMD_APN_SET = 13U, //设置APN
+    DTUM35_CMD_LACCI_UPDATE = 14U, //获取LACCI
+    DTUM35_CMD_LOC_UPDATE = 15U, //获取LOC
+    DTUM35_CMD_SIGNAL_QUALITY_UPDATE = 16U, //获取信号强度
+    DTUM35_CMD_SUPPLY_VOLT_UPDATE = 17U, //获取供电电压
+    DTUM35_CMD_CONNECTION_CHECK = 18U, //检查网络连接状态
+    DTUM35_CMD_TCP_SEND = 19U, //发送数据
+    DTUM35_CMD_TCP_CONNECT = 20U, //TCP连接
+    DTUM35_CMD_TCP_DISCONNECT = 21U, //断开TCP连接
+    DTUM35_CMD_SET_IPR = 22U, //设置波特率
+    DTUM35_CMD_SET_QCFG = 23U, //禁用B8频段
+    DTUM35_CMD_SET_CNMI = 24U, //配置SMS报告
+    DTUM35_CMD_SET_CMGF = 25U, //设置消息模式
+    DTUM35_CMD_SET_QIPROMPT = 26U, //设置发送数据提示符
+    DTUM35_CMD_WAIT_CALL_READY = 27U, //等待DTU模块READY
+    DTUM35_CMD_AT_W = 28U, //保存当前波特率等配置信息
 } DtuComm_M35_CmdType;
 
 typedef struct{
@@ -178,5 +185,6 @@ boolean DtuM35_NetworkStatusIsNormal(void);
 boolean DtuM35_GetCountryInfo(uint16 *mmc, uint8 *mnc, uint8 mnclen);
 
 DtuComm_M35_CmdType DtuM35_GetErrorCmdNum(void);
+DtuComm_M35_CmdType DtuM35_GetCurrentCmdNum(void);
 
 #endif
