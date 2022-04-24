@@ -12,5 +12,6 @@ Std_ReturnType DcmProgram_RequestDownload(uint32 addr, uint16 length);
 Std_ReturnType DcmProgram_ProgramData(uint8 seq, uint8 *data, uint16 length);
 Std_ReturnType DcmProgram_ExitTransfer(void);
 Std_ReturnType DcmProgram_ClearAppTag(DcmProgram_AppTagType which);
+boolean DcmProgram_IsDownloadEnd(void);
 
 #endif

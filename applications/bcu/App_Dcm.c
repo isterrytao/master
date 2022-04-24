@@ -4506,6 +4506,7 @@ void App_Write0x30E0(Dcm_MsgContextType *pMsgContext) {
     uint16 index = 3U;
     uint32 temp;
 
+    Soc_DiagCountStateAdd(SOC_DIAG_CNT_STATE_UPPER_SET);
     temp = (uint32)READ_BT_UINT16(pMsgContext->reqData, index);
     temp *= BatteryInfo_BaseConfigInfo.NominalCap;
     temp = DIVISION(temp, BatteryInfo_BaseConfigInfo.DisplayCap);

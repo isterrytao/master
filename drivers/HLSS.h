@@ -146,6 +146,23 @@ HLSS_VoltageType HLSS_GetDiagnosisVoltage(HLSS_ChannelType ChannelId);
  */
 HLSS_CurrentType HLSS_GetDiagnosisCurrent(HLSS_ChannelType ChannelId);
 
+
+uint16 HLSS_GetUnsaftyOffCount(HLSS_ChannelType ChannelId);
+
+void HLSS_SetUnsaftyOffCount(HLSS_ChannelType ChannelId, uint16 count);
+
+const uint16 *HLSS_GetUnsaftyOffCountPtr(void);
+
+/**
+ * \brief HLSS驱动状态变化钩子函数
+ * \details 当HLSS状态发生变化时，使用此函数通知
+ *
+ * \param ChannelId HLSS通道号
+ * \param Drived 被驱动后的状态
+ */
+extern void HLSS_DriveHook(HLSS_ChannelType ChannelId, HLSS_DriveType Drived);
+
+
 /**
  * \brief 使用DIO控制高低边开关的配置参数.
  */
