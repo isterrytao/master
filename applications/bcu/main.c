@@ -180,7 +180,7 @@ static void start_dtu_task(void) {
         (void *)&DtuCommM35ConfigGB32960MC20,
 #elif defined(A601) || defined(A603) || defined(C601) || defined(C603)
         (void *)&C600DtuCommM35ConfigGB32960MC20,
-#elif defined(A635) || defined(A655)|| defined(A657)|| defined(A665) ||defined(A605) || defined(A607)
+#elif defined(A635) || defined(A655)|| defined(A657)|| defined(A665) ||defined(A605) || defined(A607) || defined(C607)
         (void *)&DtuCommM35ConfigGB32960EC20,
 #elif defined(A641)
         (void *)&A640DtuCommM35ConfigGB32960MC20,
@@ -450,6 +450,7 @@ static void start_task(void *pdata) {
     WatchdogM_Init();
 
     DigitalInput_Init();
+
     HWDiagnosis_Init();
 #if defined(A630) || defined(A635)
 #if (KEY_TYPE == KEY_TYPE_IS_SELFRESET)
@@ -468,6 +469,8 @@ static void start_task(void *pdata) {
 #endif
     }
 #endif
+
+    ParameterM_Init();
     HLSS_Init(&driverLooper);
     if (isNeedStartSampleTask()) {
         HLSS_Drive(HLSS_BCU_BMU_ENABLE, HLSS_DRIVE_ON);
@@ -482,7 +485,6 @@ static void start_task(void *pdata) {
     Hall_Init(&HallConfigData[0]);
     SaveM_Init(SAVE_M_TASK_PRI);
 
-    ParameterM_Init();
     if (isNeedStartSampleTask()) {
 #if defined(A640) || defined(A641)
 #else
@@ -538,6 +540,7 @@ static void start_task(void *pdata) {
     if (HardWareIO_GetVersion() != 5U /*0b101*/) {
         EL_Init(&extLooper);
     }
+    Diagnosis_Init(&ParameterM_CurrentCalibParaPtr->diagnosisPara, DIAGNOSIS_TASK_PRI);
     Soc_Init(&extLooper);
     Soh_Init();
 #if defined(A650) || defined(A651) || defined(A655)
@@ -569,7 +572,6 @@ static void start_task(void *pdata) {
         BalanceM_RegisterLooper(&extLooper);
     }
     CanEcho_Init(&extLooper);
-    Diagnosis_Init(&ParameterM_CurrentCalibParaPtr->diagnosisPara, DIAGNOSIS_TASK_PRI);
 
     ChgSckTmpM_Init();
     if (mode == RUNTIMEM_RUNMODE_CALIBRATE ||
@@ -593,7 +595,7 @@ static void start_task(void *pdata) {
     HardwareSn_Init();
 
 #if defined(A601) || defined(A603) || defined(A651) || defined(A653) || defined(A661) || defined(A655)|| defined(A657)|| defined(A665) || defined(A641) || defined(A635) \
-    ||defined(A605) || defined(A607)
+    ||defined(A605) || defined(A607) || defined(C607)
     if (isNeedStartSampleTask()) {
         GBRtMsg_Init(&driverLooper);
         GB32960_Init(&driverLooper, RuntimeM_GetMode() == RUNTIMEM_RUNMODE_DTU ? 1U : 0U);

@@ -2,9 +2,13 @@
 var processedcfg = globalInfo.RelayM.processedcfg;
 %>
 
+#include <stdlib.h>
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
 #include "Hv.h" /*lint !e537*/
+#include "BatteryInfo.h"
+#include "CurrentM.h"
+#include "ParameterM.h"
 
 const RelayM_FunctionType RelayMFnNum = RELAYM_FN_NUM;
 
@@ -23,7 +27,7 @@ extern sint16 <%- relay.hv %>(void);
 static sint16 relay_<%- relay.hv %>_get_instance_vol(void) {
     return HV_GetInstantVoltage(<%- relay.hv %>);
 }
-    <%}
+<%}
 }%>
 
 #define relay_HV_CHANNEL_NONE_get_instance_vol NULL
@@ -48,9 +52,65 @@ for (var relay of processedcfg.relays) {%>
         <%- relay.checkTimeout %>U, /**< 开路或黏连检测超时时间 */
         <%- relay.auxContactDio %>, /**< 辅助触点IO */
         <%- relay.ioLevelOfAuxContactWhenOn %>, /**< 闭合是辅助触点的状态 */
+        <%- relay.doUnsaftyOffMonitor ? "TRUE":"FALSE" %>, /**< 闭合是辅助触点的状态 */
     },
-    <%
+<%
 }%>
 };
 
 RelayM_InnerDataType RelayMInnerData[RELAYM_FN_NUM];
+
+
+Current_CurrentType RelayM_GetSaftyOffCurrent(RelayM_FunctionType fn) {
+    Current_CurrentType current;
+
+    (void)fn;
+    current = (Current_CurrentType)BatteryInfo_BaseConfigInfo.NominalDischargeCurrent;
+    if (current <= 100) {
+        current = (Current_CurrentType)CURRENT_INVALID_VALUE;
+    } else {
+        current = current / 2;
+    }
+    return current;
+}
+
+static void updateUnsaftyOffCountWithHlss(HLSS_ChannelType ChannelId, HLSS_DriveType Drived) {
+    Current_CurrentType mainCur, saftyCur;
+    uint16 count;
+
+    (void)Drived;
+    saftyCur = RelayM_GetSaftyOffCurrent(RELAYM_FN_NONE);
+    if (CurrentM_IsValidCurrent(saftyCur)) {
+        mainCur = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+        if (CurrentM_IsValidCurrent(mainCur)) {
+            if (abs(mainCur) >= saftyCur) {
+                if (ChannelId <= (uint8)((uint16)PARAMETERM_EEEP_HLSS_UNSAFTY_OFF_COUNT_END - (uint16)PARAMETERM_EEEP_HLSS_UNSAFTY_OFF_COUNT_START)) {
+                    if (E_OK == ParameterM_EeepRead((ParameterM_EeepParaIndexType)((uint8)PARAMETERM_EEEP_HLSS_UNSAFTY_OFF_COUNT_START + ChannelId), &count)) {
+                        if (count < 0xFFFFU) {
+                            count += 1U;
+                        }
+                        HLSS_SetUnsaftyOffCount(ChannelId, count);
+                        (void)ParameterM_EeepWrite((ParameterM_EeepParaIndexType)((uint8)PARAMETERM_EEEP_HLSS_UNSAFTY_OFF_COUNT_START + ChannelId), count);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void HLSS_DriveHook(HLSS_ChannelType ChannelId, HLSS_DriveType Drived) {
+    uint8 i;
+    if (ChannelId < HLSS_BCU_DRIVER_NUM) {
+        if (Drived == HLSS_DRIVE_OFF) {
+            for (i = 0U; i < RELAYM_FN_NUM; i++) {
+                if (RelayMConfigData[i].DriveHSS == ChannelId) {
+                    break;
+                }
+            }
+            if (i < RELAYM_FN_NUM && RelayMConfigData[i].DoUnsaftyOffMonitor) {
+                updateUnsaftyOffCountWithHlss(ChannelId, Drived);
+            }
+        }
+    }
+}
+

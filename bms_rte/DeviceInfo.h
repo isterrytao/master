@@ -61,6 +61,7 @@ typedef enum{
     DEVICE_TYPE_C602 = 0x03U, /**< 同C600，支持菊花链 */
     DEVICE_TYPE_C603 = 0x04U, /**< 同C602，支持远程无线数据通信 */
     DEVICE_TYPE_C605 = 0x06U, /**< 同C600，支持4G远程无线数据通信 */
+    DEVICE_TYPE_C607 = 0x08U, /**< 同C603，支持4G远程无线数据通信 */
 
     DEVICE_TYPE_A600 = 0x80U, /**< 24路电压检测、8路温度检测、100mA被动均衡，其它同C600 */
     DEVICE_TYPE_A601 = 0x81U, /**< 24路电压检测、8路温度检测、100mA被动均衡、2G，其它同C601 */
