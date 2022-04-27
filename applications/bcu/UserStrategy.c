@@ -466,7 +466,7 @@ static void safeCurrentCheck(void)
     if (!CURRENT_IS_VALID(current)) {
         flag = TRUE;
     }
-    else if ((uint16)abs(current) < CURRENT_100MA_FROM_A(3U)) {
+    else if ((uint16)abs(current) < CURRENT_100MA_FROM_A(5U)) {
         flag = TRUE;
     }
     else {
