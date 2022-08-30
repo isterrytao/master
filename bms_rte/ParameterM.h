@@ -145,7 +145,7 @@ typedef enum{
     PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX = 53, /**< 结束充电时间低字 精度：1S/bit */
     PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX = 54, /**< 结束充电时间高字 精度：1S/bit */
 
-    PARAMETERM_EEEP_LOWER_INDEX_END = 55, /**< 低段参数索引结束(不单独占用一个索引)， 注：处于PARAMETERM_EEEP_LOWER_INDEX_END和PARAMETERM_EEEP_HIGHER_INDEX_START之间的参数不进行存储有效性校验 */
+    PARAMETERM_EEEP_LOWER_INDEX_END = 54, /**< 低段参数索引结束(不单独占用一个索引)， 注：处于PARAMETERM_EEEP_LOWER_INDEX_END和PARAMETERM_EEEP_HIGHER_INDEX_START之间的参数不进行存储有效性校验 */
 
     PARAMETERM_EEEP_HIGHER_INDEX_START = 97, /**< 高段参数索引起始(不单独占用一个索引) */
     PARAMETERM_EEEP_HLSS_UNSAFTY_OFF_COUNT_START = 97, /**< 继电器高边带载切断计数起始索引 */
