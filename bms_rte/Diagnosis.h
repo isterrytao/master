@@ -363,6 +363,16 @@ Diagnosis_ItemType Diagnosis_GetNextAlarmingItem(Diagnosis_ItemType startItem);
 Diagnosis_ItemType Diagnosis_GetNextAlarmingItemBaseReport(Diagnosis_ItemType startItem);
 
 /**
+ * \brief 获取从当前报警诊断项开始的的下一个大于等于指定报警等级正在报警的诊断项
+ *
+ * \param startItem 起始诊断项
+ * \param startLevel 起始报警等级
+ * \return 正在报警的下一诊断项，返回DIAGNOSIS_ITEM_INVALID_INDEX表示无正在报警项
+ */
+Diagnosis_ItemType Diagnosis_GetNextGeLevelAlarmingItem(Diagnosis_ItemType startItem, Diagnosis_LevelType startLevel);
+Diagnosis_ItemType Diagnosis_GetNextGeLevelAlarmingItemBaseReport(Diagnosis_ItemType startItem, Diagnosis_LevelType startLevel);
+
+/**
  * \brief 查找已注册的诊断项
  * \details 通过诊断项编号在已注册的诊断项链表中查找对应编号的诊断项，并返回该诊断项的info指针
  *
