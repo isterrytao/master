@@ -91,7 +91,7 @@ void HvProcess_DchgPoll(void)
                 (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
                 temp = time >> 16;
                 (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
-                HvProcess_ChgInnerData.IsCharging = FALSE;
+                HvProcess_DchgInnerData.IsCharging = FALSE;
             }
         }
     }
