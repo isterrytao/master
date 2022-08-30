@@ -50,6 +50,7 @@ typedef struct{
     RelayM_FunctionType ChgRelay;
     boolean HeatRelayFaultCheckFlag;
     boolean HeatIsFinish;
+    boolean IsCharging;
 }HvProcess_ChgInnerDataType;
 
 
@@ -184,6 +185,9 @@ boolean HvProcess_IsJumpMode(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
 boolean HvProcess_ChgHeaterRelayIsNormal(void);
 void HvProcess_ChgHeaterRelayNormalAction(void);
+
+boolean HvProcess_IsCharging(void);
+
 #endif
 
 /**

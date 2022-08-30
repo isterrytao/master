@@ -45,6 +45,7 @@ typedef struct{
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
     RelayM_FunctionType OnChgRly; /**< 充电使用继电器 */
     Charge_ChargeType ChgType; /**< 充电连接类型 */
+    boolean IsCharging;
 }HvProcess_ChgInnerDataType;
 
 
@@ -136,6 +137,8 @@ boolean HvProcess_ChgRestartAllowedCond(void);
 boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_HeatIsJump(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
+
+boolean HvProcess_IsCharging(void);
 
 #endif
 

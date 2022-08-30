@@ -29,6 +29,9 @@
 #include "PowerM.h"
 #include "UserStrategy_Cfg.h"
 #include "BridgeInsu_Cfg.h"
+#include "VcuComm_Messages.h"
+#include "DatetimeM.h"
+#include "ParameterM.h"
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
 
@@ -108,6 +111,18 @@ boolean HvProcess_ChgStateStartCond(void)
 
 void HvProcess_ChgStateStartAction(void)
 {
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+    if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
+    {
+        temp = (uint16)time;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_L_INDEX, temp);
+        temp = time >> 16;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_H_INDEX, temp);
+        HvProcess_ChgInnerData.IsCharging = TRUE;
+    }
+#endif
 #ifdef RELAYM_FN_NEGATIVE_MAIN
     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_ON);
 #endif
@@ -649,6 +664,18 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
 
 void HvProcess_ChgRelayOffDelayAction(void)
 {
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+    if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
+    {
+        temp = (uint16)time;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+        temp = time >> 16;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+        HvProcess_ChgInnerData.IsCharging = FALSE;
+    }
+#endif
     (void)RelayM_Control(RELAYM_FN_POSITIVE_MAIN, RELAYM_CONTROL_OFF);
 #ifdef RELAYM_FN_HEATER
     (void)RelayM_Control(RELAYM_FN_HEATER, RELAYM_CONTROL_OFF);
@@ -796,4 +823,9 @@ boolean HvProcess_IsJumpMode(void)
 boolean HvProcess_IsHeatAndChargeMode(void)
 {
     return FALSE;
+}
+
+boolean HvProcess_IsCharging(void)
+{
+    return HvProcess_ChgInnerData.IsCharging;
 }

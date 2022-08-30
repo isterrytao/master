@@ -57,6 +57,7 @@ typedef struct{
     boolean HeatIsFinish;
     uint32 startToHeatRelayActionTime;
     RelayM_FunctionType chgRelay;
+    boolean IsCharging;
 }HvProcess_ChgInnerDataType;
 
 
@@ -196,6 +197,8 @@ boolean HvProcess_IsHeatAndChargeMode(void);
 
 boolean HvProcess_ChgHeatPowerFaultCond(void);
 void HvProcess_ChgHeatFaultAction(void);
+
+boolean HvProcess_IsCharging(void);
 
 #endif
 
