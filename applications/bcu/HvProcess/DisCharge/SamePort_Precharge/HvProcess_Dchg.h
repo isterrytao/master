@@ -43,6 +43,7 @@ typedef struct{
     uint32 RelayOffTick; /**< 继电器断开计时 */
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
     boolean chgFinishFlag; /* 是否充满电 */
+    boolean IsCharging;
 }HvProcess_DchgInnerDataType;
 
 
@@ -119,6 +120,7 @@ void HvProcess_DchgRelayOffDelayAction(void);
 boolean HvProcess_DchgReStartJudgeCond(void);
 void HvProcess_DchgReStartJudgeAction(void);
 
+boolean HvProcess_IsCharging(void);
 
 #endif
 

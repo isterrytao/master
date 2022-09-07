@@ -79,7 +79,6 @@ boolean HvProcess_ChgStateStartCond(void)
     delay = 500U;
 #endif
 #endif
-
     if (nowTime >= delay)
     {
         if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 500UL)
@@ -104,18 +103,6 @@ boolean HvProcess_ChgStateStartCond(void)
 
 void HvProcess_ChgStateStartAction(void)
 {
-#ifdef XUGONG_VCU_FLAG
-    uint32 time;
-    uint16 temp;
-    if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
-    {
-        temp = (uint16)time;
-        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_L_INDEX, temp);
-        temp = time >> 16;
-        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_H_INDEX, temp);
-        HvProcess_ChgInnerData.IsCharging = TRUE;
-    }
-#endif
 #ifdef RELAYM_FN_NEGATIVE_MAIN
     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_ON);
 #endif
@@ -166,6 +153,10 @@ void HvProcess_ChgChargeConnectionAction(void)
 boolean HvProcess_ChgFaultCond(void)
 {
     boolean res = FALSE;
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+#endif
 
     if (ChargeM_ChargeIsFault() == E_OK)
     {
@@ -174,6 +165,33 @@ boolean HvProcess_ChgFaultCond(void)
             HvProcess_ChgFinishAction();
         }
         res = TRUE;
+    }
+    else
+    {
+#ifdef XUGONG_VCU_FLAG
+        if (CHARGECONNECTM_IS_CONNECT())
+        {
+            if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY && !HvProcess_ChgInnerData.IsCharging)
+            {
+                temp = (uint16)time;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_L_INDEX, temp);
+                temp = time >> 16;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_H_INDEX, temp);
+                HvProcess_ChgInnerData.IsCharging = TRUE;
+            }
+        }
+        else
+        {
+            if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY && HvProcess_ChgInnerData.IsCharging)
+            {
+                temp = (uint16)time;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+                temp = time >> 16;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+                HvProcess_ChgInnerData.IsCharging = FALSE;
+            }
+        }
+#endif
     }
     return res;
 }

@@ -25,7 +25,9 @@
 #include "PrechargeM.h"
 #include "ChargerComm_LCfg.h"
 #include "BridgeInsu_Cfg.h"
-
+#include "VcuComm_Messages.h"
+#include "DatetimeM.h"
+#include "ParameterM.h"
 static HvProcess_DchgInnerDataType HvProcess_DchgInnerData;
 
 void HvProcess_DchgInit(Async_LooperType *looper)
@@ -58,7 +60,46 @@ void HvProcess_SetDchgState(HvProcess_DchgStateType state)
 
 void HvProcess_DchgPoll(void)
 {
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+    static boolean flag = FALSE;
 
+    if (CHARGECONNECTM_IS_CONNECT())
+    {
+        if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY && !HvProcess_DchgInnerData.IsCharging && HvProcess_DchgInnerData.State == HVPROCESS_DCHG_HV_ON && !flag)
+        {
+            temp = (uint16)time;
+            (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_L_INDEX, temp);
+            temp = time >> 16;
+            (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_H_INDEX, temp);
+            HvProcess_DchgInnerData.IsCharging = TRUE;
+            flag = TRUE;
+        }
+        else
+        {
+            if (!HvProcess_DchgInnerData.IsCharging && flag)
+            {
+                flag = FALSE;
+            }
+        }
+    }
+    else
+    {
+        flag = FALSE;
+        if (HvProcess_DchgInnerData.IsCharging)
+        {
+            if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
+            {
+                temp = (uint16)time;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+                temp = time >> 16;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+                HvProcess_DchgInnerData.IsCharging = FALSE;
+            }
+        }
+    }
+#endif
 }
 
 boolean HvProcess_DchgStateStartCond(void)
@@ -137,6 +178,8 @@ void HvProcess_DchgStatePrechargeAction(void)
 boolean HvProcess_DchgFaultCond(void)
 {
     boolean res = FALSE;
+    uint32 time;
+    uint16 temp;
 
     if (CHARGECONNECTM_IS_CONNECT())
     {
@@ -157,6 +200,20 @@ boolean HvProcess_DchgFaultCond(void)
         }
         else
         {}
+        if (res)
+        {
+            if (HvProcess_DchgInnerData.IsCharging)
+            {
+                if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
+                {
+                    temp = (uint16)time;
+                    (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+                    temp = time >> 16;
+                    (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+                    HvProcess_DchgInnerData.IsCharging = FALSE;
+                }
+            }
+        }
     }
     else
     {
@@ -302,4 +359,9 @@ void HvProcess_DchgReStartJudgeAction(void)
 {
     HvProcess_DchgInnerData.chgFinishFlag = FALSE;
     HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
+}
+
+boolean HvProcess_IsCharging(void)
+{
+    return HvProcess_DchgInnerData.IsCharging;
 }

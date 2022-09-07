@@ -613,6 +613,18 @@ boolean HvProcess_ChgChargeConnectionCond(void)
 
 void HvProcess_ChgChargeConnectionAction(void)
 {
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+    if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
+    {
+        temp = (uint16)time;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+        temp = time >> 16;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+        HvProcess_ChgInnerData.IsCharging = FALSE;
+    }
+#endif
     (void)RelayM_Control(RELAYM_FN_HEATER, RELAYM_CONTROL_OFF);
     HvProcess_ChgInnerData.RelayOffTick = OSTimeGet();
     TemperatureM_SetHeatState(TEMPERATUREM_HEAT_STATE_NONE);

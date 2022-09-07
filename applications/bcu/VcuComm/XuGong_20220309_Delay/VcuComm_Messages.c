@@ -81,6 +81,18 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
     sval = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
     if (CurrentM_IsValidCurrent(sval))
     {
+        if (sval > 6000)
+        {
+            sval = 6000;
+        }
+        else if (sval < -6000)
+        {
+            sval = -6000;
+        }
+        else
+        {
+
+        }
         sval = sval + 6000;
         uval = (uint16)sval;
     }
@@ -99,24 +111,41 @@ void VcuComm_GetStatusMsg_0x2F0(uint8 *buf, uint16 *Length) {
 
 void VcuComm_GetStatusMsg_0x2F1(uint8 *buf, uint16 *Length) {
     uint16 index = 0U, temp = 0U;
+    Diagnosis_LevelType level;
+
+    // 最大持续放电电流 发送额定放电电流
     if (!CHARGECONNECTM_IS_CONNECT())
     {
         if (DischargeM_DischargeIsAllowed() == E_OK)
         {
-            temp = PowerM_GetCurrent(POWERM_CUR_DCHARGE_CONTINUE);
+            temp = BatteryInfo_BaseConfigInfo.NominalDischargeCurrent;
         }
     }
     WRITE_LT_UINT16(buf, index, temp);
     temp = 0U;
+    // 最大脉冲放电电流 发送瞬时放电最高故障等级触发阈值
+    level = DischargeM_GetDischargeDisableLevel(DIAGNOSIS_ITEM_SP_OC, FALSE);
+    if (level >= 1U)
+    {
+        level -= 1U;
+    }
     if (!CHARGECONNECTM_IS_CONNECT())
     {
         if (DischargeM_DischargeIsAllowed() == E_OK)
         {
-            temp = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_SP_OC, 3U, 0U);
+            temp = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_SP_OC, level, 0U);
         }
     }
     WRITE_LT_UINT16(buf, index, temp);
-    temp = BatteryInfo_BaseConfigInfo.NominalACCurrent;
+    // 最大回馈电流值 根据当前充电连接状态发送快慢充额定电流
+    if (ChargeConnectM_GetConnectType() == CHARGE_TYPE_AC)
+    {
+        temp = BatteryInfo_BaseConfigInfo.NominalACCurrent;
+    }
+    else
+    {
+        temp = BatteryInfo_BaseConfigInfo.NominalDCCurrent;
+    }
     WRITE_LT_UINT16(buf, index, temp);
     temp = 0U;
     if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_MAIN) == RELAYM_ACTUAL_ON)
@@ -129,10 +158,24 @@ void VcuComm_GetStatusMsg_0x2F1(uint8 *buf, uint16 *Length) {
         temp |= (uint16)0x1U << 1;
     }
 #endif
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
     if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_ACTUAL_ON)
     {
         temp |= (uint16)0x1U << 2;
     }
+#endif
+#ifdef RELAYM_FN_POSITIVE_DC_CHARGE
+    if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_DC_CHARGE) == RELAYM_ACTUAL_ON)
+    {
+        temp |= (uint16)0x1U << 2;
+    }
+#endif
+#ifdef RELAYM_FN_CHARGE
+    if (RelayM_GetActualStatus(RELAYM_FN_CHARGE) == RELAYM_ACTUAL_ON)
+    {
+        temp |= (uint16)0x1U << 2;
+    }
+#endif
 #ifdef RELAYM_FN_PRECHARGE
     if (RelayM_GetActualStatus(RELAYM_FN_PRECHARGE) == RELAYM_ACTUAL_ON)
     {
@@ -189,6 +232,137 @@ void VcuComm_GetStatusMsg_0x2F3(uint8 *buf, uint16 *Length) {
     *Length = index;
 }
 
+static boolean VcuComm_IsOrtherFault(void)
+{
+    boolean res = FALSE;
+
+    if (CHARGECONNECTM_IS_CONNECT())
+    {
+        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV) >= DIAGNOSIS_LEVEL_SECOND)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LTV) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_DV) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_DT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_AC_CHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DC_CHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHARGER_COMM) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHGSCKTMP_DC_NEGATIVE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHGSCKTMP_DC_POSITIVE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHGSCKTMP_AC_AL) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHGSCKTMP_AC_BN) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHGSCKTMP_AC_C) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHGSCKTMP_ABNORMAL) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_HEAT_FAULT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else
+        {
+
+        }
+    }
+    else
+    {
+        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DV) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_DT) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LSOC) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else
+        {
+
+        }
+    }
+    if (!res)
+    {
+        if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_VOLT_LINE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_TEMP_LINE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_BMS_INIT_FAILURE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_BMS_INIT_FAILURE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_VCU_COMM) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_RELAY_ABNORMAL) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CURRENT_ABNORMAL) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_PRECHARGE_FAILURE) >= DIAGNOSIS_LEVEL_THIRD)
+        {
+            res = TRUE;
+        }
+        else
+        {}
+    }
+
+    return res;
+}
+
 void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length)
 {
     uint16 index = 0U, temp = 0U;
@@ -199,21 +373,25 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length)
             temp |= (uint16)0x1U << 0;
         }
     }
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV) >= DIAGNOSIS_LEVEL_THIRD)
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x1U << 1;
     }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HTV) >= DIAGNOSIS_LEVEL_THIRD)
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LTV) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x1U << 1;
     }
     else
     {}
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_FOURTH)
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_OC) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x1U << 2;
     }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) >= DIAGNOSIS_LEVEL_FOURTH)
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_SP_OC) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        temp |= (uint16)0x1U << 2;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x1U << 2;
     }
@@ -221,17 +399,25 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length)
     {
 
     }
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) >= DIAGNOSIS_LEVEL_FOURTH)
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x2U << 3;
     }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) >= DIAGNOSIS_LEVEL_FIRST)
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_FB_OC) >= DIAGNOSIS_LEVEL_THIRD)
     {
-        temp |= (uint16)0x1U << 3;
+        temp |= (uint16)0x2U << 3;
     }
+    // else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_LEAK) >= DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= (uint16)0x1U << 3;
+    // }
     else
     {}
     if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HV) >= DIAGNOSIS_LEVEL_THIRD)
+    {
+        temp |= (uint16)0x1U << 5;
+    }
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HTV) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x1U << 5;
     }
@@ -239,21 +425,19 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length)
     {
         temp |= (uint16)0x1U << 5;
     }
-    else
-    {}
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_FOURTH)
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HTV) >= DIAGNOSIS_LEVEL_THIRD)
     {
-        temp |= (uint16)0x1U << 6;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
-    {
-        temp |= (uint16)0x1U << 6;
+        temp |= (uint16)0x1U << 5;
     }
     else
     {}
+    if (VcuComm_IsOrtherFault())
+    {
+        temp |= (uint16)0x1U << 6;
+    }
     WRITE_LT_UINT8(buf, index, temp);
     temp = 0U;
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_FOURTH)
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LT) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x1U << 0;
     }
@@ -263,22 +447,22 @@ void VcuComm_GetStatusMsg_0x244(uint8 *buf, uint16 *Length)
     }
     else
     {}
-    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_FOURTH)
+    if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x2U << 1;
     }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_FOURTH)
+    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_THIRD)
     {
         temp |= (uint16)0x2U << 1;
     }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= (uint16)0x1U << 1;
-    }
-    else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_FIRST)
-    {
-        temp |= (uint16)0x1U << 1;
-    }
+    // else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_CHG_HT) >= DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= (uint16)0x1U << 1;
+    // }
+    // else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_HT) >= DIAGNOSIS_LEVEL_FIRST)
+    // {
+    //     temp |= (uint16)0x1U << 1;
+    // }
     else
     {}
     WRITE_LT_UINT8(buf, index, temp);
@@ -404,6 +588,7 @@ void VcuComm_GetStatusMsg_0x447(uint8 *buf, uint16 *Length)
     uint16 capL, capH;
     uint16 index = 0U;
     uint32 cumuCap;
+    uint16 volt = BatteryInfo_BaseConfigInfo.NominalTotalVolt;
     //累积放电电量，KWH
     cumuCap = 0U;
     if (E_OK == ParameterM_EeepRead(PARAMETERM_EEEP_CUMULATIVE_DCHG_CAP_L_INDEX, &capL)) {
@@ -411,7 +596,12 @@ void VcuComm_GetStatusMsg_0x447(uint8 *buf, uint16 *Length)
             cumuCap = ((uint32)capH << 16) + capL;
         }
     }
-    cumuCap = (cumuCap + 5) / 10;
+    // cumuCap = (cumuCap + 5) / 10;
+    cumuCap *= (uint32)BatteryInfo_BaseConfigInfo.NominalTotalVolt;
+    if (cumuCap != 0U)
+    {
+        cumuCap = DIVISION(cumuCap, 10000UL);
+    }
     WRITE_LT_UINT32(buf, index, cumuCap);
     //累积充电电量，KWH
     cumuCap = 0U;
@@ -420,7 +610,12 @@ void VcuComm_GetStatusMsg_0x447(uint8 *buf, uint16 *Length)
             cumuCap = ((uint32)capH << 16) + capL;
         }
     }
-    cumuCap = (cumuCap + 5) / 10;
+    // cumuCap = (cumuCap + 5) / 10;
+    cumuCap *= (uint32)BatteryInfo_BaseConfigInfo.NominalTotalVolt;
+    if (cumuCap != 0U)
+    {
+        cumuCap = DIVISION(cumuCap, 10000UL);
+    }
     WRITE_LT_UINT32(buf, index, cumuCap);
     *Length = index;
 }
