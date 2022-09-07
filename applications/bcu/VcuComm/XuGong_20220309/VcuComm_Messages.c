@@ -313,7 +313,7 @@ static boolean VcuComm_IsOrtherFault(void)
         {
             res = TRUE;
         }
-        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_THIRD)
+        else if (Diagnosis_GetLevel(DIAGNOSIS_ITEM_DCHG_LV) >= DIAGNOSIS_LEVEL_SECOND)
         {
             res = TRUE;
         }
