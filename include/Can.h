@@ -61,6 +61,7 @@ typedef enum {
 
 void Can_Init(const Can_ConfigType *Config);
 void Can_DeInit(void);
+Can_ReturnType Can_ReInitWithBps(Can_ControllerRefIdType ref, uint32 bps);
 
 
 #if ( CAN_VERSION_INFO_API == STD_ON )

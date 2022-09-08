@@ -1,4 +1,8 @@
 <%
+var timeoutIsFinish = false;
+if (cfg.hasOwnProperty('timeoutIsFinish')) {
+    timeoutIsFinish = cfg.timeoutIsFinish;
+}
 var mdata = {
     enable:cfg.enable,
     retryNum: cfg.retryNum,
@@ -18,6 +22,7 @@ var mdata = {
     dchgRelayChannel: cfg.dchgRelayChannel,
     currentMax: cfg.currentMax,
     overCurTime: cfg.overCurTime,
+    timeoutIsFinish: timeoutIsFinish,
 };
 
 var processedcfg = {mdata: mdata};

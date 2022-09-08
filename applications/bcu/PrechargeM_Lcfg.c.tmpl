@@ -39,6 +39,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo[] =
     <%- processedcfg.dchgRelayChannel%>, /**< dchgRelayChannel: 放电继电器通道号 */
     (Current_CurrentType)<%- processedcfg.currentMax%>, /**< currentMax: 预充最大安全电流(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
     <%- processedcfg.overCurTime%>UL, /**< overCurTime: 允许超预充最大电流最大时间(ms) */
+    <% if(processedcfg.timeoutIsFinish){%>TRUE<% }else{ %>FALSE<%}%>, /**< timeoutIsFinish: 超时是否也认为成功标志 */
 },
 {//充电预充
     2U, /**< retryNum: 重试次数 */
@@ -60,6 +61,7 @@ const PrechargeM_ConfigInfoType PrechargeM_ConfigInfo[] =
     RELAYM_FN_NONE, /**< dchgRelayChannel: 放电继电器通道号 */
     (Current_CurrentType)CURRENT_INVALID_VALUE, /**< currentMax: 预充最大安全电流(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值 */
     1000U, /**< overCurTime: 允许超预充最大电流最大时间(ms) */
+    FALSE, /**< timeoutIsFinish: 超时是否也认为成功标志 */
 }
 };
 
