@@ -27,6 +27,9 @@
 #include "ChargerComm_LCfg.h"
 #include "UserStrategy.h"
 #include "BridgeInsu_Cfg.h"
+#include "VcuComm_Messages.h"
+#include "DatetimeM.h"
+#include "ParameterM.h"
 
 static HvProcess_ChgInnerDataType HvProcess_ChgInnerData;
 
@@ -76,7 +79,6 @@ boolean HvProcess_ChgStateStartCond(void)
     delay = 500U;
 #endif
 #endif
-
     if (nowTime >= delay)
     {
         if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag && nowTime >= 500UL)
@@ -151,6 +153,10 @@ void HvProcess_ChgChargeConnectionAction(void)
 boolean HvProcess_ChgFaultCond(void)
 {
     boolean res = FALSE;
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+#endif
 
     if (ChargeM_ChargeIsFault() == E_OK)
     {
@@ -159,6 +165,33 @@ boolean HvProcess_ChgFaultCond(void)
             HvProcess_ChgFinishAction();
         }
         res = TRUE;
+    }
+    else
+    {
+#ifdef XUGONG_VCU_FLAG
+        if (CHARGECONNECTM_IS_CONNECT())
+        {
+            if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY && !HvProcess_ChgInnerData.IsCharging)
+            {
+                temp = (uint16)time;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_L_INDEX, temp);
+                temp = time >> 16;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_START_CHG_TIME_H_INDEX, temp);
+                HvProcess_ChgInnerData.IsCharging = TRUE;
+            }
+        }
+        else
+        {
+            if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY && HvProcess_ChgInnerData.IsCharging)
+            {
+                temp = (uint16)time;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+                temp = time >> 16;
+                (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+                HvProcess_ChgInnerData.IsCharging = FALSE;
+            }
+        }
+#endif
     }
     return res;
 }
@@ -175,6 +208,18 @@ boolean HvProcess_ChgRelayOffDelayCond(void)
 
 void HvProcess_ChgRelayOffDelayAction(void)
 {
+#ifdef XUGONG_VCU_FLAG
+    uint32 time;
+    uint16 temp;
+    if (DatetimeM_GetDatetime(&time) == DATETIME_TRUSTY)
+    {
+        temp = (uint16)time;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_L_INDEX, temp);
+        temp = time >> 16;
+        (void)ParameterM_EeepWrite(PARAMETERM_EEEP_STOP_CHG_TIME_H_INDEX, temp);
+        HvProcess_ChgInnerData.IsCharging = FALSE;
+    }
+#endif
 #ifdef RELAYM_FN_CHARGE
     (void)RelayM_Control(RELAYM_FN_CHARGE, RELAYM_CONTROL_OFF);
 #endif
@@ -297,4 +342,9 @@ boolean HvProcess_HeatIsJump(void)
 boolean HvProcess_IsHeatAndChargeMode(void)
 {
     return FALSE;
+}
+
+boolean HvProcess_IsCharging(void)
+{
+    return HvProcess_ChgInnerData.IsCharging;
 }

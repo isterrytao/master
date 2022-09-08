@@ -50,6 +50,7 @@ typedef struct{
     boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
     boolean HeatRelayFaultCheckFlag;
     boolean HeatIsFinish;
+    boolean IsCharging;
 }HvProcess_ChgInnerDataType;
 
 
@@ -183,6 +184,9 @@ void HvProcess_ChgReStartJudgeAction(void);
 boolean HvProcess_ChargerIsHeatMode(void);
 boolean HvProcess_IsJumpMode(void);
 boolean HvProcess_IsHeatAndChargeMode(void);
+
+boolean HvProcess_IsCharging(void);
+
 #endif
 
 /**
