@@ -74,6 +74,7 @@ typedef struct{
     uint8 dchgRelayChannel; /**< 放电继电器通道号 */
     Current_CurrentType currentMax; /**< 预充最大安全电流(0.1A) */
     uint32 overCurTime; /**< 允许超预充最大电流最大时间(ms) */
+    boollean timeoutIsFinish; /**< 超时是否也认为成功标志 */
 }PrechargeM_ConfigInfoType;
 
 typedef struct {

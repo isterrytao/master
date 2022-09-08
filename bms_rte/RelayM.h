@@ -201,6 +201,28 @@ RelayM_ForceControlType RelayM_GetForceControlStatus(RelayM_FunctionType fn);
 RelayM_DiagnosisStatusType RelayM_GetDiagnosisStatus(RelayM_FunctionType fn);
 
 /**
+ * \brief 设置继电器粘连状态
+ * \details 在继电器未进行粘连检测的条件下，可以调用此接口设置继电器粘连状态
+ *
+ * \param fn 继电器编号
+ * \param isAdhesive 是否粘连
+ *
+ * \return E_OK： 设置成功  E_NOT_OK: 设置失败（若在检测中，则设置会失败）
+ */
+Std_ReturnType RelayM_SetAdhesiveStatus(RelayM_FunctionType fn, boolean isAdhesive);
+
+/**
+ * \brief 设置继电器开路状态
+ * \details 在继电器未进行开路检测的条件下，可以调用此接口设置继电器开路状态
+ *
+ * \param fn 继电器编号
+ * \param isAdhesive 是否开路
+ *
+ * \return E_OK： 设置成功  E_NOT_OK: 设置失败（若在检测中，则设置会失败）
+ */
+Std_ReturnType RelayM_SetOpenCircuitStatus(RelayM_FunctionType fn, boolean isOpenCircuit);
+
+/**
  * \brief 启动继电器的粘连检测.
  * \note 该调用为异步调用, 请参考\link RelayM_DetectCbk \endlink.
  *

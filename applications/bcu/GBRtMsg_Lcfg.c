@@ -214,6 +214,7 @@ typedef struct {
             uint16 messageLength;
             uint32 chargedTime;
             uint32 dischargedTime;
+            uint16 dischargeCount;
         } chargeDischargeTime;
 
         struct {
@@ -352,6 +353,7 @@ static void fillCharDisTime(GBRt_MsgBuffer *msgHeader) {
     msgHeader->dataHeader.chargeDischargeTime.messageLength = sizeof(msgHeader->dataHeader.chargeDischargeTime) - 2U;
     msgHeader->dataHeader.chargeDischargeTime.chargedTime = Statistic_GetCumuChgTime();
     msgHeader->dataHeader.chargeDischargeTime.dischargedTime = Statistic_GetCumuDchgTime();
+    msgHeader->dataHeader.chargeDischargeTime.dischargeCount = Statistic_GetBcuBatteryDischargeCount();
 }
 
 static uint16 relayUnsaftyOffCnt[HLSS_BCU_DRIVER_NUM];

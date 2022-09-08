@@ -6,6 +6,8 @@
 
 #define CAN_CTRL_MAX 5
 
+#define CAN_INVALID_BPS 0xFFFFFFFFUL
+
 #define Can_DisableGlobalInterrupts() imask_t flag; Irq_Save(flag)
 #define Can_EnableGlobalInterrupts() Irq_Restore(flag)
 
@@ -142,7 +144,6 @@ typedef struct {
     const Can_FilterMaskType *CanFilterMaskRef;
     uint16 CanBOR_Time;
 } Can_HardwareConfigType;
-
 
 typedef struct {
     const Can_HardwareConfigType *CanHardwareConfig;
