@@ -190,8 +190,13 @@ void VcuComm_GetStatusMsg_0x2F1(uint8 *buf, uint16 *Length) {
 void VcuComm_GetStatusMsg_0x2F2(uint8 *buf, uint16 *Length) {
     uint16 index = 0U, temp;
     uint32 cap;
+    uint16 volt = BatteryInfo_BaseConfigInfo.NominalTotalVolt;
     cap = Soc_GetDchgPower();
-    cap *= 10U;
+    cap *= (uint32)BatteryInfo_BaseConfigInfo.NominalTotalVolt;
+    if (cap != 0U)
+    {
+        cap = DIVISION(cap, 100UL);
+    }
     WRITE_LT_UINT16(buf, index, cap);
     cap = Soc_GetCumuChgPower();
     WRITE_LT_UINT32(buf, index, cap);
