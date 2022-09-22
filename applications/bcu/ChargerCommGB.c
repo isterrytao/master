@@ -615,7 +615,7 @@ void ChargerCommGB_GetBRODataCbk(uint8 *Buffer, uint16 *Length)
         {
             if (ChargerCommGB_innerData.insuIsStop)
             {
-                BridgeInsu_Start(BRIDGEINSU_TYPE);
+                // BridgeInsu_Start(BRIDGEINSU_TYPE);
                 ChargerCommGB_innerData.insuIsStop = FALSE;
             }
             ChargerComm_TriggerNewRecStage(CHARGERCOMM_STAGE_GB_CRO);
@@ -1248,7 +1248,7 @@ static void ChargerCommGB_ClearChargerStatusCarefully(void)
     ChargerComm_SetChargerOutputCurrentMin(0);
     if (ChargerCommGB_innerData.insuIsStop)
     {
-        BridgeInsu_Start(BRIDGEINSU_TYPE);
+        // BridgeInsu_Start(BRIDGEINSU_TYPE);
         ChargerCommGB_innerData.insuIsStop = FALSE;
     }
 }
