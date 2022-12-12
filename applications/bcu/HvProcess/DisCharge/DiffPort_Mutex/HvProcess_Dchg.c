@@ -284,7 +284,7 @@ boolean HvProcess_DchgRestartAllowedCond(void)
     boolean res = FALSE;
     uint8 state = 0U;
     App_Tv100mvType bat_tv, hv1, hv2 = 0U, hv3 = 0U, temp;
-    uint32 delay = 30000UL, nowTime = OSTimeGet();
+    uint32 delay = 3000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
