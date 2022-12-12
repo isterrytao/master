@@ -121,9 +121,10 @@ boolean HvProcess_DchgStateStartCond(void)
         chgState = HvProcess_GetChgState();
         if ((!CHARGECONNECTM_IS_CONNECT()) && chgState == HVPROCESS_CHG_START && nowTime >= delay)
         {
-            if (!HvProcess_DchgInnerData.RelayAdhesCheckFlag)
+            if (!HvProcess_CheckRelayAdhesFlag())
             {
-                HvProcess_DchgInnerData.RelayAdhesCheckFlag = TRUE;
+                HvProcess_SetRelayAdhesFlag();
+                // HvProcess_DchgInnerData.RelayAdhesCheckFlag = TRUE;
                 UserStrategy_DchgHvProcessAdhesiveDetect();
             }
             else
@@ -162,7 +163,7 @@ boolean HvProcess_DchgStateStartCond(void)
         }
         else
         {
-            HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
+            // HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
         }
     }
 
@@ -275,7 +276,7 @@ void HvProcess_DchgRelayOffDelayAction(void)
     (void)RelayM_Control(RELAYM_FN_NEGATIVE_MAIN, RELAYM_CONTROL_OFF);
 #endif
     HvProcess_DchgInnerData.ChgRlyOnTick = OSTimeGet();
-    HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
+    // HvProcess_DchgInnerData.RelayAdhesCheckFlag = FALSE;
 }
 
 boolean HvProcess_DchgRestartAllowedCond(void)

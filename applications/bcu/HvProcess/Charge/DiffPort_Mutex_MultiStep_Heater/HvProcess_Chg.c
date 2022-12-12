@@ -85,9 +85,11 @@ boolean HvProcess_ChgStateStartCond(void)
     if (CHARGECONNECTM_IS_CONNECT() && dchgState == HVPROCESS_DCHG_START && nowTime >= delay)
     {
         HvProcess_ChgSetHeatStateNone();
-        if (!HvProcess_ChgInnerData.RelayAdhesCheckFlag)
+
+        if (!HvProcess_CheckRelayAdhesFlag())
         {
-            HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
+            HvProcess_SetRelayAdhesFlag();
+            // HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
             UserStrategy_ChgHvProcessAdhesiveDetect();
         }
         else
@@ -991,7 +993,7 @@ boolean HvProcess_ChgReStartJudgeCond(void)
     boolean res = FALSE;
     uint8 state = 0U;
     App_Tv100mvType bat_tv, hv1, hv2 = 0U, hv3 = 0U, temp;
-    uint32 delay = 30000UL, nowTime = OSTimeGet();
+    uint32 delay = 3000UL, nowTime = OSTimeGet();
     static uint32 lastTime = 0UL;
 
 #if defined(UPA530)||defined(UPA630)||defined(UPA640)
@@ -1066,7 +1068,7 @@ boolean HvProcess_ChgReStartJudgeCond(void)
 
 void HvProcess_ChgReStartJudgeAction(void)
 {
-    HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
+    // HvProcess_ChgInnerData.RelayAdhesCheckFlag = FALSE;
     HvProcess_ChgSetHeatStateNone();
 }
 
@@ -1263,4 +1265,14 @@ void HvProcess_ChgHeatFaultAction(void)
 boolean HvProcess_IsCharging(void)
 {
     return HvProcess_ChgInnerData.IsCharging;
+}
+
+void HvProcess_SetRelayAdhesFlag(void)
+{
+    HvProcess_ChgInnerData.RelayAdhesCheckFlag = TRUE;
+}
+
+boolean HvProcess_CheckRelayAdhesFlag(void)
+{
+    return HvProcess_ChgInnerData.RelayAdhesCheckFlag;
 }

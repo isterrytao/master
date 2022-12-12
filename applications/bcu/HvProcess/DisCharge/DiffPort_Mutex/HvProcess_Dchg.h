@@ -40,7 +40,7 @@ typedef enum{
 typedef struct{
     HvProcess_DchgStateType State; /**< 放电高压流程状态 */
     uint32 RelayOffTick; /**< 继电器断开计时 */
-    boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
+    // boolean RelayAdhesCheckFlag; /**< 继电器粘连检测标志 */
     uint32 ChgRlyOnTick; /**< 充电继电器闭合延时 */
 }HvProcess_DchgInnerDataType;
 

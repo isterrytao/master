@@ -200,6 +200,8 @@ void HvProcess_ChgHeatFaultAction(void);
 
 boolean HvProcess_IsCharging(void);
 
+void HvProcess_SetRelayAdhesFlag(void);
+boolean HvProcess_CheckRelayAdhesFlag(void);
 #endif
 
 /**

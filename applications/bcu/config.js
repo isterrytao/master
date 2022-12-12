@@ -13,11 +13,11 @@ module.exports = {
         releaseType_comments: '"T"或"R", 请参考<<软件版本规范>>',
 
         comments: "如果为模版, 请保持下列配置都为空",
-        pid: "C100.000.000.00",
+        pid: "S144.000.868.01",
         pid_comments: "项目编码, 请参考<<优旦项目编码规范>>",
-        requireVer: "1.0",
+        requireVer: "1.1",
         requireVer_comments: "需求版本, 请参考<<软件版本规范>>",
-        buildVer: "0",
+        buildVer: "3",
         buildVer_comments: "编译版本, 请参考<<软件版本规范>>",
     },
 
@@ -42,16 +42,16 @@ module.exports = {
                 {section:"dcchargecurrent", chs:"额定快充电流, 单位A"},
                 {section:"acchargecurrent", chs:"额定慢充电流, 单位A"},
             ],
-            cap: 300.0,
-            displaycap: 300.0,
-            dischargecurrent: 150.0,
-            totalvoltage: 25.6,
-            dcchargecurrent: 50.0,
-            acchargecurrent: 50.0,
+            cap: 440,
+            displaycap: 450,
+            dischargecurrent: 250,
+            totalvoltage: 51.2,
+            dcchargecurrent: 200,
+            acchargecurrent: 200,
         },
-        serialnum: 8,
+        serialnum: 16,
         parallelnum: 3,
-        celltempnum: 2,
+        celltempnum: 8,
         heattempnum: 0,
         poletempnum: 0,
         initsoc: 50,
@@ -69,9 +69,9 @@ module.exports = {
                 {section:"battconn", chs:"电池连接", comments:"电池连接, 只有型号为A60X的时候有效, 长度与型号相关."},
                 {section:"tempconn", chs:"温感连接", comments:"只有型号为A60X的时候有效, 长度与型号相关; C标识电池单体温感,P表示电池极柱温感,H表示加热片温感,0表示没有链接温感."},
             ],
-            type:"A651",
-            battconn:"111100001111_000000000000",
-            tempconn:"C0C0_0000",
+            type:"A655",
+            battconn:"111100001111_111100011011",
+            tempconn:"CCCC_CCCC",
         },
 
 
@@ -191,7 +191,7 @@ module.exports = {
                 {section:"filterNum", chs:"滤波的采集次数"},
                 {section:"dropNum", chs:"极值丢弃的个数"},
             ],
-            model: "AS2V300A00",
+            model: "FS300E2T",
             filterNum: 20,
             dropNum: 2,
             zeroFilterValue: 1,
@@ -201,7 +201,7 @@ module.exports = {
 
         hall2: {
             // 通道2
-            model: "DHAB_S118_2",
+            model: "FS300E2T",
             filterNum: 20,
             dropNum: 2,
             zeroFilterValue: 1,
@@ -214,7 +214,7 @@ module.exports = {
             notes:[
                 {section:"model", chs:"传感器型号", comments:'可选:"WSBM8518L1000", "FL2200A25mV", "FL2300A25mV", "FL2300A50mV", "FL2400A50mV", "FL2500A50mV", "FL2600A50mV", "FL2650A50mV", "FL230A75mV", "FL250A75mV", "FL2100A75mV", "FL2150A75mV", "FL2200A75mV", "FL2250A75mV", "FL2300A75mV", "FL2400A75mV", "FL2500A75mV", "FL2600A75mV", "FL2650A75mV", "FL2750A75mV", "FL2800A75mV", "FL21000A75mV", "FL21200A75mV", "FL22000A75mV"'},
             ],
-            model: "FL2300A75mV",
+            model: "FL2500A75mV",
             zeroFilterValue: 0.2,
             autoCalibLimit:10,
             isReverse: false,
@@ -223,7 +223,7 @@ module.exports = {
         // 主回路电流采集
         main: {
             // 可选 "hall1", "hall2", "shunt", "userdef1", "userdef2"
-            channel: "hall1", //注：若使用分流器，需要关闭电流的所有上电自检。
+            channel: "shunt", //注：若使用分流器，需要关闭电流的所有上电自检。
             // 可选 "hall1", "hall2", "shunt", "none", "userdef1", "userdef2" 但是不能与channel相同,
             redundant: "none"
 
@@ -237,23 +237,25 @@ module.exports = {
     },
 
     RelayM: [
-        {name: "主正", def: "POSITIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS1", isSafeToOff: "NULL", hv: "HV1", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000, auxContactDio: "", ioLevelOfAuxContactWhenOn: "HIGH"},
-        // {name: "预充", def: "PRECHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2"},
-        // {name: "充电", def: "CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
-        // {name: "快充正", def: "POSITIVE_DC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
-        {name: "慢充正", def: "POSITIVE_AC_CHARGE", model: "UNKNOWN", hlss: "HLSS_BCU_HSS2", isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000},
-        {name: "自锁", def: "SELF_LOCK", model: "UNKNOWN", hlss: "HLSS_BCU_HSS3"},
-        {name: "蜂鸣器", def: "BUZZER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS4"},
-        // {name: "主负", def: "NEGATIVE_MAIN", model: "UNKNOWN", hlss: "HLSS_BCU_HSS5"},
-        // {name: "加热", def: "HEATER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS6"},
-        // {name: "制冷", def: "COOLER", model: "UNKNOWN", hlss: "HLSS_BCU_HSS7"},
+            {name: "主正", def: "POSITIVE_MAIN", model: "UNKNOWN" , hlss: "HLSS_BCU_HSS1"  , isSafeToOff: "NULL", hv: "HV1", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000 },
+            // {name: "预充", def: "PRECHARGE", model: "UNKNOWN"   },
+            // {name: "充电", def: "CHARGE", model: "UNKNOWN"   },
+            // {name: "快充正", def: "POSITIVE_DC_CHARGE", model: "UNKNOWN"   },
+            {name: "慢充正", def: "POSITIVE_AC_CHARGE", model: "UNKNOWN" , hlss: "HLSS_BCU_HSS2"  , isSafeToOff: "NULL", hv: "HV2", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000 },
+            {name: "自锁", def: "SELF_LOCK", model: "UNKNOWN" , hlss: "HLSS_BCU_HSS4"   },
+            {name: "蜂鸣器", def: "BUZZER", model: "UNKNOWN" , hlss: "HLSS_BCU_HSS3"   },
+            // {name: "主负", def: "NEGATIVE_MAIN", model: "UNKNOWN"   },
+            {name: "加热", def: "HEATER", model: "UNKNOWN" , hlss: "HLSS_BCU_LSS1"  , isSafeToOff: "NULL", hv: "HV3", isPositive:true, totalDecPercent: 90, continueDecPercent: 10, checkInterval: 20, checkTimeout: 1000 },
+            // {name: "制冷", def: "COOLER", model: "UNKNOWN"   },
+            // {name: "屏供电", def: "HMI", model: "UNKNOWN"   },
+		    // {name: "DC", def: "DCDC", model: "UNKNOWN"   },
     ],
 
     BridgeInsu: {
         notes: [
             {section:"type", chs:"绝缘检测方式", comments:'"OFF", "BY_VOL", "ALWAYS_ON", "ON_WHEN_DETECT"'}
         ],
-        type: "OFF",
+        type: "ALWAYS_ON",
     },
 
     CommProtocol: {
@@ -261,16 +263,16 @@ module.exports = {
             {section:"chg", chs: "充电机通讯协议类型", comments: '"Default", "UDAN", "DongYaoV2.0", "ShiNeng", "UDAN_KaiYuan_DongYaoV1.0", "UDAN_ShiNeng","YiJiaTongV2.0", "QianGaiLi", "BanYiTong_Chg_V1.2", "ADY_V1.1", "CAN2.0C", "TieCheng_Soc", "LongGong_Chg", "ShiNeng_Heat", "XuGong_20190821", "HaoSheng"'},
             {section:"vcu", chs: "VCU通讯协议类型", comments: '"Default", "UDAN", "QianTuo_CAN20A_125K", "QianTuo_CAN20B_250K", "QianTuo_CAN20A_125K_V1.02", "CHOLIFT", "CAN_1232E_201809", "ZOWELL_V2.0", "XianFeng_V3.0", "BaoLi", "BanYiTong_Vcu_V1.2", "RuYi_Vcu", "CAN2.0F", "BaoLi_20200622", "Vcu_250k", "BMS_CAN_3.0", "LongGong_Vcu", "XuGong_20190821", "YuFeng_24V", "YuFeng_80V", "KaTe_20200812", "XuGong_20211120", "Megamette_V1", "HaoSheng", "XuGong_20220309", "XuGong_20220309_Delay"'},
         ],
-        chg: "UDAN",
-        vcu: "UDAN",
+        chg: "ShiNeng_Heat",
+        vcu: "BaoLi_20200622",
     },
 
     HVProcess: {
         notes: [
-            {section:"chg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Heater", "SamePort", "SamePort_Heater", "DiffPort_Mutex_MultiStep_Heater", "DiffPort_Blind"'},
-            {section:"dchg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Precharge", "SamePort", "SamePort_Precharge", "SamePort_Heater", "SamePort_Blind", "SamePort_Blind_Precharge", "DiffPort_Blind", "DiffPort_Blind_Precharge"'},
+            {section:"chg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Heater", "SamePort", "SamePort_Heater", "DiffPort_Mutex_MultiStep_Heater", "DiffPort_Blind", "DiffPort_MultiStep_Heater_Dc", "DiffPort_Dc"'},
+            {section:"dchg", chs: "高压流程类型", comments: '"DiffPort_Mutex", "DiffPort_Mutex_Precharge", "SamePort", "SamePort_Precharge", "SamePort_Heater", "SamePort_Blind", "SamePort_Blind_Precharge", "DiffPort_Blind", "DiffPort_Blind_Precharge", "DiffPort_Dc"'},
         ],
-        chg: "DiffPort_Mutex",
+        chg: "DiffPort_Mutex_MultiStep_Heater",
         dchg: "DiffPort_Mutex",
     },
 
@@ -293,7 +295,7 @@ module.exports = {
             {section:"currentMax", chs: "预充最大安全电流(0.1A)"},
             {section:"overCurTime", chs: "允许超预充最大电流最大时间(ms)"},
         ],
-        enable: "STD_OFF",
+        enable: "STD_ON",
         finishCond: {
             notes:[
                 {section:"type", chs:"预充完成条件类型", comments:'"DELTA_VOLT", "PERCENT", "DELAY"'},
@@ -301,11 +303,11 @@ module.exports = {
                 {section:"current", chs:"完成电流值(0.1A)，输入CURRENT_INVALID_VALUE时表示不检查电流值"},
             ],
             type: "PERCENT",
-            value: 96,
+            value: 0,
             current: "CURRENT_INVALID_VALUE",
         },
-        retryNum: 2,
-        timeout: 3000,
+        retryNum: 0,
+        timeout: 0,
         retryInternal: 1000,
         timeMin: 300,
         validVoltMin: 10,
@@ -339,11 +341,10 @@ module.exports = {
         ],
         enable: "STD_OFF",
         temp: [-40, 125],
-        soc: [5, 10, 15, 20, 25, 30, 50, 70, 75, 80, 85, 90, 95, 100],
-        vol: [3020, 3130, 3180, 3205, 3213, 3222, 3255, 3288, 3296, 3310, 3320, 3330, 3346, 3410,
-              3025, 3135, 3185, 3210, 3218, 3227, 3260, 3293, 3301, 3315, 3325, 3335, 3350, 3415],
-        calibCycle: 12 * 60,
-        longCycle: 120 * 60,
+        soc: [0, 100],
+        vol: [3200, 3200,3200, 3200],
+        calibCycle: 720,
+        longCycle: 7200,
         allowedCurrent: 3,
         powerOnDelay: 2,
         checkCycle: 1800,
@@ -396,13 +397,13 @@ module.exports = {
                     从充电进入放电)进入放电状态时检测到放电唤醒信号会断开自锁继电器", comments: '"STD_OFF", "STD_ON"'},
                 ],
                 ac_chg_en: "STD_ON",
-                dc_chg_en: "STD_ON",
+                dc_chg_en: "STD_OFF",
                 dchg_en: "STD_ON",
             },
             auto_power_down: {
                 en: "STD_ON",
-                current: 3,
-                time: 30*60*1000,
+		current: 5,
+		time: 3600000,
             },
             manual_power_down: {
                 notes: [
@@ -411,7 +412,7 @@ module.exports = {
                     {section:"delay", chs: "延时时间(ms)"},
                 ],
                 en: "STD_ON",
-                type: "DIN1",
+		type: "DIN1",
                 delay: 3000,
             },
             onboard_key_type: {
@@ -422,8 +423,8 @@ module.exports = {
             },
         },
         oc_type: {
-            ac_chg_oc_type: "CURRENT_OFFSET",
-            dc_chg_oc_type: "CURRENT_OFFSET",
+            ac_chg_oc_type: "CURRENT",
+            dc_chg_oc_type: "CURRENT",
             dchg_oc_type: "CURRENT",
             dchg_sp_type: "CURRENT",
             dchg_fb_type: "CURRENT",
@@ -436,7 +437,7 @@ module.exports = {
             en: "STD_OFF",
             level: "DIAGNOSIS_LEVEL_THIRD",
         },
-        chg_heat_parameters: {
+		chg_heat_parameters: {
             notes: [
                 {section: "en", chs: "加热策略使能，配置加热继电器时改参数使能,若配置了加热继电器则默认为'STD_ON',否则为'STD_OFF'", comments: '"STD_ON", "STD_OFF"'},
                 {section: "start_heat_temp", chs: "开始加热温度，当最低温度小于等于此温度时由充电转入加热"},
@@ -448,14 +449,14 @@ module.exports = {
                 {section: "stop_heat_current", chs: "加热结束转入充电是请求电流"},
                 {section: "current_flag", chs: "加热电流是否经过分流器，若经过为TRUE，否则为FALSE"},
             ],
-            en: "STD_OFF",
-            start_heat_temp: -5,
-            stop_heat_temp: 10,
-            revert_temp: 0,
-            start_heat_volt: 25.6,
-            start_heat_current: 15.8,
+            en: "STD_ON",
+            start_heat_temp: 0,
+            stop_heat_temp: 14,
+            revert_temp: 1,
+            start_heat_volt: 51.2,
+            start_heat_current: 18,
             stop_heat_volt: 0,
-            stop_heat_current: 10,
+            stop_heat_current: 0,
             current_flag: "FALSE",
         },
         chg_user_parameters: {
@@ -488,7 +489,7 @@ module.exports = {
                 {section: "current", chs: "电流大小"},
             ],
             en: "STD_OFF",
-            current: 1,
+            current: 1.0,
         },
         lv_power_down: {
             notes: [
@@ -498,7 +499,7 @@ module.exports = {
             ],
             en: "STD_OFF",
             lv: 2800,
-            time: 4 * 60 * 60 * 1000,
+            time: 60000,
         }
     },
 
@@ -514,7 +515,7 @@ module.exports = {
         Flag: "TRUE",
         Delay: 5000,
         RelDelay: 5000,
-        Volt: "CELL_VOLTAGE_INVALID_VALUE",
+        Volt: "3600",
         fullHook: "UserStrategy_FullChargeHook",
         fullRelHook: "UserStrategy_FullChargeReleaseHook",
     },
@@ -539,14 +540,26 @@ module.exports = {
                 {section:"diag", chs:"诊断故障功率百分比表", comments:'type: "DCHG_LV", "DCHG_HV", "DCHG_HT", "DCHG_LT".....,'},
                 {section:"decrease", chs:"末端降流表", comments:'type: "TO_PERCENT", "TO_LAST_PERCENT", "CONSTVAL", "TO_CONSTVAL", "TO_TABLE_PERCENT",'},  //decrease需要则定义,不需要不定义
             ],
-            soc: [9.9, 29.9, 59.9, 104],
-            temp: [-21, -10, 0, 10, 60],
-            tempAlt: [-23, -12, -2, 8, 58],
-            current: [0, 0, 0, 0, 20, 50, 80, 80, 40, 80, 100, 100, 80, 100, 100, 100, 100, 100, 100, 100],
+            soc: [ 104 ],
+            temp: [ 60 ],
+            tempAlt: [ 58 ],
+            current: [ 440 ],
             diag: [
-                {type: "DCHG_LV", percent: [60, 50, 10, 0]},
-                {type: "DCHG_HT", percent: [60, 50, 10, 0]},
-                {type: "DCHG_LT", percent: [60, 50, 10, 0]},
+                {type: "DCHG_DT", percent: [100, 100, 0, 100]},
+                {type: "DCHG_DV", percent: [100, 100, 0, 100]},
+                {type: "DCHG_HT", percent: [100, 100, 0, 100]},
+                {type: "DCHG_HTV", percent: [100, 100, 0, 100]},
+                {type: "DCHG_HV", percent: [100, 100, 0, 100]},
+                {type: "DCHG_LT", percent: [100, 100, 0, 100]},
+                {type: "DCHG_LTV", percent: [100, 100, 0, 0]},
+                {type: "DCHG_LV", percent: [100, 100, 0, 0]},
+                {type: "DCHG_OC", percent: [100, 100, 0, 100]},
+                {type: "FB_OC", percent: [100, 100, 0, 100]},
+                {type: "RELAY_ABNORMAL", percent: [100, 100, 0, 100]},
+                {type: "SP_OC", percent: [100, 100, 0, 100]},
+                {type: "TEMP_LINE", percent: [100, 100, 0, 100]},
+                {type: "VOLT_LINE", percent: [100, 100, 0, 100]},
+
             ],
             config: {
                 notes:[
@@ -561,7 +574,7 @@ module.exports = {
                 ],
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
@@ -570,19 +583,31 @@ module.exports = {
             },
         },
         dchgpeak: {
-            soc: [9.9, 29.9, 59.9, 104],
-            temp: [-21, -10, 0, 10, 20, 30, 60],
-            tempAlt: [-23, -12, -2, 8, 18, 28, 58],
-            current: [0, 0, 0, 0, 30, 60, 90, 100, 50, 90, 120, 150, 100, 150, 200, 250, 150, 200, 300, 300, 200, 300, 300, 300, 300, 300, 300, 300],
+            soc: [ 104 ],
+            temp: [ 60 ],
+            tempAlt: [ 58 ],
+            current: [ 880 ],
             diag: [
-                {type: "DCHG_LV", percent: [60, 50, 10, 0]},
-                {type: "DCHG_HT", percent: [60, 50, 10, 0]},
-                {type: "DCHG_LT", percent: [60, 50, 10, 0]},
+                {type: "DCHG_DT", percent: [100, 100, 0, 100]},
+                {type: "DCHG_DV", percent: [100, 100, 0, 100]},
+                {type: "DCHG_HT", percent: [100, 100, 0, 100]},
+                {type: "DCHG_HTV", percent: [100, 100, 0, 100]},
+                {type: "DCHG_HV", percent: [100, 100, 0, 100]},
+                {type: "DCHG_LT", percent: [100, 100, 0, 100]},
+                {type: "DCHG_LTV", percent: [100, 100, 0, 0]},
+                {type: "DCHG_LV", percent: [100, 100, 0, 0]},
+                {type: "DCHG_OC", percent: [100, 100, 0, 100]},
+                {type: "FB_OC", percent: [100, 100, 0, 100]},
+                {type: "RELAY_ABNORMAL", percent: [100, 100, 0, 100]},
+                {type: "SP_OC", percent: [100, 100, 0, 100]},
+                {type: "TEMP_LINE", percent: [100, 100, 0, 100]},
+                {type: "VOLT_LINE", percent: [100, 100, 0, 100]},
+
             ],
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
@@ -591,19 +616,17 @@ module.exports = {
             },
         },
         dchgfb: {
-            soc: [9.9, 29.9, 59.9, 104],
-            temp: [-10, 0, 10, 20, 30, 50],
-            tempAlt: [-12, -2, 8, 18, 28, 48],
-            current: [0, 0, 0, 0, 10, 10, 10, 10, 150, 150, 100, 30, 200, 200, 150, 50, 200, 200, 100, 80, 200, 200, 300, 100],
+            soc: [ 104 ],
+            temp: [ 60 ],
+            tempAlt: [ 58 ],
+            current: [ 440 ],
             diag: [
-                {type: "DCHG_HV", percent: [60, 50, 10, 0]},
-                {type: "DCHG_HT", percent: [60, 50, 10, 0]},
-                {type: "DCHG_LT", percent: [60, 50, 10, 0]},
+
             ],
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
                 xAxisIsLinear: 0,
                 increaseTime: 500,
                 increaseStep: 50,
@@ -612,19 +635,17 @@ module.exports = {
             },
         },
         chgcontinues: {
-            soc: [9.9, 29.9, 59.9, 104],
-            temp: [-10, 0, 10, 20, 50],
-            tempAlt: [-12, -2, 8, 18, 48],
-            current: [0, 0, 0, 0, 10, 10, 10, 10, 20, 20, 20, 20, 30, 30, 30, 30, 50, 50, 50, 50],
+            soc: [ 104 ],
+            temp: [ 60 ],
+            tempAlt: [ 58 ],
+            current: [ 440 ],
             diag: [
-                {type: "CHG_HV", percent: [60, 50, 10, 0]},
-                {type: "CHG_HT", percent: [60, 50, 10, 0]},
-                {type: "CHG_LT", percent: [60, 50, 10, 0]},
+
             ],
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
                 yAxisIncUseAlt: 0,
-                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_BDIR",
+                xAxisSupportDir: "POWERM_XAXIS_SUPPORT_L2R",
                 xAxisIsLinear: 0,
                 increaseTime: 1000,
                 increaseStep: 20,
@@ -633,14 +654,23 @@ module.exports = {
             },
         },
         dcchg: {
-            soc: [50, 80, 90, 104],
-            temp: [-11, 0, 15, 40, 45, 50],
-            tempAlt: [-13, -2, 13, 38, 43, 48],
-            current: [0, 0, 0, 0, 10, 10, 10, 10, 30, 30, 30, 10, 50, 30, 20, 10, 20, 20, 10, 10, 10, 10, 10, 10],
+            soc: [ 104 ],
+            temp: [ 60 ],
+            tempAlt: [ 58 ],
+            current: [ 440 ],
             diag: [
-                {type: "CHG_HV", percent: [60, 50, 10, 0]},
-                {type: "CHG_HT", percent: [60, 50, 10, 0]},
-                {type: "CHG_LT", percent: [60, 50, 10, 0]},
+                {type: "CHG_DT", percent: [100, 50, 0, 100]},
+                {type: "CHG_DV", percent: [100, 50, 0, 100]},
+                {type: "CHG_HT", percent: [100, 100, 0, 100]},
+                {type: "CHG_HTV", percent: [100, 100, 100, 0]},
+                {type: "CHG_HV", percent: [100, 100, 100, 0]},
+                {type: "CHG_LTV", percent: [100, 50, 0, 100]},
+                {type: "CHG_LV", percent: [100, 50, 0, 100]},
+                {type: "DOUBLE_CHG_CONNECT_FAULT", percent: [100, 100, 0, 100]},
+                {type: "RELAY_ABNORMAL", percent: [100, 100, 0, 100]},
+                {type: "TEMP_LINE", percent: [100, 100, 0, 100]},
+                {type: "VOLT_LINE", percent: [100, 100, 0, 100]},
+
             ],
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
@@ -660,17 +690,28 @@ module.exports = {
                 {section:"minval", chs:"该阶段最小值"},
             ],
             decrease: [
-                {startval: 3500, delaytime: 10000, type: "TO_PERCENT", param: 75, minval: 3,},
-                {startval: 3600, delaytime: 10000, type: "TO_PERCENT", param: 75, minval: 3,},
+
             ],
         },
         acchg: {
-            soc: [104],
-            temp: [-11, -1, 50, 55],
-            tempAlt: [-13, -3, 48, 53],
-            current: [0, 25, 50, 25],
+            soc: [100],
+            temp: [0, 5, 10, 15, 55, 65],
+            tempAlt: [-2, 3, 8, 13, 53, 63],
+            current: [0.0, 60.0, 120.0, 160.0, 200.0, 90.0],
             diag: [
-                {type: "CHG_HV", percent: [100, 100, 0, 0]},
+                {type: "AC_CHG_OC", percent: [100, 100, 0, 100]},
+                {type: "CHG_DT", percent: [100, 50, 0, 100]},
+                {type: "CHG_DV", percent: [100, 50, 0, 100]},
+                {type: "CHG_HT", percent: [100, 100, 0, 100]},
+                {type: "CHG_HTV", percent: [100, 100, 100, 0]},
+                {type: "CHG_HV", percent: [100, 100, 100, 0]},
+                {type: "CHG_LTV", percent: [100, 50, 0, 100]},
+                {type: "CHG_LV", percent: [100, 50, 0, 100]},
+                {type: "DOUBLE_CHG_CONNECT_FAULT", percent: [100, 100, 0, 100]},
+                {type: "RELAY_ABNORMAL", percent: [100, 100, 0, 100]},
+                {type: "TEMP_LINE", percent: [100, 100, 0, 100]},
+                {type: "VOLT_LINE", percent: [100, 100, 0, 100]},
+
             ],
             config: {
                 yUseWhichValue: "POWERM_YAXIS_USE_MIN",
@@ -683,8 +724,10 @@ module.exports = {
                 decreaseStep: 10,
             },
             decrease: [
-                {startval: 3500, delaytime: 10000, type: "TO_PERCENT", param: 50, minval: 5,},
-                {startval: 3600, delaytime: 10000, type: "TO_PERCENT", param: 50, minval: 5,},
+                                {startval: 3550, delaytime: 5000, type: "TO_CONSTVAL", param: 135, minval: 5,},
+                {startval: 3580, delaytime: 5000, type: "TO_CONSTVAL", param: 30, minval: 5,},
+                {startval: 3600, delaytime: 5000, type: "TO_CONSTVAL", param: 0, minval: 30,},
+
             ],
         },
         heater: {
@@ -739,9 +782,9 @@ module.exports = {
             ],
             wakeup: "NONE",
             protocol: "NONE",
-            mode: "GB_DC",
-            dintype: "LEVEL",
-            dinChannel: "BCU_DIN1",
+            mode: "NONE",
+            dintype: "NONE",
+            dinChannel: "NONE",
             relay: "慢充正",
             userModeFunction: ["UserStrategy.h", "UserStrategy_DCConnected"],
         },
@@ -758,8 +801,8 @@ module.exports = {
             wakeup: "OBC",
             protocol: "USER",
             mode: "COMM",
-            dintype: "LEVEL",
-            dinChannel: "BCU_DIN2",
+            dintype: "NONE",
+            dinChannel: "NONE",
             relay: "慢充正",
             userModeFunction: ["UserStrategy.h", "UserStrategy_ACConnected"],
         },
@@ -772,10 +815,10 @@ module.exports = {
                 {section:"connect_delay", chs:"进入充电电流条件持续时间(ms)"},
                 {section:"unconnect_delay", chs:"退出充电电流条件持续时间(ms)"},
             ],
-            cur_min: 2,
-            rel_cur_min: -2,
-            connect_delay: 2000,
-            unconnect_delay: 3000,
+            cur_min: 0,
+            rel_cur_min: 0,
+            connect_delay: 0,
+            unconnect_delay: 0,
         },
 
         el: {
@@ -799,9 +842,9 @@ module.exports = {
         //可选 "Shiheng_CWF4B_103F_3435B":时恒10K; "Soarwhale_10K3435B":由甲申田10K; "Kemit_CWF110KF3435":科敏10K; "Kemit_CWF110KF4150":科敏10K; Yonggui_YG691_51_00_50":永贵10K; "Shiheng_CWF4B_104F_3950":时恒100K; "MTG2_420F103H":MTG2_10K; "Kemit_CWF110KF3950":科敏10K; "BoDian_FW10K3950":铂电10K; "Soarwhale_SW_NTC_C4_103B1A1":由甲申田10K;
         //     "Shiheng_CWF4B_103F_3950":时恒10K; "Microtherm_TR29_NTC_ALW600_D3_2L15":麦柯泰姆10K; "Microtherm_RT29_NTC_ALW500_D3_2L15":麦柯泰姆100K-3950; "YiDa_BLMF103F3435F":苏州怡达10K; "CATL_10K_SMD":CATL 10K; "XLB_SK103F4R0300ST": 新立本10K; "Soarwhale_SW_NTC_104F_3590": 由甲申田100K; "Semitec_104KT1608_1P": Semitec100K; "TPS2_395F103F_150"：特普生10K；
         //     "Semitec_103KT1005_1P": Semitec10K; "Unknown1_10KRT13950": Unknown1 10K; "Karmo_KN1MF12140410_L400": 科润美10K; "Unknown2_10K_3950": Unknown2 10K; "Kemit_CWF1100KF4150": 科敏100K; "Thinking_NTSA3104FV057": 兴勤100K; "Ampron_APR_CWF103F3950FA250A": 安培龙10K;
-        //     "PT1000_10K": PT1000, 10K下拉电阻分压; "PT1000_1K": PT1000, 1K下拉电阻分压; "HuaiDian_HA103F4R22": 淮电10K; "Kemit_CWF110KF3950_369ohm":科敏10K; "Kedite_MF5_4_103F3435F100MM": 科帝特10K; "WeiLian_TR29N313A4EL50": 上海维连100K; "Kedite_103F3950F100C": 科帝特10K; "TPS2_395F104F_150": 特普生100K;
+        //     "PT1000_10K": PT1000, 10K下拉电阻分压; "PT1000_1K": PT1000, 1K下拉电阻分压; "HuaiDian_HA103F4R22": 淮电10K; "Kemit_CWF110KF3950_369ohm":科敏10K; "Kedite_MF5_4_103F3435F100MM": 科帝特10K; "WeiLian_TR29N313A4EL50": 上海维连100K; "Kedite_103F3950F100C": 科帝特10K;
 
-        cellTempType: "XLB_SK103F4R0300ST", // 电池温感型号
+        cellTempType: "HuaiDian_HA103F4R22", // 电池温感型号
         dcChgSckTempType:'Shiheng_CWF4B_103F_3435B', // 快充充电插座温感信号
         acChgSckTempType:'Shiheng_CWF4B_103F_3435B', // 慢充充电插座温感信号
         chgSckTempMap: {
@@ -863,47 +906,57 @@ module.exports = {
         configs: [
             {
                 name: "充电单体电压高",
-                levels: [1,2,3],
+                levels: [4],
                 cycle:100,
                 //levelParaGetFunc: "NULL",
                 //report_levels: [],
                 events:[
-                    {levels:[3,], event: "assert", action: "SocDiagCalib_FullCalibCbk"},
-                    {levels:[1,], event: "deassert", action: "SocDiagCalib_FullCalibRelCbk"},
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[4,], event: "assert", action: "SocDiagCalib_FullCalibCbk"},
+                    {levels:[4,], event: "deassert", action: "SocDiagCalib_FullCalibRelCbk"},
+		    {levels:[4,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+		    {levels:[4,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 3,
-                    events: [
+                    level: 4,
+                    events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电单体电压高",
-                levels: [1,2,3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
                 name: "充电单体电压低",
-                levels: [1,2,3],
+                levels: [1, 2, 3],
                 cycle:100,
                 events:[
                     {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+		    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -911,69 +964,87 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电单体电压低",
-                levels: [1,2,3,4],
+                levels: [1, 2, 3, 4],
                 cycle:100,
                 events:[
                     {levels:[3,], event: "assert", action: "SocDiagCalib_EmptyCalibCbk"},
-                    {levels:[1,], event: "deassert", action: "SocDiagCalib_EmptyCalibRelCbk"},
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+                    {levels:[3,], event: "deassert", action: "SocDiagCalib_EmptyCalibRelCbk"},
+
+
+		    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
                     {levels:[3,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
                     {levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[4,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[4,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 4,
-                    events: [
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                    events:[
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
                 name: "充电总压高",
-                levels: [1,2,3],
+                levels: [4],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "SocDiagCalib_FullCalibCbk"},
-                    {levels:[1,], event: "deassert", action: "SocDiagCalib_FullCalibRelCbk"},
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[4,], event: "assert", action: "SocDiagCalib_FullCalibCbk"},
+                    {levels:[4,], event: "deassert", action: "SocDiagCalib_FullCalibRelCbk"},
+		    {levels:[4,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+		    {levels:[4,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 3,
-                    events: [
+                    level: 4,
+                    events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电总压高",
-                levels: [1,2,3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
                 name: "充电总压低",
-                levels: [1,2,3],
+                levels: [1, 2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -981,33 +1052,43 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电总压低",
-                levels: [1,2,3,4],
+                levels: [1, 2, 3, 4],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
                     {levels:[3,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
                     {levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[4,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[4,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 4,
-                    events: [
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+                    events:[
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
                 name: "充电单体压差",
-                levels: [1,2,3],
+                levels: [1, 2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1015,21 +1096,27 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电单体压差",
-                levels: [1,2,3],
+                levels: [3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
@@ -1055,11 +1142,13 @@ module.exports = {
                 cycle:100,
             }, {
                 name: "充电高温",
-                levels: [1,2,3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1067,63 +1156,79 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电高温",
-                levels: [1,2,3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
             name: "充电低温",
-                levels: [1,2,3],
+                levels: [3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
                 name: "放电低温",
-                levels: [1,2,3],
+                levels: [3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
                 name: "充电温差",
-                levels: [1,2,3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1131,21 +1236,27 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
                 name: "放电温差",
-                levels: [1,2,3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+
+
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
@@ -1155,45 +1266,67 @@ module.exports = {
                 cycle:100,
                 levelParaGetFunc: "UserStrategy_ChgDcOverCurrentParaGet",
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
                 name: "慢充过流",
-                levels: [1,2,3],
+                levels: [1, 2, 3],
                 cycle:100,
                 levelParaGetFunc: "UserStrategy_ChgAcOverCurrentParaGet",
                 events:[
                     {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+		    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
             }, {
                 name: "回馈过流",
-                levels: [],
+                levels: [3],
                 cycle:100,
                 levelParaGetFunc: "UserStrategy_DchgFeedBackCurrentParaGet",
+                events:[
+
+
+                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+                    {levels:[3,], event: "deassert", action: "UserStrategy_DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+                ],
             }, {
                 name: "持续放电过流",
-                levels: [1,2,3,4],
+                levels: [2, 3],
                 cycle:100,
                 levelParaGetFunc: "UserStrategy_DchgOverCurrentParaGet",
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+		    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+		    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
             }, {
                 name: "瞬时放电过流",
-                levels: [1,2,3,4],
+                levels: [2, 3],
                 cycle:100,
                 levelParaGetFunc: "UserStrategy_DchgSpOverCurrentParaGet",
+                events:[
+
+
+                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                ],
             }, {
                 name: "充电电流异常",
                 levels: [],
@@ -1208,37 +1341,43 @@ module.exports = {
                 cycle:100,
             }, {
                 name: "SOC过低",
-                levels: [1,2,3],
+                levels: [1, 2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
                 name: "绝缘漏电",
-                levels: [],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
             }, {
                 name: "电压排线脱落",
-                levels: [3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1246,19 +1385,19 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
             }, {
                 name: "温感排线脱落",
-                levels: [3],
+                levels: [2, 3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+			{levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+			{levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1266,7 +1405,7 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
@@ -1275,17 +1414,19 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 1,
+                    level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1293,15 +1434,19 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[2,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 2,
+                    level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1309,15 +1454,19 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[2,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 2,
+                    level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1325,15 +1474,19 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[2,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 2,
+                    level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1341,15 +1494,19 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[2,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 2,
+                    level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1414,9 +1571,13 @@ module.exports = {
                 cycle:100,
             }, {
                 name: "供电电压过低",
-                levels: [1,2,3,4],
+                levels: [1, 2, 3, 4],
                 cycle:500,
                 events:[
+
+
+
+
                     //{levels:[4,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
                     //{levels:[2,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
                     //{levels:[4,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
@@ -1500,8 +1661,10 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
             }, {
                 name: "整车通信",
@@ -1516,35 +1679,39 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
             }, {
                 name: "预充失败",
-                levels: [3],
+                levels: [],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
             }, {
                 name: "电流异常",
                 levels: [3],
                 cycle:100,
                 events:[
-                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
                     level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1593,9 +1760,9 @@ module.exports = {
                 cycle:50,
                 events:[
                     {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+		    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+		    {levels:[3,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
+		    {levels:[3,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1603,7 +1770,7 @@ module.exports = {
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
+			{event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
                     ],
                 },
@@ -1612,10 +1779,10 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[1,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
@@ -1644,15 +1811,19 @@ module.exports = {
                 levels: [],
                 cycle:100,
                 events:[
-                    {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 1,
+                    level: 3,
                     events:[
-                        {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
+
+
+
+
                     ],
                 },
             }, {
@@ -1689,22 +1860,22 @@ module.exports = {
                 },
             }, {
                 name: "多充电连接故障",
-                levels: [],
+                levels: [3],
                 cycle:100,
                 events:[
-                    {levels:[1,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
-                    {levels:[1,], event: "assert", action: "DischargeM_DiagnosisCtlDisableEventCbk"},
-                    {levels:[1,], event: "deassert", action: "DischargeM_DiagnosisCtlEnableEventCbk"},
+                    {levels:[3,], event: "assert", action: "ChargeM_DiagnosisCtlDisableEventCbk"},
+		    {levels:[3,], event: "deassert", action: "ChargeM_DiagnosisCtlEnableEventCbk"},
+
+
                 ],
                 startDiagnosis: {
                     timeout: 1000,
-                    level: 1,
+                    level: 3,
                     events:[
                         {event: "assert", action: "ChargeM_StartDiagCtlDisableEventCbk"},
                         {event: "deassert", action: "ChargeM_StartDiagCtlEnableEventCbk"},
-                        {event: "assert", action: "DischargeM_StartDiagCtlDisableEventCbk"},
-                        {event: "deassert", action: "DischargeM_StartDiagCtlEnableEventCbk"},
+
+
                     ],
                 },
             }, {
@@ -1733,62 +1904,47 @@ module.exports = {
                 name: "电压排线脱落",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 0, 5, 5],
-                    [1, 0, 5, 5],
-                    [1, 0, 5, 5]
+                    [1, 1, 5, 30],
+                    [1, 1, 5, 30],
+                    [1, 0, 30, 1]
                 ]
             }, {
                 name: "温感排线脱落",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 0, 5, 5],
-                    [1, 0, 5, 5],
-                    [1, 0, 5, 5]
+                    [1, 1, 5, 30],
+                    [1, 1, 5, 30],
+                    [1, 0, 30, 1]
                 ]
             }, {
                 name: "内网通信",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 5, 1],
-                    [1, 1, 10, 5],
-                    [1, 1, 10.5, 5],
-                    [1, 1, 20, 5]
+
                 ]
             }, {
                 name: "快充正极高温",
                 levels_comment: "配置格式 [触发阈值(℃), 释放阈值(℃), 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [70, 60, 5.0, 5.0],
-                    [80, 70, 5.0, 5.0],
-                    [90, 80, 5.0, 5.0],
-                    [100, 90, 5.0, 5.0],
+
                 ]
             }, {
                 name: "快充负极高温",
                 levels_comment: "配置格式 [触发阈值(℃), 释放阈值(℃), 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [70, 60, 5.0, 5.0],
-                    [80, 70, 5.0, 5.0],
-                    [90, 80, 5.0, 5.0],
-                    [100, 90, 5.0, 5.0],
+
                 ]
             }, {
                 name: "慢充AL极高温",
                 levels_comment: "配置格式 [触发阈值(℃), 释放阈值(℃), 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [70, 60, 5.0, 5.0],
-                    [80, 70, 5.0, 5.0],
-                    [90, 80, 5.0, 5.0],
-                    [100, 90, 5.0, 5.0],
+
                 ]
             }, {
                 name: "慢充BN极高温",
                 levels_comment: "配置格式 [触发阈值(℃), 释放阈值(℃), 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [70, 60, 5.0, 5.0],
-                    [80, 70, 5.0, 5.0],
-                    [90, 80, 5.0, 5.0],
-                    [100, 90, 5.0, 5.0],
+
                 ]
             }, {
                 name: "慢充C极高温",
@@ -1803,13 +1959,13 @@ module.exports = {
                 name: "充电机通信",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 0, 0]
+
                 ]
             }, {
                 name: "整车通信",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 1, 1]
+
                 ]
             }, {
                 name: "满充",
@@ -1821,21 +1977,21 @@ module.exports = {
                 name: "充电插座温感异常",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 5, 5]
+
                 ]
             }, {
                 name: "预充失败",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                	[1, 1, 0, 0]
+
                 ]
             }, {
                 name: "电流异常",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 5, 5],
-                    [1, 1, 5, 5],
-                    [1, 1, 5, 5]
+                    [1, 1, 5, 1],
+                    [1, 1, 5, 1],
+                    [1, 1, 5, 1]
                 ]
             }, {
                 name: "BMS初始化故障",
@@ -1855,15 +2011,15 @@ module.exports = {
                 name: "继电器故障",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 0, 0.5, 5],
-                    [1, 0, 0.5, 5],
-                    [1, 0, 0.5, 5],
+                    [1, 0, 1, 1],
+                    [1, 0, 1, 1],
+                    [1, 0, 1, 1]
                 ]
             }, {
                 name: "加热故障",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 5, 5]
+
                 ]
             }, {
                 name: "CC2连接故障",
@@ -1887,7 +2043,7 @@ module.exports = {
                 name: "加热温感异常",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
-                    [1, 1, 5, 5]
+
                 ]
             }, {
                 name: "极柱温感异常",
@@ -1905,6 +2061,8 @@ module.exports = {
                 name: "多充电连接故障",
                 levels_comment: "配置格式 [1, 1, 触发持续时间(s), 释放持续时间(s)]",
                 levels:[
+                    [1, 1, 5, 5],
+                    [1, 1, 5, 5],
                     [1, 1, 5, 5]
                 ]
             }, {
@@ -1958,7 +2116,7 @@ module.exports = {
         },
 
         {hw:1, baud: 250000},
-        {hw:2, baud: 125000},
+        {hw:2, baud: 250000},
         {hw:3, baud: 250000},
     ],
 
@@ -2038,7 +2196,7 @@ module.exports = {
             name:"Charger",
             self:0xf4,
             remote:0x56,
-            hw:1,
+            hw:2,
             pgs:[
                 // 国标充电机报文
                 { pri:6, pgn: 0x2700, type:"tx"},
@@ -2067,7 +2225,7 @@ module.exports = {
             ]
         }, {
             name:"Vcu",
-            hw:0,
+            hw:1,
             self:0x13,
             remote:0x14,
             pgs:[
