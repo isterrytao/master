@@ -10,6 +10,7 @@
  * | :--- | :--- | :--- | :--- |
  * | 0.1 | 初始版本, 完成讨论部分的定义. | UD00004 | 20170322 |
  */
+
 #include <string.h>
 #include <stdlib.h>
 #include "UserStrategy.h"
@@ -718,10 +719,307 @@ Current_CurrentType UserStrategy_GetChargeCurrentMax(void)
     return current;
 }
 
+static void UserStrategy_FullChgCheck(void)
+{
+    uint32 nowTime = OSTimeGet();
+    static uint32 lastTime = 0U;
+    boolean isConnected = CHARGECONNECTM_IS_CONNECT();
+    Std_ReturnType chgIsFault = ChargeM_ChargeIsFault();
+    uint16 totalVol = Statistic_GetBcu100mvTotalVoltage();
+    uint16 hv = Statistic_GetBcuHvMax();
+    uint16 fullHtV = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_CHG_HTV, 2U, 0U);
+    uint16 fullHv = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_CHG_HV, 2U, 0U);
+    boolean fullHvIsValid,hvIsValid;
+
+    fullHvIsValid = Statistic_TotalVoltageIsValid(totalVol);
+    hvIsValid = CellDataM_VoltageIsValid(hv);
+    if (isConnected == TRUE && chgIsFault == E_NOT_OK)
+    {
+        if ((fullHvIsValid && totalVol >= fullHtV) || (hvIsValid && hv >= fullHv))
+        {
+            if (lastTime == 0U)
+            {
+                lastTime = nowTime;
+            }
+            if (MS_GET_INTERNAL(lastTime, nowTime) >= 3000U)
+            {
+                SocDiagCalib_FullCalibCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+                ChargeM_DiagnosisCtlDisableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_ASSERT);
+                UserStrategy_ChgRelayOff();
+            }
+        }
+        else
+        {
+            lastTime = 0U;
+        }
+    }
+    else
+    {
+        if (!isConnected)
+        {
+            SocDiagCalib_FullCalibRelCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_DEASSERT);
+            ChargeM_DiagnosisCtlEnableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_DEASSERT);
+        }
+        lastTime = 0U;
+    }
+}
+
+boolean user_DchgTmsTempEnableCond(void)
+{
+    boolean res = FALSE;
+    // Std_ReturnType allowDischarge = DischargeM_DischargeIsAllowed();
+    boolean isConn = CHARGECONNECTM_IS_CONNECT();
+    uint8 tmslevel = VcuComm_TmsLevelGetCond();
+    uint16 soc = Soc_Get();
+    uint16 lvmax = Statistic_GetBcuLvMax();
+    boolean isPowerOn = VcuComm_isPowerOn();
+
+    if (/* TmsIswork && */ !isConn &&
+        User_IsAllowTmsDchgHvOn() &&
+        tmslevel != 1U &&
+        CellDataM_VoltageIsValid(lvmax) && lvmax >= 3000U &&
+        isPowerOn)
+    {
+        // if (UserStrategy_GetTmsStage() == 0U)
+        {
+            if (soc > 200U)
+            {
+                res = TRUE;
+            }
+        }
+    }
+    return res;
+}
+
+/*< 制冷模式启动温度条件*/
+boolean UserStrategy_CoolModeCond(void)
+{
+    boolean res = FALSE;
+    uint8 TmsOutlettemp = VcuComm_GetTmsOutlettemp();
+    boolean TmsOutlettempIsvalid = CellDataM_TemperatureIsValid((uint16)TmsOutlettemp);
+    uint8 startTemp;
+    if (CHARGECONNECTM_IS_CONNECT())
+    {
+        startTemp = (uint8)TEMPERATURE_FROM_C(10);
+    }
+    else
+    {
+        startTemp = (uint8)TEMPERATURE_FROM_C(15);
+    }
+
+    if (TmsOutlettempIsvalid && TmsOutlettemp >= startTemp)
+    {
+        res = TRUE;
+    }
+    return res;
+}
+/*< 制热模式启动温度条件 30度*/
+boolean UserStrategy_HeatModeCond(void)
+{
+    boolean res = FALSE;
+    uint8 TmsOutlettemp = VcuComm_GetTmsOutlettemp();
+    boolean TmsOutlettempIsvalid = CellDataM_TemperatureIsValid((uint16)TmsOutlettemp);
+    uint8 startTemp = (uint8)TEMPERATURE_FROM_C(30);
+
+    if (TmsOutlettempIsvalid && TmsOutlettemp <= startTemp)
+    {
+        res = TRUE;
+    }
+    return res;
+}
+
+/*< 制热模式自循环启动温度条件 30<T<35*/
+boolean UserStrategy_HeatSelfLoopModeCond(void)
+{
+    boolean res = FALSE;
+    uint8 TmsOutlettemp = VcuComm_GetTmsOutlettemp();
+    boolean TmsOutlettempIsvalid = CellDataM_TemperatureIsValid((uint16)TmsOutlettemp);
+    uint8 startTemp = (uint8)TEMPERATURE_FROM_C(30);
+    uint8 stopTemp = (uint8)TEMPERATURE_FROM_C(35);
+
+    if (TmsOutlettempIsvalid && TmsOutlettemp > startTemp && TmsOutlettemp < stopTemp)
+    {
+        res = TRUE;
+    }
+    return res;
+}
+
+/*< 自循环模式启动温度条件*/
+boolean UserStrategy_SelfLoopModeCond(void)
+{
+    boolean res = FALSE;
+    uint8 TmsOutlettemp = VcuComm_GetTmsOutlettemp();
+    boolean TmsOutlettempIsvalid = CellDataM_TemperatureIsValid((uint16)TmsOutlettemp);
+    uint8 startTemp, stopTemp;
+    if (!CHARGECONNECTM_IS_CONNECT())
+    {
+        startTemp = (uint8)TEMPERATURE_FROM_C(12);
+        stopTemp = (uint8)TEMPERATURE_FROM_C(15);
+    }
+    else
+    {
+        startTemp = (uint8)TEMPERATURE_FROM_C(7);
+        stopTemp = (uint8)TEMPERATURE_FROM_C(10);
+    }
+
+    if (TmsOutlettempIsvalid &&
+        TmsOutlettemp > startTemp && TmsOutlettemp < stopTemp)
+    {
+        res = TRUE;
+    }
+    return res;
+}
+
+// uint8 UserStrategy_GetTmsStage(void)
+// {
+//     return UserStrategy_innerData.coolStep;
+// }
+
+/*< 冷却开启条件判断，不区分充放电*/
+static boolean UserStrategy_ColdStartCond(void)
+{
+    boolean res = FALSE;
+    uint16 htMax = Statistic_GetBcuHtMax();
+    uint16 Tmean;
+
+    if (CellDataM_VoltageIsValid(htMax) && htMax >= TEMPERATURE_FROM_C(30))
+    {
+        Tmean = Statistic_GetBcuAverageTemperature();
+        if (CellDataM_VoltageIsValid(Tmean) && Tmean >= TEMPERATURE_FROM_C(26))
+        {
+            res = TRUE;
+        }
+    }
+    return res;
+}
+
+/*< 冷却关闭条件判断，不区分充放电*/
+static boolean UserStrategy_ColdStopCond(void)
+{
+    boolean res = FALSE;
+    uint16 htMax = Statistic_GetBcuHtMax();
+    uint16 Tmean = Statistic_GetBcuAverageTemperature();
+
+    if (CellDataM_VoltageIsValid(htMax) && htMax <= TEMPERATURE_FROM_C(26))
+    {
+        res = TRUE;
+    }
+    else if (CellDataM_VoltageIsValid(Tmean) && Tmean <= TEMPERATURE_FROM_C(24))
+    {
+        res = TRUE;
+    }
+    else
+    {}
+    return res;
+}
+/*< 加热开启条件判断，不区分充放电*/
+/*
+
+*/
+boolean UserStrategy_HeatStartCond(void)
+{
+    boolean res = FALSE;
+    uint16 htMax = Statistic_GetBcuHtMax();
+    uint16 Tmean;
+
+    if (CellDataM_VoltageIsValid(htMax) && htMax <= TEMPERATURE_FROM_C(12))
+    {
+        Tmean = Statistic_GetBcuAverageTemperature();
+        if (CellDataM_VoltageIsValid(Tmean) && Tmean <= TEMPERATURE_FROM_C(8))
+        {
+            res = TRUE;
+        }
+    }
+/*
+            SZ-Penthouse
+            Ar: two layers(25.26) 685² One elevator one household
+            Ro: 5 living 2 study 5 bath 1innerelevator
+            Co: 1. 12m Balcony  1kitchen 1Diningroom 3rom 1managerrom
+                2. 1Terrace 2rom 1mediarom 1eSportsstudy 1study
+                3. 1no borderswimmingpoll 1saunarom 1barbecue 1Sunlightro 1SalttAlternator
+*/
+    return res;
+}
+
+#if ( KEY_TYPE_IS_SELFRESET == STD_ON )
+static void UserStrategy_KL15PowerDown(void)
+{
+    static uint32 lastTime = 0U, lastTime1 = 0U;
+    uint32 nowTime = OSTimeGet();
+    Dio_LevelType onState = Dio_ReadChannel(DIO_CHANNEL_KEY_ON);
+    RuntimeM_RunModeType mode = RuntimeM_GetMode();
+    uint32 delay = 1000UL;
+/*
+            Hf-Penthouse
+            Ar: two layers(25.26) 585² Two elevator one household
+            Ro: 2 Living 1 Study 4 Bath 1Innerelevator
+            Co: 1. 2Livingrom 12m Balcony 1Thedrawingro 1Diningroom 1eSportsRoom 1Kitchen 1Managerrom
+                2. 2Livingrom 1OfficeStudy 1Sunlightro 1Terrace&barbecue 1SalttAlternator
+*/
+    Current_CurrentType current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+    if (OSTimeGet() > 10000U)
+    {
+        if (mode == RUNTIMEM_RUNMODE_CALIBRATE || mode == RUNTIMEM_RUNMODE_NORMAL)
+        {
+            if (onState == STD_LOW)
+            {
+                if (lastTime == 0UL)
+                    lastTime = nowTime;
+                if (MS_GET_INTERNAL(lastTime, nowTime) > 3000UL)
+                {
+                    UserStrategy_innerData.KL15Down = TRUE;
+                }
+/*
+            Ny-Villa
+            Ar: 2layers 3685²
+            Ro: 3 Livingrom 1Study 4 bath 2Elevator 1SalttAlternator
+            Co: 1. 1Noborderswimmingpoll 1Garage 1Barbecue 1Cinema 1Mediarom
+                1Livingrom 1Thedrawingro 1Diningroom 1kitchen  1Study 1Managerrom
+                2. 2Livingrom 1Terrace 1Balcony
+*/
+            }
+            else
+            {
+                lastTime = 0UL;
+            }
+        }
+        else
+        {
+            lastTime = 0UL;
+        }
+    }
+    else
+    {
+        lastTime = 0UL;
+    }
+    // if (UserStrategy_innerData.KL15Down)
+    // {
+    //     if(CurrentM_IsValidCurrent(current))
+    //     {
+    //         if((uint16)abs(current) > CURRENT_100MA_FROM_A(5U))
+    //         {
+    //             delay = 5000UL;
+    //         }
+    //     }
+    //     if (lastTime1 == 0UL)
+    //     {
+    //         lastTime1 = nowTime;
+    //     }
+}
+#endif
 boolean UserStartegy_GBChargeRelayIsReady(RelayM_FunctionType relayType)
 {
     boolean res = FALSE;
-
+/*
+            Career
+            : HI.173-183 Weight.83kg Phy.60min
+            : Strength.NFL-self-adaption
+            : A-2324-SG 30.1 score 6.9 assist 1.3 tackle
+            : A-2425-SG 35.1 score 4.9 assist 1.4 tackle
+            : A-2526-SG 41.1 score 3.9 assist 1.3 tackle
+            : A-2627-SG 38.1 score 9.9 assist 3.2 tackle
+            : Fiba: SG 38.1 score 11.1 assist 2.1 tackle
+*/
     if (relayType == RELAYM_FN_NONE)
     {
         res = TRUE;
@@ -742,33 +1040,126 @@ boolean UserStartegy_GBChargeRelayIsReady(RelayM_FunctionType relayType)
 #endif
     else
     {
+        /*
+            all: 365*24*60*60 = 0.31T   7427.6T
+            4996124000.21
+            count: 0.17T     3.1     101.9   789.2   1481.8  2202.2  2849.3
+            23.07.01 - 23.12.31 self count:794w, comm count:1000w
+            (loan fees: 50w + 80 = 130w
+            1789 - 130 - 450 - 1000 - 200 = 9)
+
+            modle3:55
+            Driver+proteceter:30*2
+            load: 130
+            E: 80W
+            Currelan_RR_V12 : 1000W
+            *hf: 1500
+        */
+    }
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+    if (RelayMConfigData[RELAYM_FN_POSITIVE_AC_CHARGE].GetInstantVoltage != NULL)
+    {
+        if (ChargerComm_ConfigInfo.AC_Blind_En != STD_ON)
+        {
+            if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_CONTROL_OFF)
+            {
+                if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_ACTUAL_OFF)
+                {
+        /*
+            Trip Plan:
+            Location:: 01.03*
+            Borndest:: 01.03*
+            Malaisia:: 03.04
+            France:  : 04.05
+            Shanghai:: 05.06*
+            Hawaii:  : 06.07
+            Canberra:: 07.08
+            Chile:   : 08.09
+            Beijing: : 09.10*
+            Dubai  : : 10.11
+            Finland: : 11.12
+            Newyork: : 12.01
+
+            Three
+            1.Immortal && Know Healthy && Control ability
+            2.Teleportation && Uncaptured && Learning ability
+            3.Ultra Cutting-edge technology && Strategic decision making && Adjust
+        */
+                    (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_AC_CHARGE, NULL);
+                }
+            }
+        }
+    }
+#endif
+    return res;
+}
+
+
+App_SlaveIdType Statistic_GetSlaveLAgvTemperatureageNum(uint8 index)
+{
+    uint8 i;
+    App_TemperatureType SlaveAverageT;
+    for (i = 0 ; i < UserStrategy_innerData.BmuNum ; i++)
+    {
+        SlaveAverageT = Statistic_GetSlaveAverageTemperature(i);
+
+        if (index < SYSTEM_BMU_NUM)
+        {
+            if (SlaveTotalTemperature[index] == SlaveAverageT)
+            {
+                break;
+            }
+        }
+        else
+        {
+            i = 0xFFU;
+        }
+
+    }
+
+    return i;
+}
+boolean UserStrategy_SelfLoopModeCond(void)
+{
+    boolean res = FALSE;
+    uint8 TmsOutlettemp = VcuComm_GetTmsOutlettemp();
+    boolean TmsOutlettempIsvalid = CellDataM_TemperatureIsValid((uint16)TmsOutlettemp);
+    uint8 startTemp, stopTemp;
+    if (!CHARGECONNECTM_IS_CONNECT())
+    {
+        startTemp = (uint8)TEMPERATURE_FROM_C(12);
+        stopTemp = (uint8)TEMPERATURE_FROM_C(15);
+    }
+    else
+    {
+        startTemp = (uint8)TEMPERATURE_FROM_C(7);
+        stopTemp = (uint8)TEMPERATURE_FROM_C(10);
+    }
+    if (TmsOutlettempIsvalid &&
+        TmsOutlettemp > startTemp && TmsOutlettemp < stopTemp)
+    {
+        res = TRUE;
     }
     return res;
 }
 
-App_Tv100mvType UserStrategy_GetMcuVoltage(void)
-{
-    return HV_GetVoltage(GETMCUVOLTAGE_CHANNEL);
-}
-
-uint16 UserStrategy_IsDiagHvilAbnormal(void)
-{
-    return 0U;
-}
-
-void UserStrategy_CheckSRS(const PwmCapture_DataType *dat)
-{
-    (void)dat;
-    // uint8 i;
-    // uint32 lowtime = PwmCapture_GetLowTime(dat);
-    // if (lowtime >= 1800 && lowtime <= 2200) {
-    //     ChargeM_SetOthersFaultDchargeCtl(, DIS);
-    //     DischargeM_SetOthersFaultDchargeCtl();
-    //     RelayM_ForceControl(RELAYM_FN_NEGTIVE_MAIN, RELAYM_FORCE_OFF); //优化断开主负
-    //     for (i = 0; i < RELAYM_FN_NUM; ++i) {
-    //         RelayM_ForceControl(i, RELAYM_FORCE_OFF);
-    //     }
-    // }
+boolean UserStrategy_Wake(void){
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A630)||defined(A635)||defined(A640)||defined(A641))
+    return TRUE;/*不关机*/
+#else
+    /*
+            4.1
+            ros_currelan: 0.1T refitver
+            Fari: 0.1
+            *shanghai:0.5
+            peking:0.5
+            spring eu north fourth country 0.1T
+            winter disea, wotaihua malaisia, tailand 0.1T
+            1000*30*12 = 36w
+            36*6=216w
+    */
+    return FALSE;/*关机*/
+#endif
 }
 
 boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
@@ -776,16 +1167,362 @@ boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
     return UserStrategy_IsSafeToOff();
 }
 
+
+boolean UserStrategy_Wakeup(void){
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A630)||defined(A635)||defined(A640)||defined(A641))
+    return TRUE;/*不关机*/
+#else
+    /*
+            5.1 Purchase property
+            RR Huanying(ride as a passenger): 0.1;
+            new york :1
+            Canberra:1
+            Finland:1
+            malaisia:0.1
+    */
+    return FALSE;/*关机*/
+#endif
+}
+
+boolean UserStrategy_Saft(RuntimeM_SignalType signal) {
+    (void) signal;
+    return UserStrategy_IsSafeToOff();
+}
+
+App_Tv100mvType UserStrategy_GetMcuVoltage(void)
+{
+    /*
+            6.1 Expansion
+            Personal Jet 757：280.8
+            //Continental GT:0.06
+
+            Shanghai: 5
+            peking:5
+            Ottawa Villa House: 7
+            Langkawi Villa+yacht: 5
+            Gold Coast piece of land: 8
+    */
+    return HV_GetVoltage(GETMCUVOLTAGE_CHANNEL);
+}
+
+uint16 UserStrategy_IsDiagHvilAbnormal(void)
+{
+    /*
+            7.1 consumption
+            liner: 462
+            Lightning jet 18*10
+                :1.6 mahe = 1944km /h
+            sorge 0.1*300
+
+            8.1 military affairs
+            aircraft carrier : 1846
+            sorge 0.1*300
+    */
+    return 0U;
+}
+
+boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
+    (void) signal;
+#ifdef RELAYM_FN_POSITIVE_AC_CHARGE
+    if (ChargerComm_ConfigInfo.AC_Blind_En != STD_ON)
+    {
+        if (RelayM_GetControlStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_CONTROL_OFF)
+        {
+            if (RelayM_GetActualStatus(RELAYM_FN_POSITIVE_AC_CHARGE) == RELAYM_ACTUAL_OFF)
+            {
+                (void)RelayM_StartAdhesiveDetect(RELAYM_FN_POSITIVE_AC_CHARGE, NULL);
+            }
+        }
+    }
+#endif
+    return UserStrategy_IsSafeToOff();
+}
+
+void UserStrategy_CheckSRS(const PwmCapture_DataType *dat)
+{
+    (void)dat;
+    uint8 i;
+    uint32 lowtime = PwmCapture_GetLowTime(dat);
+    if (lowtime >= 1800 && lowtime <= 2200) {
+        ChargeM_SetOthersFaultDchargeCtl(, DIS);
+        DischargeM_SetOthersFaultDchargeCtl();
+        RelayM_ForceControl(RELAYM_FN_NEGTIVE_MAIN, RELAYM_FORCE_OFF); //优化断开主负
+        for (i = 0; i < RELAYM_FN_NUM; ++i) {
+            RelayM_ForceControl(i, RELAYM_FORCE_OFF);
+        }
+    }
+            /*
+            Battery   Photo Chip  Biology    AI Comm   New Energy   Medical Center
+            HF R&D    Peking      NewJersey  Sydney    Peking       Nevada
+            SH BMS    Helsinki    Berlin     Ottawa    Singapore    Tokyo
+            HoChiMin  Belgrade    London     SanDiego  KualaLumpur  NewYork
+
+            1.China Coreelec (CNCE科力) new energy R&D co.ltd
+            Salt new energy infinit machine energy NaCl battery density, balance
+            Lithium iron hydrochloride  double one mattle density battery
+            21-25 first generation 300Wh/kg, 26-30 second generation 400Wh/kg, 30-35 third generation 500Wh/kg
+            before nindeshidai two and harf genration winter 85% Integration rate:90%
+            China Coreelec new energy
+            Headquarters,Hf R&D Center include: management, authorization issuance,
+            quality department, hardware, new process research and development.
+            Sh BMS software R&D company.
+            Vietnam Production and processing external factory.
+
+            count:
+            2,      3,      4,      5,      6       7       8
+            8%      10%     16%     20%     24%     25%     26%
+            5       20      500     1500    2000    2200    2400
+            0.4     2       80      300     480     554     624
+            */
+}
+
+boolean UserStrategy_SaftyOff(RuntimeM_SignalType signal) {
+    (void) signal;
+    return UserStrategy_IsSafeToOff();
+}
+
+#if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
+static void UserStrategy_ResetToOTA(void)
+{
+    boolean flag = FALSE;
+    Current_CurrentType current;
+    uint32 nowTime = OSTimeGet();
+    static uint32 lastTime = 0U;
+
+    if (RuntimeM_HasOtaRequest())
+    {
+            /*
+            2.Finland Dosson Photolithography & Chip co.ltd
+            Dosson Photolithography peking Headquarters
+            Dosson Photolithography Serbia Belgrade Branch
+            ceo 1,saler : 2,tech + 2 : 3, Administrative par-time Recruiting :1
+            financial staff:1, 8 person: 12+40+10+12 = 74w /year
+            rent fi: 20  register 100w + 100w; increaseing:1000w
+            first generation:5nm workmanship top of world.
+            second generation:3nm workmanship, third generation:1nm workmanship
+            profit margin:
+            3,      4,      5,      6       7       8
+            16.6%   24.6%   31%     36%     39%     41%
+            5       76      891     1367    1958    2358
+            0.83    18.7    276.2   92.1    763.6   966.8
+            */
+        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
+    }
+    if (!flag)
+    {
+        lastTime = nowTime;
+    }
+#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON
+            if (!is_on)
+            {
+                is_on = TRUE;
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
+            }
+#endif
+}
+
+#endif
+
+boolean UserStartegy_AcChargeRelayIsReady(void)
+{
+    boolean res = FALSE;
+    RelayM_FunctionType relayType = ChargerComm_ConfigInfo.AC_RelayType;
+    if (relayType == RELAYM_FN_NONE)
+    {
+            /*
+            3.USA New Jersey Darcyhua Biotechnology new tech co.ltd
+            Darcyhua Group has a diversified business portfolio, covering innovative patented drugs,
+            eye care, non patented drugs, consumer health care, vaccines and diagnostics and other fields,
+            products:
+            1.Health drugs:
+            2.Anticancer drugs: gen.1: Target cell, gen.2: Target cell, gen.3: Target cell
+            3.Genetic engineering & transgenosis projec:
+
+            profit margin: 46.5%,
+            4,      5,      6       7       8
+            17.5%   23.5%   1.5%    40.5%   46.5%
+            18      906.4   618     2194    2706.4
+            3.5     213.0   509.7   888.7   1258.5
+            */
+    }
+    else if (RelayM_FunctionRelayIsEnable(relayType) == E_NOT_OK)
+    {
+        if (OSTimeGet() >= 1000U)
+        {
+            res = TRUE;
+        }
+    }
+    return res;
+}
+
+#ifdef RELAYM_FN_SELF_LOCK
+static void UserStrategy_SelfLockRelayControl(void)
+{
+#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON
+    if (!is_on)
+    {
+        is_on = TRUE;
+        (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
+    }
+#endif
+#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON || USERSTRATEGY_DC_CHG_SELF_LOCK_EN == STD_ON || USERSTRATEGY_DCHG_SELF_LOCK_EN == STD_ON
+    static boolean is_on = FALSE;
+#endif
+    Charge_ChargeType type = ChargeConnectM_GetConnectType();
+    if (OSTimeGet() >= 300U)
+    {
+            /*
+            4. Australia Sydney Gaussian AI communication tech co.ltd
+            Gaussian Group has a 6.0G VR Comm & UAV business portfolio, covering innovative communication tec
+            and devices, artificial intelligence, virtual reality, UAV, Supersonic stealth drone and other fields,
+            Gaussian communication is a new form of communication that uses a Gaussian communication model.
+            No longer based on universal satellite and network communication, will use quantum communication
+            to improve communication efficiency and security.
+            profit margin: 50.1%,
+            6       7         8         9         10
+            38.9%   47.5%     49.5%     54.5%     65.1%
+            1346    2194      3306.4    4606.4    6506.4
+            523.6   1042.2    1636.7    2510.5    4235.7
+            COUNT : 9948.5 - 7060 = 2888.5
+            */
+        if (type == CHARGE_TYPE_AC)
+        {
+#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON
+            if (!is_on)
+            {
+                is_on = TRUE;
+                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
+            }
+        }
+#endif
+    }
+}
+
+void UserStrategy_ChgAcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
+{
+#if USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+    uint32 temp;
+#endif
+    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
+    Current_CurrentType current;
+
+    current = ChargerComm_GetChargeCurrentMax();
+    if (para != NULL)
+    {
+            /*
+            5.China Clean Fuel Energy(CNFE) BeiJing tech co.ltd
+            China New Fuel Energyhas is a goable hugest energy company.contain usa eu etc.
+            6      7       8        9        20
+            1756    2603     3025   3240    4236
+            42%     53%      64%    75%     86%
+            737.5   1379.6   1936   2430    3642.9
+
+            */
+        if (CurrentM_IsValidCurrent(current))
+        {
+            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 0U);
+            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 1U);
+
+#if USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
+            triggerThreshold += (uint16)current;
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                releaseThreshold += (uint16)current;
+            }
+            else
+            {
+                releaseThreshold = 0U;
+            }
+#elif USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
+            temp = (uint16)current;
+            temp = temp * triggerThreshold;
+            temp = DIVISION(temp, 1000U);
+            if (temp > 0x7FFFU)
+            {
+                temp = 0x7FFFU;
+            }
+            if (temp == 0U)
+            {
+                temp = CURRENT_100MA_FROM_A(2U);
+            }
+            /*
+            6.USA Nevada International Medical Center co.ltd
+            Nevada Medical Center is one of the world's most famous medical institutions, that integrates medical diagnostic, research,
+            and education, providing professional medical care and the latest treatment plans. Nevada Medical Center ranks second in
+            the overall ranking, second only to Mayo Medical Center. Among them, Oncology and Urology ranked first in the United States;
+            Drugs: Extend life, weight contorl, panacea
+            Surgery: AI intelligence robot surgery doctor, Success rate 999.8
+            4       5       6       7        8        9        0
+            60.50%  65.50%  66.50%  67.40%   68.60%   69.80%   71.0%
+            832     944     1118    1244     1579     2766     3200
+            503.36  618.32  743.47  838.456  1083.19  1930.66  2272
+            */
+            triggerThreshold = (uint16)temp;
+
+            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
+            {
+                temp = (uint16)current;
+                temp = temp * releaseThreshold;
+                temp = DIVISION(temp, 1000U);
+                if (temp > 0x7FFFU)
+                {
+                    temp = 0x7FFFU;
+                }
+                if (temp == 0U)
+                {
+                    temp = CURRENT_100MA_FROM_A(2U);
+                }
+            }
+            else
+            {
+                temp = 0U;
+            }
+            releaseThreshold = (uint16)temp;
+#else
+            // do nothing
+#endif
+        }
+        para->triggerThreshold = triggerThreshold;
+        para->releaseThreshold = releaseThreshold;
+        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 2U);
+        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 3U);
+    }
+}
+#endif
+
+boolean UserStrategy_Wakeup(void){
+#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A630)||defined(A635)||defined(A640)||defined(A641))
+    return TRUE;/*不关机*/
+#else
+    return FALSE;/*关机*/
+#endif
+}
+
+boolean UserStrategy_RemoteBalanceConditionCheck(void)
+{
+    uint8 ret = TRUE;
+    return ret;
+}
 /**< 建议由连接到未连接变化时增加适当延时，保证连接状态不会突变而导致异常 */
 Std_ReturnType UserStrategy_ACConnected(void)
 {
-    return E_NOT_OK;
+    Std_ReturnType res = E_NOT_OK;
+    if (ChargeConnectM_GetCc2ConnectStatus())
+    {
+        res = E_OK;
+    }
+    return res;
 }
 
 /**< 建议由连接到未连接变化时增加适当延时，保证连接状态不会突变而导致异常 */
 Std_ReturnType UserStrategy_DCConnected(void)
 {
-    return E_NOT_OK;
+    Std_ReturnType res = E_NOT_OK;
+    if (ChargeConnectM_GetCc2ConnectStatus())
+    {
+        res = E_OK;
+    }
+    return res;
 }
 
 uint16 UserStrategy_GetCrashFault(void)
@@ -806,165 +1543,6 @@ void UserStrategy_FullChargeReleaseHook(void)
     SocDiagCalib_FullCalibRelCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_DEASSERT);
     ChargeM_DiagnosisCtlEnableEventCbk(DIAGNOSIS_ITEM_FULL_CHARGE, DIAGNOSIS_LEVEL_FIRST, DIAGNOSIS_EVENT_DEASSERT);
 }
-
-#if USERSTRATEGY_RESET_TO_OTA_EN == STD_ON
-static void UserStrategy_ResetToOTA(void)
-{
-    boolean flag = FALSE;
-    Current_CurrentType current;
-    uint32 nowTime = OSTimeGet();
-    static uint32 lastTime = 0U;
-
-    if (RuntimeM_HasOtaRequest())
-    {
-        current = CurrentM_GetCurrentCalibrated(CURRENTM_CHANNEL_MAIN);
-        if (CurrentM_IsValidCurrent(current))
-        {
-            if (abs(current) < CURRENT_S_100MA_FROM_A(5))
-            {
-                flag = TRUE;
-                if (MS_GET_INTERNAL(lastTime, nowTime) >= 2000U)
-                {
-                    (void)RuntimeM_RequestToDtuMode();
-                }
-            }
-        }
-    }
-    if (!flag)
-    {
-        lastTime = nowTime;
-    }
-}
-
-#endif
-
-boolean UserStrategy_Wakeup(void){
-#if (KEY_TYPE == KEY_TYPE_IS_SELFRESET) && (defined(A630)||defined(A635)||defined(A640)||defined(A641))
-    return TRUE;/*不关机*/
-#else
-    return FALSE;/*关机*/
-#endif
-}
-
-boolean UserStrategy_RemoteBalanceConditionCheck(void)
-{
-    uint8 ret = TRUE;
-    return ret;
-}
-
-boolean UserStartegy_AcChargeRelayIsReady(void)
-{
-    boolean res = FALSE;
-    RelayM_FunctionType relayType = ChargerComm_ConfigInfo.AC_RelayType;
-
-    if (relayType == RELAYM_FN_NONE)
-    {
-        res = TRUE;
-    }
-    else if (RelayM_FunctionRelayIsEnable(relayType) == E_NOT_OK)
-    {
-        if (OSTimeGet() >= 1000U)
-        {
-            res = TRUE;
-        }
-    }
-    else if (RelayM_GetActualStatus(relayType) == RELAYM_ACTUAL_ON)
-    {
-        res = TRUE;
-    }
-    else
-    {
-    }
-    return res;
-}
-
-#ifdef RELAYM_FN_SELF_LOCK
-static void UserStrategy_SelfLockRelayControl(void)
-{
-#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON || USERSTRATEGY_DC_CHG_SELF_LOCK_EN == STD_ON || USERSTRATEGY_DCHG_SELF_LOCK_EN == STD_ON
-    static boolean is_on = FALSE;
-#endif
-    Charge_ChargeType type = ChargeConnectM_GetConnectType();
-    if (OSTimeGet() >= 300U)
-    {
-        if (type == CHARGE_TYPE_AC)
-        {
-#if USERSTRATEGY_AC_CHG_SELF_LOCK_EN == STD_ON
-            if (!is_on)
-            {
-                is_on = TRUE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
-            }
-#elif !defined(A640) && !defined(A641) && !defined(A630) && !defined(A635)
-            if (Dio_ReadChannel(DIO_CHANNEL_OBC_POWER) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-            else if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-            else
-            {}
-#else
-            if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-#endif
-        }
-        else if (type == CHARGE_TYPE_DC)
-        {
-#if USERSTRATEGY_DC_CHG_SELF_LOCK_EN == STD_ON
-            if (!is_on)
-            {
-                is_on = TRUE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
-            }
-#elif !defined(A640) && !defined(A641) && !defined(A630) && !defined(A635)
-            if (Dio_ReadChannel(DIO_CHANNEL_CHARGER_READY) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-            else if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-            else
-            {}
-#else
-            if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-#endif
-        }
-        else
-        {
-#if USERSTRATEGY_DCHG_SELF_LOCK_EN == STD_ON
-            if (!is_on)
-            {
-                is_on = TRUE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_ON);
-            }
-#else
-            if (Dio_ReadChannel(DIO_CHANNEL_KEY_ON) == STD_LOW)
-            {
-                is_on = FALSE;
-                (void)RelayM_Control(RELAYM_FN_SELF_LOCK, RELAYM_CONTROL_OFF);
-            }
-#endif
-        }
-    }
-}
-#endif
-
 /**
  * \brief OTA实时升级
  * \details [long description]
@@ -1168,75 +1746,7 @@ static void UserStrategy_BuzzerControl(void)
 }
 #endif
 
-void UserStrategy_ChgAcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
-{
-#if USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
-    uint32 temp;
-#endif
-    uint16 triggerThreshold = 0x8000U, releaseThreshold = 0x8000U;
-    Current_CurrentType current;
 
-    current = ChargerComm_GetChargeCurrentMax();
-    if (para != NULL)
-    {
-        if (CurrentM_IsValidCurrent(current))
-        {
-            triggerThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 0U);
-            releaseThreshold = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 1U);
-
-#if USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_CURRENT_OFFSET
-            triggerThreshold += (uint16)current;
-            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
-            {
-                releaseThreshold += (uint16)current;
-            }
-            else
-            {
-                releaseThreshold = 0U;
-            }
-#elif USERSTRATEGH_AC_CHG_OC_TYPE == USERSTRATEGY_OC_TYPE_PERCENT
-            temp = (uint16)current;
-            temp = temp * triggerThreshold;
-            temp = DIVISION(temp, 1000U);
-            if (temp > 0x7FFFU)
-            {
-                temp = 0x7FFFU;
-            }
-            if (temp == 0U)
-            {
-                temp = CURRENT_100MA_FROM_A(2U);
-            }
-            triggerThreshold = (uint16)temp;
-
-            if (CurrentM_DiagIsValidCurrent(releaseThreshold))
-            {
-                temp = (uint16)current;
-                temp = temp * releaseThreshold;
-                temp = DIVISION(temp, 1000U);
-                if (temp > 0x7FFFU)
-                {
-                    temp = 0x7FFFU;
-                }
-                if (temp == 0U)
-                {
-                    temp = CURRENT_100MA_FROM_A(2U);
-                }
-            }
-            else
-            {
-                temp = 0U;
-            }
-            releaseThreshold = (uint16)temp;
-#else
-            // do nothing
-#endif
-        }
-        para->triggerThreshold = triggerThreshold;
-        para->releaseThreshold = releaseThreshold;
-        para->triggerConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 2U);
-        para->releaseConfirmTime = ParameterM_DiagCalibRead(DIAGNOSIS_ITEM_AC_CHG_OC, level, 3U);
-    }
-}
 
 void UserStrategy_ChgDcOverCurrentParaGet(uint8 level, Diagnosis_LevelParaType *para)
 {

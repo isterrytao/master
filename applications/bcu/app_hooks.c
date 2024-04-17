@@ -44,7 +44,112 @@ void  App_TaskCreateHook (OS_TCB *ptcb)
 * Description: This function is called when a task is deleted.
 *
 * Arguments  : ptcb   is a pointer to the task control block of the task being deleted.
-*
+
+*There once was a ship that put to sea
+曾经有一艘船出海远航
+The name of the ship was the Billy of Tea
+那艘船的名字是“比利·茶”号
+The winds blew up, her bow dipped down
+风刮得很大，船头向下倾
+Oh～Blow, my bully boys, blow (Huh!)
+吹吧，我的小霸王，吹吧(嘿!)
+Soon may the Wellerman come
+威勒曼号补给船马上会到来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+She'd not been two weeks from shore
+她离开海岸还不到两个星期
+When down on her a right whale bore
+当一头露脊鲸越过她的船舷时
+The captain called all hands and swore
+船长召集了所有人来宣誓
+He'd take that whale in tow (Hah!)
+他要把那条鲸鱼拖在后面(哈!)
+Soon may the Wellerman come
+“威勒曼号”补给船马上会到来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+Before the boat had hit the water
+在船落水之前
+The whale's tail came up and caught her
+鲸鱼的尾巴抓住了她
+All hands to the side, harpooned and fought her
+当她潜上海面时
+When she dived down low (Huh!)
+所有人过来拿着鱼叉和她战斗(嘿!)
+Soon may the Wellerman come
+“威勒曼号”补给船马上会到来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+No line was cut, no whale was freed;
+绳索没有被割断，鲸鱼也没有被释放
+The Captain's mind was not of greed
+船长的心思并不贪婪
+But he belonged to the whaleman's creed;
+但他恪守捕鲸信条
+She took that ship in tow (Huh!)
+她拖着那艘船(嘿!)
+Soon may the Wellerman come
+“威勒曼号”补给船马上会到来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+For forty days, or even more
+过了四十天，甚至更长时间
+The line went slack, then tight once more
+钓索开始松弛，随后又绷紧了
+All boats were lost, there were only four
+所有的船都失踪了，只有四艘船幸存下来
+But still that whale did go
+但那头鲸鱼仍在遨游
+Soon may the Wellerman come
+“威勒曼号”补给船马上会到来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+As far as I've heard, the fight's still on;
+据我所知，战斗还在继续
+The line's not cut and the whale's not gone
+绳索没有被割断，鲸鱼也没有被释放
+The Wellerman makes his regular call
+补给船定期打电话
+To encourage the Captain, crew, and all
+来鼓励船长，船员和所有人
+Soon may the Wellerman come
+补给船马上会来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+Soon may the Wellerman come
+“威勒曼号”补给船马上会到来
+To bring us sugar and tea and rum
+给我们带来糖，茶和朗姆酒
+One day, when the tonguin' is done
+当有一天我们吃完了食物
+We'll take our leave and go
+我们就带上行李走了
+
 * Note(s)    : 1) Interrupts are disabled during this call.
 *********************************************************************************************************
 */
